@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Fun Lesson!</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f0f4ff;
+    --card: #ffffff;
+    --purple: #7c5cbf;
+    --purple-light: #ede6ff;
+    --pink: #e85d9a;
+    --pink-light: #ffe6f3;
+    --teal: #2bbfa0;
+    --teal-light: #dcfaf4;
+    --yellow: #f5c842;
+    --yellow-light: #fffbe6;
+    --orange: #f5824a;
+    --orange-light: #fff0e6;
+    --text: #2d2346;
+    --muted: #9490a8;
+    --correct: #2bbfa0;
+    --wrong: #e85d9a;
+    --border: #e8e2f8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    font-family: 'Nunito', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    padding: 40px 16px 100px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Floating bg shapes */
+  body::before {
+    content: '';
+    position: fixed;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, #c9b8ff44, transparent 70%);
+    top: -100px; right: -100px;
+    pointer-events: none;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, #ffb8d944, transparent 70%);
+    bottom: 0; left: -80px;
+    pointer-events: none;
+  }
+
+  .wrap { max-width: 780px; margin: 0 auto; position: relative; z-index: 1; }
+
+  /* ── HERO ── */
+  .hero {
+    text-align: center;
+    margin-bottom: 48px;
+    animation: popIn 0.5s cubic-bezier(.34,1.56,.64,1) both;
+  }
+
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.85); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  .hero-emoji { font-size: 3.5rem; margin-bottom: 12px; display: block; animation: bounce 2s infinite; }
+
+  @keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .hero h1 {
+    font-family: 'Baloo 2', cursive;
+    font-size: clamp(2rem, 7vw, 3.4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--purple);
+  }
+
+  .hero h1 span { color: var(--pink); }
+
+  .hero p {
+    margin-top: 10px;
+    font-size: 1rem;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  .stars {
+    margin-top: 14px;
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .star {
+    width: 36px; height: 36px;
+    background: #e8e2f8;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    transition: all 0.3s;
+  }
+
+  .star.lit { background: var(--yellow); transform: scale(1.15); }
+
+  /* NAME ROW */
+  .name-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 40px;
+    animation: fadeUp 0.5s 0.1s ease both;
+    flex-wrap: wrap;
+  }
+
+  .name-field { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 140px; }
+
+  .name-field label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--purple);
+  }
+
+  .name-field input {
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .name-field input:focus {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 3px var(--purple-light);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SECTION ── */
+  .section {
+    background: var(--card);
+    border-radius: 24px;
+    overflow: hidden;
+    margin-bottom: 28px;
+    box-shadow: 0 4px 24px #7c5cbf14;
+    border: 2px solid var(--border);
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .section:nth-child(1) { animation-delay: 0.15s; }
+  .section:nth-child(2) { animation-delay: 0.22s; }
+  .section:nth-child(3) { animation-delay: 0.29s; }
+  .section:nth-child(4) { animation-delay: 0.36s; }
+
+  .sec-head {
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .sec-head.purple { background: var(--purple-light); }
+  .sec-head.pink   { background: var(--pink-light); }
+  .sec-head.teal   { background: var(--teal-light); }
+  .sec-head.yellow { background: var(--yellow-light); }
+
+  .sec-emoji { font-size: 1.8rem; }
+
+  .sec-title {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--text);
+  }
+
+  .sec-sub {
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-weight: 600;
+    margin-top: 1px;
+  }
+
+  .sec-badge {
+    margin-left: auto;
+    background: white;
+    border-radius: 99px;
+    padding: 4px 12px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .badge-purple { color: var(--purple); }
+  .badge-pink   { color: var(--pink); }
+  .badge-teal   { color: var(--teal); }
+  .badge-yellow { color: var(--orange); }
+
+  .sec-body { padding: 24px; }
+
+  /* ── EX 1: PICTURE VOCAB ── */
+  .pic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .pic-card {
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 16px 10px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+
+  .pic-card:hover:not(.matched) {
+    border-color: var(--purple);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px #7c5cbf22;
+  }
+
+  .pic-card.selected {
+    border-color: var(--purple);
+    background: var(--purple-light);
+  }
+
+  .pic-card.matched {
+    border-color: var(--teal);
+    background: var(--teal-light);
+    cursor: default;
+  }
+
+  .pic-card.wrong-flash {
+    border-color: var(--pink);
+    background: var(--pink-light);
+    animation: wiggle 0.4s ease;
+  }
+
+  @keyframes wiggle {
+    0%,100% { transform: rotate(0); }
+    25%  { transform: rotate(-4deg); }
+    75%  { transform: rotate(4deg); }
+  }
+
+  .pic-emoji { font-size: 2rem; display: block; margin-bottom: 6px; }
+  .pic-word  { font-size: 0.82rem; font-weight: 700; color: var(--text); }
+
+  .word-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+
+  .word-btn {
+    padding: 8px 18px;
+    background: var(--purple-light);
+    border: 2px solid transparent;
+    border-radius: 99px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--purple);
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+
+  .word-btn:hover:not(.wmatched) { border-color: var(--purple); transform: scale(1.05); }
+  .word-btn.wselected { background: var(--purple); color: white; }
+  .word-btn.wmatched  { background: var(--teal-light); color: var(--teal); border-color: var(--teal); cursor: default; }
+  .word-btn.wwrong    { background: var(--pink-light); color: var(--pink); border-color: var(--pink); animation: wiggle 0.4s; }
+
+  .match-msg { font-size: 0.85rem; font-weight: 700; color: var(--muted); margin-top: 8px; min-height: 22px; }
+
+  /* ── EX 2: ABOUT ME ── */
+  .about-list { display: flex; flex-direction: column; gap: 14px; }
+
+  .about-item {
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    transition: border-color 0.2s;
+  }
+
+  .about-item:hover { border-color: var(--pink); }
+
+  .about-icon { font-size: 1.5rem; margin-top: 2px; }
+
+  .about-q {
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+  }
+
+  .about-input {
+    width: 100%;
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .about-input:focus {
+    border-color: var(--pink);
+    box-shadow: 0 0 0 3px var(--pink-light);
+  }
+
+  .about-hint {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 4px;
+    font-weight: 600;
+  }
+
+  .done-btn {
+    margin-top: 6px;
+    padding: 5px 14px;
+    background: transparent;
+    border: 2px solid var(--border);
+    border-radius: 99px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+
+  .done-btn:hover { border-color: var(--pink); color: var(--pink); }
+  .done-btn.done  { background: var(--pink-light); border-color: var(--pink); color: var(--pink); }
+
+  /* ── EX 3: TRUE / FALSE ── */
+  .tf-list { display: flex; flex-direction: column; gap: 14px; }
+
+  .tf-item {
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 18px;
+    transition: border-color 0.2s;
+  }
+
+  .tf-sentence {
+    font-weight: 700;
+    font-size: 0.97rem;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .tf-sentence .ei { font-size: 1.3rem; }
+
+  .tf-options { display: flex; gap: 10px; }
+
+  .tf-btn {
+    padding: 7px 22px;
+    border: 2px solid var(--border);
+    border-radius: 99px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 800;
+    cursor: pointer;
+    background: white;
+    color: var(--text);
+    transition: all 0.18s;
+  }
+
+  .tf-btn:hover:not(:disabled) { transform: scale(1.06); }
+  .tf-btn.correct { background: var(--teal-light); border-color: var(--teal); color: var(--teal); }
+  .tf-btn.wrong   { background: var(--pink-light);  border-color: var(--pink);  color: var(--pink); }
+  .tf-btn:disabled { cursor: default; }
+
+  .tf-fb {
+    margin-top: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .tf-fb.show { opacity: 1; }
+  .tf-fb.ok   { color: var(--teal); }
+  .tf-fb.no   { color: var(--pink); }
+
+  /* ── EX 4: COLOUR THE SENTENCE ── */
+  .colour-intro {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .colour-list { display: flex; flex-direction: column; gap: 14px; }
+
+  .colour-item {
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 18px;
+  }
+
+  .colour-num {
+    font-family: 'Baloo 2', cursive;
+    font-weight: 800;
+    color: var(--orange);
+    font-size: 1rem;
+    margin-bottom: 6px;
+  }
+
+  .colour-q { font-weight: 700; font-size: 0.95rem; margin-bottom: 8px; }
+
+  .colour-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .c-btn {
+    padding: 7px 16px;
+    border: 2px solid var(--border);
+    border-radius: 99px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    background: white;
+    color: var(--text);
+    transition: all 0.18s;
+  }
+
+  .c-btn:hover:not(:disabled) { border-color: var(--orange); color: var(--orange); transform: scale(1.04); }
+  .c-btn.correct { background: var(--teal-light); border-color: var(--teal); color: var(--teal); }
+  .c-btn.wrong   { background: var(--pink-light);  border-color: var(--pink);  color: var(--pink); }
+  .c-btn:disabled { cursor: default; }
+
+  .c-fb { font-size: 0.78rem; font-weight: 700; opacity: 0; margin-top: 6px; transition: opacity 0.3s; }
+  .c-fb.show { opacity: 1; }
+  .c-fb.ok { color: var(--teal); }
+  .c-fb.no { color: var(--pink); }
+
+  /* ── FINAL ── */
+  .final-section {
+    text-align: center;
+    padding: 40px 24px;
+    background: var(--card);
+    border-radius: 24px;
+    border: 2px solid var(--border);
+    box-shadow: 0 4px 24px #7c5cbf14;
+    animation: fadeUp 0.5s 0.4s ease both;
+  }
+
+  .final-section h2 {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--purple);
+    margin-bottom: 8px;
+  }
+
+  .score-big {
+    font-family: 'Baloo 2', cursive;
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: var(--yellow);
+    display: block;
+    line-height: 1;
+    margin: 12px 0;
+    text-shadow: 0 2px 0 #e8a020;
+  }
+
+  .final-btn {
+    margin-top: 12px;
+    padding: 14px 40px;
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    color: white;
+    border: none;
+    border-radius: 99px;
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.1rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 16px #7c5cbf33;
+  }
+
+  .final-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 24px #7c5cbf44; }
+
+  .result-emoji { font-size: 2.5rem; display: none; margin-top: 12px; animation: bounce 1s infinite; }
+  .result-text  { font-size: 1rem; font-weight: 700; color: var(--muted); display: none; margin-top: 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="hero">
+    <span class="hero-emoji">🌟</span>
+    <h1>English is <span>Fun!</span></h1>
+    
+    <div class="stars" id="stars">
+      <div class="star">⭐</div>
+      <div class="star">⭐</div>
+      <div class="star">⭐</div>
+      <div class="star">⭐</div>
+      <div class="star">⭐</div>
+    </div>
+  </div>
+
+  <!-- NAME -->
+  <div class="name-row">
+    <div class="name-field">
+      <label>My name is 👋</label>
+      <input type="text" placeholder="Write your name here...">
+    </div>
+    <div class="name-field">
+      <label>Today is 📅</label>
+      <input type="text" placeholder="e.g. Monday">
+    </div>
+  </div>
+
+  <!-- EX 1: MATCH EMOJI TO WORD -->
+  <div class="section">
+    <div class="sec-head purple">
+      <div class="sec-emoji">🎯</div>
+      <div>
+        <div class="sec-title">Match the picture to the word!</div>
+        <div class="sec-sub">Kliknij obrazek, a potem pasujące słowo</div>
+      </div>
+      <div class="sec-badge badge-purple">Vocabulary</div>
+    </div>
+    <div class="sec-body">
+      <div class="pic-grid" id="picGrid">
+        <div class="pic-card" data-id="cat" onclick="pickPic(this)">
+          <span class="pic-emoji">🐱</span>
+        </div>
+        <div class="pic-card" data-id="dog" onclick="pickPic(this)">
+          <span class="pic-emoji">🐶</span>
+        </div>
+        <div class="pic-card" data-id="book" onclick="pickPic(this)">
+          <span class="pic-emoji">📚</span>
+        </div>
+        <div class="pic-card" data-id="apple" onclick="pickPic(this)">
+          <span class="pic-emoji">🍎</span>
+        </div>
+        <div class="pic-card" data-id="music" onclick="pickPic(this)">
+          <span class="pic-emoji">🎵</span>
+        </div>
+        <div class="pic-card" data-id="sun" onclick="pickPic(this)">
+          <span class="pic-emoji">☀️</span>
+        </div>
+      </div>
+      <div class="word-row" id="wordRow">
+        <button class="word-btn" data-id="music" onclick="pickWord(this)">music</button>
+        <button class="word-btn" data-id="apple" onclick="pickWord(this)">apple</button>
+        <button class="word-btn" data-id="dog" onclick="pickWord(this)">dog</button>
+        <button class="word-btn" data-id="sun" onclick="pickWord(this)">sun</button>
+        <button class="word-btn" data-id="book" onclick="pickWord(this)">book</button>
+        <button class="word-btn" data-id="cat" onclick="pickWord(this)">cat</button>
+      </div>
+      <div class="match-msg" id="matchMsg">👆 Zacznij od kliknięcia obrazka!</div>
+    </div>
+  </div>
+
+  <!-- EX 2: ABOUT ME -->
+  <div class="section">
+    <div class="sec-head pink">
+      <div class="sec-emoji">💬</div>
+      <div>
+        <div class="sec-title">About Me — Tell me!</div>
+        <div class="sec-sub">Odpowiedz na pytania po angielsku (jak umiesz!)</div>
+      </div>
+      <div class="sec-badge badge-pink">Speaking</div>
+    </div>
+    <div class="sec-body">
+      <div class="about-list">
+        <div class="about-item">
+          <div class="about-icon">🙋</div>
+          <div style="flex:1">
+            <div class="about-q">What is your name? How old are you?</div>
+            <input class="about-input" type="text" placeholder='e.g. "My name is... I am ... years old."'>
+            <div class="about-hint">💡 My name is ___ / I am ___ years old</div>
+          </div>
+        </div>
+        <div class="about-item">
+          <div class="about-icon">❤️</div>
+          <div style="flex:1">
+            <div class="about-q">What do you like? (food, animals, hobbies...)</div>
+            <input class="about-input" type="text" placeholder='e.g. "I like pizza and cats!"'>
+            <div class="about-hint">💡 I like ___ / I love ___ / I don't like ___</div>
+          </div>
+        </div>
+        <div class="about-item">
+          <div class="about-icon">🌈</div>
+          <div style="flex:1">
+            <div class="about-q">What is your favourite colour?</div>
+            <input class="about-input" type="text" placeholder='e.g. "My favourite colour is blue!"'>
+            <div class="about-hint">💡 My favourite colour is ___</div>
+          </div>
+        </div>
+        <div class="about-item">
+          <div class="about-icon">🎮</div>
+          <div style="flex:1">
+            <div class="about-q">What do you do after school?</div>
+            <input class="about-input" type="text" placeholder='e.g. "I play games / I watch TV..."'>
+            <div class="about-hint">💡 After school I ___</div>
+            <button class="done-btn" onclick="markDone(this)">✓ All done!</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EX 3: TRUE / FALSE -->
+  <div class="section">
+    <div class="sec-head teal">
+      <div class="sec-emoji">✅</div>
+      <div>
+        <div class="sec-title">True or False?</div>
+        <div class="sec-sub">Prawda czy fałsz? Kliknij właściwą odpowiedź!</div>
+      </div>
+      <div class="sec-badge badge-teal">Grammar</div>
+    </div>
+    <div class="sec-body">
+      <div class="tf-list">
+
+        <div class="tf-item" data-ans="TRUE">
+          <div class="tf-sentence"><span class="ei">🐠</span> A fish lives in water.</div>
+          <div class="tf-options">
+            <button class="tf-btn" data-v="TRUE" onclick="pickTF(this)">✅ TRUE</button>
+            <button class="tf-btn" data-v="FALSE" onclick="pickTF(this)">❌ FALSE</button>
+          </div>
+          <div class="tf-fb"></div>
+        </div>
+
+        <div class="tf-item" data-ans="FALSE">
+          <div class="tf-sentence"><span class="ei">🐘</span> An elephant is small.</div>
+          <div class="tf-options">
+            <button class="tf-btn" data-v="TRUE" onclick="pickTF(this)">✅ TRUE</button>
+            <button class="tf-btn" data-v="FALSE" onclick="pickTF(this)">❌ FALSE</button>
+          </div>
+          <div class="tf-fb"></div>
+        </div>
+
+        <div class="tf-item" data-ans="TRUE">
+          <div class="tf-sentence"><span class="ei">☀️</span> The sun is yellow.</div>
+          <div class="tf-options">
+            <button class="tf-btn" data-v="TRUE" onclick="pickTF(this)">✅ TRUE</button>
+            <button class="tf-btn" data-v="FALSE" onclick="pickTF(this)">❌ FALSE</button>
+          </div>
+          <div class="tf-fb"></div>
+        </div>
+
+        <div class="tf-item" data-ans="FALSE">
+          <div class="tf-sentence"><span class="ei">🍌</span> Bananas are purple.</div>
+          <div class="tf-options">
+            <button class="tf-btn" data-v="TRUE" onclick="pickTF(this)">✅ TRUE</button>
+            <button class="tf-btn" data-v="FALSE" onclick="pickTF(this)">❌ FALSE</button>
+          </div>
+          <div class="tf-fb"></div>
+        </div>
+
+        <div class="tf-item" data-ans="FALSE">
+          <div class="tf-sentence"><span class="ei">🐦</span> Birds cannot fly.</div>
+          <div class="tf-options">
+            <button class="tf-btn" data-v="TRUE" onclick="pickTF(this)">✅ TRUE</button>
+            <button class="tf-btn" data-v="FALSE" onclick="pickTF(this)">❌ FALSE</button>
+          </div>
+          <div class="tf-fb"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- EX 4: CHOOSE THE RIGHT WORD -->
+  <div class="section">
+    <div class="sec-head yellow">
+      <div class="sec-emoji">🧩</div>
+      <div>
+        <div class="sec-title">Choose the right word!</div>
+        <div class="sec-sub">Wybierz pasujące słowo do zdania</div>
+      </div>
+      <div class="sec-badge badge-yellow">Vocabulary</div>
+    </div>
+    <div class="sec-body">
+      <div class="colour-list">
+
+        <div class="colour-item" data-ans="1">
+          <div class="colour-num">1.</div>
+          <div class="colour-q">I ___ to school every day. 🏫</div>
+          <div class="colour-opts">
+            <button class="c-btn" data-v="0" onclick="pickC(this)">goes</button>
+            <button class="c-btn" data-v="1" onclick="pickC(this)">go</button>
+            <button class="c-btn" data-v="0" onclick="pickC(this)">going</button>
+          </div>
+          <div class="c-fb"></div>
+        </div>
+
+        <div class="colour-item" data-ans="1">
+          <div class="colour-num">2.</div>
+          <div class="colour-q">She ___ a cat. It's very fluffy! 🐱</div>
+          <div class="colour-opts">
+            <button class="c-btn" data-v="0" onclick="pickC(this)">have</button>
+            <button class="c-btn" data-v="1" onclick="pickC(this)">has</button>
+            <button class="c-btn" data-v="0" onclick="pickC(this)">having</button>
+          </div>
+          <div class="c-fb"></div>
+        </div>
+
+        <div class="colour-item" data-ans="1">
+          <div class="colour-num">3.</div>
+          <div class="colour-q">___ you like pizza? 🍕</div>
+          <div class="colour-opts">
+            <button class="c-btn" data-v="0" onclick="pickC(this)">Are</button>
+            <button class="c-btn" data-v="1" onclick="pickC(this)">Do</button>
+            <button class="c-btn" data-v="0" onclick="pickC(this)">Is</button>
+          </div>
+          <div class="c-fb"></div>
+        </div>
+
+        <div class="colour-item" data-ans="1">
+          <div class="colour-num">4.</div>
+          <div class="colour-q">There ___ two cats in the garden. 🌿</div>
+          <div class="colour-opts">
+            <button class="c-btn" data-v="0" onclick="pickC(this)">is</button>
+            <button class="c-btn" data-v="1" onclick="pickC(this)">are</button>
+            <button class="c-btn" data-v="0" onclick="pickC(this)">am</button>
+          </div>
+          <div class="c-fb"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- FINAL -->
+  <div class="final-section">
+    <h2>Amazing work! 🎉</h2>
+    <p style="color:var(--muted);font-weight:600;font-size:0.9rem;">Click to see your stars!</p>
+    <span class="score-big" id="scoreBig">?</span>
+    <br>
+    <button class="final-btn" onclick="calcFinal()">✨ See my score!</button>
+    <div class="result-emoji" id="resultEmoji">🎊</div>
+    <div class="result-text"  id="resultText"></div>
+  </div>
+
+</div>
+
+<script>
+  // ── EX 1: MATCH ──
+  let picSel = null, wordSel = null;
+  const picMatched = new Set();
+  window._matchScore = 0;
+
+  function pickPic(el) {
+    if (el.classList.contains('matched')) return;
+    document.querySelectorAll('.pic-card').forEach(c => c.classList.remove('selected'));
+    picSel = el;
+    el.classList.add('selected');
+    tryMatch();
+  }
+
+  function pickWord(el) {
+    if (el.classList.contains('wmatched')) return;
+    document.querySelectorAll('.word-btn').forEach(b => b.classList.remove('wselected'));
+    wordSel = el;
+    el.classList.add('wselected');
+    tryMatch();
+  }
+
+  function tryMatch() {
+    if (!picSel || !wordSel) return;
+    const msg = document.getElementById('matchMsg');
+    if (picSel.dataset.id === wordSel.dataset.id) {
+      picSel.classList.remove('selected');
+      picSel.classList.add('matched');
+      wordSel.classList.remove('wselected');
+      wordSel.classList.add('wmatched');
+      picMatched.add(picSel.dataset.id);
+      window._matchScore = picMatched.size;
+      if (picMatched.size === 6) { msg.textContent = '🎉 Perfect! All matched!'; lightStars(1); }
+      else msg.textContent = `⭐ ${picMatched.size}/6 matched — keep going!`;
+    } else {
+      picSel.classList.add('wrong-flash');
+      wordSel.classList.add('wwrong');
+      setTimeout(() => {
+        picSel.classList.remove('wrong-flash','selected');
+        wordSel.classList.remove('wwrong','wselected');
+        msg.textContent = '😅 Oops! Try again!';
+      }, 500);
+    }
+    picSel = null; wordSel = null;
+  }
+
+  // ── EX 2: ABOUT ME ──
+  let speakDone = false;
+  function markDone(btn) {
+    btn.classList.add('done');
+    btn.textContent = '🌟 Done! Great job!';
+    speakDone = true;
+  }
+
+  // ── EX 3: TRUE/FALSE ──
+  let tfScore = 0;
+  function pickTF(btn) {
+    const item = btn.closest('.tf-item');
+    if (item.dataset.done) return;
+    item.dataset.done = '1';
+    const correct = item.dataset.ans;
+    const isRight = btn.dataset.v === correct;
+    item.querySelectorAll('.tf-btn').forEach(b => {
+      b.disabled = true;
+      if (b.dataset.v === correct) b.classList.add('correct');
+    });
+    if (!isRight) btn.classList.add('wrong');
+    const fb = item.querySelector('.tf-fb');
+    fb.textContent = isRight ? '🌟 Yes! Correct!' : '❌ Not this time — look at the correct answer!';
+    fb.className = 'tf-fb show ' + (isRight ? 'ok' : 'no');
+    if (isRight) tfScore++;
+  }
+
+  // ── EX 4: CHOOSE ──
+  let cScore = 0;
+  function pickC(btn) {
+    const item = btn.closest('.colour-item');
+    if (item.dataset.done) return;
+    item.dataset.done = '1';
+    const correct = parseInt(item.dataset.ans);
+    const isRight = parseInt(btn.dataset.v) === correct;
+    item.querySelectorAll('.c-btn').forEach(b => {
+      b.disabled = true;
+      if (parseInt(b.dataset.v) === correct) b.classList.add('correct');
+    });
+    if (!isRight) btn.classList.add('wrong');
+    const fb = item.querySelector('.c-fb');
+    fb.textContent = isRight ? '⭐ Perfect!' : '❌ Almost! Check the correct answer.';
+    fb.className = 'c-fb show ' + (isRight ? 'ok' : 'no');
+    if (isRight) cScore++;
+  }
+
+  // ── STARS ──
+  function lightStars(n) {
+    const stars = document.querySelectorAll('.star');
+    stars.forEach((s, i) => { if (i < n) s.classList.add('lit'); });
+  }
+
+  // ── FINAL ──
+  function calcFinal() {
+    const m = window._matchScore || picMatched.size;
+    const s = speakDone ? 4 : 0;
+    const t = tfScore;
+    const c = cScore;
+    const total = m + s + t + c;
+    const max = 6 + 4 + 5 + 4; // 19
+
+    const pct = total / max;
+    const starCount = pct >= 0.85 ? 5 : pct >= 0.7 ? 4 : pct >= 0.5 ? 3 : pct >= 0.3 ? 2 : 1;
+
+    document.querySelectorAll('.star').forEach((s, i) => {
+      setTimeout(() => { if (i < starCount) s.classList.add('lit'); }, i * 150);
+    });
+
+    document.getElementById('scoreBig').textContent = '⭐'.repeat(starCount);
+
+    const msgs = ['', 'Keep trying! 💪', 'Good effort! 😊', 'Well done! 👏', 'Great job! 🌟', 'AMAZING! 🎉🎊'];
+    const emojis = ['', '💪', '😊', '👏', '🌟', '🎊'];
+
+    const re = document.getElementById('resultEmoji');
+    const rt = document.getElementById('resultText');
+    re.textContent = emojis[starCount];
+    rt.textContent = msgs[starCount] + ` (${total}/${max} points)`;
+    re.style.display = 'block';
+    rt.style.display = 'block';
+  }
+</script>
+</body>
+</html>

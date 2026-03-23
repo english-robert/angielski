@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karta Pracy – English in the Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&family=Bricolage+Grotesque:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1410;
+    --cream: #f5f0e8;
+    --warm: #e8dfc8;
+    --accent: #c0392b;
+    --gold: #b8960c;
+    --teal: #1a6b6b;
+    --paper: #faf7f2;
+    --shadow: rgba(26,20,16,0.15);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease, background 0.2s;
+    mix-blend-mode: multiply;
+  }
+  .cursor-ring {
+    width: 32px; height: 32px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.35s ease, opacity 0.2s;
+    opacity: 0.5;
+  }
+
+  /* Background texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(26,20,16,0.04) 28px, rgba(26,20,16,0.04) 29px),
+      repeating-linear-gradient(90deg, transparent, transparent 28px, rgba(26,20,16,0.02) 28px, rgba(26,20,16,0.02) 29px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page-wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    padding: 3rem 0 2rem;
+    opacity: 0;
+    transform: translateY(-30px);
+    animation: slideDown 0.9s cubic-bezier(0.16,1,0.3,1) 0.1s forwards;
+  }
+  .header-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 6vw, 3.8rem);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--ink);
+  }
+  .header h1 em {
+    font-style: italic;
+    color: var(--teal);
+  }
+  .header-line {
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--gold));
+    margin: 1.5rem auto;
+    border-radius: 2px;
+  }
+  .header-sub {
+    font-size: 0.9rem;
+    color: #7a6e60;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+  }
+
+  /* Section */
+  .section {
+    margin: 2.5rem 0;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16,1,0.3,1);
+  }
+  .section.visible { opacity: 1; transform: translateY(0); }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1.5px solid var(--warm);
+  }
+  .section-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 400;
+    color: var(--warm);
+    line-height: 1;
+    -webkit-text-stroke: 1.5px var(--ink);
+    min-width: 2.5rem;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .section-subtitle {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  /* Card */
+  .card {
+    background: white;
+    border: 1px solid rgba(26,20,16,0.1);
+    border-radius: 4px;
+    padding: 1.75rem;
+    box-shadow: 3px 3px 0 var(--warm), 0 8px 32px var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px; height: 100%;
+    background: linear-gradient(180deg, var(--accent), var(--gold));
+  }
+
+  /* Match table */
+  .match-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem 2rem;
+  }
+  .match-col-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #999;
+    margin-bottom: 0.75rem;
+  }
+  .match-item {
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--warm);
+    border-radius: 3px;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+    user-select: none;
+  }
+  .match-item:hover {
+    border-color: var(--teal);
+    box-shadow: 2px 2px 0 var(--teal);
+    transform: translate(-1px,-1px);
+  }
+  .match-item.selected {
+    border-color: var(--accent);
+    background: rgba(192,57,43,0.06);
+    box-shadow: 2px 2px 0 var(--accent);
+  }
+  .match-item.matched {
+    border-color: var(--teal);
+    background: rgba(26,107,107,0.07);
+    box-shadow: 2px 2px 0 var(--teal);
+    pointer-events: none;
+  }
+  .match-item.matched::after {
+    content: '✓';
+    position: absolute;
+    right: 0.6rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--teal);
+    font-weight: bold;
+    font-size: 0.8rem;
+    animation: popIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .match-eng { font-weight: 600; font-size: 0.92rem; }
+  .match-pron { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: #999; margin-top: 0.2rem; }
+  .match-pl { font-size: 0.92rem; }
+  .match-feedback {
+    margin-top: 1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--teal);
+    opacity: 0;
+    transition: opacity 0.4s;
+    text-align: center;
+  }
+  .match-feedback.show { opacity: 1; }
+
+  /* Vocabulary */
+  .vocab-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.75rem;
+  }
+  .vocab-card {
+    border: 1px solid var(--warm);
+    border-radius: 3px;
+    padding: 0.85rem 1rem;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    background: white;
+  }
+  .vocab-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--shadow); }
+  .vocab-front { pointer-events: none; }
+  .vocab-eng { font-weight: 600; font-size: 0.95rem; }
+  .vocab-pron { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: #aaa; margin-top: 0.15rem; }
+  .vocab-pl {
+    position: absolute;
+    inset: 0;
+    background: var(--ink);
+    color: var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    opacity: 0;
+    transform: scale(0.92);
+    transition: opacity 0.25s, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    border-radius: 3px;
+    pointer-events: none;
+  }
+  .vocab-card.flipped .vocab-pl { opacity: 1; transform: scale(1); }
+  .vocab-hint {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: #bbb;
+    text-align: right;
+    margin-top: 0.4rem;
+  }
+
+  /* Dialog */
+  .dialog-wrap { display: flex; flex-direction: column; gap: 0.6rem; }
+  .dialog-line {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  .dialog-line.left { flex-direction: row; }
+  .dialog-line.right { flex-direction: row-reverse; }
+  .dialog-line.right .dialog-bubble { background: var(--ink); color: var(--cream); border-radius: 14px 14px 4px 14px; }
+  .dialog-line.right .dialog-bubble .dialog-translation { color: rgba(245,240,232,0.6); }
+  .dialog-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--warm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+  }
+  .dialog-bubble {
+    background: white;
+    border: 1px solid var(--warm);
+    border-radius: 14px 14px 14px 4px;
+    padding: 0.7rem 1rem;
+    max-width: 80%;
+    position: relative;
+  }
+  .dialog-eng { font-size: 0.9rem; font-weight: 400; }
+  .dialog-translation {
+    font-size: 0.75rem;
+    color: #bbb;
+    margin-top: 0.25rem;
+    font-style: italic;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .dialog-translation:hover { color: var(--teal); }
+  .dialog-translation.revealed { color: #999; }
+  .dialog-translation.revealed::before { content: ''; }
+
+  /* Fill gaps */
+  .fill-list { display: flex; flex-direction: column; gap: 0.8rem; }
+  .fill-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    line-height: 1.8;
+    font-size: 0.95rem;
+  }
+  .fill-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    min-width: 1.2rem;
+  }
+  .fill-input {
+    border: none;
+    border-bottom: 2px solid var(--warm);
+    background: transparent;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 0.95rem;
+    color: var(--ink);
+    padding: 0.1rem 0.3rem;
+    outline: none;
+    min-width: 100px;
+    transition: border-color 0.2s;
+    cursor: text;
+  }
+  .fill-input:focus { border-color: var(--teal); }
+  .fill-input.correct { border-color: var(--teal); color: var(--teal); }
+  .fill-input.wrong { border-color: var(--accent); animation: shake 0.4s ease; }
+  .fill-check-btn {
+    margin-top: 1.2rem;
+    background: var(--ink);
+    color: var(--cream);
+    border: none;
+    padding: 0.6rem 1.4rem;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .fill-check-btn:hover { background: var(--teal); transform: translateY(-1px); }
+
+  /* Dog personality */
+  .dog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.75rem; }
+  .dog-word {
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--warm);
+    border-radius: 3px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    position: relative;
+    overflow: hidden;
+  }
+  .dog-word::after {
+    content: attr(data-pl);
+    position: absolute;
+    inset: 0;
+    background: var(--teal);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.88rem;
+    opacity: 0;
+    transition: opacity 0.2s;
+    border-radius: 3px;
+  }
+  .dog-word:hover::after { opacity: 1; }
+  .dog-eng { font-weight: 700; font-size: 1rem; }
+  .dog-pron { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: #aaa; }
+  .dog-desc { font-size: 0.78rem; color: #888; margin-top: 0.3rem; }
+
+  /* Problem solving */
+  .problem-list { display: flex; flex-direction: column; gap: 1rem; }
+  .problem-item {
+    border: 1px solid var(--warm);
+    border-radius: 3px;
+    overflow: hidden;
+    background: white;
+  }
+  .problem-q {
+    padding: 0.85rem 1rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s;
+    user-select: none;
+  }
+  .problem-q:hover { background: var(--warm); }
+  .problem-q .arrow {
+    font-size: 0.7rem;
+    transition: transform 0.3s;
+    color: var(--accent);
+  }
+  .problem-a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.16,1,0.3,1), padding 0.3s;
+    padding: 0 1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    color: var(--teal);
+    background: rgba(26,107,107,0.04);
+    border-top: 0px solid transparent;
+  }
+  .problem-item.open .problem-a {
+    max-height: 100px;
+    padding: 0.85rem 1rem;
+    border-top: 1px solid rgba(26,107,107,0.15);
+  }
+  .problem-item.open .arrow { transform: rotate(90deg); }
+
+  /* Self check */
+  .check-list { display: flex; flex-direction: column; gap: 0.6rem; }
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--warm);
+    border-radius: 3px;
+    cursor: pointer;
+    background: white;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .check-item:hover { border-color: var(--teal); }
+  .check-box {
+    width: 22px; height: 22px;
+    border: 2px solid var(--warm);
+    border-radius: 3px;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem;
+    transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .check-item.done .check-box {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: white;
+    transform: scale(1.1);
+  }
+  .check-item.done { text-decoration: line-through; color: #aaa; }
+
+  /* Scroll progress */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--gold));
+    width: 0%;
+    transition: width 0.1s linear;
+    z-index: 100;
+  }
+
+  /* Confetti particle */
+  .confetti-piece {
+    position: fixed;
+    width: 8px; height: 8px;
+    pointer-events: none;
+    z-index: 9997;
+    border-radius: 1px;
+    animation: confettiFall 1.2s ease-in forwards;
+  }
+
+  /* Floating label */
+  .floating-tag {
+    position: fixed;
+    background: var(--ink);
+    color: var(--cream);
+    padding: 0.3rem 0.6rem;
+    border-radius: 2px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    pointer-events: none;
+    z-index: 9997;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.2s, transform 0.2s;
+  }
+
+  /* Keyframes */
+  @keyframes slideDown {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes popIn {
+    from { transform: translateY(-50%) scale(0); }
+    to { transform: translateY(-50%) scale(1); }
+  }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+  @keyframes confettiFall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(60vh) rotate(720deg); opacity: 0; }
+  }
+  @keyframes pulseRing {
+    0% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 0; }
+  }
+
+  /* Dialog reveal animation */
+  .dialog-line.show {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16,1,0.3,1);
+  }
+  .dialog-line.right.show { transform: translateX(0); }
+
+  /* Decorative denim stitch */
+  .stitch {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 2rem 0 1rem;
+    opacity: 0.3;
+  }
+  .stitch::before, .stitch::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: repeating-linear-gradient(90deg, var(--ink) 0, var(--ink) 5px, transparent 5px, transparent 10px);
+  }
+  .stitch-icon { font-size: 0.7rem; letter-spacing: 0.1em; font-family: 'DM Mono', monospace; }
+
+  @media (max-width: 600px) {
+    .match-grid { grid-template-columns: 1fr; }
+    .page-wrap { padding: 2rem 1.25rem 4rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="progress-bar" id="progressBar"></div>
+<div class="floating-tag" id="floatingTag"></div>
+
+<div class="page-wrap">
+
+  <!-- Header -->
+  <div class="header">
+    <p class="header-eyebrow">Karta Pracy · Lekcja angielskiego</p>
+    <h1>English <em>in the Shop</em></h1>
+    <div class="header-line"></div>
+    <p class="header-sub">Obsługa klienta · Słownictwo · Dialog · Charakter pieska 🐾</p>
+  </div>
+
+  <!-- SECTION 1: MATCHING -->
+  <div class="section" id="s1">
+    <div class="section-header">
+      <span class="section-num">1</span>
+      <div>
+        <div class="section-title">Rozgrzewka — Połącz zwroty</div>
+        <div class="section-subtitle">Quick Review · kliknij zwrot po lewej, potem odpowiednik po prawej</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="match-grid">
+        <div>
+          <p class="match-col-title">Angielski</p>
+          <div class="match-item" data-id="a" data-side="left" onclick="matchClick(this)">
+            <div class="match-eng">Nice to meet you</div>
+            <div class="match-pron">[najs tu miit ju]</div>
+          </div>
+          <div class="match-item" data-id="b" data-side="left" onclick="matchClick(this)">
+            <div class="match-eng">When it comes to me</div>
+            <div class="match-pron">[łen it koms tu mi]</div>
+          </div>
+          <div class="match-item" data-id="c" data-side="left" onclick="matchClick(this)">
+            <div class="match-eng">Do you have anything smaller?</div>
+            <div class="match-pron">[du ju hev enyfing smoler]</div>
+          </div>
+          <div class="match-item" data-id="d" data-side="left" onclick="matchClick(this)">
+            <div class="match-eng">I work at a jeans shop</div>
+            <div class="match-pron">[aj łork at a dżins szop]</div>
+          </div>
+        </div>
+        <div>
+          <p class="match-col-title">Polski</p>
+          <div class="match-item" data-id="b" data-side="right" onclick="matchClick(this)">
+            <div class="match-pl">Jeśli chodzi o mnie...</div>
+          </div>
+          <div class="match-item" data-id="c" data-side="right" onclick="matchClick(this)">
+            <div class="match-pl">Czy masz coś mniejszego?</div>
+          </div>
+          <div class="match-item" data-id="a" data-side="right" onclick="matchClick(this)">
+            <div class="match-pl">Miło cię poznać</div>
+          </div>
+          <div class="match-item" data-id="d" data-side="right" onclick="matchClick(this)">
+            <div class="match-pl">Pracuję w sklepie z dżinsami</div>
+          </div>
+        </div>
+      </div>
+      <div class="match-feedback" id="matchFeedback">🎉 Wszystko poprawnie dopasowane!</div>
+    </div>
+  </div>
+
+  <div class="stitch"><span class="stitch-icon">· · ·</span></div>
+
+  <!-- SECTION 2: VOCABULARY FLIP CARDS -->
+  <div class="section" id="s2">
+    <div class="section-header">
+      <span class="section-num">2</span>
+      <div>
+        <div class="section-title">Słowniczek — W sklepie z dżinsami</div>
+        <div class="section-subtitle">In my shop · kliknij kartę, żeby zobaczyć polskie tłumaczenie</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="vocab-grid">
+        <div class="vocab-card" onclick="flipVocab(this)">
+          <div class="vocab-front">
+            <div class="vocab-eng">Size</div>
+            <div class="vocab-pron">[sajz]</div>
+            <div class="vocab-hint">kliknij →</div>
+          </div>
+          <div class="vocab-pl">Rozmiar</div>
+        </div>
+        <div class="vocab-card" onclick="flipVocab(this)">
+          <div class="vocab-front">
+            <div class="vocab-eng">Fitting room</div>
+            <div class="vocab-pron">[fiting ruum]</div>
+            <div class="vocab-hint">kliknij →</div>
+          </div>
+          <div class="vocab-pl">Przymierzalnia</div>
+        </div>
+        <div class="vocab-card" onclick="flipVocab(this)">
+          <div class="vocab-front">
+            <div class="vocab-eng">Customer</div>
+            <div class="vocab-pron">[kastomer]</div>
+            <div class="vocab-hint">kliknij →</div>
+          </div>
+          <div class="vocab-pl">Klient</div>
+        </div>
+        <div class="vocab-card" onclick="flipVocab(this)">
+          <div class="vocab-front">
+            <div class="vocab-eng">Dark blue</div>
+            <div class="vocab-pron">[dark bluu]</div>
+            <div class="vocab-hint">kliknij →</div>
+          </div>
+          <div class="vocab-pl">Ciemnoniebieski</div>
+        </div>
+        <div class="vocab-card" onclick="flipVocab(this)">
+          <div class="vocab-front">
+            <div class="vocab-eng">Price</div>
+            <div class="vocab-pron">[prajs]</div>
+            <div class="vocab-hint">kliknij →</div>
+          </div>
+          <div class="vocab-pl">Cena</div>
+        </div>
+        <div class="vocab-card" onclick="flipVocab(this)">
+          <div class="vocab-front">
+            <div class="vocab-eng">Discount</div>
+            <div class="vocab-pron">[diskaunt]</div>
+            <div class="vocab-hint">kliknij →</div>
+          </div>
+          <div class="vocab-pl">Zniżka</div>
+        </div>
+        <div class="vocab-card" onclick="flipVocab(this)">
+          <div class="vocab-front">
+            <div class="vocab-eng">High-waisted</div>
+            <div class="vocab-pron">[haj łejstyd]</div>
+            <div class="vocab-hint">kliknij →</div>
+          </div>
+          <div class="vocab-pl">Wysoki stan</div>
+        </div>
+        <div class="vocab-card" onclick="flipVocab(this)">
+          <div class="vocab-front">
+            <div class="vocab-eng">On sale</div>
+            <div class="vocab-pron">[on sejl]</div>
+            <div class="vocab-hint">kliknij →</div>
+          </div>
+          <div class="vocab-pl">Na wyprzedaży</div>
+        </div>
+        <div class="vocab-card" onclick="flipVocab(this)">
+          <div class="vocab-front">
+            <div class="vocab-eng">Refund / Exchange</div>
+            <div class="vocab-pron">[rifand / iksczejndż]</div>
+            <div class="vocab-hint">kliknij →</div>
+          </div>
+          <div class="vocab-pl">Zwrot / Wymiana</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stitch"><span class="stitch-icon">· · ·</span></div>
+
+  <!-- SECTION 3: FILL IN GAPS -->
+  <div class="section" id="s3">
+    <div class="section-header">
+      <span class="section-num">3</span>
+      <div>
+        <div class="section-title">Uzupełnij luki</div>
+        <div class="section-subtitle">Precyzyjna komunikacja · wpisz brakujące słowo</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="fill-list">
+        <div class="fill-item">
+          <span class="fill-num">1.</span>
+          <input class="fill-input" data-answer="when" placeholder="___" style="width:80px">
+          it comes to me, I prefer working with people.
+        </div>
+        <div class="fill-item">
+          <span class="fill-num">2.</span>
+          I
+          <input class="fill-input" data-answer="work" placeholder="___" style="width:75px">
+          at a jeans shop, so I know a lot about fashion.
+        </div>
+        <div class="fill-item">
+          <span class="fill-num">3.</span>
+          Do you have
+          <input class="fill-input" data-answer="anything" placeholder="_______" style="width:110px">
+          smaller? This size is too big.
+        </div>
+        <div class="fill-item">
+          <span class="fill-num">4.</span>
+          I
+          <input class="fill-input" data-answer="know" placeholder="___" style="width:75px">
+          about this product; it is very high quality.
+        </div>
+      </div>
+      <button class="fill-check-btn" onclick="checkFill()">Sprawdź odpowiedzi →</button>
+    </div>
+  </div>
+
+  <div class="stitch"><span class="stitch-icon">· · ·</span></div>
+
+  <!-- SECTION 4: DIALOG -->
+  <div class="section" id="s4">
+    <div class="section-header">
+      <span class="section-num">4</span>
+      <div>
+        <div class="section-title">Scenariusz — Zagraniczny klient</div>
+        <div class="section-subtitle">Roleplay · najedź na tłumaczenie, żeby je zobaczyć</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="dialog-wrap" id="dialogWrap">
+        <div class="dialog-line left" data-delay="0">
+          <div class="dialog-avatar">👩</div>
+          <div class="dialog-bubble">
+            <div class="dialog-eng">Good morning! Are you looking for anything specific today?</div>
+            <div class="dialog-translation" onclick="revealTranslation(this)">[ najedź / kliknij, żeby zobaczyć tłumaczenie ]</div>
+            <div class="dialog-translation revealed" style="display:none">Dzień dobry! Czy szuka pani/pan czegoś konkretnego?</div>
+          </div>
+        </div>
+        <div class="dialog-line right" data-delay="150">
+          <div class="dialog-avatar">🧑</div>
+          <div class="dialog-bubble">
+            <div class="dialog-eng">Hi, I need new jeans, but I'm not sure about the style.</div>
+            <div class="dialog-translation" onclick="revealTranslation(this)">[ najedź / kliknij ]</div>
+            <div class="dialog-translation revealed" style="display:none">Cześć, potrzebuję nowych dżinsów, ale nie jestem pewny/a stylu.</div>
+          </div>
+        </div>
+        <div class="dialog-line left" data-delay="300">
+          <div class="dialog-avatar">👩</div>
+          <div class="dialog-bubble">
+            <div class="dialog-eng">When it comes to our new collection, the high-waisted slim fit is very popular.</div>
+            <div class="dialog-translation" onclick="revealTranslation(this)">[ najedź / kliknij ]</div>
+            <div class="dialog-translation revealed" style="display:none">Jeśli chodzi o naszą kolekcję, wysokostanowe slim fit są bardzo popularne.</div>
+          </div>
+        </div>
+        <div class="dialog-line right" data-delay="450">
+          <div class="dialog-avatar">🧑</div>
+          <div class="dialog-bubble">
+            <div class="dialog-eng">I like them, but do you have this model in dark blue?</div>
+            <div class="dialog-translation" onclick="revealTranslation(this)">[ najedź / kliknij ]</div>
+            <div class="dialog-translation revealed" style="display:none">Podoba mi się, ale czy macie ten model w ciemnoniebieskim?</div>
+          </div>
+        </div>
+        <div class="dialog-line left" data-delay="600">
+          <div class="dialog-avatar">👩</div>
+          <div class="dialog-bubble">
+            <div class="dialog-eng">Let me check. If not, we have a similar pair on sale. Where is the changing room? — It's right there, next to the mirrors.</div>
+            <div class="dialog-translation" onclick="revealTranslation(this)">[ najedź / kliknij ]</div>
+            <div class="dialog-translation revealed" style="display:none">Zaraz sprawdzę. Jeśli nie, mamy podobną parę na wyprzedaży. Przymierzalnia? — Tam, przy lustrach.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stitch"><span class="stitch-icon">· · ·</span></div>
+
+  <!-- SECTION 5: DOG PERSONALITY -->
+  <div class="section" id="s5">
+    <div class="section-header">
+      <span class="section-num">5</span>
+      <div>
+        <div class="section-title">Kącik Kluski — Charakter pieska</div>
+        <div class="section-subtitle">Dog personality · najedź na kartę, żeby zobaczyć po polsku</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="dog-grid">
+        <div class="dog-word" data-pl="Spokojny, bezproblemowy">
+          <div class="dog-eng">Easy-going</div>
+          <div class="dog-pron">[izigouing]</div>
+          <div class="dog-desc">idealny dla leniwych psiaków</div>
+        </div>
+        <div class="dog-word" data-pl="Zadziorny, charakterny">
+          <div class="dog-eng">Feisty</div>
+          <div class="dog-pron">[fajsti]</div>
+          <div class="dog-desc">dobre dla małych psów z dużą osobowością</div>
+        </div>
+        <div class="dog-word" data-pl="Reaktywny (silnie reaguje na bodźce)">
+          <div class="dog-eng">Reactive</div>
+          <div class="dog-pron">[riaktiw]</div>
+          <div class="dog-desc">pies silnie reagujący na otoczenie</div>
+        </div>
+        <div class="dog-word" data-pl="Leniwy">
+          <div class="dog-eng">Lazy</div>
+          <div class="dog-pron">[lejzi]</div>
+          <div class="dog-desc">kanapowy ekspert</div>
+        </div>
+        <div class="dog-word" data-pl="Spokojny (opanowany)">
+          <div class="dog-eng">Calm</div>
+          <div class="dog-pron">[kaam]</div>
+          <div class="dog-desc">zen piesek</div>
+        </div>
+        <div class="dog-word" data-pl="Łobuz, rozrabiaka">
+          <div class="dog-eng">Troublemaker</div>
+          <div class="dog-pron">[trabulmejker]</div>
+          <div class="dog-desc">pies który zawsze coś knouje</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stitch"><span class="stitch-icon">· · ·</span></div>
+
+  <!-- SECTION 6: PROBLEM SOLVING -->
+  <div class="section" id="s6">
+    <div class="section-header">
+      <span class="section-num">6</span>
+      <div>
+        <div class="section-title">Scenariusze problemowe</div>
+        <div class="section-subtitle">Problem Solving · kliknij sytuację, żeby zobaczyć propozycję odpowiedzi</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="problem-list">
+        <div class="problem-item" onclick="toggleProblem(this)">
+          <div class="problem-q">
+            Klient pyta o materiał, którego nie znasz
+            <span class="arrow">▶</span>
+          </div>
+          <div class="problem-a">"Let me check the label for you." — Zaraz sprawdzę metkę.</div>
+        </div>
+        <div class="problem-item" onclick="toggleProblem(this)">
+          <div class="problem-q">
+            Brak rozmiaru S na półce
+            <span class="arrow">▶</span>
+          </div>
+          <div class="problem-a">"I'm sorry, we don't have it in S, but I can check our other store." — Przepraszam, nie mamy S, ale mogę sprawdzić w innym sklepie.</div>
+        </div>
+        <div class="problem-item" onclick="toggleProblem(this)">
+          <div class="problem-q">
+            Klient prosi o Twoją opinię o ubraniu
+            <span class="arrow">▶</span>
+          </div>
+          <div class="problem-a">"I think this color looks awesome on you!" — Myślę, że ten kolor świetnie na Pani/Panu wygląda!</div>
+        </div>
+        <div class="problem-item" onclick="toggleProblem(this)">
+          <div class="problem-q">
+            Klient mówi za szybko i nie rozumiesz
+            <span class="arrow">▶</span>
+          </div>
+          <div class="problem-a">"Could you say that again, please? I want to make sure I understand." — Zamiast "I don't understand" — bardziej profesjonalne!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stitch"><span class="stitch-icon">· · ·</span></div>
+
+  <!-- SECTION 7: SELF CHECK -->
+  <div class="section" id="s7">
+    <div class="section-header">
+      <span class="section-num">7</span>
+      <div>
+        <div class="section-title">Kontrola postępów</div>
+        <div class="section-subtitle">Self-Check · kliknij, żeby oznaczyć jako opanowane ✓</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="check-list" id="checkList">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <span>Potrafię wyjaśnić różnicę między <strong>meet</strong> a <strong>meat</strong> w rozmowie</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <span>Pamiętam jak poprawnie wymówić <strong>Poland</strong>, żeby nie brzmiało jak Holandia</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <span>Umiem zaproponować klientowi "coś mniejszego" po angielsku</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <span>Znam różnicę między <strong>fitting room</strong> a <strong>changing room</strong></span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <span>Potrafię opisać charakter Kluski używając nowych słów</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center; padding: 3rem 0 1rem; opacity: 0.4; font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em;">
+    ENGLISH IN THE SHOP · KARTA PRACY
+  </div>
+
+</div><!-- /page-wrap -->
+
+<script>
+// Custom cursor
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx=0, my=0, rx=0, ry=0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx - 6 + 'px';
+  cursor.style.top = my - 6 + 'px';
+});
+function animRing() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx - 16 + 'px';
+  ring.style.top = ry - 16 + 'px';
+  requestAnimationFrame(animRing);
+}
+animRing();
+
+// Scroll progress
+window.addEventListener('scroll', () => {
+  const p = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+  document.getElementById('progressBar').style.width = p + '%';
+});
+
+// Intersection observer for sections
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('visible');
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.section').forEach(s => obs.observe(s));
+
+// Dialog stagger animation
+const dialogObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const lines = e.target.querySelectorAll('.dialog-line');
+      lines.forEach((l, i) => {
+        setTimeout(() => l.classList.add('show'), parseInt(l.dataset.delay || i * 150));
+      });
+    }
+  });
+}, { threshold: 0.2 });
+const dw = document.getElementById('dialogWrap');
+if (dw) dialogObs.observe(dw);
+
+// Match game
+let selectedLeft = null, matchCount = 0;
+function matchClick(el) {
+  if (el.classList.contains('matched')) return;
+  const side = el.dataset.side;
+  if (side === 'left') {
+    document.querySelectorAll('.match-item[data-side="left"]').forEach(e => e.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedLeft = el;
+  } else if (side === 'right' && selectedLeft) {
+    if (el.dataset.id === selectedLeft.dataset.id) {
+      el.classList.add('matched');
+      selectedLeft.classList.remove('selected');
+      selectedLeft.classList.add('matched');
+      matchCount++;
+      spawnConfetti(el);
+      selectedLeft = null;
+      if (matchCount === 4) {
+        document.getElementById('matchFeedback').classList.add('show');
+      }
+    } else {
+      el.style.animation = 'shake 0.4s ease';
+      selectedLeft.style.animation = 'shake 0.4s ease';
+      setTimeout(() => {
+        el.style.animation = '';
+        selectedLeft.style.animation = '';
+        selectedLeft.classList.remove('selected');
+        selectedLeft = null;
+      }, 400);
+    }
+  }
+}
+
+// Vocabulary flip
+function flipVocab(card) {
+  card.classList.toggle('flipped');
+}
+
+// Dialog translation reveal
+function revealTranslation(el) {
+  const parent = el.parentElement;
+  const hidden = parent.querySelector('.revealed');
+  if (hidden) {
+    el.style.display = 'none';
+    hidden.style.display = 'block';
+  }
+}
+
+// Problem toggle
+function toggleProblem(item) {
+  item.classList.toggle('open');
+}
+
+// Self check
+let doneCount = 0;
+function toggleCheck(item) {
+  item.classList.toggle('done');
+  const box = item.querySelector('.check-box');
+  if (item.classList.contains('done')) {
+    box.textContent = '✓';
+    doneCount++;
+    if (doneCount === 5) {
+      setTimeout(() => { for(let i=0;i<30;i++) spawnConfettiRandom(); }, 100);
+    }
+  } else {
+    box.textContent = '';
+    doneCount--;
+  }
+}
+
+// Fill in gaps
+function checkFill() {
+  let allOk = true;
+  document.querySelectorAll('.fill-input').forEach(inp => {
+    inp.classList.remove('correct','wrong');
+    const val = inp.value.trim().toLowerCase();
+    const ans = inp.dataset.answer.toLowerCase();
+    if (val === ans) {
+      inp.classList.add('correct');
+    } else {
+      inp.classList.add('wrong');
+      allOk = false;
+    }
+    inp.addEventListener('animationend', () => inp.classList.remove('wrong'), { once: true });
+  });
+  if (allOk) {
+    for (let i = 0; i < 20; i++) spawnConfettiRandom();
+  }
+}
+
+// Confetti
+const colors = ['#c0392b','#b8960c','#1a6b6b','#e8dfc8','#1a1410'];
+function spawnConfetti(origin) {
+  const rect = origin.getBoundingClientRect();
+  for (let i = 0; i < 8; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    p.style.left = (rect.left + rect.width/2 + (Math.random()-0.5)*40) + 'px';
+    p.style.top = (rect.top + Math.random()*20) + 'px';
+    p.style.background = colors[Math.floor(Math.random()*colors.length)];
+    p.style.transform = `rotate(${Math.random()*360}deg)`;
+    p.style.animationDelay = Math.random()*0.2 + 's';
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 1500);
+  }
+}
+function spawnConfettiRandom() {
+  const p = document.createElement('div');
+  p.className = 'confetti-piece';
+  p.style.left = Math.random()*100 + 'vw';
+  p.style.top = '-10px';
+  p.style.background = colors[Math.floor(Math.random()*colors.length)];
+  p.style.width = (6+Math.random()*8)+'px';
+  p.style.height = (6+Math.random()*8)+'px';
+  p.style.animationDelay = Math.random()*0.6 + 's';
+  document.body.appendChild(p);
+  setTimeout(() => p.remove(), 2000);
+}
+</script>
+</body>
+</html>

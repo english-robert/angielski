@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Quest — Trial Lesson</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: #1e2d47;
+    --neon: #00f5c4;
+    --neon2: #f5c800;
+    --neon3: #f5004a;
+    --neon4: #a855f7;
+    --text: #e8f0ff;
+    --muted: #4a5a7a;
+    --correct: #00f5c4;
+    --wrong: #f5004a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 600;
+    min-height: 100vh;
+    padding: 40px 16px 100px;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  /* Glow blobs */
+  body::after {
+    content: '';
+    position: fixed;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, #00f5c420, transparent 60%);
+    top: -150px; left: -150px;
+    pointer-events: none;
+  }
+
+  .glow2 {
+    position: fixed;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, #a855f720, transparent 60%);
+    bottom: -100px; right: -100px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap { max-width: 820px; margin: 0 auto; position: relative; z-index: 1; }
+
+  /* ── HERO ── */
+  .hero {
+    text-align: center;
+    margin-bottom: 52px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero-top {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.6rem;
+    color: var(--neon);
+    letter-spacing: 0.2em;
+    margin-bottom: 16px;
+    animation: blink 1.4s step-end infinite;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  .hero h1 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    line-height: 1.4;
+    color: var(--text);
+  }
+
+  .hero h1 .hl1 { color: var(--neon); text-shadow: 0 0 20px #00f5c460; }
+  .hero h1 .hl2 { color: var(--neon2); text-shadow: 0 0 20px #f5c80060; }
+
+  .hero-sub {
+    margin-top: 16px;
+    font-size: 0.9rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  /* HP bar */
+  .hp-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  .hp-label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.55rem;
+    color: var(--neon3);
+  }
+
+  .hp-track {
+    width: 200px;
+    height: 14px;
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .hp-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--neon3), var(--neon2));
+    width: 0%;
+    transition: width 0.6s ease;
+    box-shadow: 0 0 8px #f5c80060;
+  }
+
+  .hp-num {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.55rem;
+    color: var(--neon2);
+    min-width: 60px;
+  }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(20px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  /* NAME ROW */
+  .name-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .name-field { display:flex; flex-direction:column; gap:6px; flex:1; min-width:160px; }
+
+  .name-field label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.5rem;
+    color: var(--neon);
+    letter-spacing: 0.1em;
+  }
+
+  .name-field input {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .name-field input:focus {
+    border-color: var(--neon);
+    box-shadow: 0 0 12px #00f5c430;
+  }
+
+  .name-field input::placeholder { color: var(--muted); }
+
+  /* ── SECTION ── */
+  .section {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 28px;
+    animation: fadeUp 0.5s ease both;
+    position: relative;
+  }
+
+  .section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .section.s1::before { background: linear-gradient(90deg, var(--neon), transparent); }
+  .section.s2::before { background: linear-gradient(90deg, var(--neon2), transparent); }
+  .section.s3::before { background: linear-gradient(90deg, var(--neon3), transparent); }
+  .section.s4::before { background: linear-gradient(90deg, var(--neon4), transparent); }
+
+  .section:nth-child(1) { animation-delay: 0.15s; }
+  .section:nth-child(2) { animation-delay: 0.22s; }
+  .section:nth-child(3) { animation-delay: 0.29s; }
+  .section:nth-child(4) { animation-delay: 0.36s; }
+
+  .sec-head {
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-bottom: 2px solid var(--border);
+    background: var(--surface2);
+  }
+
+  .sec-level {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.65rem;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 2px solid;
+    white-space: nowrap;
+  }
+
+  .lv1 { color: var(--neon);  border-color: var(--neon);  background: #00f5c410; }
+  .lv2 { color: var(--neon2); border-color: var(--neon2); background: #f5c80010; }
+  .lv3 { color: var(--neon3); border-color: var(--neon3); background: #f5004a10; }
+  .lv4 { color: var(--neon4); border-color: var(--neon4); background: #a855f710; }
+
+  .sec-info { flex: 1; }
+
+  .sec-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.65rem;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  .sec-sub {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .sec-pts {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.5rem;
+    color: var(--neon2);
+  }
+
+  .sec-body { padding: 24px; }
+
+  /* ── EX 1: EMOJI MATCH ── */
+  .match-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media(max-width:520px) { .match-wrap { grid-template-columns:1fr; } }
+
+  .match-col { display:flex; flex-direction:column; gap:8px; }
+
+  .col-hd {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.45rem;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    margin-bottom: 4px;
+  }
+
+  .mc {
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: all 0.18s;
+    font-size: 0.92rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    user-select: none;
+  }
+
+  .mc:hover:not(.mmatched):not(.mwrong) {
+    border-color: var(--neon);
+    box-shadow: 0 0 10px #00f5c428;
+  }
+
+  .mc.mselected { border-color: var(--neon); background: #00f5c410; color: var(--neon); }
+  .mc.mmatched  { border-color: var(--correct); background: #00f5c410; color: var(--correct); cursor:default; }
+  .mc.mwrong    { border-color: var(--wrong); background: #f5004a10; animation: shake 0.3s; }
+
+  @keyframes shake {
+    0%,100%{transform:translateX(0)}
+    25%{transform:translateX(-6px)}
+    75%{transform:translateX(6px)}
+  }
+
+  .match-status {
+    margin-top: 12px;
+    font-size: 0.82rem;
+    color: var(--muted);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.5rem;
+    line-height: 1.8;
+  }
+
+  /* ── EX 2: FILL ── */
+  .word-bank {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 14px 16px;
+    background: var(--bg);
+    border: 2px dashed var(--border);
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+
+  .chip {
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 14px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--neon2);
+  }
+
+  .fill-list { display:flex; flex-direction:column; gap:16px; }
+
+  .fill-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 0.95rem;
+    line-height: 2;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+  }
+
+  .fill-n {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.6rem;
+    color: var(--neon2);
+    min-width: 20px;
+  }
+
+  .fill-inp {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid var(--border);
+    padding: 2px 8px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+    outline: none;
+    width: 100px;
+    text-align: center;
+    transition: all 0.2s;
+    border-radius: 4px 4px 0 0;
+  }
+
+  .fill-inp:focus { border-bottom-color: var(--neon2); box-shadow: 0 2px 0 var(--neon2); }
+  .fill-inp.ok  { border-bottom-color: var(--correct); background: #00f5c414; color: var(--correct); }
+  .fill-inp.err { border-bottom-color: var(--wrong);   background: #f5004a14; color: var(--wrong); }
+
+  /* ── EX 3: MCQ ── */
+  .mcq-list { display:flex; flex-direction:column; gap:20px; }
+
+  .mcq-item { }
+
+  .mcq-q {
+    font-size: 0.97rem;
+    margin-bottom: 10px;
+    line-height: 1.6;
+    display: flex;
+    gap: 8px;
+  }
+
+  .mcq-num {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.55rem;
+    color: var(--neon3);
+    padding-top: 4px;
+    min-width: 18px;
+  }
+
+  .mcq-opts { display:flex; flex-wrap:wrap; gap:8px; margin-left: 26px; }
+
+  .mbtn {
+    padding: 8px 18px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+
+  .mbtn:hover:not(:disabled) {
+    border-color: var(--neon3);
+    color: var(--neon3);
+    box-shadow: 0 0 8px #f5004a28;
+  }
+
+  .mbtn.correct { border-color: var(--correct); background: #00f5c414; color: var(--correct); font-weight: 700; }
+  .mbtn.wrong   { border-color: var(--wrong);   background: #f5004a14; color: var(--wrong); }
+  .mbtn:disabled { cursor:default; }
+
+  .mcq-fb {
+    margin-top: 6px;
+    margin-left: 26px;
+    font-size: 0.78rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.45rem;
+    line-height: 1.8;
+  }
+
+  .mcq-fb.show { opacity:1; }
+  .mcq-fb.ok   { color: var(--correct); }
+  .mcq-fb.no   { color: var(--wrong); }
+
+  /* ── EX 4: SPEAKING ── */
+  .speak-list { display:flex; flex-direction:column; gap:14px; }
+
+  .speak-card {
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    transition: border-color 0.2s;
+    cursor: default;
+  }
+
+  .speak-card:hover { border-color: var(--neon4); }
+
+  .speak-icon {
+    font-size: 1.5rem;
+    margin-top: 2px;
+  }
+
+  .speak-q {
+    font-size: 0.97rem;
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  .speak-hint {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 5px;
+    font-style: italic;
+  }
+
+  .done-btn {
+    margin-top: 8px;
+    padding: 5px 14px;
+    background: transparent;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.4rem;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.18s;
+    letter-spacing: 0.05em;
+  }
+
+  .done-btn:hover { border-color: var(--neon4); color: var(--neon4); box-shadow: 0 0 8px #a855f728; }
+  .done-btn.done  { border-color: var(--neon4); color: var(--neon4); background: #a855f714; }
+
+  /* CHECK BTN */
+  .check-btn {
+    margin-top: 20px;
+    padding: 11px 28px;
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.5rem;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.18s;
+    letter-spacing: 0.05em;
+  }
+
+  .check-btn:hover { border-color: var(--neon2); color: var(--neon2); box-shadow: 0 0 10px #f5c80028; }
+
+  .sec-result {
+    margin-top: 10px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.45rem;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  /* ── FINAL ── */
+  .final {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 40px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.5s 0.45s ease both;
+  }
+
+  .final::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, #00f5c410, transparent 60%);
+    pointer-events: none;
+  }
+
+  .final h2 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(0.8rem, 2.5vw, 1.1rem);
+    color: var(--neon2);
+    text-shadow: 0 0 20px #f5c80060;
+    margin-bottom: 8px;
+  }
+
+  .final-score {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(1.8rem, 5vw, 3rem);
+    color: var(--neon);
+    text-shadow: 0 0 30px #00f5c460;
+    display: block;
+    margin: 16px 0;
+    letter-spacing: 0.05em;
+  }
+
+  .final-btn {
+    padding: 14px 36px;
+    background: transparent;
+    border: 3px solid var(--neon);
+    border-radius: 8px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.6rem;
+    color: var(--neon);
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.08em;
+    box-shadow: 0 0 16px #00f5c428;
+  }
+
+  .final-btn:hover {
+    background: var(--neon);
+    color: var(--bg);
+    box-shadow: 0 0 30px #00f5c460;
+    transform: translateY(-2px);
+  }
+
+  .result-msg {
+    display: none;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.55rem;
+    color: var(--neon4);
+    margin-top: 14px;
+    line-height: 2;
+    text-shadow: 0 0 12px #a855f760;
+  }
+</style>
+</head>
+<body>
+<div class="glow2"></div>
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-top">▶ PRESS START — ENGLISH QUEST</div>
+    <h1><span class="hl1">LEVEL UP</span><br>YOUR <span class="hl2">ENGLISH</span></h1>
+    <p class="hero-sub">Trial Lesson · Beginner · Let's go! 🚀</p>
+    <div class="hp-row">
+      <div class="hp-label">XP</div>
+      <div class="hp-track"><div class="hp-fill" id="hpFill"></div></div>
+      <div class="hp-num" id="hpNum">0 / 100</div>
+    </div>
+  </div>
+
+  <!-- NAME -->
+  <div class="name-row">
+    <div class="name-field">
+      <label>Player Name</label>
+      <input type="text" placeholder="Enter your name...">
+    </div>
+    <div class="name-field">
+      <label>Today's Date</label>
+      <input type="text" placeholder="e.g. Monday, March 16">
+    </div>
+  </div>
+
+  <!-- EX 1 -->
+  <div class="section s1">
+    <div class="sec-head">
+      <div class="sec-level lv1">LVL 1</div>
+      <div class="sec-info">
+        <div class="sec-title">MATCH THE WORDS</div>
+        <div class="sec-sub">Połącz angielskie słowo z polskim znaczeniem</div>
+      </div>
+      <div class="sec-pts">+25 XP</div>
+    </div>
+    <div class="sec-body">
+      <div class="match-wrap">
+        <div class="match-col">
+          <div class="col-hd">ENGLISH</div>
+          <div class="mc" data-id="house" onclick="pickL(this)">🏠 house</div>
+          <div class="mc" data-id="school" onclick="pickL(this)">🏫 school</div>
+          <div class="mc" data-id="friend" onclick="pickL(this)">👫 friend</div>
+          <div class="mc" data-id="food" onclick="pickL(this)">🍕 food</div>
+          <div class="mc" data-id="game" onclick="pickL(this)">🎮 game</div>
+        </div>
+        <div class="match-col">
+          <div class="col-hd">POLSKI</div>
+          <div class="mc" data-id="game" onclick="pickR(this)">gra</div>
+          <div class="mc" data-id="house" onclick="pickR(this)">dom</div>
+          <div class="mc" data-id="food" onclick="pickR(this)">jedzenie</div>
+          <div class="mc" data-id="school" onclick="pickR(this)">szkoła</div>
+          <div class="mc" data-id="friend" onclick="pickR(this)">przyjaciel</div>
+        </div>
+      </div>
+      <div class="match-status" id="matchStatus">▶ CLICK AN ENGLISH WORD FIRST!</div>
+    </div>
+  </div>
+
+  <!-- EX 2 -->
+  <div class="section s2">
+    <div class="sec-head">
+      <div class="sec-level lv2">LVL 2</div>
+      <div class="sec-info">
+        <div class="sec-title">FILL THE GAPS</div>
+        <div class="sec-sub">Uzupełnij zdania właściwym słowem</div>
+      </div>
+      <div class="sec-pts">+25 XP</div>
+    </div>
+    <div class="sec-body">
+      <div class="word-bank">
+        <span class="chip">am</span>
+        <span class="chip">have</span>
+        <span class="chip">like</span>
+        <span class="chip">is</span>
+        <span class="chip">play</span>
+      </div>
+      <div class="fill-list" id="fillList">
+        <div class="fill-row" data-ans="am">
+          <span class="fill-n">01</span>
+          <span>I</span>
+          <input class="fill-inp" type="text" placeholder="???">
+          <span>a student.</span>
+        </div>
+        <div class="fill-row" data-ans="like">
+          <span class="fill-n">02</span>
+          <span>I</span>
+          <input class="fill-inp" type="text" placeholder="???">
+          <span>pizza and football! ⚽🍕</span>
+        </div>
+        <div class="fill-row" data-ans="have">
+          <span class="fill-n">03</span>
+          <span>I</span>
+          <input class="fill-inp" type="text" placeholder="???">
+          <span>a dog at home. 🐶</span>
+        </div>
+        <div class="fill-row" data-ans="is">
+          <span class="fill-n">04</span>
+          <span>London</span>
+          <input class="fill-inp" type="text" placeholder="???">
+          <span>in England. 🇬🇧</span>
+        </div>
+        <div class="fill-row" data-ans="play">
+          <span class="fill-n">05</span>
+          <span>Every day I</span>
+          <input class="fill-inp" type="text" placeholder="???">
+          <span>video games. 🎮</span>
+        </div>
+      </div>
+      <button class="check-btn" onclick="checkFill()">▶ CHECK ANSWERS</button>
+      <div class="sec-result" id="fillResult"></div>
+    </div>
+  </div>
+
+  <!-- EX 3 -->
+  <div class="section s3">
+    <div class="sec-head">
+      <div class="sec-level lv3">LVL 3</div>
+      <div class="sec-info">
+        <div class="sec-title">CHOOSE THE ANSWER</div>
+        <div class="sec-sub">Wybierz poprawną odpowiedź</div>
+      </div>
+      <div class="sec-pts">+25 XP</div>
+    </div>
+    <div class="sec-body">
+      <div class="mcq-list">
+
+        <div class="mcq-item" data-ans="1">
+          <div class="mcq-q"><span class="mcq-num">Q1</span>What colour is a banana? 🍌</div>
+          <div class="mcq-opts">
+            <button class="mbtn" data-v="0" onclick="pickMCQ(this)">blue</button>
+            <button class="mbtn" data-v="1" onclick="pickMCQ(this)">yellow</button>
+            <button class="mbtn" data-v="0" onclick="pickMCQ(this)">red</button>
+          </div>
+          <div class="mcq-fb"></div>
+        </div>
+
+        <div class="mcq-item" data-ans="1">
+          <div class="mcq-q"><span class="mcq-num">Q2</span>How do you say "kot" in English? 🐱</div>
+          <div class="mcq-opts">
+            <button class="mbtn" data-v="0" onclick="pickMCQ(this)">dog</button>
+            <button class="mbtn" data-v="1" onclick="pickMCQ(this)">cat</button>
+            <button class="mbtn" data-v="0" onclick="pickMCQ(this)">bird</button>
+          </div>
+          <div class="mcq-fb"></div>
+        </div>
+
+        <div class="mcq-item" data-ans="1">
+          <div class="mcq-q"><span class="mcq-num">Q3</span>Which sentence is correct?</div>
+          <div class="mcq-opts">
+            <button class="mbtn" data-v="0" onclick="pickMCQ(this)">I has a sister.</button>
+            <button class="mbtn" data-v="1" onclick="pickMCQ(this)">I have a sister.</button>
+            <button class="mbtn" data-v="0" onclick="pickMCQ(this)">I am a sister.</button>
+          </div>
+          <div class="mcq-fb"></div>
+        </div>
+
+        <div class="mcq-item" data-ans="1">
+          <div class="mcq-q"><span class="mcq-num">Q4</span>What does "How old are you?" mean? 🎂</div>
+          <div class="mcq-opts">
+            <button class="mbtn" data-v="0" onclick="pickMCQ(this)">Jak masz na imię?</button>
+            <button class="mbtn" data-v="1" onclick="pickMCQ(this)">Ile masz lat?</button>
+            <button class="mbtn" data-v="0" onclick="pickMCQ(this)">Skąd jesteś?</button>
+          </div>
+          <div class="mcq-fb"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- EX 4 -->
+  <div class="section s4">
+    <div class="sec-head">
+      <div class="sec-level lv4">LVL 4</div>
+      <div class="sec-info">
+        <div class="sec-title">SPEAKING MISSION</div>
+        <div class="sec-sub">Odpowiedz ustnie po angielsku!</div>
+      </div>
+      <div class="sec-pts">+25 XP</div>
+    </div>
+    <div class="sec-body">
+      <div class="speak-list">
+        <div class="speak-card">
+          <div class="speak-icon">🙋</div>
+          <div>
+            <div class="speak-q">What is your name? How old are you?</div>
+            <div class="speak-hint">💡 My name is... / I am ... years old.</div>
+            <button class="done-btn" onclick="markSpeak(this)">✓ DONE</button>
+          </div>
+        </div>
+        <div class="speak-card">
+          <div class="speak-icon">❤️</div>
+          <div>
+            <div class="speak-q">What do you like? (food, sport, games, music...)</div>
+            <div class="speak-hint">💡 I like... / I love... / I don't like...</div>
+            <button class="done-btn" onclick="markSpeak(this)">✓ DONE</button>
+          </div>
+        </div>
+        <div class="speak-card">
+          <div class="speak-icon">🌍</div>
+          <div>
+            <div class="speak-q">Can you name 5 countries in English?</div>
+            <div class="speak-hint">💡 Poland, England, Germany, France, Spain...</div>
+            <button class="done-btn" onclick="markSpeak(this)">✓ DONE</button>
+          </div>
+        </div>
+      </div>
+      <div class="sec-result" id="speakResult"></div>
+    </div>
+  </div>
+
+  <!-- FINAL -->
+  <div class="final">
+    <h2>▶ GAME COMPLETE!</h2>
+    <span class="final-score" id="finalScore">???</span>
+    <button class="final-btn" onclick="calcFinal()">▶ CALCULATE SCORE</button>
+    <div class="result-msg" id="resultMsg"></div>
+  </div>
+
+</div>
+
+<script>
+  // ── EX 1: MATCH ──
+  let lSel = null, rSel = null;
+  const matched = new Set();
+  window._m = 0;
+
+  function pickL(el) {
+    if (el.classList.contains('mmatched')) return;
+    document.querySelectorAll('.match-col:first-child .mc').forEach(c => c.classList.remove('mselected'));
+    lSel = el; el.classList.add('mselected');
+    tryM();
+  }
+
+  function pickR(el) {
+    if (el.classList.contains('mmatched')) return;
+    rSel = el; tryM();
+  }
+
+  function tryM() {
+    if (!lSel || !rSel) return;
+    const st = document.getElementById('matchStatus');
+    if (lSel.dataset.id === rSel.dataset.id) {
+      lSel.classList.remove('mselected'); lSel.classList.add('mmatched');
+      rSel.classList.add('mmatched');
+      matched.add(lSel.dataset.id);
+      window._m = matched.size;
+      st.textContent = matched.size === 5 ? '★ PERFECT! ALL MATCHED! ★' : `▶ ${matched.size}/5 MATCHED — KEEP GOING!`;
+      updateXP();
+    } else {
+      lSel.classList.add('mwrong'); rSel.classList.add('mwrong');
+      st.textContent = '✗ WRONG! TRY AGAIN!';
+      setTimeout(() => {
+        lSel.classList.remove('mwrong','mselected');
+        rSel.classList.remove('mwrong');
+      }, 500);
+    }
+    lSel = null; rSel = null;
+  }
+
+  // ── EX 2: FILL ──
+  window._f = 0;
+  function checkFill() {
+    let s = 0;
+    document.querySelectorAll('#fillList .fill-row').forEach(row => {
+      const ans = row.dataset.ans;
+      const inp = row.querySelector('.fill-inp');
+      const val = inp.value.trim().toLowerCase();
+      inp.classList.remove('ok','err');
+      if (val === ans) { inp.classList.add('ok'); s++; }
+      else { inp.classList.add('err'); inp.value = ans; }
+    });
+    window._f = s;
+    document.getElementById('fillResult').textContent = `SCORE: ${s}/5`;
+    updateXP();
+  }
+
+  // ── EX 3: MCQ ──
+  let mcqS = {};
+  function pickMCQ(btn) {
+    const item = btn.closest('.mcq-item');
+    if (item.dataset.done) return;
+    item.dataset.done = '1';
+    const c = parseInt(item.dataset.ans);
+    const ok = parseInt(btn.dataset.v) === c;
+    item.querySelectorAll('.mbtn').forEach(b => {
+      b.disabled = true;
+      if (parseInt(b.dataset.v) === c) b.classList.add('correct');
+    });
+    if (!ok) btn.classList.add('wrong');
+    const fb = item.querySelector('.mcq-fb');
+    fb.textContent = ok ? '★ CORRECT! +XP' : '✗ WRONG — CHECK THE ANSWER!';
+    fb.className = 'mcq-fb show ' + (ok ? 'ok' : 'no');
+    const idx = [...document.querySelectorAll('.mcq-item')].indexOf(item);
+    mcqS[idx] = ok ? 1 : 0;
+    updateXP();
+  }
+
+  // ── EX 4: SPEAKING ──
+  let spokenCount = 0;
+  function markSpeak(btn) {
+    if (btn.classList.contains('done')) return;
+    btn.classList.add('done'); btn.textContent = '★ DONE!';
+    spokenCount++;
+    document.getElementById('speakResult').textContent = `MISSIONS COMPLETE: ${spokenCount}/3`;
+    updateXP();
+  }
+
+  // ── XP BAR ──
+  function updateXP() {
+    const m = (window._m || matched.size) * 5;
+    const f = (window._f || 0) * 5;
+    const q = Object.values(mcqS).reduce((a,b)=>a+b,0) * 6;
+    const s = spokenCount * 8;
+    const total = m + f + q + s;
+    const pct = Math.min((total / 100) * 100, 100);
+    document.getElementById('hpFill').style.width = pct + '%';
+    document.getElementById('hpNum').textContent = `${Math.round(total)} / 100`;
+  }
+
+  // ── FINAL ──
+  function calcFinal() {
+    const m = (window._m || matched.size);
+    const f = (window._f || 0);
+    const q = Object.values(mcqS).reduce((a,b)=>a+b,0);
+    const s = spokenCount;
+    const total = m + f + q + s;
+    const max = 5 + 5 + 4 + 3;
+
+    document.getElementById('finalScore').textContent = `${total} / ${max} PTS`;
+
+    const pct = total / max;
+    const msgs = [
+      ['KEEP TRAINING! 💪', 'YOU ARE BRAVE FOR TRYING!'],
+      ['GOOD JOB! 👾', 'LEVEL UP INCOMING!'],
+      ['GREAT WORK! ⭐', 'YOU ARE GETTING STRONGER!'],
+      ['EXCELLENT! 🏆', 'ENGLISH HERO UNLOCKED!'],
+    ];
+    const tier = pct >= 0.85 ? 3 : pct >= 0.65 ? 2 : pct >= 0.4 ? 1 : 0;
+    const rm = document.getElementById('resultMsg');
+    rm.innerHTML = msgs[tier].join('<br>');
+    rm.style.display = 'block';
+
+    document.getElementById('hpFill').style.width = '100%';
+    document.getElementById('hpNum').textContent = `${Math.round(pct*100)} / 100`;
+  }
+</script>
+</body>
+</html>
