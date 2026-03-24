@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Practice A1/A2: My First Steps!</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F5FAF8;
+  --card: #FFFFFF;
+  --surface: #EDF5F2;
+
+  --mint: #0D9373;
+  --mint-bg: #E2F5EF;
+  --blue: #2563EB;
+  --blue-bg: #E8F0FE;
+  --pink: #DB2777;
+  --pink-bg: #FCE7F3;
+  --orange: #D97706;
+  --orange-bg: #FEF3E2;
+  --teal: #0891B2;
+  --teal-bg: #E0F7FA;
+
+  --green: #0D9668;
+  --green-bg: #DCFCE7;
+  --red: #DC2626;
+  --red-bg: #FEF2F2;
+
+  --text: #1A2E28;
+  --text-mid: #4A6358;
+  --text-dim: #8DA49A;
+
+  --radius: 24px;
+  --radius-sm: 16px;
+  --font-display: 'Outfit', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{font-size:18px}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);line-height:1.8;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* ═══ BACKGROUND ═══ */
+.bg-soft{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bg-soft .blob{position:absolute;border-radius:50%;filter:blur(110px);animation:blobDrift 35s ease-in-out infinite alternate}
+.bg-soft .blob:nth-child(1){width:550px;height:550px;background:linear-gradient(135deg,#6EE7B7,#34D399);opacity:.18;top:-8%;left:-5%}
+.bg-soft .blob:nth-child(2){width:480px;height:480px;background:linear-gradient(135deg,#93C5FD,#60A5FA);opacity:.14;top:30%;right:-8%;animation-delay:-12s}
+.bg-soft .blob:nth-child(3){width:420px;height:420px;background:linear-gradient(135deg,#F9A8D4,#F472B6);opacity:.12;bottom:-5%;left:20%;animation-delay:-20s}
+@keyframes blobDrift{0%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-30px) scale(1.05)}66%{transform:translate(-20px,40px) scale(.97)}100%{transform:translate(15px,-15px) scale(1.02)}}
+.bg-soft::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(0,0,0,.018) 1px,transparent 1px);background-size:30px 30px}
+
+/* ═══ FLOATING EMOJI ═══ */
+.emoji-float{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.emoji-float span{position:absolute;font-size:24px;animation:emojiRise 28s linear infinite;opacity:0}
+.emoji-float span:nth-child(1){left:6%;animation-delay:0s}
+.emoji-float span:nth-child(2){left:18%;animation-delay:4s}
+.emoji-float span:nth-child(3){left:32%;animation-delay:8s}
+.emoji-float span:nth-child(4){left:46%;animation-delay:12s}
+.emoji-float span:nth-child(5){left:60%;animation-delay:16s}
+.emoji-float span:nth-child(6){left:74%;animation-delay:20s}
+.emoji-float span:nth-child(7){left:88%;animation-delay:3s}
+.emoji-float span:nth-child(8){left:52%;animation-delay:10s;font-size:20px}
+@keyframes emojiRise{0%{transform:translateY(105vh) rotate(0deg);opacity:0}4%{opacity:.4}50%{opacity:.25}100%{transform:translateY(-10vh) rotate(360deg);opacity:0}}
+
+.container{max-width:860px;margin:0 auto;padding:2.8rem 1.5rem 5rem;position:relative;z-index:1}
+
+/* ═══ HERO ═══ */
+.hero{text-align:center;margin-bottom:3rem;opacity:0;transform:translateY(24px);animation:fadeUp .8s .15s cubic-bezier(.22,1,.36,1) forwards}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+
+.hero-emoji{font-size:3.2rem;margin-bottom:1rem;display:block;animation:slowLevitate 5s ease-in-out infinite}
+@keyframes slowLevitate{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+.hero-badge{display:inline-flex;align-items:center;gap:.4rem;background:linear-gradient(135deg,var(--mint),var(--teal));color:white;padding:.35rem 1.1rem;border-radius:50px;font-family:var(--font-display);font-size:.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:1rem}
+
+.hero h1{font-family:var(--font-display);font-size:clamp(2.4rem,5.5vw,3.4rem);font-weight:800;line-height:1.15;color:var(--text);margin-bottom:.8rem;letter-spacing:-1px}
+.hero h1 .pop{background:linear-gradient(135deg,var(--mint),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:1.05rem;color:var(--text-mid);max-width:460px;margin:0 auto}
+.level-tag{display:inline-flex;align-items:center;gap:.4rem;background:var(--orange-bg);color:var(--orange);font-family:var(--font-display);font-weight:700;font-size:.85rem;padding:.35rem 1rem;border-radius:10px;margin-top:1rem}
+
+/* ═══ PROGRESS ═══ */
+.progress-bar{position:fixed;top:0;left:0;height:5px;background:linear-gradient(90deg,var(--mint),var(--blue),var(--pink));z-index:100;transition:width .5s ease;border-radius:0 4px 4px 0}
+.score-pill{position:fixed;top:.8rem;right:.8rem;background:white;border-radius:50px;padding:.4rem 1rem;font-family:var(--font-display);font-weight:700;font-size:.9rem;display:flex;align-items:center;gap:.45rem;z-index:99;box-shadow:0 2px 16px rgba(0,0,0,.07)}
+.score-pill .trophy{font-size:1.1rem;animation:slowPulse 3s ease-in-out infinite}
+@keyframes slowPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+.score-pill .sn{color:var(--mint);font-size:1rem}
+
+/* ═══ SECTIONS ═══ */
+.section{background:var(--card);border-radius:var(--radius);padding:2rem 1.8rem;margin-bottom:1.4rem;position:relative;overflow:hidden;opacity:0;transform:translateY(28px);box-shadow:0 2px 14px rgba(0,0,0,.04);transition:box-shadow .3s}
+.section:hover{box-shadow:0 4px 22px rgba(0,0,0,.07)}
+.section.visible{animation:fadeUp .65s ease forwards}
+
+/* Top gradient bar */
+
+
+.section-header{display:flex;align-items:center;gap:.8rem;margin-bottom:1rem}
+.section-emoji{font-size:1.8rem;animation:slowLevitate 6s ease-in-out infinite;flex-shrink:0}
+
+.section-title h2{font-family:var(--font-display);font-size:1.45rem;font-weight:800;letter-spacing:-.3px;background:linear-gradient(135deg,var(--mint),var(--blue),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.section-title .sub{font-size:.8rem;color:var(--text-dim);font-weight:500}
+
+.instruction{background:var(--surface);border-radius:var(--radius-sm);padding:.8rem 1rem;margin-bottom:1.2rem;font-size:.9rem;color:var(--text-mid);line-height:1.6}
+
+/* ═══ EXERCISES ═══ */
+.exercise{border-radius:var(--radius-sm);padding:1rem 1.1rem;margin-bottom:.7rem;background:var(--surface);transition:background .25s}
+.exercise:hover{background:#E5EFE9}
+
+.ex-tag{font-family:var(--font-display);font-weight:800;font-size:.72rem;text-transform:uppercase;letter-spacing:.8px;margin-bottom:.45rem;display:inline-block;padding:.2rem .7rem;border-radius:8px;color:white}
+.ex-tag.mint{background:linear-gradient(135deg,var(--mint),#2DD4BF)}
+.ex-tag.blue{background:linear-gradient(135deg,var(--blue),#38BDF8)}
+.ex-tag.pink{background:linear-gradient(135deg,var(--pink),#F472B6)}
+.ex-tag.orange{background:linear-gradient(135deg,var(--orange),#FB923C)}
+.ex-tag.teal{background:linear-gradient(135deg,var(--teal),#22D3EE)}
+
+.prompt{font-size:1.02rem;font-weight:500;margin-bottom:.7rem;color:var(--text)}
+.prompt .kw{font-weight:800;color:var(--blue)}
+.polish{color:var(--blue);font-weight:700;font-size:.92rem}
+.verb-hint{display:inline-block;background:var(--blue-bg);color:var(--blue);font-weight:700;font-size:.88rem;padding:.2rem .7rem;border-radius:8px}
+
+/* ═══ INPUTS ═══ */
+.answer-input{width:100%;border:2px solid #D1DDD6;border-radius:12px;background:white;font-family:var(--font-body);font-size:1rem;padding:.7rem .9rem;color:var(--text);outline:none;transition:border-color .25s}
+.answer-input:focus{border-color:var(--mint)}
+.answer-input::placeholder{color:var(--text-dim)}
+.answer-input.correct{border-color:var(--green)!important;background:var(--green-bg)!important}
+.answer-input.incorrect{border-color:var(--red)!important;background:var(--red-bg)!important}
+
+.gap-row{font-size:1.02rem;line-height:2.6;font-weight:500}
+.gap-input{border:none;border-bottom:2px solid #C4D4CC;background:transparent;font-family:var(--font-body);font-size:1rem;font-weight:600;padding:.2rem .5rem;color:var(--blue);outline:none;width:14rem;text-align:center;transition:border-color .25s}
+.gap-input:focus{border-bottom-color:var(--mint)}
+.gap-input.correct{border-bottom-color:var(--green)!important;color:var(--green)!important}
+.gap-input.incorrect{border-bottom-color:var(--red)!important;color:var(--red)!important}
+
+.answer-area{width:100%;border:2px solid #D1DDD6;border-radius:12px;background:white;font-family:var(--font-body);font-size:1rem;padding:.8rem .9rem;color:var(--text);outline:none;resize:vertical;min-height:5rem;transition:border-color .25s;line-height:1.7}
+.answer-area:focus{border-color:var(--mint)}
+
+/* ═══ FEEDBACK ═══ */
+.feedback{margin-top:.4rem;font-size:.88rem;font-weight:600;display:flex;align-items:center;gap:.35rem;opacity:0;height:0;overflow:hidden;transition:all .3s}
+.feedback.show{opacity:1;height:auto;padding-top:.3rem}
+.feedback.correct{color:var(--green)}
+.feedback.incorrect{color:var(--red)}
+.feedback .ico{font-size:1rem;flex-shrink:0}
+.feedback .ca{font-weight:400;color:var(--text-mid);margin-left:.3rem}
+
+/* ═══ DIVIDER ═══ */
+.divider{text-align:center;margin:2.5rem 0;position:relative;opacity:0;transform:scale(.96)}
+.divider.visible{animation:fadeUp .7s ease forwards}
+.divider::before,.divider::after{content:'';position:absolute;top:50%;width:calc(50% - 5rem);height:1px;background:#D1DDD6}
+.divider::before{left:0}.divider::after{right:0}
+.divider-pill{display:inline-flex;align-items:center;gap:.5rem;background:linear-gradient(135deg,var(--blue),#7C3AED);color:white;padding:.6rem 1.4rem;border-radius:50px;font-family:var(--font-display);font-weight:700;font-size:.95rem;box-shadow:0 3px 14px rgba(37,99,235,.2)}
+.divider-pill .zap{font-size:1.1rem;animation:slowPulse 3s ease-in-out infinite}
+
+/* ═══ KEY ═══ */
+.key-toggle{display:flex;justify-content:center;margin:2.5rem 0 1rem;opacity:0;transform:translateY(16px)}
+.key-toggle.visible{animation:fadeUp .6s ease forwards}
+.key-btn{display:inline-flex;align-items:center;gap:.5rem;background:linear-gradient(135deg,var(--mint),var(--teal));color:white;border:none;padding:.75rem 1.5rem;border-radius:50px;font-family:var(--font-display);font-weight:600;font-size:.95rem;cursor:pointer;transition:transform .2s;box-shadow:0 3px 12px rgba(13,147,115,.2)}
+.key-btn:hover{transform:translateY(-1px)}
+.key-btn .chev{transition:transform .3s;font-size:.85rem}
+.key-btn.open .chev{transform:rotate(180deg)}
+.key-panel{max-height:0;overflow:hidden;transition:max-height .6s cubic-bezier(.22,1,.36,1)}
+.key-panel.open{max-height:6000px}
+.key-inner{background:var(--card);border-radius:var(--radius);padding:1.8rem;box-shadow:0 2px 14px rgba(0,0,0,.04)}
+.key-inner h3{font-family:var(--font-display);font-size:1.2rem;font-weight:700;margin-bottom:1.2rem;display:flex;align-items:center;gap:.5rem}
+.key-group{margin-bottom:1rem}
+.key-group h4{font-family:var(--font-display);font-size:.82rem;font-weight:700;color:var(--text-dim);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.5px}
+.key-item{background:var(--surface);border-radius:12px;padding:.6rem .9rem;margin-bottom:.35rem;font-size:.92rem}
+.key-item strong{font-weight:700}
+.key-item .note{display:block;font-size:.78rem;color:var(--text-dim);margin-top:.15rem}
+
+.footer{text-align:center;margin-top:2.5rem;opacity:0;padding:1.2rem}
+.footer.visible{animation:fadeUp .6s ease forwards}
+.footer p{color:var(--text-mid);font-size:.9rem}
+.footer .foot-emoji{font-size:1.8rem;margin-bottom:.4rem;display:block;animation:slowLevitate 5s ease-in-out infinite}
+
+.section.visible .exercise{opacity:0;animation:fadeUp .45s ease forwards}
+.section.visible .exercise:nth-child(1){animation-delay:.04s}
+.section.visible .exercise:nth-child(2){animation-delay:.08s}
+.section.visible .exercise:nth-child(3){animation-delay:.12s}
+.section.visible .exercise:nth-child(4){animation-delay:.16s}
+
+@media print{
+  .bg-soft,.emoji-float,.progress-bar,.score-pill{display:none!important}
+  .section,.hero,.divider,.footer,.key-toggle{opacity:1!important;transform:none!important;animation:none!important}
+  .section{break-inside:avoid;box-shadow:none}
+  .key-btn{display:none}body{background:white}
+  html{font-size:14px}
+}
+@media(max-width:600px){
+  html{font-size:16px}
+  .container{padding:1.5rem 1rem 3rem}
+  .section{padding:1.3rem 1rem}
+  .gap-input{width:10rem}
+  .key-inner{padding:1.1rem .9rem}
+  .score-pill{top:.5rem;right:.5rem;padding:.3rem .7rem;font-size:.78rem}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-soft"><div class="blob"></div><div class="blob"></div><div class="blob"></div></div>
+<div class="emoji-float">
+  <span>📚</span><span>✏️</span><span>🌟</span><span>🎯</span>
+  <span>💡</span><span>🎉</span><span>📝</span><span>🧩</span>
+</div>
+
+<div class="progress-bar" id="progressBar" style="width:0%"></div>
+<div class="score-pill">
+  <span class="trophy">🏆</span>
+  <span class="sn" id="scoreNum">0</span> / <span>13</span>
+</div>
+
+<div class="container">
+
+<header class="hero">
+  <span class="hero-emoji">📖</span>
+  <div class="hero-badge">English Practice</div>
+  <h1>My First <span class="pop">Steps!</span></h1>
+  <p>Ćwicz angielski od podstaw. Proste zadania, duża satysfakcja! 🚀</p>
+  <div class="level-tag">📖 Poziom A1 / A2</div>
+</header>
+
+<!-- PART 1 -->
+<section class="section" data-anim>
+  <div class="section-header">
+    <div class="section-emoji">🧩</div>
+    <div class="section-title"><h2>Part 1: Word Scramble</h2><span class="sub">Rozsypanka wyrazowa</span></div>
+  </div>
+  <div class="instruction">Ułóż słowa w odpowiedniej kolejności, aby powstały poprawne zdania.</div>
+  <div class="exercise"><div class="ex-tag mint">Zadanie 1</div><div class="prompt">a / I / cat / have / black</div><input type="text" class="answer-input" data-check="1" placeholder="Wpisz poprawne zdanie i naciśnij Enter ↵"><div class="feedback" id="fb-1"></div></div>
+  <div class="exercise"><div class="ex-tag mint">Zadanie 2</div><div class="prompt">name / is / my / Tom</div><input type="text" class="answer-input" data-check="2" placeholder="Wpisz poprawne zdanie i naciśnij Enter ↵"><div class="feedback" id="fb-2"></div></div>
+  <div class="exercise"><div class="ex-tag mint">Zadanie 3</div><div class="prompt">like / you / do / pizza / ?</div><input type="text" class="answer-input" data-check="3" placeholder="Wpisz poprawne zdanie i naciśnij Enter ↵"><div class="feedback" id="fb-3"></div></div>
+</section>
+
+<!-- PART 2 -->
+<section class="section" data-anim>
+  <div class="section-header">
+    <div class="section-emoji">🌍</div>
+    <div class="section-title"><h2>Part 2: Phrase Translation</h2><span class="sub">Przetłumacz fragmenty zdań</span></div>
+  </div>
+  <div class="instruction">Uzupełnij luki, tłumacząc fragmenty w nawiasach na język angielski.</div>
+  <div class="exercise"><div class="ex-tag blue">Zadanie 4</div><p class="gap-row">She <input type="text" class="gap-input" data-check="4" placeholder="..."> <span class="polish">(ma 10 lat)</span>.</p><div class="feedback" id="fb-4"></div></div>
+  <div class="exercise"><div class="ex-tag blue">Zadanie 5</div><p class="gap-row">I <input type="text" class="gap-input" data-check="5" placeholder="..."> <span class="polish">(lubię grać w)</span> football.</p><div class="feedback" id="fb-5"></div></div>
+  <div class="exercise"><div class="ex-tag blue">Zadanie 6</div><p class="gap-row">There <input type="text" class="gap-input" data-check="6" placeholder="..."> <span class="polish">(jest pięć)</span> books on the table.</p><div class="feedback" id="fb-6"></div></div>
+</section>
+
+<!-- PART 3 -->
+<section class="section" data-anim>
+  <div class="section-header">
+    <div class="section-emoji">🔍</div>
+    <div class="section-title"><h2>Part 3: Error Detective</h2><span class="sub">Zostań detektywem błędów</span></div>
+  </div>
+  <div class="instruction">W każdym zdaniu jest jeden błąd. Znajdź go i przepisz zdanie poprawnie.</div>
+  <div class="exercise"><div class="ex-tag teal">Zadanie 7</div><div class="prompt">He have a big dog.</div><input type="text" class="answer-input" data-check="7" placeholder="Przepisz zdanie poprawnie i naciśnij Enter ↵"><div class="feedback" id="fb-7"></div></div>
+  <div class="exercise"><div class="ex-tag teal">Zadanie 8</div><div class="prompt">I am like chocolate.</div><input type="text" class="answer-input" data-check="8" placeholder="Przepisz zdanie poprawnie i naciśnij Enter ↵"><div class="feedback" id="fb-8"></div></div>
+</section>
+
+<!-- PART 4 -->
+<section class="section" data-anim>
+  <div class="section-header">
+    <div class="section-emoji">✍️</div>
+    <div class="section-title"><h2>Part 4: Mini-Writing</h2><span class="sub">Twój czas na pisanie</span></div>
+  </div>
+  <div class="instruction">Odpowiedz na pytania pełnymi zdaniami po angielsku. Napisz przynajmniej 3-4 słowa.</div>
+  <div class="exercise"><div class="ex-tag pink">Zadanie 9</div><div class="prompt">What is your name and how old are you?</div><textarea class="answer-area" placeholder="Write your answer here... ✏️"></textarea></div>
+  <div class="exercise"><div class="ex-tag pink">Zadanie 10</div><div class="prompt">What is your favourite colour and favourite animal?</div><textarea class="answer-area" placeholder="Write your answer here... ✏️"></textarea></div>
+</section>
+
+<!-- LEVEL UP -->
+<div class="divider" data-anim>
+  <div class="divider-pill"><span class="zap">⚡</span> Level Up!</div>
+</div>
+
+<!-- PART 5 -->
+<section class="section" data-anim>
+  <div class="section-header">
+    <div class="section-emoji">✨</div>
+    <div class="section-title"><h2>Part 5: Sentence Transformation</h2><span class="sub">Przekształcanie zdań</span></div>
+  </div>
+  <div class="instruction">Napisz zdanie w inny sposób, używając słowa w nawiasie. Znaczenie musi być takie samo.</div>
+  <div class="exercise"><div class="ex-tag orange">Zadanie 11</div><div class="prompt">I have a sister. <span class="kw">(GOT)</span></div><p class="gap-row">I <input type="text" class="gap-input" data-check="11" placeholder="..."> a sister.</p><div class="feedback" id="fb-11"></div></div>
+  <div class="exercise"><div class="ex-tag orange">Zadanie 12</div><div class="prompt">She can't swim. <span class="kw">(ABLE)</span></div><p class="gap-row">She <input type="text" class="gap-input" data-check="12" placeholder="..."> swim.</p><div class="feedback" id="fb-12"></div></div>
+  <div class="exercise"><div class="ex-tag orange">Zadanie 13</div><div class="prompt">This is my book. <span class="kw">(MINE)</span></div><p class="gap-row">This book <input type="text" class="gap-input" data-check="13" placeholder="...">.</p><div class="feedback" id="fb-13"></div></div>
+</section>
+
+<!-- PART 6 -->
+<section class="section" data-anim>
+  <div class="section-header">
+    <div class="section-emoji">⏰</div>
+    <div class="section-title"><h2>Part 6: Fill in the Verb</h2><span class="sub">Wstaw odpowiednią formę czasownika</span></div>
+  </div>
+  <div class="instruction">Wpisz odpowiednią formę czasownika z nawiasu.</div>
+  <div class="exercise"><div class="ex-tag blue">Zadanie 14</div><p class="gap-row">She <input type="text" class="gap-input" data-check="14" placeholder="..."> <span class="verb-hint">(like)</span> ice cream very much.</p><div class="feedback" id="fb-14"></div></div>
+  <div class="exercise"><div class="ex-tag blue">Zadanie 15</div><p class="gap-row">They <input type="text" class="gap-input" data-check="15" placeholder="..."> <span class="verb-hint">(not / be)</span> at school yesterday.</p><div class="feedback" id="fb-15"></div></div>
+  <div class="exercise"><div class="ex-tag blue">Zadanie 16</div><p class="gap-row">I <input type="text" class="gap-input" data-check="16" placeholder="..."> <span class="verb-hint">(can / swim)</span> very well.</p><div class="feedback" id="fb-16"></div></div>
+</section>
+
+<!-- PART 7 -->
+<section class="section" data-anim>
+  <div class="section-header">
+    <div class="section-emoji">💬</div>
+    <div class="section-title"><h2>Part 7: Situation Response</h2><span class="sub">Reagowanie w sytuacjach</span></div>
+  </div>
+  <div class="instruction">Napisz, co powiesz w danej sytuacji. Minimum 3 słowa.</div>
+  <div class="exercise"><div class="ex-tag teal">Zadanie 17</div><div class="prompt">Spotykasz kolegę na ulicy. Jak się przywitasz i zapytasz co u niego słychać?</div><textarea class="answer-area" placeholder="Write what you would say... 💬"></textarea></div>
+  <div class="exercise"><div class="ex-tag teal">Zadanie 18</div><div class="prompt">Jesteś w sklepie. Chcesz kupić kanapkę. Co powiesz?</div><textarea class="answer-area" placeholder="Write what you would say... 💬"></textarea></div>
+</section>
+
+<!-- PART 8 -->
+<section class="section" data-anim>
+  <div class="section-header">
+    <div class="section-emoji">🧠</div>
+    <div class="section-title"><h2>Part 8: About Me</h2><span class="sub">Napisz o sobie</span></div>
+  </div>
+  <div class="instruction">Napisz po 2-3 zdania do każdego punktu.</div>
+  <div class="exercise"><div class="ex-tag mint">Zadanie 19</div><div class="prompt">Describe your family. Who is in your family? 👨‍👩‍👧‍👦</div><textarea class="answer-area" placeholder="Write about your family..." style="min-height:6rem"></textarea></div>
+  <div class="exercise"><div class="ex-tag mint">Zadanie 20</div><div class="prompt">What do you do every day? Describe your morning. ☀️</div><textarea class="answer-area" placeholder="Write about your morning..." style="min-height:6rem"></textarea></div>
+</section>
+
+<!-- KEY -->
+<div class="key-toggle" data-anim>
+  <button class="key-btn" onclick="toggleKey(this)">
+    🔑 Pokaż klucz odpowiedzi
+    <span class="chev">▼</span>
+  </button>
+</div>
+<div class="key-panel" id="keyPanel">
+  <div class="key-inner">
+    <h3>🏅 Klucz odpowiedzi</h3>
+    <div class="key-group"><h4>Part 1: Word Scramble</h4>
+      <div class="key-item"><strong>1.</strong> I have a black cat.</div>
+      <div class="key-item"><strong>2.</strong> My name is Tom.</div>
+      <div class="key-item"><strong>3.</strong> Do you like pizza?</div>
+    </div>
+    <div class="key-group"><h4>Part 2: Phrase Translation</h4>
+      <div class="key-item"><strong>4.</strong> is ten years old<span class="note">Konstrukcja: be + wiek + years old.</span></div>
+      <div class="key-item"><strong>5.</strong> like playing<span class="note">like + czasownik z -ing.</span></div>
+      <div class="key-item"><strong>6.</strong> are five<span class="note">There are + liczba mnoga.</span></div>
+    </div>
+    <div class="key-group"><h4>Part 3: Error Detective</h4>
+      <div class="key-item"><strong>7.</strong> He <strong>has</strong> a big dog.<span class="note">3. os. l.poj. = has, nie have.</span></div>
+      <div class="key-item"><strong>8.</strong> I like chocolate.<span class="note">Nie używamy "am" z "like".</span></div>
+    </div>
+    <div class="key-group"><h4>Part 4: Mini-Writing</h4>
+      <div class="key-item"><strong>9-10.</strong> Odpowiedzi otwarte.<span class="note">Sprawdź: My name is..., I am... years old, My favourite... is...</span></div>
+    </div>
+    <div class="key-group"><h4>Part 5: Sentence Transformation</h4>
+      <div class="key-item"><strong>11.</strong> have got<span class="note">have = have got.</span></div>
+      <div class="key-item"><strong>12.</strong> is not able to<span class="note">can't = is not able to.</span></div>
+      <div class="key-item"><strong>13.</strong> is mine<span class="note">my book = the book is mine.</span></div>
+    </div>
+    <div class="key-group"><h4>Part 6: Fill in the Verb</h4>
+      <div class="key-item"><strong>14.</strong> likes<span class="note">3. os. l.poj. Present Simple = +s.</span></div>
+      <div class="key-item"><strong>15.</strong> were not / weren't<span class="note">They + were (Past Simple of "be").</span></div>
+      <div class="key-item"><strong>16.</strong> can swim<span class="note">can + bezokolicznik (bez "to").</span></div>
+    </div>
+    <div class="key-group"><h4>Part 7: Situation Response</h4>
+      <div class="key-item"><strong>17.</strong> np. Hi! How are you?</div>
+      <div class="key-item"><strong>18.</strong> np. Can I have a sandwich, please?</div>
+    </div>
+    <div class="key-group"><h4>Part 8: About Me</h4>
+      <div class="key-item"><strong>19-20.</strong> Odpowiedzi otwarte.<span class="note">Sprawdź: I have..., My mum/dad is..., I get up at..., I go to school...</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="footer" data-anim>
+  <span class="foot-emoji">🌟</span>
+  <p>Well done! You are doing great! 💪</p>
+</div>
+
+</div>
+
+<script>
+const ANSWERS={
+  1:["i have a black cat"],2:["my name is tom"],3:["do you like pizza?","do you like pizza"],
+  4:["is ten years old","is 10 years old"],5:["like playing"],6:["are five","are 5"],
+  7:["he has a big dog"],8:["i like chocolate"],
+  11:["have got","'ve got"],12:["is not able to","isn't able to"],13:["is mine"],
+  14:["likes"],15:["were not","weren't"],16:["can swim"]
+};
+const DISPLAY={
+  1:"I have a black cat.",2:"My name is Tom.",3:"Do you like pizza?",
+  4:"is ten years old",5:"like playing",6:"are five",
+  7:"He has a big dog.",8:"I like chocolate.",
+  11:"have got",12:"is not able to",13:"is mine",
+  14:"likes",15:"were not / weren't",16:"can swim"
+};
+let answered=new Set();
+function norm(s){return s.trim().toLowerCase().replace(/[.,!?;:]+$/g,'').replace(/\s+/g,' ').replace(/['']/g,"'");}
+function check(id,val){const n=norm(val);if(!n)return null;const a=ANSWERS[id];if(!a)return null;return a.some(x=>norm(x)===n);}
+function updateScore(){document.getElementById('scoreNum').textContent=answered.size;document.getElementById('progressBar').style.width=Math.round(answered.size/Object.keys(ANSWERS).length*100)+'%';}
+function runCheck(inp){
+  const id=parseInt(inp.dataset.check);
+  if(!inp.value.trim())return;
+  const r=check(id,inp.value);
+  if(r===null)return;
+  inp.classList.remove('correct','incorrect');
+  const fb=document.getElementById('fb-'+id);
+  if(r){
+    inp.classList.add('correct');answered.add(id);
+    if(fb){fb.className='feedback show correct';fb.innerHTML='<span class="ico">✅</span> Brawo, poprawna odpowiedź!';}
+  }else{
+    inp.classList.add('incorrect');answered.delete(id);
+    if(fb){fb.className='feedback show incorrect';fb.innerHTML='<span class="ico">❌</span> Spróbuj jeszcze raz. <span class="ca">Poprawnie: '+DISPLAY[id]+'</span>';}
+  }
+  updateScore();
+}
+document.querySelectorAll('[data-check]').forEach(inp=>{
+  inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();runCheck(this);}});
+  inp.addEventListener('input',function(){
+    this.classList.remove('correct','incorrect');
+    const fb=document.getElementById('fb-'+parseInt(this.dataset.check));
+    if(fb)fb.classList.remove('show');
+  });
+});
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');});},{threshold:.12,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('[data-anim]').forEach(el=>obs.observe(el));
+function toggleKey(btn){
+  const p=document.getElementById('keyPanel'),o=p.classList.toggle('open');
+  btn.classList.toggle('open',o);
+  [...btn.childNodes].filter(n=>n.nodeType===3&&n.textContent.trim().length>2).forEach(t=>{t.textContent=o?' Ukryj klucz odpowiedzi ':' Pokaż klucz odpowiedzi ';});
+}
+</script>
+</body>
+</html>
