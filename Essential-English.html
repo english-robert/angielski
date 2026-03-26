@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Karta Pracy #6 – Essential English Phrases</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --cream: #fdf8f0;
+      --warm-white: #fff9f2;
+      --ink: #1a1208;
+      --muted: #7a6a55;
+      --accent-coral: #e85d3a;
+      --accent-teal: #1d9e8f;
+      --accent-gold: #d4a017;
+      --accent-violet: #7c3aed;
+      --accent-sky: #0ea5e9;
+      --card-bg: #ffffff;
+      --border: #e8ddd0;
+      --shadow: 0 4px 24px rgba(26,18,8,0.09);
+      --shadow-lg: 0 12px 48px rgba(26,18,8,0.14);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, #1a1208 0%, #2d1f0a 50%, #1d9e8f 100%);
+      color: #fff;
+      padding: 60px 24px 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 70% 30%, rgba(212,160,23,0.18) 0%, transparent 60%),
+                  radial-gradient(ellipse at 20% 80%, rgba(29,158,143,0.22) 0%, transparent 55%);
+    }
+    .hero-badge {
+      display: inline-block;
+      background: var(--accent-gold);
+      color: var(--ink);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      padding: 6px 18px;
+      border-radius: 50px;
+      margin-bottom: 20px;
+      position: relative;
+      animation: fadeDown 0.6s ease both;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 900;
+      line-height: 1.1;
+      position: relative;
+      animation: fadeDown 0.7s 0.1s ease both;
+    }
+    .hero h1 span { color: var(--accent-gold); }
+    .hero-sub {
+      margin-top: 14px;
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.72);
+      position: relative;
+      animation: fadeDown 0.7s 0.2s ease both;
+    }
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 28px;
+      position: relative;
+      animation: fadeDown 0.7s 0.3s ease both;
+    }
+    .hero-tag {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.88);
+      font-size: 0.78rem;
+      padding: 5px 14px;
+      border-radius: 50px;
+      backdrop-filter: blur(4px);
+    }
+    .scroll-hint {
+      position: absolute;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,0.4);
+      font-size: 0.72rem;
+      letter-spacing: 1px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      animation: bounce 2s infinite;
+    }
+    .scroll-hint::after { content: '↓'; font-size: 1rem; }
+
+    /* ── LAYOUT ── */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px 80px;
+    }
+
+    /* ── SECTION HEADERS ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 56px 0 24px;
+      animation: fadeUp 0.6s ease both;
+    }
+    .section-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.55rem;
+      font-weight: 700;
+    }
+    .section-subtitle {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 2px;
+      font-weight: 400;
+    }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--card-bg);
+      border-radius: 18px;
+      padding: 28px 28px 32px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      margin-bottom: 20px;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    /* ── TASK 1: MATCH PHRASES ── */
+    .match-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 24px;
+    }
+    .match-pair { display: contents; }
+    .match-en {
+      background: linear-gradient(135deg, #fff5e6, #ffecd2);
+      border: 1.5px solid #f0c07a;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: default;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .match-en .num {
+      background: var(--accent-gold);
+      color: #fff;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      font-size: 0.72rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .match-pl {
+      display: flex;
+      align-items: center;
+    }
+    .match-pl select {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      color: var(--ink);
+      background: var(--warm-white);
+      cursor: pointer;
+      transition: border-color 0.2s;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a6a55' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 30px;
+    }
+    .match-pl select:focus { outline: none; border-color: var(--accent-teal); }
+    .match-pl select.correct { border-color: var(--accent-teal); background-color: #e8faf8; }
+    .match-pl select.wrong { border-color: var(--accent-coral); background-color: #fef2ee; }
+
+    .check-btn {
+      margin-top: 18px;
+      padding: 10px 26px;
+      border: none;
+      border-radius: 50px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.3px;
+    }
+    .check-btn:active { transform: scale(0.97); }
+
+    /* ── TASK 2: FILL IN THE BLANK ── */
+    .sentence-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+    .sentence-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+    .sentence-item .snum {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--accent-violet);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .blank-input {
+      display: inline-block;
+      min-width: 130px;
+      padding: 5px 12px;
+      border: none;
+      border-bottom: 2.5px solid #c8bfb4;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.93rem;
+      color: var(--ink);
+      text-align: center;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+    .blank-input:focus { border-bottom-color: var(--accent-violet); }
+    .blank-input.correct { border-bottom-color: var(--accent-teal); color: var(--accent-teal); }
+    .blank-input.wrong { border-bottom-color: var(--accent-coral); color: var(--accent-coral); }
+    .hint-tag {
+      font-size: 0.72rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .word-bank {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+      padding: 14px 16px;
+      background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+      border-radius: 12px;
+      border: 1px solid #bae6fd;
+    }
+    .word-chip {
+      background: #fff;
+      border: 1.5px solid #bae6fd;
+      border-radius: 50px;
+      padding: 4px 14px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #0369a1;
+      cursor: default;
+    }
+
+    /* ── TASK 3: FORMAL vs INFORMAL ── */
+    .tone-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .tone-col-header {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 8px 0 4px;
+      border-bottom: 2px solid;
+      margin-bottom: 10px;
+    }
+    .tone-col-header.formal { color: #1e3a5f; border-color: #1e3a5f; }
+    .tone-col-header.informal { color: var(--accent-coral); border-color: var(--accent-coral); }
+    .tone-item {
+      font-size: 0.88rem;
+      padding: 8px 0;
+      border-bottom: 1px dashed var(--border);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tone-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .classify-list { display: flex; flex-direction: column; gap: 10px; }
+    .classify-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: var(--warm-white);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+    .classify-item span:first-child { flex: 1; font-weight: 500; font-style: italic; }
+    .classify-item .radio-group { display: flex; gap: 10px; }
+    .classify-item label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .classify-item label.formal-label { color: #1e3a5f; }
+    .classify-item label.informal-label { color: var(--accent-coral); }
+    .classify-item input[type=radio] { accent-color: var(--accent-teal); }
+    .classify-item.correct-f { background: #eff6ff; border-color: #93c5fd; }
+    .classify-item.correct-i { background: #fff5f0; border-color: #fdba8c; }
+
+    /* ── TASK 4: TRANSLATE ── */
+    .translate-list { display: flex; flex-direction: column; gap: 14px; }
+    .translate-item {
+      padding: 14px 16px;
+      background: linear-gradient(135deg, #faf5ff, #f3e8ff);
+      border-radius: 12px;
+      border-left: 4px solid var(--accent-violet);
+    }
+    .translate-pl { font-size: 0.9rem; color: var(--muted); margin-bottom: 8px; }
+    .translate-pl strong { color: var(--ink); font-style: italic; }
+    .translate-input {
+      width: 100%;
+      padding: 9px 14px;
+      border: 1.5px solid #ddd6fe;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      color: var(--ink);
+      background: rgba(255,255,255,0.7);
+      transition: border-color 0.2s;
+      outline: none;
+    }
+    .translate-input:focus { border-color: var(--accent-violet); }
+    .translate-input.correct { border-color: var(--accent-teal); background: #f0fdf4; }
+    .translate-input.wrong { border-color: var(--accent-coral); background: #fff2ee; }
+    .translate-answer-hint {
+      font-size: 0.78rem;
+      margin-top: 5px;
+      color: var(--accent-teal);
+      display: none;
+    }
+    .translate-answer-hint.visible { display: block; }
+
+    /* ── TASK 5: DIALOGUE ── */
+    .dialogue-box {
+      background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+      border-radius: 14px;
+      border: 1.5px solid #86efac;
+      padding: 20px 22px;
+      margin-bottom: 18px;
+    }
+    .dialogue-box h4 {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #166534;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+    .dialogue-line { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
+    .speaker-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 50px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .speaker-a { background: #dbeafe; color: #1e40af; }
+    .speaker-b { background: #fce7f3; color: #9d174d; }
+    .dialogue-text { font-size: 0.9rem; line-height: 1.6; flex: 1; }
+    .dialogue-blank {
+      display: inline-block;
+      min-width: 100px;
+      border-bottom: 2px solid #16a34a;
+      padding: 1px 8px;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      color: var(--ink);
+      transition: border-color 0.2s;
+    }
+    .dialogue-blank:focus { border-bottom-color: var(--accent-teal); }
+    .dialogue-blank.correct { border-bottom-color: var(--accent-teal); color: var(--accent-teal); }
+    .dialogue-blank.wrong { border-bottom-color: var(--accent-coral); }
+
+    /* ── FUN FACT ── */
+    .fun-fact {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 14px 16px;
+      border-radius: 12px;
+      margin-top: 18px;
+      font-size: 0.84rem;
+      line-height: 1.6;
+    }
+    .fun-fact-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 1px; }
+    .fun-fact strong { display: block; font-size: 0.78rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 3px; }
+
+    .fun-fact.gold { background: linear-gradient(135deg, #fffbeb, #fef3c7); border: 1px solid #fcd34d; color: #78350f; }
+    .fun-fact.sky { background: linear-gradient(135deg, #f0f9ff, #e0f2fe); border: 1px solid #7dd3fc; color: #0c4a6e; }
+    .fun-fact.coral { background: linear-gradient(135deg, #fff5f0, #fee2d5); border: 1px solid #fdba74; color: #7c2d12; }
+
+    /* ── RESULT MSG ── */
+    .result-msg {
+      margin-top: 16px;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: none;
+      animation: fadeUp 0.3s ease;
+    }
+    .result-msg.show { display: block; }
+    .result-msg.great { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+    .result-msg.ok { background: #fef9c3; color: #713f12; border: 1px solid #fde68a; }
+    .result-msg.try-again { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+    /* ── FINAL BANNER ── */
+    .final-banner {
+      background: linear-gradient(135deg, var(--ink), #2d4a3e);
+      color: #fff;
+      border-radius: 22px;
+      padding: 40px 32px;
+      text-align: center;
+      margin-top: 60px;
+      position: relative;
+      overflow: hidden;
+    }
+    .final-banner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(29,158,143,0.2) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 30%, rgba(212,160,23,0.15) 0%, transparent 55%);
+    }
+    .final-banner h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      position: relative;
+    }
+    .final-banner p {
+      color: rgba(255,255,255,0.7);
+      margin-top: 10px;
+      font-size: 0.95rem;
+      position: relative;
+    }
+    .back-btn {
+      display: inline-block;
+      margin-top: 24px;
+      padding: 12px 30px;
+      background: var(--accent-teal);
+      color: #fff;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      position: relative;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .back-btn:hover { background: #178a7d; transform: translateY(-1px); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* Staggered card animations */
+    .card:nth-child(1) { animation-delay: 0.05s; }
+    .card:nth-child(2) { animation-delay: 0.1s; }
+    .card:nth-child(3) { animation-delay: 0.15s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .match-grid { grid-template-columns: 1fr; }
+      .match-pair .match-en { margin-bottom: 4px; }
+      .tone-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">🔤 Karta Pracy #6</div>
+  <h1>Essential English<br><span>Phrases & Vocabulary</span></h1>
+  <p class="hero-sub">Formalne, kolokwialne, praktyczne — wszystko w jednym miejscu</p>
+  <div class="hero-tags">
+    <span class="hero-tag">📚 Vocabulary</span>
+    <span class="hero-tag">💬 Useful Phrases</span>
+    <span class="hero-tag">🎭 Formal vs Informal</span>
+    <span class="hero-tag">✍️ Translation</span>
+    <span class="hero-tag">🗣️ Dialogue</span>
+  </div>
+  <div class="scroll-hint">scroll</div>
+</div>
+
+<div class="container">
+
+  <!-- ══ TASK 1: MATCH ══ -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff3e0;">📌</div>
+    <div>
+      <div class="section-title">Zadanie 1 — Match the phrases</div>
+      <div class="section-subtitle">Dopasuj wyrażenia angielskie do polskich tłumaczeń</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="match-grid" id="matchGrid">
+      <!-- pairs rendered by JS -->
+    </div>
+
+    <div class="fun-fact gold" style="margin-top:20px;">
+      <div class="fun-fact-icon">💡</div>
+      <div>
+        <strong>Ciekawostka</strong>
+        „Bear in mind" dosłownie znaczy „noś w umyśle" — wywodzi się ze średnioangielskiego i jest używane od ponad 500 lat!
+      </div>
+    </div>
+
+    <button class="check-btn" style="background:var(--accent-gold);color:#fff;" onclick="checkMatch()">Sprawdź ✓</button>
+    <div class="result-msg" id="matchResult"></div>
+  </div>
+
+  <!-- ══ TASK 2: FILL IN THE BLANK ══ -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#f3e8ff;">✏️</div>
+    <div>
+      <div class="section-title">Zadanie 2 — Fill in the blank</div>
+      <div class="section-subtitle">Uzupełnij zdania odpowiednim słowem z banku słów</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="word-bank">
+      <span class="word-chip">get the hang of</span>
+      <span class="word-chip">bring up</span>
+      <span class="word-chip">look into</span>
+      <span class="word-chip">come across</span>
+      <span class="word-chip">put off</span>
+      <span class="word-chip">turn down</span>
+      <span class="word-chip">run out of</span>
+      <span class="word-chip">keep in touch</span>
+    </div>
+
+    <ul class="sentence-list" id="fillList">
+      <!-- rendered by JS -->
+    </ul>
+
+    <div class="fun-fact sky" style="margin-top:20px;">
+      <div class="fun-fact-icon">🌍</div>
+      <div>
+        <strong>Ciekawostka</strong>
+        Phrasal verbs są zmorą każdego uczącego się angielskiego — w Oxford English Dictionary jest ich ponad 10 000! Ale nie musisz znać wszystkich — wystarczy ~200 najczęstszych, żeby porozumieć się w 95% sytuacji.
+      </div>
+    </div>
+
+    <button class="check-btn" style="background:var(--accent-violet);color:#fff;" onclick="checkFill()">Sprawdź ✓</button>
+    <div class="result-msg" id="fillResult"></div>
+  </div>
+
+  <!-- ══ TASK 3: FORMAL vs INFORMAL ══ -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#e0f2fe;">🎭</div>
+    <div>
+      <div class="section-title">Zadanie 3 — Formal or Informal?</div>
+      <div class="section-subtitle">Zakwalifikuj zwroty jako formalne lub kolokwialne</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="tone-grid">
+      <div>
+        <div class="tone-col-header formal">🏢 Formal</div>
+        <div class="tone-item"><span class="tone-dot" style="background:#1e3a5f"></span>I would like to inquire about…</div>
+        <div class="tone-item"><span class="tone-dot" style="background:#1e3a5f"></span>Please find attached…</div>
+        <div class="tone-item"><span class="tone-dot" style="background:#1e3a5f"></span>I am writing with regard to…</div>
+        <div class="tone-item"><span class="tone-dot" style="background:#1e3a5f"></span>Could you please elaborate on…?</div>
+        <div class="tone-item"><span class="tone-dot" style="background:#1e3a5f"></span>I appreciate your prompt response.</div>
+      </div>
+      <div>
+        <div class="tone-col-header informal">😎 Informal</div>
+        <div class="tone-item"><span class="tone-dot" style="background:var(--accent-coral)"></span>Just checking in!</div>
+        <div class="tone-item"><span class="tone-dot" style="background:var(--accent-coral)"></span>What's up? / What's going on?</div>
+        <div class="tone-item"><span class="tone-dot" style="background:var(--accent-coral)"></span>No worries, I've got you covered.</div>
+        <div class="tone-item"><span class="tone-dot" style="background:var(--accent-coral)"></span>Drop me a line whenever!</div>
+        <div class="tone-item"><span class="tone-dot" style="background:var(--accent-coral)"></span>That sounds awesome / cool!</div>
+      </div>
+    </div>
+
+    <p style="font-size:0.85rem;color:var(--muted);margin-bottom:14px;margin-top:8px;">Teraz zakwalifikuj poniższe zwroty:</p>
+    <div class="classify-list" id="classifyList">
+      <!-- rendered by JS -->
+    </div>
+
+    <div class="fun-fact coral" style="margin-top:20px;">
+      <div class="fun-fact-icon">🎓</div>
+      <div>
+        <strong>Ciekawostka</strong>
+        W angielskim biznesowym wyrażenie „I hope this email finds you well" jest teraz tak powszechne, że stało się memem — wielu native speakerów traktuje je z przymrużeniem oka, ale wciąż jest poprawne i bezpieczne!
+      </div>
+    </div>
+
+    <button class="check-btn" style="background:#1e3a5f;color:#fff;" onclick="checkClassify()">Sprawdź ✓</button>
+    <div class="result-msg" id="classifyResult"></div>
+  </div>
+
+  <!-- ══ TASK 4: TRANSLATE ══ -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#fce7f3;">🌐</div>
+    <div>
+      <div class="section-title">Zadanie 4 — Translate</div>
+      <div class="section-subtitle">Przetłumacz zdania na angielski. Naciśnij Enter po każdym.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="translate-list" id="translateList">
+      <!-- rendered by JS -->
+    </div>
+    <div class="result-msg" id="translateResult"></div>
+  </div>
+
+  <!-- ══ TASK 5: DIALOGUE ══ -->
+  <div class="section-header">
+    <div class="section-icon" style="background:#d1fae5;">🗣️</div>
+    <div>
+      <div class="section-title">Zadanie 5 — Complete the dialogue</div>
+      <div class="section-subtitle">Uzupełnij luki w rozmowie. Naciśnij Enter po każdej odpowiedzi.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="dialogue-box">
+      <h4>📞 Rozmowa telefoniczna — Job interview scheduling</h4>
+      <div class="dialogue-line">
+        <span class="speaker-tag speaker-a">A</span>
+        <span class="dialogue-text">Good morning! Could I <input class="dialogue-blank" id="d1" data-answer="speak" placeholder="___"> to Mr. Johnson, please?</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker-tag speaker-b">B</span>
+        <span class="dialogue-text">Speaking. How can I <input class="dialogue-blank" id="d2" data-answer="help" placeholder="___"> you?</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker-tag speaker-a">A</span>
+        <span class="dialogue-text">I'm calling <input class="dialogue-blank" id="d3" data-answer="regarding" placeholder="___"> the job advertisement on your website.</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker-tag speaker-b">B</span>
+        <span class="dialogue-text">Great! Would you be available for an interview <input class="dialogue-blank" id="d4" data-answer="on" placeholder="___"> Thursday afternoon?</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker-tag speaker-a">A</span>
+        <span class="dialogue-text">Absolutely. I look <input class="dialogue-blank" id="d5" data-answer="forward" placeholder="___"> to meeting you.</span>
+      </div>
+    </div>
+
+    <div class="fun-fact sky">
+      <div class="fun-fact-icon">📞</div>
+      <div>
+        <strong>Ciekawostka</strong>
+        „Speaking" jako odpowiedź na pytanie „Could I speak to...?" to klasyczna, elegancka formuła telefoniczna. Odpowiednik polskiego „Przy telefonie" lub „Słucham, to ja."
+      </div>
+    </div>
+
+    <button class="check-btn" style="background:var(--accent-teal);color:#fff;" onclick="checkDialogue()">Sprawdź ✓</button>
+    <div class="result-msg" id="dialogueResult"></div>
+  </div>
+
+  <!-- FINAL BANNER -->
+  <div class="final-banner">
+    <h2>Świetna robota! 🎉</h2>
+    <p>Opanowałeś najważniejsze zwroty i słownictwo z Karty Pracy #6.</p>
+    <a href="index.html" class="back-btn">← Wróć do wszystkich materiałów</a>
+  </div>
+
+</div>
+
+<script>
+// ────────────────────────────────────────────
+// DATA
+// ────────────────────────────────────────────
+const matchData = [
+  { en: "Bear in mind", pl: "Miej na uwadze" },
+  { en: "Get straight to the point", pl: "Przejdź od razu do rzeczy" },
+  { en: "Break the ice", pl: "Przełamać lody" },
+  { en: "It's on the tip of my tongue", pl: "Mam to na końcu języka" },
+  { en: "I'll keep you posted", pl: "Będę Cię informować na bieżąco" },
+  { en: "That being said…", pl: "Mając to na uwadze..." },
+  { en: "Hit the nail on the head", pl: "Trafić w sedno" },
+  { en: "Under the circumstances", pl: "Biorąc pod uwagę okoliczności" },
+];
+
+const fillData = [
+  { before: "Don't", blank: "put off", after: "what you can do today.", hint: "phrasal verb: odkładać", answer: "put off" },
+  { before: "She had to", blank: "turn down", after: "the job offer — the salary was too low.", hint: "phrasal verb: odrzucić", answer: "turn down" },
+  { before: "I", blank: "come across", after: "this amazing book at the library.", hint: "phrasal verb: natknąć się", answer: "come across" },
+  { before: "We should", blank: "look into", after: "the issue before making a decision.", hint: "phrasal verb: zbadać", answer: "look into" },
+  { before: "It took me a while, but I finally", blank: "got the hang of", after: "the new software.", hint: "phrasal verb: opanować coś", answer: "get the hang of" },
+  { before: "Let's", blank: "keep in touch", after: "— here's my number!", hint: "phrasal verb: utrzymywać kontakt", answer: "keep in touch" },
+  { before: "She wants to", blank: "bring up", after: "this topic at the next meeting.", hint: "phrasal verb: poruszyć temat", answer: "bring up" },
+  { before: "We've", blank: "run out of", after: "time — let's wrap up!", hint: "phrasal verb: wyczerpać zapasy", answer: "run out of" },
+];
+
+const classifyData = [
+  { phrase: "I regret to inform you that…", correct: "formal" },
+  { phrase: "No way, that's crazy!", correct: "informal" },
+  { phrase: "Catch you later!", correct: "informal" },
+  { phrase: "I am afraid I cannot attend.", correct: "formal" },
+  { phrase: "Could you shed some light on this?", correct: "formal" },
+  { phrase: "Sounds like a plan!", correct: "informal" },
+];
+
+const translateData = [
+  {
+    pl: "Bardzo mi przykro to słyszeć.",
+    answers: ["i'm so sorry to hear that", "i am so sorry to hear that", "i'm very sorry to hear that", "i am very sorry to hear that"],
+    hint: "I'm so sorry to hear that."
+  },
+  {
+    pl: "Mam nadzieję, że się rozumiemy.",
+    answers: ["i hope we're on the same page", "i hope we are on the same page", "i hope we understand each other"],
+    hint: "I hope we're on the same page."
+  },
+  {
+    pl: "Z całym szacunkiem, nie zgadzam się.",
+    answers: ["with all due respect, i disagree", "with all due respect i disagree", "with all respect, i disagree"],
+    hint: "With all due respect, I disagree."
+  },
+  {
+    pl: "Pozwól, że to sprawdzę.",
+    answers: ["let me check on that", "let me look into that", "let me check that", "allow me to check that"],
+    hint: "Let me check on that."
+  },
+  {
+    pl: "Nie krępuj się pytać.",
+    answers: ["feel free to ask", "don't hesitate to ask", "please don't hesitate to ask"],
+    hint: "Feel free to ask. / Don't hesitate to ask."
+  },
+];
+
+// ────────────────────────────────────────────
+// RENDER
+// ────────────────────────────────────────────
+function renderMatch() {
+  const shuffled = [...matchData].sort(() => Math.random() - 0.5);
+  const plOptions = matchData.map(d => d.pl).sort(() => Math.random() - 0.5);
+  const grid = document.getElementById('matchGrid');
+  grid.innerHTML = '';
+  matchData.forEach((item, i) => {
+    const enDiv = document.createElement('div');
+    enDiv.className = 'match-en';
+    enDiv.innerHTML = `<span class="num">${i+1}</span>${item.en}`;
+
+    const plDiv = document.createElement('div');
+    plDiv.className = 'match-pl';
+    const sel = document.createElement('select');
+    sel.id = `match_${i}`;
+    sel.dataset.correct = item.pl;
+    const defaultOpt = document.createElement('option');
+    defaultOpt.value = '';
+    defaultOpt.textContent = '— wybierz —';
+    sel.appendChild(defaultOpt);
+    plOptions.forEach(pl => {
+      const opt = document.createElement('option');
+      opt.value = pl;
+      opt.textContent = pl;
+      sel.appendChild(opt);
+    });
+    plDiv.appendChild(sel);
+
+    grid.appendChild(enDiv);
+    grid.appendChild(plDiv);
+  });
+}
+
+function renderFill() {
+  const list = document.getElementById('fillList');
+  list.innerHTML = '';
+  fillData.forEach((item, i) => {
+    const li = document.createElement('li');
+    li.className = 'sentence-item';
+    li.innerHTML = `
+      <span class="snum">${i+1}</span>
+      <span>${item.before} <input class="blank-input" id="fill_${i}" data-answer="${item.answer}" placeholder="${item.blank.replace(/./g,'_')}" /> ${item.after}</span>
+      <span class="hint-tag">(${item.hint})</span>
+    `;
+    list.appendChild(li);
+    const inp = li.querySelector(`#fill_${i}`);
+    inp.addEventListener('keydown', e => { if(e.key==='Enter') checkSingleFill(inp); });
+  });
+}
+
+function renderClassify() {
+  const list = document.getElementById('classifyList');
+  list.innerHTML = '';
+  classifyData.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'classify-item';
+    div.id = `classify_${i}`;
+    div.innerHTML = `
+      <span>"${item.phrase}"</span>
+      <div class="radio-group">
+        <label class="formal-label"><input type="radio" name="tone_${i}" value="formal" /> Formal</label>
+        <label class="informal-label"><input type="radio" name="tone_${i}" value="informal" /> Informal</label>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function renderTranslate() {
+  const list = document.getElementById('translateList');
+  list.innerHTML = '';
+  translateData.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'translate-item';
+    div.innerHTML = `
+      <div class="translate-pl">Przetłumacz: <strong>"${item.pl}"</strong></div>
+      <input class="translate-input" id="trans_${i}" placeholder="Write in English…" />
+      <div class="translate-answer-hint" id="trans_hint_${i}">✅ Przykładowa odpowiedź: ${item.hint}</div>
+    `;
+    list.appendChild(div);
+    const inp = div.querySelector(`#trans_${i}`);
+    inp.addEventListener('keydown', e => { if(e.key==='Enter') checkSingleTranslate(inp, i); });
+  });
+}
+
+// ────────────────────────────────────────────
+// CHECK LOGIC
+// ────────────────────────────────────────────
+function normalize(str) {
+  return str.toLowerCase().trim().replace(/['']/g, "'").replace(/\s+/g,' ');
+}
+
+function showResult(id, correct, total) {
+  const el = document.getElementById(id);
+  el.classList.remove('great','ok','try-again');
+  el.classList.add('show');
+  if (correct === total) {
+    el.className = 'result-msg show great';
+    el.textContent = `Super! 🎉 Wszystkie ${total} odpowiedzi poprawne!`;
+  } else if (correct >= Math.ceil(total * 0.6)) {
+    el.className = 'result-msg show ok';
+    el.textContent = `Nieźle! 😊 ${correct}/${total} — jeszcze trochę pracy!`;
+  } else {
+    el.className = 'result-msg show try-again';
+    el.textContent = `${correct}/${total} — spróbuj jeszcze raz! 💪`;
+  }
+}
+
+function checkMatch() {
+  let correct = 0;
+  matchData.forEach((item, i) => {
+    const sel = document.getElementById(`match_${i}`);
+    sel.classList.remove('correct','wrong');
+    if (sel.value === item.pl) { sel.classList.add('correct'); correct++; }
+    else sel.classList.add('wrong');
+  });
+  showResult('matchResult', correct, matchData.length);
+}
+
+function checkSingleFill(inp) {
+  inp.classList.remove('correct','wrong');
+  const ans = normalize(inp.dataset.answer);
+  const val = normalize(inp.value);
+  if (val === ans) inp.classList.add('correct');
+  else inp.classList.add('wrong');
+}
+
+function checkFill() {
+  let correct = 0;
+  fillData.forEach((item, i) => {
+    const inp = document.getElementById(`fill_${i}`);
+    inp.classList.remove('correct','wrong');
+    if (normalize(inp.value) === normalize(item.answer)) { inp.classList.add('correct'); correct++; }
+    else inp.classList.add('wrong');
+  });
+  showResult('fillResult', correct, fillData.length);
+}
+
+function checkClassify() {
+  let correct = 0;
+  classifyData.forEach((item, i) => {
+    const div = document.getElementById(`classify_${i}`);
+    div.classList.remove('correct-f','correct-i');
+    const sel = document.querySelector(`input[name="tone_${i}"]:checked`);
+    if (sel && sel.value === item.correct) {
+      correct++;
+      div.classList.add(item.correct === 'formal' ? 'correct-f' : 'correct-i');
+    }
+  });
+  showResult('classifyResult', correct, classifyData.length);
+}
+
+function checkSingleTranslate(inp, i) {
+  inp.classList.remove('correct','wrong');
+  const hint = document.getElementById(`trans_hint_${i}`);
+  const val = normalize(inp.value);
+  const isCorrect = translateData[i].answers.some(a => normalize(a) === val);
+  if (isCorrect) { inp.classList.add('correct'); hint.classList.add('visible'); }
+  else { inp.classList.add('wrong'); }
+}
+
+function checkDialogue() {
+  let correct = 0;
+  const total = 5;
+  for (let i = 1; i <= total; i++) {
+    const inp = document.getElementById(`d${i}`);
+    inp.classList.remove('correct','wrong');
+    if (normalize(inp.value) === normalize(inp.dataset.answer)) { inp.classList.add('correct'); correct++; }
+    else inp.classList.add('wrong');
+  }
+  showResult('dialogueResult', correct, total);
+}
+
+// Dialogue enter support
+document.addEventListener('DOMContentLoaded', () => {
+  renderMatch();
+  renderFill();
+  renderClassify();
+  renderTranslate();
+
+  for (let i = 1; i <= 5; i++) {
+    const inp = document.getElementById(`d${i}`);
+    if (inp) inp.addEventListener('keydown', e => { if(e.key==='Enter') checkDialogue(); });
+  }
+});
+</script>
+</body>
+</html>
