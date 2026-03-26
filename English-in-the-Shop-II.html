@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>English in the Shop 🛍️</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #faf7f4;
+      --surface: #ffffff;
+      --surface2: #f5f0eb;
+      --ink: #1c1410;
+      --ink2: #6b5a4e;
+      --ink3: #a8917f;
+      --rose: #d4506a;
+      --rose-light: #fde8ed;
+      --teal: #2a9d8f;
+      --teal-light: #e0f5f3;
+      --gold: #c9973a;
+      --gold-light: #fdf3e0;
+      --navy: #1e3a5f;
+      --navy-light: #e8eef6;
+      --border: #e8ddd4;
+      --correct: #2a9d8f;
+      --wrong: #d4506a;
+      --font-display: 'Cormorant Garamond', Georgia, serif;
+      --font-body: 'Outfit', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--ink);
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--navy);
+      color: #fff;
+      padding: 0;
+      position: relative;
+      overflow: hidden;
+      min-height: 320px;
+      display: flex;
+      align-items: stretch;
+    }
+    .hero-left {
+      flex: 1;
+      padding: 52px 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+    }
+    .hero-right {
+      width: 420px;
+      position: relative;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .hero-right img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      opacity: 0.75;
+      display: block;
+    }
+    .hero-right::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, var(--navy) 0%, transparent 40%);
+    }
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 50px;
+      padding: 7px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 20px;
+      width: fit-content;
+      animation: slideIn 0.5s ease both;
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.6rem, 5vw, 4.2rem);
+      font-weight: 700;
+      line-height: 1.05;
+      animation: slideIn 0.55s 0.08s ease both;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: #f0c060;
+    }
+    .hero-desc {
+      margin-top: 16px;
+      font-size: 17px;
+      color: rgba(255,255,255,0.65);
+      max-width: 420px;
+      animation: slideIn 0.55s 0.16s ease both;
+    }
+    .hero-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 24px;
+      animation: slideIn 0.55s 0.22s ease both;
+    }
+    .hero-chip {
+      background: rgba(255,255,255,0.1);
+      border-radius: 50px;
+      padding: 5px 15px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.78);
+    }
+
+    /* ── LAYOUT ── */
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 28px 100px;
+    }
+
+    /* ── SECTION HEADING ── */
+    .sec-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      margin: 64px 0 26px;
+      animation: fadeUp 0.5s ease both;
+    }
+    .sec-num {
+      font-family: var(--font-display);
+      font-size: 4rem;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--border);
+      flex-shrink: 0;
+      margin-top: -6px;
+      user-select: none;
+    }
+    .sec-text {}
+    .sec-title {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 600;
+      line-height: 1.1;
+    }
+    .sec-sub {
+      font-size: 15px;
+      color: var(--ink3);
+      margin-top: 4px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 36px 36px 40px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 20px rgba(28,20,16,0.06);
+      animation: fadeUp 0.45s ease both;
+      margin-bottom: 22px;
+    }
+    .card + .card { margin-top: 0; }
+
+    /* ── SECTION HEADING (plain, no bg image) ── */
+    .sec-head.sec-img {
+      background: none;
+      padding: 0;
+      border-radius: 0;
+      overflow: visible;
+      margin: 64px 0 26px;
+    }
+    .sec-head.sec-img::before { display: none; }
+
+    /* ── PHOTO INSET (full-size image between sections) ── */
+    .photo-inset {
+      border-radius: 16px;
+      overflow: hidden;
+      margin: 0 0 22px;
+      line-height: 0;
+    }
+    .photo-inset img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .photo-inset.half {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .photo-inset.half img {
+      border-radius: 12px;
+    }
+
+    /* ── REVEAL TILE (covers Polish translation) ── */
+    .reveal-cell {
+      position: relative;
+      padding: 0 !important;
+      overflow: hidden;
+    }
+    .reveal-inner {
+      padding: 14px 18px;
+      font-weight: 500;
+      color: var(--teal);
+      width: 100%;
+    }
+    .reveal-mask {
+      position: absolute;
+      inset: 0;
+      background: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.15s;
+      border-radius: 2px;
+    }
+    .reveal-mask.hidden { opacity: 0; pointer-events: none; }
+
+    /* ── PHRASE TABLE ── */
+    .phrase-table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1.5px solid var(--border);
+      font-size: 17px;
+    }
+    .phrase-table th,
+    .phrase-table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      text-align: left;
+      vertical-align: middle;
+    }
+    .phrase-table th:last-child,
+    .phrase-table td:last-child { border-right: none; }
+    .phrase-table tbody tr:last-child td { border-bottom: none; }
+    .phrase-table thead th {
+      background: var(--navy);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border-bottom-color: rgba(255,255,255,0.15);
+      border-right-color: rgba(255,255,255,0.15);
+    }
+    .phrase-table tbody tr:nth-child(even) td { background: var(--surface2); }
+    .reveal-cell {
+      position: relative;
+      cursor: pointer;
+      min-width: 160px;
+      padding: 14px 18px;
+    }
+    .reveal-text { font-weight: 500; color: var(--teal); display: block; }
+    .reveal-mask {
+      position: absolute;
+      inset: 0;
+      background: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    /* ── WORD BANK ── */
+    .word-bank {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 18px 20px;
+      background: var(--navy-light);
+      border-radius: 14px;
+      margin-bottom: 26px;
+      border: 1px solid #c8d8ec;
+    }
+    .word-bank-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--navy);
+      width: 100%;
+      margin-bottom: 4px;
+    }
+    .wchip {
+      background: #fff;
+      border: 1.5px solid #b8cde0;
+      border-radius: 50px;
+      padding: 6px 18px;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--navy);
+    }
+
+    /* ── FILL BLANKS (Task 2) ── */
+    .fill-list { display: flex; flex-direction: column; gap: 18px; }
+    .fill-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 18px 20px;
+      background: var(--surface2);
+      border-radius: 14px;
+      border: 1.5px solid var(--border);
+      font-size: 18px;
+      line-height: 1.7;
+      transition: border-color 0.2s;
+    }
+    .fill-item.correct { border-color: var(--correct); background: var(--teal-light); }
+    .fill-item.wrong { border-color: var(--wrong); background: var(--rose-light); }
+    .fill-n {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--rose);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+    .fill-text { flex: 1; }
+    .blank {
+      display: inline-block;
+      border: none;
+      border-bottom: 2.5px solid #b0a090;
+      background: transparent;
+      font-family: var(--font-body);
+      font-size: 18px;
+      color: var(--ink);
+      min-width: 120px;
+      padding: 2px 8px;
+      text-align: center;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .blank:focus { border-bottom-color: var(--rose); }
+    .blank.correct { border-bottom-color: var(--correct); color: var(--correct); font-weight: 600; }
+    .blank.wrong { border-bottom-color: var(--wrong); color: var(--wrong); }
+    .fill-hint { font-size: 14px; color: var(--ink3); font-style: italic; margin-top: 4px; display: block; }
+
+    /* ── DIALOGUE (Task 3) ── */
+    .scene-img {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      border-radius: 14px;
+      display: block;
+      margin-bottom: 26px;
+      filter: saturate(0.85);
+    }
+    .dialogue { display: flex; flex-direction: column; gap: 14px; }
+    .dline {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .dline.right { flex-direction: row-reverse; }
+    .davatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-top: 2px;
+    }
+    .davatar.customer { background: var(--navy-light); }
+    .davatar.ania { background: var(--rose-light); }
+    .dbubble {
+      background: var(--surface2);
+      border-radius: 16px;
+      padding: 14px 18px;
+      font-size: 18px;
+      line-height: 1.65;
+      border: 1.5px solid var(--border);
+      flex: 1;
+      max-width: 80%;
+    }
+    .dline.right .dbubble { background: var(--rose-light); border-color: #f0c0cc; }
+    .dspeaker {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+    .dspeaker.c { color: var(--navy); }
+    .dspeaker.a { color: var(--rose); }
+    .dbubble .blank { min-width: 100px; }
+
+    /* ── MATCH (Task 4) ── */
+    .match-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px 30px;
+    }
+    .match-en {
+      background: var(--gold-light);
+      border: 1.5px solid #e8c87a;
+      border-radius: 12px;
+      padding: 13px 18px;
+      font-size: 17px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .match-en .mn {
+      background: var(--gold);
+      color: #fff;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .match-pl { display: flex; align-items: center; }
+    .match-sel {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-family: var(--font-body);
+      font-size: 17px;
+      color: var(--ink);
+      background: var(--bg);
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' fill='none'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%23a8917f' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+      transition: border-color 0.2s;
+    }
+    .match-sel:focus { border-color: var(--gold); }
+    .match-sel.correct { border-color: var(--correct); background-color: var(--teal-light); }
+    .match-sel.wrong { border-color: var(--wrong); background-color: var(--rose-light); }
+
+    /* ── TRANSLATE (Task 5) ── */
+    .trans-list { display: flex; flex-direction: column; gap: 16px; }
+    .trans-item {
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1.5px solid var(--border);
+    }
+    .trans-pl {
+      background: var(--teal-light);
+      padding: 14px 20px;
+      font-size: 18px;
+      color: #1a5c54;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .trans-pl .flag { font-size: 1.3rem; }
+    .trans-en-wrap {
+      background: var(--surface);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .trans-en-wrap .flag { font-size: 1.3rem; }
+    .trans-input {
+      flex: 1;
+      border: none;
+      border-bottom: 2px solid var(--border);
+      background: transparent;
+      font-family: var(--font-body);
+      font-size: 18px;
+      color: var(--ink);
+      padding: 4px 8px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .trans-input:focus { border-bottom-color: var(--teal); }
+    .trans-input.correct { border-bottom-color: var(--correct); color: var(--correct); font-weight: 600; }
+    .trans-input.wrong { border-bottom-color: var(--wrong); }
+    .trans-hint {
+      font-size: 14px;
+      color: var(--teal);
+      padding: 6px 20px 12px;
+      background: var(--surface);
+      display: none;
+    }
+    .trans-hint.show { display: block; }
+
+    /* ── FUN FACT ── */
+    .funfact {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 18px 20px;
+      border-radius: 14px;
+      margin-top: 24px;
+      font-size: 17px;
+      line-height: 1.6;
+    }
+    .funfact-icon { font-size: 1.8rem; flex-shrink: 0; }
+    .funfact strong {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .funfact.gold { background: var(--gold-light); border: 1px solid #e8c87a; color: #5c3d0a; }
+    .funfact.rose { background: var(--rose-light); border: 1px solid #f0b0bc; color: #7c1c2c; }
+    .funfact.teal { background: var(--teal-light); border: 1px solid #8cd4cc; color: #0e3d38; }
+    .funfact.navy { background: var(--navy-light); border: 1px solid #b0c8e0; color: #0e2038; }
+
+    /* ── BTN ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 30px;
+      border: none;
+      border-radius: 50px;
+      font-family: var(--font-body);
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.15s, opacity 0.15s;
+      margin-top: 22px;
+    }
+    .btn:hover { opacity: 0.88; }
+    .btn:active { transform: scale(0.97); }
+    .btn-rose { background: var(--rose); color: #fff; }
+    .btn-teal { background: var(--teal); color: #fff; }
+    .btn-gold { background: var(--gold); color: #fff; }
+    .btn-navy { background: var(--navy); color: #fff; }
+
+    /* ── RESULT ── */
+    .result {
+      margin-top: 18px;
+      padding: 15px 20px;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 600;
+      display: none;
+    }
+    .result.show { display: block; animation: fadeUp 0.3s ease; }
+    .result.great { background: var(--teal-light); color: #0d4a42; border: 1px solid #8cd4cc; }
+    .result.ok { background: var(--gold-light); color: #5c3d0a; border: 1px solid #e8c87a; }
+    .result.bad { background: var(--rose-light); color: #7c1c2c; border: 1px solid #f0b0bc; }
+
+    /* ── CLOSING ── */
+    .closing {
+      background: linear-gradient(135deg, #1e3a5f 0%, #2a4a3e 100%);
+      border-radius: 24px;
+      padding: 52px 44px;
+      text-align: center;
+      color: #fff;
+      margin-top: 64px;
+      position: relative;
+      overflow: hidden;
+    }
+    .closing::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(201,151,58,0.18) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 30%, rgba(42,157,143,0.18) 0%, transparent 55%);
+    }
+    .closing h2 {
+      font-family: var(--font-display);
+      font-size: 3rem;
+      font-weight: 700;
+      position: relative;
+      line-height: 1.1;
+    }
+    .closing p {
+      color: rgba(255,255,255,0.65);
+      font-size: 18px;
+      margin-top: 12px;
+      position: relative;
+    }
+    .closing a {
+      display: inline-block;
+      margin-top: 28px;
+      padding: 14px 36px;
+      background: rgba(255,255,255,0.15);
+      border: 1.5px solid rgba(255,255,255,0.3);
+      border-radius: 50px;
+      color: #fff;
+      text-decoration: none;
+      font-size: 17px;
+      font-weight: 600;
+      position: relative;
+      transition: background 0.2s;
+      backdrop-filter: blur(6px);
+    }
+    .closing a:hover { background: rgba(255,255,255,0.24); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 700px) {
+      .hero { flex-direction: column; }
+      .hero-right { width: 100%; height: 200px; }
+      .hero-left { padding: 36px 24px; }
+      .card { padding: 24px 20px 28px; }
+      .photo-inset.half { grid-template-columns: 1fr; }
+      .phrase-row { grid-template-columns: 1fr 1fr; }
+      .phrase-row span:nth-child(3) { display: none; }
+      .match-wrap { grid-template-columns: 1fr; }
+      .closing { padding: 36px 24px; }
+      .closing h2 { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ HERO ══ -->
+<div class="hero">
+  <div class="hero-left">
+    <div class="hero-pill">🛍️ Karta Pracy</div>
+    <h1>English<br><em>in the Shop II</em></h1>
+    <p class="hero-desc">Obsługa klienta, moda i zakupy — angielski, który przyda Ci się w pracy każdego dnia.</p>
+    <div class="hero-chips">
+      <span class="hero-chip">👗 Fashion vocabulary</span>
+      <span class="hero-chip">🗣️ Customer service</span>
+      <span class="hero-chip">🔤 Poziom: Podstawowy</span>
+    </div>
+  </div>
+  <div class="hero-right">
+    <img src="https://bertlingo-learning.github.io/Angielski/Obrazki/Fashion-images/shop-fashion.png" alt="Fashion shop" />
+  </div>
+</div>
+
+<div class="wrap">
+
+
+  <!-- ══ TASK 1: NEW PHRASES ══ -->
+  <div class="sec-head">
+    <div class="sec-num">01</div>
+    <div class="sec-text">
+      <div class="sec-title">New phrases — read &amp; learn</div>
+      <div class="sec-sub">Poznaj nowe zwroty. Kliknij ciemne pole w kolumnie "Polski", żeby odkryć tłumaczenie — kliknij ponownie, żeby zakryć.</div>
+    </div>
+  </div>
+
+  <div class="photo-inset half">
+    <img src="https://bertlingo-learning.github.io/Angielski/Obrazki/Fashion-images/kolekcja-fashion.png" alt="" />
+    <img src="https://bertlingo-learning.github.io/Angielski/Obrazki/Fashion-images/zakupy-fashion.png" alt="" />
+  </div>
+
+  <div class="card">
+    <table class="phrase-table">
+      <thead>
+        <tr class="phrase-row header">
+          <th>English</th>
+          <th>Polski</th>
+          <th>Kiedy uzywac?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="phrase-row">
+          <td><strong>I'm just browsing.</strong></td>
+          <td class="reveal-cell" onclick="toggleMask(this)"><span class="reveal-text">Tylko się rozglądam.</span><div class="reveal-mask">kliknij</div></td>
+          <td>Gdy nie potrzebujesz pomocy sprzedawcy.</td>
+        </tr>
+        <tr class="phrase-row">
+          <td><strong>Can I try this on?</strong></td>
+          <td class="reveal-cell" onclick="toggleMask(this)"><span class="reveal-text">Czy mogę to przymierzyć?</span><div class="reveal-mask">kliknij</div></td>
+          <td>Prosząc o dostęp do przymierzalni.</td>
+        </tr>
+        <tr class="phrase-row">
+          <td><strong>It doesn't fit.</strong></td>
+          <td class="reveal-cell" onclick="toggleMask(this)"><span class="reveal-text">To nie pasuje (na mnie).</span><div class="reveal-mask">kliknij</div></td>
+          <td>Gdy ubranie jest za małe lub za duże.</td>
+        </tr>
+        <tr class="phrase-row">
+          <td><strong>Do you have it in black?</strong></td>
+          <td class="reveal-cell" onclick="toggleMask(this)"><span class="reveal-text">Czy macie to w czarnym?</span><div class="reveal-mask">kliknij</div></td>
+          <td>Pytając o inny kolor.</td>
+        </tr>
+        <tr class="phrase-row">
+          <td><strong>I'll take it!</strong></td>
+          <td class="reveal-cell" onclick="toggleMask(this)"><span class="reveal-text">Biorę to!</span><div class="reveal-mask">kliknij</div></td>
+          <td>Gdy decydujesz się na zakup.</td>
+        </tr>
+        <tr class="phrase-row">
+          <td><strong>How much is it?</strong></td>
+          <td class="reveal-cell" onclick="toggleMask(this)"><span class="reveal-text">Ile to kosztuje?</span><div class="reveal-mask">kliknij</div></td>
+          <td>Pytając o cenę.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="funfact gold" style="margin-top:26px;">
+      <div class="funfact-icon">💡</div>
+      <div>
+        <strong>Ciekawostka</strong>
+        <em>„I'm just browsing"</em> — to magiczne zdanie w każdym sklepie na świecie! <em>To browse</em> pierwotnie znaczyło „skubać liście" (o zwierzętach). Dziś oznacza też przeglądanie internetu — <em>web browser</em> (przeglądarka) pochodzi właśnie od tego słowa!
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TASK 2: FILL IN ══ -->
+  <div class="sec-head">
+    <div class="sec-num">02</div>
+    <div class="sec-text">
+      <div class="sec-title">Fill in the blanks</div>
+      <div class="sec-sub">Uzupełnij luki słowem z poniższej listy. Naciśnij Enter po każdym zdaniu.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="word-bank">
+      <div class="word-bank-label">📋 Word bank — użyj tych słów:</div>
+      <span class="wchip">try on</span>
+      <span class="wchip">browsing</span>
+      <span class="wchip">fits</span>
+      <span class="wchip">receipt</span>
+      <span class="wchip">tight</span>
+      <span class="wchip">loose</span>
+      <span class="wchip">latest</span>
+      <span class="wchip">recommend</span>
+    </div>
+
+    <div class="fill-list" id="fillList">
+      <!-- rendered by JS -->
+    </div>
+
+    <div class="funfact rose" style="margin-top:24px;">
+      <div class="funfact-icon">🛍️</div>
+      <div>
+        <strong>Ciekawostka</strong>
+        <em>„Fitting room"</em> i <em>„changing room"</em> — oba są poprawne! W USA częściej usłyszysz <em>fitting room</em> lub <em>dressing room</em>. W UK — <em>changing room</em>. W sklepach na całym świecie rozumieją każde z tych słów.
+      </div>
+    </div>
+
+    <button class="btn btn-rose" onclick="checkFill()">Sprawdź ✓</button>
+    <div class="result" id="fillRes"></div>
+  </div>
+
+  <!-- ══ TASK 3: DIALOGUE ══ -->
+  <div class="sec-head">
+    <div class="sec-num">03</div>
+    <div class="sec-text">
+      <div class="sec-title">Customer in the shop</div>
+      <div class="sec-sub">Zagraniczny klient przyszedł do sklepu. Uzupełnij rozmowę — Ty jesteś Anią! Naciśnij Enter żeby sprawdzić każdą odpowiedź.</div>
+    </div>
+  </div>
+
+  <div class="card">
+
+    <div class="dialogue">
+
+      <div class="dline">
+        <div class="davatar customer">🧑‍💼</div>
+        <div class="dbubble">
+          <div class="dspeaker c">Customer</div>
+          Excuse me, could you <input class="blank" id="d1" data-answer="recommend" placeholder="____"> something elegant but casual?
+        </div>
+      </div>
+
+      <div class="dline right">
+        <div class="davatar ania">👩</div>
+        <div class="dbubble">
+          <div class="dspeaker a">Ania (Ty!)</div>
+          Of course! This is our <input class="blank" id="d2" data-answer="latest" placeholder="____"> collection. Very popular right now!
+        </div>
+      </div>
+
+      <div class="dline">
+        <div class="davatar customer">🧑‍💼</div>
+        <div class="dbubble">
+          <div class="dspeaker c">Customer</div>
+          I love this jacket! Can I <input class="blank" id="d3" data-answer="try" placeholder="____"> it on?
+        </div>
+      </div>
+
+      <div class="dline right">
+        <div class="davatar ania">👩</div>
+        <div class="dbubble">
+          <div class="dspeaker a">Ania (Ty!)</div>
+          Sure! The fitting room is <input class="blank" id="d4" data-answer="free" placeholder="____"> — just on the right.
+        </div>
+      </div>
+
+      <div class="dline">
+        <div class="davatar customer">🧑‍💼</div>
+        <div class="dbubble">
+          <div class="dspeaker c">Customer</div>
+          Hmm, it's a bit <input class="blank" id="d5" data-answer="tight" placeholder="____">. Do you have a bigger size?
+        </div>
+      </div>
+
+      <div class="dline right">
+        <div class="davatar ania">👩</div>
+        <div class="dbubble">
+          <div class="dspeaker a">Ania (Ty!)</div>
+          Let me <input class="blank" id="d6" data-answer="check" placeholder="____"> it for you — one moment!
+        </div>
+      </div>
+
+    </div>
+
+    <div class="funfact navy" style="margin-top:26px;">
+      <div class="funfact-icon">🗣️</div>
+      <div>
+        <strong>Przydatna fraza</strong>
+        <em>„One moment!"</em> lub <em>„Just a moment!"</em> — krótkie, uprzejme i rozumiane wszędzie na świecie. Możesz też powiedzieć <em>„Bear with me!"</em> (dosł. „wytrzymaj ze mną") — brzmi bardzo naturalnie po angielsku!
+      </div>
+    </div>
+
+    <button class="btn btn-navy" onclick="checkDialogue()">Sprawdź ✓</button>
+    <div class="result" id="dialogueRes"></div>
+  </div>
+
+  <!-- ══ TASK 4: MATCH ══ -->
+  <div class="photo-inset half">
+    <img src="https://bertlingo-learning.github.io/Angielski/Obrazki/Fashion-images/wystawa-fashion.png" alt="" />
+    <img src="https://bertlingo-learning.github.io/Angielski/Obrazki/Fashion-images/kolekcja-2-fashion.png" alt="" />
+  </div>
+  <div class="sec-head">
+    <div class="sec-num">04</div>
+    <div class="sec-text">
+      <div class="sec-title">Match the words</div>
+      <div class="sec-sub">Dopasuj angielskie słowo do polskiego tłumaczenia.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="match-wrap" id="matchWrap">
+      <!-- rendered by JS -->
+    </div>
+
+    <div class="funfact teal" style="margin-top:24px;">
+      <div class="funfact-icon">👗</div>
+      <div>
+        <strong>Ciekawostka</strong>
+        <em>„Tight"</em> i <em>„loose"</em> to para słów antonymów. Ale uwaga — <em>tight</em> może też znaczyć „skąpy" (o osobie!), a <em>loose</em> — „na wolności" lub „luźny moralnie". Kontekst jest wszystkim w angielskim!
+      </div>
+    </div>
+
+    <button class="btn btn-gold" onclick="checkMatch()">Sprawdź ✓</button>
+    <div class="result" id="matchRes"></div>
+  </div>
+
+  <!-- ══ TASK 5: TRANSLATE ══ -->
+  <div class="photo-inset half">
+    <img src="https://bertlingo-learning.github.io/Angielski/Obrazki/Fashion-images/kolekcja-3-fashion.png" alt="" />
+    <img src="https://bertlingo-learning.github.io/Angielski/Obrazki/Fashion-images/zakupy-fashion.png" alt="" />
+  </div>
+  <div class="sec-head">
+    <div class="sec-num">05</div>
+    <div class="sec-text">
+      <div class="sec-title">Say it in English!</div>
+      <div class="sec-sub">Przetłumacz te zdania. Naciśnij Enter — od razu zobaczysz, czy dobrze.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="trans-list" id="transList">
+      <!-- rendered by JS -->
+    </div>
+  </div>
+
+  <!-- ══ CLOSING ══ -->
+  <div class="closing">
+    <h2>Świetna robota, Ania! 🎉</h2>
+    <p>Teraz wiesz jak rozmawiać z każdym zagranicznym klientem w sklepie!</p>
+    <a href="index.html">← Wróć do wszystkich materiałów</a>
+  </div>
+
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────
+const fillData = [
+  { before: "Can I", blank: "try on", after: "these jeans, please?", hint: "przymierzyć", answer: "try on" },
+  { before: "No thanks, I'm just", blank: "browsing", after: "today.", hint: "rozglądam się", answer: "browsing" },
+  { before: "I love this jacket — it", blank: "fits", after: "perfectly!", hint: "pasuje", answer: "fits" },
+  { before: "Could I have the", blank: "receipt", after: ", please?", hint: "paragon", answer: "receipt" },
+  { before: "These jeans are too", blank: "tight", after: "— do you have a bigger size?", hint: "za ciasne", answer: "tight" },
+  { before: "This shirt is too", blank: "loose", after: "— I need something smaller.", hint: "za luźne", answer: "loose" },
+  { before: "Is this your", blank: "latest", after: "collection?", hint: "najnowszy", answer: "latest" },
+  { before: "Could you", blank: "recommend", after: "something for a job interview?", hint: "polecić", answer: "recommend" },
+];
+
+const matchData = [
+  { en: "I'm just browsing",   pl: "Tylko się rozglądam" },
+  { en: "Can I try this on?",  pl: "Czy mogę to przymierzyć?" },
+  { en: "It doesn't fit",      pl: "To nie pasuje" },
+  { en: "receipt",             pl: "paragon" },
+  { en: "tight",               pl: "za ciasne / obcisłe" },
+  { en: "loose",               pl: "za luźne" },
+  { en: "I'll take it!",       pl: "Biorę to!" },
+  { en: "recommend",           pl: "polecić" },
+];
+
+const transData = [
+  {
+    pl: "Czy mogę to przymierzyć?",
+    answers: ["can i try this on", "can i try it on", "could i try this on", "could i try it on"],
+    hint: "Can I try this on?"
+  },
+  {
+    pl: "Tylko się rozglądam, dziękuję.",
+    answers: ["i'm just browsing thank you", "i am just browsing thank you", "i'm just browsing thanks", "just browsing thank you"],
+    hint: "I'm just browsing, thank you."
+  },
+  {
+    pl: "Te spodnie są za ciasne.",
+    answers: ["these trousers are too tight", "these pants are too tight", "these jeans are too tight"],
+    hint: "These trousers are too tight."
+  },
+  {
+    pl: "Czy macie to w innym kolorze?",
+    answers: ["do you have it in another colour", "do you have this in another colour", "do you have it in a different colour", "do you have this in a different color"],
+    hint: "Do you have it in another colour?"
+  },
+  {
+    pl: "Biorę to! Czy mogę prosić o paragon?",
+    answers: ["i'll take it can i have a receipt", "i'll take it could i have a receipt", "i'll take it can i get a receipt"],
+    hint: "I'll take it! Can I have a receipt?"
+  },
+];
+
+// ── HELPERS ──────────────────────────────────
+function norm(s) {
+  return s.toLowerCase().trim().replace(/[?.!,'']/g,'').replace(/\s+/g,' ');
+}
+
+function showResult(id, correct, total) {
+  const el = document.getElementById(id);
+  el.classList.remove('great','ok','bad');
+  el.classList.add('show');
+  if (correct === total) {
+    el.className = 'result show great';
+    el.textContent = `Brawo! 🎉 Wszystkie ${total} odpowiedzi poprawne! Super robota!`;
+  } else if (correct >= Math.ceil(total * 0.6)) {
+    el.className = 'result show ok';
+    el.textContent = `Nieźle! 😊 ${correct} z ${total} — jeszcze chwila i będzie idealnie!`;
+  } else {
+    el.className = 'result show bad';
+    el.textContent = `${correct} z ${total} — spróbuj jeszcze raz, dasz radę! 💪`;
+  }
+}
+
+// ── RENDER ────────────────────────────────────
+function renderFill() {
+  const list = document.getElementById('fillList');
+  list.innerHTML = '';
+  fillData.forEach((d, i) => {
+    const li = document.createElement('div');
+    li.className = 'fill-item';
+    li.id = `fi${i}`;
+    li.innerHTML = `
+      <div class="fill-n">${i+1}</div>
+      <div class="fill-text">
+        ${d.before}
+        <input class="blank" id="bl${i}" data-answer="${d.answer}" placeholder="${d.blank.replace(/\S/g,'_')}" />
+        ${d.after}
+        <span class="fill-hint">(hint: ${d.hint})</span>
+      </div>`;
+    list.appendChild(li);
+    li.querySelector(`#bl${i}`).addEventListener('keydown', e => {
+      if (e.key === 'Enter') checkSingleBlank(li.querySelector(`#bl${i}`), i);
+    });
+  });
+}
+
+function checkSingleBlank(inp, i) {
+  const parent = document.getElementById(`fi${i}`);
+  inp.classList.remove('correct','wrong');
+  parent.classList.remove('correct','wrong');
+  if (norm(inp.value) === norm(inp.dataset.answer)) {
+    inp.classList.add('correct'); parent.classList.add('correct');
+  } else {
+    inp.classList.add('wrong'); parent.classList.add('wrong');
+  }
+}
+
+function checkFill() {
+  let correct = 0;
+  fillData.forEach((d, i) => {
+    const inp = document.getElementById(`bl${i}`);
+    inp.classList.remove('correct','wrong');
+    const parent = document.getElementById(`fi${i}`);
+    parent.classList.remove('correct','wrong');
+    if (norm(inp.value) === norm(d.answer)) {
+      inp.classList.add('correct'); parent.classList.add('correct'); correct++;
+    } else {
+      inp.classList.add('wrong'); parent.classList.add('wrong');
+    }
+  });
+  showResult('fillRes', correct, fillData.length);
+}
+
+function checkDialogue() {
+  let correct = 0;
+  const total = 6;
+  for (let i = 1; i <= total; i++) {
+    const inp = document.getElementById(`d${i}`);
+    inp.classList.remove('correct','wrong');
+    if (norm(inp.value) === norm(inp.dataset.answer)) {
+      inp.classList.add('correct'); correct++;
+    } else {
+      inp.classList.add('wrong');
+    }
+  }
+  showResult('dialogueRes', correct, total);
+}
+
+function renderMatch() {
+  const wrap = document.getElementById('matchWrap');
+  wrap.innerHTML = '';
+  const plOpts = matchData.map(m => m.pl).sort(() => Math.random() - 0.5);
+  matchData.forEach((m, i) => {
+    const enDiv = document.createElement('div');
+    enDiv.className = 'match-en';
+    enDiv.innerHTML = `<span class="mn">${i+1}</span>${m.en}`;
+
+    const plDiv = document.createElement('div');
+    plDiv.className = 'match-pl';
+    const sel = document.createElement('select');
+    sel.className = 'match-sel';
+    sel.id = `ms${i}`;
+    sel.dataset.correct = m.pl;
+    const def = document.createElement('option');
+    def.value = ''; def.textContent = '— wybierz —';
+    sel.appendChild(def);
+    plOpts.forEach(p => {
+      const o = document.createElement('option');
+      o.value = p; o.textContent = p;
+      sel.appendChild(o);
+    });
+    plDiv.appendChild(sel);
+    wrap.appendChild(enDiv);
+    wrap.appendChild(plDiv);
+  });
+}
+
+function checkMatch() {
+  let correct = 0;
+  matchData.forEach((m, i) => {
+    const sel = document.getElementById(`ms${i}`);
+    sel.classList.remove('correct','wrong');
+    if (sel.value === m.pl) { sel.classList.add('correct'); correct++; }
+    else sel.classList.add('wrong');
+  });
+  showResult('matchRes', correct, matchData.length);
+}
+
+function renderTrans() {
+  const list = document.getElementById('transList');
+  list.innerHTML = '';
+  transData.forEach((d, i) => {
+    const div = document.createElement('div');
+    div.className = 'trans-item';
+    div.innerHTML = `
+      <div class="trans-pl">${d.pl}</div>
+      <div class="trans-en-wrap">
+        <input class="trans-input" id="tr${i}" placeholder="Wpisz po angielsku…" />
+      </div>
+      <div class="trans-hint" id="trh${i}">✅ Correct!</div>`;
+    list.appendChild(div);
+    div.querySelector(`#tr${i}`).addEventListener('keydown', e => {
+      if (e.key === 'Enter') checkSingleTrans(i);
+    });
+  });
+}
+
+function checkSingleTrans(i) {
+  const inp = document.getElementById(`tr${i}`);
+  const hint = document.getElementById(`trh${i}`);
+  inp.classList.remove('correct','wrong');
+  const isOk = transData[i].answers.some(a => norm(a) === norm(inp.value));
+  if (isOk) { inp.classList.add('correct'); hint.classList.add('show'); }
+  else inp.classList.add('wrong');
+}
+
+
+function toggleMask(td) {
+  const mask = td.querySelector('.reveal-mask');
+  if (mask) mask.classList.toggle('hidden');
+}
+
+// Dialogue enter
+function setupDialogueEnter() {
+  for (let i = 1; i <= 6; i++) {
+    const inp = document.getElementById(`d${i}`);
+    if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') checkDialogue(); });
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderFill();
+  renderMatch();
+  renderTrans();
+  setupDialogueEnter();
+});
+</script>
+</body>
+</html>
