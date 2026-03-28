@@ -595,6 +595,129 @@
       color: var(--text-muted);
     }
 
+    /* AUTH GATE */
+    .gated-wrapper {
+      position: relative;
+    }
+
+    .gated-content {
+      filter: blur(8px);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .gated-content.unlocked {
+      filter: none;
+      pointer-events: auto;
+      user-select: auto;
+    }
+
+    .gate-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      background: rgba(255,255,255,0.6);
+      border-radius: var(--radius);
+      padding: 32px 24px;
+      text-align: center;
+    }
+
+    .gate-overlay.hidden {
+      display: none;
+    }
+
+    .gate-lock {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+    }
+
+    .gate-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .gate-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      max-width: 360px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .gate-form {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .gate-input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .gate-input:focus {
+      border-color: var(--pink);
+    }
+
+    .gate-input.gate-error {
+      border-color: #e74c3c;
+      animation: shake 0.3s;
+    }
+
+    .gate-submit {
+      padding: 10px 20px;
+      background: var(--pink);
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.85rem;
+      border: 2px solid var(--text);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+
+    .gate-submit:hover {
+      background: #fe9fc3;
+    }
+
+    .gate-cta {
+      margin-top: 14px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .gate-cta a {
+      color: var(--text);
+      font-weight: 700;
+      text-decoration: underline;
+      transition: color 0.15s;
+    }
+
+    .gate-cta a:hover {
+      color: var(--pink);
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+
     @media (max-width: 600px) {
       .profile-header { flex-direction: column; }
       .stats-row { gap: 20px; flex-wrap: wrap; }
@@ -679,58 +802,71 @@
   <h2 class="materials-title">MATERIAŁY DO NAUKI ANGIELSKIEGO</h2>
   <p class="materials-sub">Karty pracy i ćwiczenia przygotowane specjalnie dla moich uczniów.</p>
 
-  <div class="cards-grid">
-
-    <div class="card">
-      <div class="card-icon-wrap">🛍️</div>
-      <div class="card-title">English in the shop</div>
-      <div class="card-desc">Obsługa klienta · Słownictwo · Dialog · Charakter pieska</div>
-      <a class="card-btn" href="https://bertlingo-learning.github.io/Angielski/English-in-the-shop.html
-">Otwórz materiał →</a>
+  <div class="gated-wrapper" id="gate-materials">
+    <div class="gate-overlay" id="overlay-materials">
+      <div class="gate-lock">🔒</div>
+      <div class="gate-title">Materiały dla moich uczniów</div>
+      <div class="gate-desc">To ekskluzywne materiały przygotowane specjalnie dla moich uczniów. Wpisz hasło, które otrzymałeś na lekcji.</div>
+      <div class="gate-form">
+        <input class="gate-input" type="password" placeholder="Wpisz hasło..." id="gate-password" autocomplete="off">
+        <button class="gate-submit" id="gate-btn">Odblokuj</button>
+      </div>
+      <p class="gate-cta">Nie masz hasła? <a href="https://preply.com/pl/korepetytor/7205497" target="_blank">Umów się na lekcję</a></p>
     </div>
+    <div class="gated-content" id="gated-materials">
+      <div class="cards-grid">
 
-    <div class="card">
-      <div class="card-icon-wrap">🌟</div>
-      <div class="card-title">English is Fun!</div>
-      <div class="card-desc">Wstęp do lekcji angielskiego.</div>
-      <a class="card-btn" href="https://bertlingo-learning.github.io/Angielski/English-is-Fun.html">Otwórz materiał →</a>
-    </div>
+        <div class="card">
+          <div class="card-icon-wrap">🛍️</div>
+          <div class="card-title">English in the shop</div>
+          <div class="card-desc">Obsługa klienta · Słownictwo · Dialog · Charakter pieska</div>
+          <a class="card-btn" href="#" data-material="English-in-the-shop.html">Otwórz materiał →</a>
+        </div>
 
-    <div class="card">
-      <div class="card-icon-wrap">🚀</div>
-      <div class="card-title">LEVEL UP YOUR ENGLISH</div>
-      <div class="card-desc">Wstęp do lekcji angielskiego w stylu gier.</div>
-      <a class="card-btn" href="https://bertlingo-learning.github.io/Angielski/LEVEL-UP-YOUR-ENGLISH.html">Otwórz materiał →</a>
-    </div>
+        <div class="card">
+          <div class="card-icon-wrap">🌟</div>
+          <div class="card-title">English is Fun!</div>
+          <div class="card-desc">Wstęp do lekcji angielskiego.</div>
+          <a class="card-btn" href="#" data-material="English-is-Fun.html">Otwórz materiał →</a>
+        </div>
 
-    <div class="card">
-      <div class="card-icon-wrap">🧠</div>
-      <div class="card-title">Build Your Confidence!</div>
-      <div class="card-desc">Ćwicz angielski krok po kroku. Uzupełniaj, tłumacz, poprawiaj i pisz!</div>
-      <a class="card-btn" href="https://bertlingo-learning.github.io/Angielski/Build-Your-Confidence.html">Otwórz materiał →</a>
-    </div>
+        <div class="card">
+          <div class="card-icon-wrap">🚀</div>
+          <div class="card-title">LEVEL UP YOUR ENGLISH</div>
+          <div class="card-desc">Wstęp do lekcji angielskiego w stylu gier.</div>
+          <a class="card-btn" href="#" data-material="LEVEL-UP-YOUR-ENGLISH.html">Otwórz materiał →</a>
+        </div>
 
-    <div class="card">
-      <div class="card-icon-wrap">👣</div>
-      <div class="card-title">My First Steps</div>
-      <div class="card-desc">Ćwicz angielski od podstaw. Proste zadania, duża satysfakcja!</div>
-      <a class="card-btn" href="https://bertlingo-learning.github.io/Angielski/My-First-Steps.html">Otwórz materiał →</a>
-    </div>
+        <div class="card">
+          <div class="card-icon-wrap">🧠</div>
+          <div class="card-title">Build Your Confidence!</div>
+          <div class="card-desc">Ćwicz angielski krok po kroku. Uzupełniaj, tłumacz, poprawiaj i pisz!</div>
+          <a class="card-btn" href="#" data-material="Build-Your-Confidence.html">Otwórz materiał →</a>
+        </div>
 
-    <div class="card">
-      <div class="card-icon-wrap">🔤</div>
-      <div class="card-title">Essential English</div>
-      <div class="card-desc">Formalne, kolokwialne, praktyczne - wszystko w jednym miejscu</div>
-      <a class="card-btn" href="https://bertlingo-learning.github.io/Angielski/Essential-English.html">Otwórz materiał →</a>
-    </div>
-    
-    <div class="card">
-      <div class="card-icon-wrap">🛍️</div>
-      <div class="card-title">English in the Shop II</div>
-      <div class="card-desc">Część druga!</div>
-      <a class="card-btn" href="https://bertlingo-learning.github.io/Angielski/English-in-the-Shop-II.html">Otwórz materiał →</a>
-    </div>
+        <div class="card">
+          <div class="card-icon-wrap">👣</div>
+          <div class="card-title">My First Steps</div>
+          <div class="card-desc">Ćwicz angielski od podstaw. Proste zadania, duża satysfakcja!</div>
+          <a class="card-btn" href="#" data-material="My-First-Steps.html">Otwórz materiał →</a>
+        </div>
 
+        <div class="card">
+          <div class="card-icon-wrap">🔤</div>
+          <div class="card-title">Essential English</div>
+          <div class="card-desc">Formalne, kolokwialne, praktyczne - wszystko w jednym miejscu</div>
+          <a class="card-btn" href="#" data-material="Essential-English.html">Otwórz materiał →</a>
+        </div>
+        
+        <div class="card">
+          <div class="card-icon-wrap">🛍️</div>
+          <div class="card-title">English in the Shop II</div>
+          <div class="card-desc">Część druga!</div>
+          <a class="card-btn" href="#" data-material="English-in-the-Shop-II.html">Otwórz materiał →</a>
+        </div>
+
+      </div>
+    </div>
   </div>
 </section>
 
@@ -744,71 +880,80 @@
   <h2 class="recommended-title">POLECANE MATERIAŁY</h2>
   <p class="recommended-sub">Strony i narzędzia, które polecam do nauki angielskiego.</p>
 
-  <div class="rec-list">
+  <div class="gated-wrapper" id="gate-recommended">
+    <div class="gate-overlay" id="overlay-recommended">
+      <div class="gate-lock">🔒</div>
+      <div class="gate-title">Polecane tylko dla uczniów</div>
+      <div class="gate-desc">Odblokuj materiały powyżej, aby zobaczyć polecane strony i narzędzia.</div>
+    </div>
+    <div class="gated-content" id="gated-recommended">
+      <div class="rec-list">
 
-    <a class="rec-item" href="https://www.youtube.com/@ArlenaWitt" target="_blank">
-      <img class="rec-logo rec-logo-photo" src="https://bertlingo-learning.github.io/Angielski/Obrazki/Arlena-Witt.jpeg" alt="Arlena Witt">
-      <div class="rec-content">
-        <div class="rec-name">Arlena Witt</div>
-        <div class="rec-desc">Kanał na YouTube, na którym Arlena prowadzi główną serię "Po Cudzemu". Uczy w niej poprawnej wymowy angielskiej na przykładach z filmów, seriali i piosenek. Profesjonalnie, merytorycznie i z przymrużeniem oka.</div>
+        <a class="rec-item" href="https://www.youtube.com/@ArlenaWitt" target="_blank">
+          <img class="rec-logo rec-logo-photo" src="https://bertlingo-learning.github.io/Angielski/Obrazki/Arlena-Witt.jpeg" alt="Arlena Witt">
+          <div class="rec-content">
+            <div class="rec-name">Arlena Witt</div>
+            <div class="rec-desc">Kanał na YouTube, na którym Arlena prowadzi główną serię "Po Cudzemu". Uczy w niej poprawnej wymowy angielskiej na przykładach z filmów, seriali i piosenek. Profesjonalnie, merytorycznie i z przymrużeniem oka.</div>
+          </div>
+          <svg class="rec-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+
+        <a class="rec-item" href="https://dictionary.cambridge.org/" target="_blank">
+          <img class="rec-logo rec-logo-dark" src="https://bertlingo-learning.github.io/Angielski/Obrazki/Cambridge-Dictionary-logo.svg" alt="Cambridge Dictionary">
+          <div class="rec-content">
+            <div class="rec-name">Cambridge Dictionary</div>
+            <div class="rec-desc">Jeden z najlepszych słowników angielskich online - definicje, wymowa i przykłady użycia.</div>
+          </div>
+          <svg class="rec-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+
+        <a class="rec-item" href="https://www.youtube.com/c/EnglishwithLucy" target="_blank">
+          <img class="rec-logo rec-logo-photo" src="https://bertlingo-learning.github.io/Angielski/Obrazki/English-with-Lucy-photo.jpg" alt="English with Lucy">
+          <div class="rec-content">
+            <div class="rec-name">English with Lucy</div>
+            <div class="rec-desc">Popularny kanał YouTube do nauki angielskiego - słownictwo, gramatyka i wymowa po angielsku.</div>
+          </div>
+          <svg class="rec-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+
+        <a class="rec-item" href="https://www.diki.pl/" target="_blank">
+          <img class="rec-logo" src="https://bertlingo-learning.github.io/Angielski/Obrazki/diki_logo.svg" alt="Diki">
+          <div class="rec-content">
+            <div class="rec-name">Diki.pl</div>
+            <div class="rec-desc">Polsko-angielski słownik online z wymową, przykładami i odmianą wyrazów.</div>
+          </div>
+          <svg class="rec-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+
+        <a class="rec-item" href="https://www.gamestolearnenglish.com/" target="_blank">
+          <img class="rec-logo" src="https://bertlingo-learning.github.io/Angielski/Obrazki/games-to-learn-english-logo.png" alt="Games to Learn English">
+          <div class="rec-content">
+            <div class="rec-name">Games to Learn English</div>
+            <div class="rec-desc">Nauka angielskiego przez gry - słownictwo, pisownia i gramatyka w formie zabawy.</div>
+          </div>
+          <svg class="rec-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+
+        <a class="rec-item" href="https://kwadransnaangielski.pl/" target="_blank">
+          <img class="rec-logo" src="https://bertlingo-learning.github.io/Angielski/Obrazki/kna-logo.png" alt="Kwadrans na Angielski">
+          <div class="rec-content">
+            <div class="rec-name">Kwadrans na Angielski</div>
+            <div class="rec-desc">Krótkie, przystępne lekcje angielskiego po polsku - idealne na szybką naukę każdego dnia.</div>
+          </div>
+          <svg class="rec-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+
+        <a class="rec-item" href="https://www.umiemyangielski.pl/" target="_blank">
+          <img class="rec-logo" src="https://bertlingo-learning.github.io/Angielski/Obrazki/umiemy-to-logo.svg" alt="Umiemy Angielski">
+          <div class="rec-content">
+            <div class="rec-name">Umiemy Angielski</div>
+            <div class="rec-desc">Polska platforma do nauki angielskiego z ćwiczeniami, testami i materiałami na różnych poziomach.</div>
+          </div>
+          <svg class="rec-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+
       </div>
-      <svg class="rec-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-    </a>
-
-    <a class="rec-item" href="https://dictionary.cambridge.org/" target="_blank">
-      <img class="rec-logo rec-logo-dark" src="https://bertlingo-learning.github.io/Angielski/Obrazki/Cambridge-Dictionary-logo.svg" alt="Cambridge Dictionary">
-      <div class="rec-content">
-        <div class="rec-name">Cambridge Dictionary</div>
-        <div class="rec-desc">Jeden z najlepszych słowników angielskich online - definicje, wymowa i przykłady użycia.</div>
-      </div>
-      <svg class="rec-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-    </a>
-
-    <a class="rec-item" href="https://www.youtube.com/c/EnglishwithLucy" target="_blank">
-      <img class="rec-logo rec-logo-photo" src="https://bertlingo-learning.github.io/Angielski/Obrazki/English-with-Lucy-photo.jpg" alt="English with Lucy">
-      <div class="rec-content">
-        <div class="rec-name">English with Lucy</div>
-        <div class="rec-desc">Popularny kanał YouTube do nauki angielskiego - słownictwo, gramatyka i wymowa po angielsku.</div>
-      </div>
-      <svg class="rec-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-    </a>
-
-    <a class="rec-item" href="https://www.diki.pl/" target="_blank">
-      <img class="rec-logo" src="https://bertlingo-learning.github.io/Angielski/Obrazki/diki_logo.svg" alt="Diki">
-      <div class="rec-content">
-        <div class="rec-name">Diki.pl</div>
-        <div class="rec-desc">Polsko-angielski słownik online z wymową, przykładami i odmianą wyrazów.</div>
-      </div>
-      <svg class="rec-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-    </a>
-
-    <a class="rec-item" href="https://www.gamestolearnenglish.com/" target="_blank">
-      <img class="rec-logo" src="https://bertlingo-learning.github.io/Angielski/Obrazki/games-to-learn-english-logo.png" alt="Games to Learn English">
-      <div class="rec-content">
-        <div class="rec-name">Games to Learn English</div>
-        <div class="rec-desc">Nauka angielskiego przez gry - słownictwo, pisownia i gramatyka w formie zabawy.</div>
-      </div>
-      <svg class="rec-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-    </a>
-
-    <a class="rec-item" href="https://kwadransnaangielski.pl/" target="_blank">
-      <img class="rec-logo" src="https://bertlingo-learning.github.io/Angielski/Obrazki/kna-logo.png" alt="Kwadrans na Angielski">
-      <div class="rec-content">
-        <div class="rec-name">Kwadrans na Angielski</div>
-        <div class="rec-desc">Krótkie, przystępne lekcje angielskiego po polsku - idealne na szybką naukę każdego dnia.</div>
-      </div>
-      <svg class="rec-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-    </a>
-
-    <a class="rec-item" href="https://www.umiemyangielski.pl/" target="_blank">
-      <img class="rec-logo" src="https://bertlingo-learning.github.io/Angielski/Obrazki/umiemy-to-logo.svg" alt="Umiemy Angielski">
-      <div class="rec-content">
-        <div class="rec-name">Umiemy Angielski</div>
-        <div class="rec-desc">Polska platforma do nauki angielskiego z ćwiczeniami, testami i materiałami na różnych poziomach.</div>
-      </div>
-      <svg class="rec-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-    </a>
-
+    </div>
   </div>
 </section>
 
@@ -830,6 +975,53 @@
     </div>
   </div>
 </section>
+
+<script>
+(function() {
+  var PASSWORD = 'robert2026';
+  var STORAGE_KEY = 'robert_auth';
+
+  function injectLinks() {
+    document.querySelectorAll('[data-material]').forEach(function(el) {
+      el.href = el.getAttribute('data-material');
+    });
+  }
+
+  function unlock() {
+    document.querySelectorAll('.gated-content').forEach(function(el) {
+      el.classList.add('unlocked');
+    });
+    document.querySelectorAll('.gate-overlay').forEach(function(el) {
+      el.classList.add('hidden');
+    });
+    injectLinks();
+  }
+
+  if (localStorage.getItem(STORAGE_KEY) === 'true') {
+    unlock();
+  }
+
+  var btn = document.getElementById('gate-btn');
+  var input = document.getElementById('gate-password');
+
+  function tryLogin() {
+    if (input.value === PASSWORD) {
+      localStorage.setItem(STORAGE_KEY, 'true');
+      unlock();
+    } else {
+      input.classList.add('gate-error');
+      setTimeout(function() { input.classList.remove('gate-error'); }, 400);
+      input.value = '';
+      input.placeholder = 'Niepoprawne hasło...';
+    }
+  }
+
+  btn.addEventListener('click', tryLogin);
+  input.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') tryLogin();
+  });
+})();
+</script>
 
 </body>
 </html>
