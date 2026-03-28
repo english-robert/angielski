@@ -265,6 +265,20 @@
       color: var(--text);
       letter-spacing: -0.02em;
       margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .materials-count {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--pink-dark);
+      background: var(--pink-light);
+      padding: 4px 12px;
+      border-radius: 20px;
+      letter-spacing: 0;
     }
 
     .materials-sub {
@@ -799,7 +813,7 @@
 
 <!-- MATERIALS -->
 <section class="materials">
-  <h2 class="materials-title">MATERIAŁY DO NAUKI ANGIELSKIEGO</h2>
+  <h2 class="materials-title">MATERIAŁY DO NAUKI ANGIELSKIEGO <span class="materials-count" id="materials-count"></span></h2>
   <p class="materials-sub">Karty pracy i ćwiczenia przygotowane specjalnie dla moich uczniów.</p>
 
   <div class="gated-wrapper" id="gate-materials">
@@ -863,6 +877,13 @@
           <div class="card-title">English in the Shop II</div>
           <div class="card-desc">Część druga!</div>
           <a class="card-btn" href="#" data-material="English-in-the-Shop-II.html">Otwórz materiał →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-icon-wrap">🗺️</div>
+          <div class="card-title">English Quest</div>
+          <div class="card-desc">Praktyczny angielski przez Twoje zainteresowania</div>
+          <a class="card-btn" href="#" data-material="English_Quest.html">Otwórz materiał →</a>
         </div>
 
       </div>
@@ -979,7 +1000,12 @@
 <script>
 (function() {
   var PASSWORD = 'robert2026';
-  var STORAGE_KEY = 'robert_auth';
+
+  var count = document.querySelectorAll('.card').length;
+  var counter = document.getElementById('materials-count');
+  if (counter && count > 0) {
+    counter.textContent = count + (count === 1 ? ' karta pracy' : count < 5 ? ' karty pracy' : ' kart pracy');
+  }
 
   function injectLinks() {
     document.querySelectorAll('[data-material]').forEach(function(el) {
@@ -997,16 +1023,11 @@
     injectLinks();
   }
 
-  if (localStorage.getItem(STORAGE_KEY) === 'true') {
-    unlock();
-  }
-
   var btn = document.getElementById('gate-btn');
   var input = document.getElementById('gate-password');
 
   function tryLogin() {
     if (input.value === PASSWORD) {
-      localStorage.setItem(STORAGE_KEY, 'true');
       unlock();
     } else {
       input.classList.add('gate-error');
