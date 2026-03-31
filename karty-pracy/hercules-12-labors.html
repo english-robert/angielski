@@ -1,0 +1,1784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The 12 Labors of Hercules</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Merriweather+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"/>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --gold: #c9963a;
+  --gold-light: #e8c06b;
+  --gold-pale: #f5e9cc;
+  --stone: #8b7355;
+  --stone-dark: #5c4a2a;
+  --cream: #fdf8f0;
+  --cream2: #f7f0e3;
+  --parchment: #ede0c4;
+  --ink: #2c2416;
+  --ink-mid: #4a3b28;
+  --ink-light: #6b5a42;
+  --olive: #5a6b2a;
+  --sky: #4a7fa5;
+  --red-myth: #9b3030;
+  --shadow: rgba(44,36,22,0.15);
+  --sans: 'Merriweather Sans', sans-serif;
+  --serif: 'Cinzel', serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  font-weight: 300;
+  background: var(--cream);
+  color: var(--ink);
+  line-height: 1.65;
+  min-height: 100vh;
+}
+
+/* ========= HEADER ========= */
+.hero {
+  background: linear-gradient(160deg, #1a1208 0%, #2e1f0a 40%, #3d2b10 100%);
+  padding: 3.5rem 2rem 2.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(201,150,58,0.25) 0%, transparent 65%);
+}
+.hero-inner { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; }
+.hero-label {
+  font-family: var(--serif);
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  color: var(--gold-light);
+  opacity: 0.85;
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+}
+.hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 5vw, 3.6rem);
+  font-weight: 900;
+  color: var(--gold-light);
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+  margin-bottom: 0.6rem;
+  text-shadow: 0 2px 18px rgba(201,150,58,0.4), 0 0 40px rgba(201,150,58,0.15);
+}
+.hero-sub {
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  color: rgba(245,233,204,0.7);
+  max-width: 520px;
+  margin: 0 auto 1.5rem;
+  font-weight: 300;
+}
+.hero-ornament {
+  font-size: 2rem;
+  opacity: 0.5;
+  letter-spacing: 0.5rem;
+}
+
+/* ========= MAIN LAYOUT ========= */
+.wrap { max-width: 920px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+
+/* ========= INTRO SECTION ========= */
+.intro-section {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem 2.5rem;
+  margin: 2.5rem 0;
+  box-shadow: 0 4px 24px var(--shadow);
+  border: 1px solid var(--parchment);
+  position: relative;
+  overflow: hidden;
+}
+.intro-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+}
+.intro-section h2 {
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  color: var(--stone-dark);
+  margin-bottom: 0.8rem;
+}
+.intro-section p {
+  color: var(--ink-mid);
+  font-size: 0.93rem;
+  line-height: 1.7;
+}
+
+/* ========= SECTION TITLES ========= */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 3rem 0 1.5rem;
+}
+.section-header-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--parchment), transparent);
+}
+.section-header-line.right {
+  background: linear-gradient(90deg, transparent, var(--parchment));
+}
+.section-title {
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--stone-dark);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ========= LABOR CARDS ========= */
+.labors-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .labors-grid { grid-template-columns: 1fr; }
+}
+
+.labor-card {
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 3px 16px var(--shadow);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(201,150,58,0.15);
+  transition: box-shadow 0.2s;
+}
+.labor-card:hover {
+  box-shadow: 0 6px 28px rgba(44,36,22,0.18);
+}
+.labor-card-top {
+  position: relative;
+  background: #f0ece4;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.labor-card-top img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.4s ease;
+}
+.labor-card:hover .labor-card-top img {
+  transform: scale(1.04);
+}
+.labor-number-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: var(--gold);
+  color: white;
+  font-family: var(--serif);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 0.25rem 0.55rem;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+.labor-card-body {
+  padding: 1.2rem 1.4rem 1.4rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.labor-card-title {
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--stone-dark);
+  line-height: 1.3;
+}
+.labor-card-story {
+  font-size: 0.84rem;
+  color: var(--ink-mid);
+  line-height: 1.65;
+}
+
+/* KEY WORDS BOX */
+.vocab-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.25rem;
+}
+.vocab-chip {
+  background: var(--gold-pale);
+  border-radius: 5px;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--stone-dark);
+  cursor: default;
+}
+
+/* REVEAL / ANSWER */
+.reveal-block { margin-top: 0.25rem; }
+.reveal-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--cream2);
+  border: 1.5px solid var(--parchment);
+  border-radius: 7px;
+  padding: 0.3rem 0.75rem;
+  cursor: pointer;
+  color: var(--ink-mid);
+  transition: background 0.15s, border-color 0.15s;
+}
+.reveal-btn:hover {
+  background: var(--parchment);
+  border-color: var(--gold);
+}
+.reveal-answer {
+  display: none;
+  margin-top: 0.5rem;
+  background: linear-gradient(135deg, #fdf8f0, #f7f0e3);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.82rem;
+  color: var(--ink-mid);
+  border-left: none;
+}
+.reveal-answer .pl {
+  color: var(--stone);
+  font-size: 0.75rem;
+  margin-top: 0.3rem;
+  font-style: italic;
+}
+.reveal-answer.open { display: block; }
+
+/* ========= EXERCISE SECTIONS ========= */
+
+/* --- MATCH EXERCISE --- */
+.match-section {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem 2.2rem;
+  box-shadow: 0 3px 18px var(--shadow);
+  border: 1px solid var(--parchment);
+  margin-bottom: 2rem;
+}
+.match-section h3 {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  color: var(--stone-dark);
+  margin-bottom: 0.3rem;
+}
+.match-instruction {
+  font-size: 0.83rem;
+  color: var(--ink-light);
+  margin-bottom: 1.4rem;
+}
+
+.match-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+@media (max-width: 580px) {
+  .match-columns { grid-template-columns: 1fr; }
+}
+.match-col h4 {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--stone);
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+}
+.match-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.8rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-size: 0.87rem;
+  font-weight: 500;
+  color: var(--ink);
+  background: var(--cream2);
+  user-select: none;
+}
+.match-item .dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--parchment);
+  border: 2px solid var(--gold);
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.match-item.selected { background: var(--gold-pale); }
+.match-item.selected .dot { background: var(--gold); }
+.match-item.correct { background: #e8f5e9; }
+.match-item.correct .dot { background: #4caf50; border-color: #4caf50; }
+.match-item.wrong { background: #fce8e8; }
+.match-item.wrong .dot { background: var(--red-myth); border-color: var(--red-myth); }
+.match-item.matched { opacity: 0.55; cursor: default; pointer-events: none; }
+
+.match-check-btn {
+  margin-top: 1rem;
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  font-weight: 700;
+  background: var(--gold);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.55rem 1.3rem;
+  cursor: pointer;
+  transition: filter 0.15s;
+}
+.match-check-btn:hover { filter: brightness(1.08); }
+.match-result { margin-top: 0.75rem; font-size: 0.83rem; font-weight: 600; color: var(--olive); }
+
+/* --- TRUE / FALSE --- */
+.tf-section {
+  background: var(--cream2);
+  border-radius: 16px;
+  padding: 2rem 2.2rem;
+  box-shadow: 0 3px 14px var(--shadow);
+  margin-bottom: 2rem;
+  border: 1px solid var(--parchment);
+}
+.tf-section h3 {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  color: var(--stone-dark);
+  margin-bottom: 0.3rem;
+}
+.tf-instruction {
+  font-size: 0.83rem;
+  color: var(--ink-light);
+  margin-bottom: 1.3rem;
+}
+.tf-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  background: white;
+  box-shadow: 0 1px 6px rgba(44,36,22,0.07);
+}
+.tf-num {
+  font-family: var(--serif);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--gold);
+  min-width: 20px;
+  margin-top: 0.05rem;
+}
+.tf-text { flex: 1; font-size: 0.87rem; color: var(--ink); line-height: 1.55; }
+.tf-btns { display: flex; gap: 0.4rem; margin-top: 0.5rem; flex-wrap: wrap; }
+.tf-btn {
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  border: 2px solid var(--parchment);
+  background: var(--cream);
+  border-radius: 6px;
+  padding: 0.28rem 0.75rem;
+  cursor: pointer;
+  color: var(--ink-mid);
+  transition: all 0.15s;
+}
+.tf-btn:hover { border-color: var(--gold); color: var(--stone-dark); }
+.tf-btn.selected-t { background: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
+.tf-btn.selected-f { background: #fce8e8; border-color: #e53935; color: #c62828; }
+.tf-btn.correct { background: #e8f5e9; border-color: #4caf50; color: #2e7d32; font-weight: 800; }
+.tf-btn.wrong { background: #fce8e8; border-color: #e53935; color: #c62828; opacity: 0.6; }
+
+.tf-hint {
+  font-size: 0.76rem;
+  color: var(--ink-light);
+  font-style: italic;
+  margin-top: 0.3rem;
+  display: none;
+}
+.tf-hint.open { display: block; }
+.tf-hint.correct-msg { color: var(--olive); font-style: normal; font-weight: 600; }
+.tf-hint.wrong-msg { color: var(--red-myth); font-style: normal; }
+
+/* --- FILL IN GAPS --- */
+.gap-section {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem 2.2rem;
+  box-shadow: 0 3px 18px var(--shadow);
+  margin-bottom: 2rem;
+  border: 1px solid var(--parchment);
+}
+.gap-section h3 {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  color: var(--stone-dark);
+  margin-bottom: 0.3rem;
+}
+.gap-instruction { font-size: 0.83rem; color: var(--ink-light); margin-bottom: 0.6rem; }
+.word-bank {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 1.5rem;
+  padding: 0.9rem 1rem;
+  background: var(--cream2);
+  border-radius: 9px;
+}
+.word-bank-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--stone);
+  width: 100%;
+  margin-bottom: 0.2rem;
+}
+.bank-word {
+  background: white;
+  border: 1.5px solid var(--parchment);
+  border-radius: 6px;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--stone-dark);
+  cursor: default;
+  transition: opacity 0.2s;
+}
+.gap-sentence {
+  margin-bottom: 1.1rem;
+  font-size: 0.9rem;
+  color: var(--ink);
+  line-height: 1.7;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+.gap-num {
+  font-family: var(--serif);
+  font-weight: 700;
+  color: var(--gold);
+  margin-right: 0.2rem;
+  font-size: 0.85rem;
+}
+.gap-input {
+  border: none;
+  border-bottom: 2px solid var(--gold);
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  color: var(--ink);
+  padding: 0.1rem 0.3rem;
+  width: 130px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.gap-input:focus { border-color: var(--stone-dark); }
+.gap-input.correct { border-color: #4caf50; color: #2e7d32; }
+.gap-input.wrong { border-color: #e53935; color: #c62828; }
+
+.gap-check-btn {
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  font-weight: 700;
+  background: var(--stone-dark);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.55rem 1.3rem;
+  cursor: pointer;
+  transition: filter 0.15s;
+  margin-top: 0.5rem;
+}
+.gap-check-btn:hover { filter: brightness(1.15); }
+.gap-result { margin-top: 0.75rem; font-size: 0.83rem; font-weight: 600; }
+
+/* --- MYTH QUIZ --- */
+.quiz-section {
+  background: linear-gradient(135deg, #1a1208, #2c1f0a);
+  border-radius: 16px;
+  padding: 2rem 2.2rem;
+  box-shadow: 0 4px 22px rgba(44,36,22,0.35);
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+.quiz-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(201,150,58,0.2) 0%, transparent 60%);
+}
+.quiz-inner { position: relative; z-index: 1; }
+.quiz-section h3 {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  color: var(--gold-light);
+  margin-bottom: 0.3rem;
+}
+.quiz-instruction { font-size: 0.83rem; color: rgba(245,233,204,0.65); margin-bottom: 1.4rem; }
+
+.quiz-q {
+  margin-bottom: 1.5rem;
+}
+.quiz-q-text {
+  font-size: 0.9rem;
+  color: rgba(245,233,204,0.9);
+  margin-bottom: 0.7rem;
+  font-weight: 500;
+  line-height: 1.55;
+}
+.quiz-q-num {
+  font-family: var(--serif);
+  font-weight: 700;
+  color: var(--gold);
+  margin-right: 0.3rem;
+}
+.quiz-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+@media (max-width: 500px) {
+  .quiz-options { grid-template-columns: 1fr; }
+}
+.quiz-opt {
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(201,150,58,0.25);
+  border-radius: 8px;
+  padding: 0.55rem 0.9rem;
+  font-size: 0.82rem;
+  color: rgba(245,233,204,0.8);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+  font-family: var(--sans);
+}
+.quiz-opt:hover { background: rgba(201,150,58,0.12); border-color: var(--gold); color: var(--gold-light); }
+.quiz-opt.selected { border-color: var(--gold); background: rgba(201,150,58,0.15); }
+.quiz-opt.correct { background: rgba(76,175,80,0.2); border-color: #4caf50; color: #a5d6a7; }
+.quiz-opt.wrong { background: rgba(229,57,53,0.15); border-color: #e53935; color: #ef9a9a; }
+.quiz-opt.disabled { pointer-events: none; opacity: 0.6; }
+.quiz-feedback {
+  font-size: 0.78rem;
+  margin-top: 0.5rem;
+  min-height: 1.2em;
+  font-style: italic;
+  color: var(--gold-light);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.quiz-feedback.visible { opacity: 1; }
+
+/* --- SCORE BANNER --- */
+.score-banner {
+  display: none;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  border-radius: 12px;
+  padding: 1.2rem 1.5rem;
+  text-align: center;
+  margin-top: 1.5rem;
+  box-shadow: 0 4px 20px rgba(201,150,58,0.4);
+}
+.score-banner.show { display: block; }
+.score-banner p {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--stone-dark);
+}
+.score-banner span { font-size: 1.8rem; }
+
+/* ========= VOCAB TABLE ========= */
+.vocab-table-section {
+  margin-bottom: 2rem;
+  overflow-x: auto;
+}
+.vocab-table-wrap {
+  background: white;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 3px 14px var(--shadow);
+}
+table.vocab-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+table.vocab-table thead tr {
+  background: linear-gradient(90deg, var(--stone-dark), var(--stone));
+}
+table.vocab-table thead th {
+  color: white;
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.75rem 1rem;
+  text-align: left;
+}
+table.vocab-table tbody tr:nth-child(even) { background: var(--cream); }
+table.vocab-table tbody tr:hover { background: var(--gold-pale); }
+table.vocab-table td {
+  padding: 0.65rem 1rem;
+  color: var(--ink);
+  border-top: 1px solid var(--parchment);
+  vertical-align: middle;
+}
+table.vocab-table td:first-child { font-weight: 600; color: var(--stone-dark); }
+table.vocab-table td:nth-child(2) { color: var(--stone); font-style: italic; font-size: 0.78rem; }
+
+/* ========= FOOTER ========= */
+footer {
+  background: var(--cream2);
+  border-top: 1px solid var(--parchment);
+  text-align: center;
+  padding: 1.5rem 1rem;
+  font-size: 0.78rem;
+  color: var(--ink-light);
+}
+footer a { color: var(--stone); text-decoration: none; }
+footer a:hover { color: var(--gold); }
+
+/* ========= HERO ANIMATED PARTICLES ========= */
+@keyframes floatUp {
+  0% { transform: translateY(0) rotate(0deg); opacity: 0.6; }
+  100% { transform: translateY(-120px) rotate(20deg); opacity: 0; }
+}
+.hero-particle {
+  position: absolute;
+  bottom: 0;
+  font-size: 1.2rem;
+  animation: floatUp 4s ease-in infinite;
+  pointer-events: none;
+}
+
+/* ========= FADE-IN ON LOAD ========= */
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.hero-inner { animation: fadeSlideIn 0.9s ease both; }
+
+/* ========= FLIP CARDS (vocabulary) ========= */
+.flip-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.flip-card {
+  perspective: 800px;
+  height: 130px;
+  cursor: pointer;
+}
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(.4,0,.2,1);
+  border-radius: 12px;
+}
+.flip-card.flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.9rem 1rem;
+  text-align: center;
+}
+.flip-card-front {
+  background: white;
+  border: 1px solid var(--parchment);
+  box-shadow: 0 3px 14px var(--shadow);
+}
+.flip-card-back {
+  background: linear-gradient(135deg, var(--stone-dark), var(--stone));
+  transform: rotateY(180deg);
+  box-shadow: 0 3px 14px var(--shadow);
+}
+.flip-card-word {
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--stone-dark);
+  margin-bottom: 0.3rem;
+}
+.flip-card-pron {
+  font-size: 0.72rem;
+  color: var(--stone);
+  font-style: italic;
+  font-weight: 300;
+}
+.flip-card-hint {
+  font-size: 0.68rem;
+  color: var(--stone);
+  margin-top: 0.5rem;
+  opacity: 0.7;
+  font-weight: 300;
+}
+.flip-card-pl {
+  font-family: var(--serif);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--gold-light);
+  margin-bottom: 0.4rem;
+}
+.flip-card-example {
+  font-size: 0.72rem;
+  color: rgba(245,233,204,0.75);
+  line-height: 1.5;
+  font-weight: 300;
+  font-style: italic;
+}
+
+/* ========= CELEBRATE BUTTON ========= */
+.celebrate-wrap {
+  text-align: center;
+  padding: 2.5rem 0 0.5rem;
+}
+.celebrate-btn {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light), var(--gold));
+  background-size: 200% 200%;
+  color: var(--stone-dark);
+  border: none;
+  border-radius: 50px;
+  padding: 0.9rem 2.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(201,150,58,0.4);
+  transition: transform 0.15s, box-shadow 0.2s, background-position 0.4s;
+  position: relative;
+  overflow: hidden;
+  animation: shimmerBtn 3s ease infinite;
+}
+@keyframes shimmerBtn {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.celebrate-btn:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 8px 30px rgba(201,150,58,0.55);
+}
+.celebrate-btn:active { transform: scale(0.97); }
+.celebrate-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.35) 50%, transparent 100%);
+  transform: translateX(-100%);
+  transition: transform 0.5s;
+}
+.celebrate-btn:hover::after { transform: translateX(100%); }
+
+
+.progress-bar-wrap {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: transparent;
+  z-index: 100;
+}
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+/* ========= RESPONSIVE ========= */
+@media (max-width: 480px) {
+  .hero { padding: 2.5rem 1rem 2rem; }
+  .intro-section { padding: 1.4rem 1.2rem; }
+  .match-section, .tf-section, .gap-section, .quiz-section { padding: 1.4rem 1.2rem; }
+  .labor-card-body { padding: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+<!-- ========= HERO ========= -->
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-label">Greek Mythology · English Worksheet</div>
+    <h1>The 12 Labors of Hercules</h1>
+    <p class="hero-sub">Read each labor, learn key vocabulary, and complete the exercises below.</p>
+    <div class="hero-ornament">⚡ ⚔ 🦁 ⚡</div>
+  </div>
+  <!-- floating particles -->
+  <span class="hero-particle" style="left:8%; animation-delay:0s; animation-duration:5s;">⚡</span>
+  <span class="hero-particle" style="left:22%; animation-delay:1.2s; animation-duration:4.2s;">🦁</span>
+  <span class="hero-particle" style="left:42%; animation-delay:2.5s; animation-duration:6s;">⚔</span>
+  <span class="hero-particle" style="left:65%; animation-delay:0.7s; animation-duration:4.8s;">🏺</span>
+  <span class="hero-particle" style="left:82%; animation-delay:1.9s; animation-duration:5.5s;">⭐</span>
+</header>
+
+<div class="wrap">
+
+<!-- ========= INTRO ========= -->
+<div class="intro-section">
+  <h2>Background</h2>
+  <p>Hercules was the son of Zeus, the king of the Greek gods. Hera, Zeus's wife, was jealous and drove Hercules mad — causing him to hurt his family. When Hercules recovered, he was filled with regret. He went to the Oracle of Delphi, who told him to serve King Eurystheus for twelve years and complete twelve labors. If he succeeded, he would become <strong>immortal</strong> and live with the gods on Mount Olympus.</p>
+</div>
+
+<!-- ========= LABOR CARDS ========= -->
+<div class="section-header">
+  <div class="section-header-line"></div>
+  <span class="section-title">The Twelve Labors</span>
+  <div class="section-header-line right"></div>
+</div>
+
+<div class="labors-grid">
+
+  <!-- 1 -->
+  <div class="labor-card" data-aos="fade-up" data-aos-delay="0">
+    <div class="labor-card-top">
+      <span class="labor-number-badge">Labor 1</span>
+      <img src="https://robert-english.netlify.app/Obrazki/hercules-labors/Hercules-Labor-1.jpg" alt="Slaying the Nemean Lion">
+    </div>
+    <div class="labor-card-body">
+      <div class="labor-card-title">Slaying the Nemean Lion</div>
+      <div class="labor-card-story">The Nemean Lion had fur that no weapon could pierce. Hercules blocked one entrance to the lion's cave and entered through the other. He caught the lion and <strong>strangled</strong> it with his bare hands. He then wore the lion's skin as armour.</div>
+      <div class="vocab-row">
+        <span class="vocab-chip">to slay</span>
+        <span class="vocab-chip">to strangle</span>
+        <span class="vocab-chip">impenetrable</span>
+        <span class="vocab-chip">bare hands</span>
+      </div>
+      <div class="reveal-block">
+        <button class="reveal-btn" onclick="toggleReveal(this)">🇵🇱 Polish hint</button>
+        <div class="reveal-answer">
+          <strong>slay</strong> = zabić (wroga/potwora)<br>
+          <strong>strangle</strong> = udusić<br>
+          <strong>impenetrable</strong> = nieprzenikalny<br>
+          <strong>bare hands</strong> = gołe ręce
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2 -->
+  <div class="labor-card">
+    <div class="labor-card-top">
+      <span class="labor-number-badge">Labor 2</span>
+      <img src="https://robert-english.netlify.app/Obrazki/hercules-labors/Hercules-DP-Labor-2.jpg" alt="Slaying the Lernaean Hydra">
+    </div>
+    <div class="labor-card-body">
+      <div class="labor-card-title">Slaying the Lernaean Hydra</div>
+      <div class="labor-card-story">The Hydra had 9 heads. Every time Hercules cut off one head, two more grew back. His nephew Iolaus helped by <strong>cauterizing</strong> (burning) each stump so no new heads could grow. Finally, Hercules cut off the immortal head with a golden sword.</div>
+      <div class="vocab-row">
+        <span class="vocab-chip">to chop off</span>
+        <span class="vocab-chip">to cauterize</span>
+        <span class="vocab-chip">immortal</span>
+        <span class="vocab-chip">to distract</span>
+      </div>
+      <div class="reveal-block">
+        <button class="reveal-btn" onclick="toggleReveal(this)">🇵🇱 Polish hint</button>
+        <div class="reveal-answer">
+          <strong>chop off</strong> = odciąć<br>
+          <strong>cauterize</strong> = przypalić (ranę), kauteryzować<br>
+          <strong>immortal</strong> = nieśmiertelny<br>
+          <strong>distract</strong> = rozpraszać uwagę
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 -->
+  <div class="labor-card">
+    <div class="labor-card-top">
+      <span class="labor-number-badge">Labor 3</span>
+      <img src="https://robert-english.netlify.app/Obrazki/hercules-labors/Hercules-DP-Labor-3.jpg" alt="Capturing the Ceryneian Hind">
+    </div>
+    <div class="labor-card-body">
+      <div class="labor-card-title">Capturing the Ceryneian Hind</div>
+      <div class="labor-card-story">Hercules had to <strong>capture</strong> (but not kill) a sacred golden deer belonging to the goddess Artemis. He waited until it was sleeping and caught it gently. Artemis was angry but forgave him when Hercules promised to return the deer.</div>
+      <div class="vocab-row">
+        <span class="vocab-chip">to capture</span>
+        <span class="vocab-chip">sacred</span>
+        <span class="vocab-chip">golden antlers</span>
+        <span class="vocab-chip">forgiveness</span>
+      </div>
+      <div class="reveal-block">
+        <button class="reveal-btn" onclick="toggleReveal(this)">🇵🇱 Polish hint</button>
+        <div class="reveal-answer">
+          <strong>capture</strong> = schwytać<br>
+          <strong>sacred</strong> = święty, poświęcony bogini<br>
+          <strong>golden antlers</strong> = złote rogi (jelenia)<br>
+          <strong>forgiveness</strong> = przebaczenie
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 -->
+  <div class="labor-card">
+    <div class="labor-card-top">
+      <span class="labor-number-badge">Labor 4</span>
+      <img src="https://robert-english.netlify.app/Obrazki/hercules-labors/Hercules-DP-Labor-4.jpg" alt="Capturing the Erymanthian Boar">
+    </div>
+    <div class="labor-card-body">
+      <div class="labor-card-title">Capturing the Erymanthian Boar</div>
+      <div class="labor-card-story">The Erymanthian Boar was a gigantic wild pig living on a mountain sacred to Artemis. Hercules chased it through deep snow until the boar was exhausted, then caught it in a net. King Eurystheus was so frightened that he hid inside a bronze jar!</div>
+      <div class="vocab-row">
+        <span class="vocab-chip">boar</span>
+        <span class="vocab-chip">to chase</span>
+        <span class="vocab-chip">exhausted</span>
+        <span class="vocab-chip">to hide</span>
+      </div>
+      <div class="reveal-block">
+        <button class="reveal-btn" onclick="toggleReveal(this)">🇵🇱 Polish hint</button>
+        <div class="reveal-answer">
+          <strong>boar</strong> = dzik<br>
+          <strong>chase</strong> = gonić, ścigać<br>
+          <strong>exhausted</strong> = wyczerpany<br>
+          <strong>hide</strong> = chować się
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 -->
+  <div class="labor-card">
+    <div class="labor-card-top">
+      <span class="labor-number-badge">Labor 5</span>
+      <img src="https://robert-english.netlify.app/Obrazki/hercules-labors/Hercules-DP-Labor-5.jpg" alt="Cleaning the Augean Stables">
+    </div>
+    <div class="labor-card-body">
+      <div class="labor-card-title">Cleaning the Augean Stables</div>
+      <div class="labor-card-story">The stables of King Augeas had thousands of animals and had never been cleaned in 30 years. Hercules <strong>diverted</strong> two rivers through the stables to wash them out — all in a single day! Eurystheus didn't count this labor because Hercules accepted payment.</div>
+      <div class="vocab-row">
+        <span class="vocab-chip">stable</span>
+        <span class="vocab-chip">to divert</span>
+        <span class="vocab-chip">cattle</span>
+        <span class="vocab-chip">to refuse</span>
+      </div>
+      <div class="reveal-block">
+        <button class="reveal-btn" onclick="toggleReveal(this)">🇵🇱 Polish hint</button>
+        <div class="reveal-answer">
+          <strong>stable</strong> = stajnia<br>
+          <strong>divert</strong> = przekierować (rzekę)<br>
+          <strong>cattle</strong> = bydło<br>
+          <strong>refuse</strong> = odmówić
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6 -->
+  <div class="labor-card">
+    <div class="labor-card-top">
+      <span class="labor-number-badge">Labor 6</span>
+      <img src="https://robert-english.netlify.app/Obrazki/hercules-labors/Hercules-DP-Labor-6.jpg" alt="Killing the Stymphalian Birds">
+    </div>
+    <div class="labor-card-body">
+      <div class="labor-card-title">Killing the Stymphalian Birds</div>
+      <div class="labor-card-story">These man-eating birds had metallic feathers and belonged to Ares, the god of war. Athena gave Hercules a <strong>rattle</strong> to scare them into the sky. He then shot them down with his <strong>poisonous arrows</strong>. He slayed 100 birds and the rest flew away.</div>
+      <div class="vocab-row">
+        <span class="vocab-chip">metallic feathers</span>
+        <span class="vocab-chip">rattle</span>
+        <span class="vocab-chip">bow and arrow</span>
+        <span class="vocab-chip">poisonous</span>
+      </div>
+      <div class="reveal-block">
+        <button class="reveal-btn" onclick="toggleReveal(this)">🇵🇱 Polish hint</button>
+        <div class="reveal-answer">
+          <strong>metallic feathers</strong> = metalowe pióra<br>
+          <strong>rattle</strong> = grzechotka<br>
+          <strong>bow and arrow</strong> = łuk i strzała<br>
+          <strong>poisonous</strong> = trujący
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7 -->
+  <div class="labor-card">
+    <div class="labor-card-top">
+      <span class="labor-number-badge">Labor 7</span>
+      <img src="https://robert-english.netlify.app/Obrazki/hercules-labors/Hercules-DP-Labor-7.jpg" alt="Capturing the Cretan Bull">
+    </div>
+    <div class="labor-card-body">
+      <div class="labor-card-title">Capturing the Cretan Bull</div>
+      <div class="labor-card-story">The Cretan Bull was a gift from Poseidon (the sea god) to King Minos. It went <strong>wild</strong> and was destroying crops across Crete. Hercules wrestled it to the ground and tied it up. Later, the bull was tossed into the sky and became the <strong>constellation Taurus</strong>.</div>
+      <div class="vocab-row">
+        <span class="vocab-chip">bull</span>
+        <span class="vocab-chip">to wrestle</span>
+        <span class="vocab-chip">wild / untamed</span>
+        <span class="vocab-chip">constellation</span>
+      </div>
+      <div class="reveal-block">
+        <button class="reveal-btn" onclick="toggleReveal(this)">🇵🇱 Polish hint</button>
+        <div class="reveal-answer">
+          <strong>bull</strong> = byk<br>
+          <strong>wrestle</strong> = zapaśniczyć, rzucić na ziemię<br>
+          <strong>wild</strong> = dziki, szalony<br>
+          <strong>constellation</strong> = gwiazdozbiór
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8 -->
+  <div class="labor-card">
+    <div class="labor-card-top">
+      <span class="labor-number-badge">Labor 8</span>
+      <img src="https://robert-english.netlify.app/Obrazki/hercules-labors/Hercules-DP-Labor-8.jpg" alt="Stealing the Mares of Diomedes">
+    </div>
+    <div class="labor-card-body">
+      <div class="labor-card-title">Stealing the Mares of Diomedes</div>
+      <div class="labor-card-story">King Diomedes owned four mares (female horses) trained to eat human flesh. They were so dangerous he kept them <strong>chained</strong> to a gold post. Hercules defeated Diomedes and fed him to his own horses. The horses calmed down and Hercules brought them safely to Eurystheus.</div>
+      <div class="vocab-row">
+        <span class="vocab-chip">mare</span>
+        <span class="vocab-chip">to chain</span>
+        <span class="vocab-chip">to sneak up</span>
+        <span class="vocab-chip">to tame</span>
+      </div>
+      <div class="reveal-block">
+        <button class="reveal-btn" onclick="toggleReveal(this)">🇵🇱 Polish hint</button>
+        <div class="reveal-answer">
+          <strong>mare</strong> = klacz (samica konia)<br>
+          <strong>chain</strong> = przykuć łańcuchem<br>
+          <strong>sneak up</strong> = zakraść się<br>
+          <strong>tame</strong> = oswajać, ujarzmić
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9 -->
+  <div class="labor-card">
+    <div class="labor-card-top">
+      <span class="labor-number-badge">Labor 9</span>
+      <img src="https://robert-english.netlify.app/Obrazki/hercules-labors/Hercules-DP-Labor-9.jpg" alt="Girdle of Hippolyta">
+    </div>
+    <div class="labor-card-body">
+      <div class="labor-card-title">Girdle of Hippolyta</div>
+      <div class="labor-card-story">Hercules had to get the magic <strong>girdle</strong> (belt) of Hippolyta, queen of the Amazons — a tribe of female warriors. Hippolyta was friendly and agreed to give it to him. But Hera spread <strong>rumours</strong> that Hercules planned to kidnap their queen. The Amazons attacked, and Hercules sailed away with the girdle.</div>
+      <div class="vocab-row">
+        <span class="vocab-chip">girdle / belt</span>
+        <span class="vocab-chip">warrior</span>
+        <span class="vocab-chip">rumour</span>
+        <span class="vocab-chip">to abduct</span>
+      </div>
+      <div class="reveal-block">
+        <button class="reveal-btn" onclick="toggleReveal(this)">🇵🇱 Polish hint</button>
+        <div class="reveal-answer">
+          <strong>girdle / belt</strong> = pas, przepaska<br>
+          <strong>warrior</strong> = wojownik/wojowniczka<br>
+          <strong>rumour</strong> = plotka<br>
+          <strong>abduct</strong> = porwać (kogoś)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10 -->
+  <div class="labor-card">
+    <div class="labor-card-top">
+      <span class="labor-number-badge">Labor 10</span>
+      <img src="https://robert-english.netlify.app/Obrazki/hercules-labors/Hercules-DP-Labor-10.jpg" alt="Cattle of Geryon">
+    </div>
+    <div class="labor-card-body">
+      <div class="labor-card-title">Cattle of Geryon</div>
+      <div class="labor-card-story">Hercules traveled to the end of the earth to steal the red cattle of Geryon, a monster with three bodies. On his way, he shot an arrow at the sun god Helios — who instead of being angry, gave him a golden cup to help with the journey. Hercules defeated Geryon and eventually brought the cattle home.</div>
+      <div class="vocab-row">
+        <span class="vocab-chip">cattle</span>
+        <span class="vocab-chip">monster</span>
+        <span class="vocab-chip">courage</span>
+        <span class="vocab-chip">to retrieve</span>
+      </div>
+      <div class="reveal-block">
+        <button class="reveal-btn" onclick="toggleReveal(this)">🇵🇱 Polish hint</button>
+        <div class="reveal-answer">
+          <strong>cattle</strong> = bydło, stado<br>
+          <strong>monster</strong> = potwór<br>
+          <strong>courage</strong> = odwaga<br>
+          <strong>retrieve</strong> = odzyskać, przynieść z powrotem
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 11 -->
+  <div class="labor-card">
+    <div class="labor-card-top">
+      <span class="labor-number-badge">Labor 11</span>
+      <img src="https://robert-english.netlify.app/Obrazki/hercules-labors/Hercules-DP-Labor-11.jpg" alt="Apples of the Hesperides">
+    </div>
+    <div class="labor-card-body">
+      <div class="labor-card-title">Apples of the Hesperides</div>
+      <div class="labor-card-story">Hercules had to steal golden apples from a garden guarded by a dragon and nymphs. He found the Titan Atlas — who holds the sky on his shoulders — and <strong>tricked</strong> him. Hercules held the sky while Atlas fetched the apples, then cleverly tricked Atlas into taking the sky back.</div>
+      <div class="vocab-row">
+        <span class="vocab-chip">golden apples</span>
+        <span class="vocab-chip">to trick</span>
+        <span class="vocab-chip">nymph</span>
+        <span class="vocab-chip">Titan</span>
+      </div>
+      <div class="reveal-block">
+        <button class="reveal-btn" onclick="toggleReveal(this)">🇵🇱 Polish hint</button>
+        <div class="reveal-answer">
+          <strong>golden apples</strong> = złote jabłka<br>
+          <strong>trick</strong> = oszukać, przechytrzyć<br>
+          <strong>nymph</strong> = nimfa<br>
+          <strong>Titan</strong> = Tytan (rasa bogów-olbrzymów)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 12 -->
+  <div class="labor-card">
+    <div class="labor-card-top">
+      <span class="labor-number-badge">Labor 12</span>
+      <img src="https://robert-english.netlify.app/Obrazki/hercules-labors/Hercules-DP-Labor-12.jpg" alt="Capturing Cerberus">
+    </div>
+    <div class="labor-card-body">
+      <div class="labor-card-title">Capturing Cerberus</div>
+      <div class="labor-card-story">The final and hardest labor: capture Cerberus, the three-headed dog who guards the <strong>Underworld</strong>. Hercules learned secret knowledge to travel alive into the realm of the dead. He wrestled Cerberus with his bare hands. King Hades gave permission — and Eurystheus was so terrified he freed Hercules immediately.</div>
+      <div class="vocab-row">
+        <span class="vocab-chip">Underworld</span>
+        <span class="vocab-chip">guardian</span>
+        <span class="vocab-chip">realm of the dead</span>
+        <span class="vocab-chip">permission</span>
+      </div>
+      <div class="reveal-block">
+        <button class="reveal-btn" onclick="toggleReveal(this)">🇵🇱 Polish hint</button>
+        <div class="reveal-answer">
+          <strong>Underworld</strong> = Podziemie, Hades<br>
+          <strong>guardian</strong> = strażnik<br>
+          <strong>realm of the dead</strong> = kraina umarłych<br>
+          <strong>permission</strong> = pozwolenie
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /labors-grid -->
+
+<!-- ========= FLIP CARDS: KEY VOCABULARY ========= -->
+<div class="section-header">
+  <div class="section-header-line"></div>
+  <span class="section-title">Key Vocabulary</span>
+  <div class="section-header-line right"></div>
+</div>
+
+<p style="font-size:0.82rem; color:var(--ink-light); margin-bottom:1.2rem; font-weight:300;">Click a card to reveal the Polish meaning and an example sentence.</p>
+
+<div class="flip-cards-grid">
+
+  <div class="flip-card" onclick="this.classList.toggle('flipped')" data-aos="zoom-in" data-aos-delay="0">
+    <div class="flip-card-inner">
+      <div class="flip-card-front"><div class="flip-card-word">immortal</div><div class="flip-card-pron">[ɪˈmɔːrtl]</div><div class="flip-card-hint">click to reveal ↩</div></div>
+      <div class="flip-card-back"><div class="flip-card-pl">nieśmiertelny</div><div class="flip-card-example">The gods are immortal — they never die.</div></div>
+    </div>
+  </div>
+
+  <div class="flip-card" onclick="this.classList.toggle('flipped')" data-aos="zoom-in" data-aos-delay="60">
+    <div class="flip-card-inner">
+      <div class="flip-card-front"><div class="flip-card-word">to slay</div><div class="flip-card-pron">[sleɪ]</div><div class="flip-card-hint">click to reveal ↩</div></div>
+      <div class="flip-card-back"><div class="flip-card-pl">zabić (wroga)</div><div class="flip-card-example">Hercules slew the lion with his bare hands.</div></div>
+    </div>
+  </div>
+
+  <div class="flip-card" onclick="this.classList.toggle('flipped')" data-aos="zoom-in" data-aos-delay="120">
+    <div class="flip-card-inner">
+      <div class="flip-card-front"><div class="flip-card-word">to strangle</div><div class="flip-card-pron">[ˈstræŋɡl]</div><div class="flip-card-hint">click to reveal ↩</div></div>
+      <div class="flip-card-back"><div class="flip-card-pl">udusić</div><div class="flip-card-example">He strangled the serpents in his crib.</div></div>
+    </div>
+  </div>
+
+  <div class="flip-card" onclick="this.classList.toggle('flipped')" data-aos="zoom-in" data-aos-delay="180">
+    <div class="flip-card-inner">
+      <div class="flip-card-front"><div class="flip-card-word">sacred</div><div class="flip-card-pron">[ˈseɪkrɪd]</div><div class="flip-card-hint">click to reveal ↩</div></div>
+      <div class="flip-card-back"><div class="flip-card-pl">święty, poświęcony</div><div class="flip-card-example">The deer was sacred to Artemis.</div></div>
+    </div>
+  </div>
+
+  <div class="flip-card" onclick="this.classList.toggle('flipped')" data-aos="zoom-in" data-aos-delay="240">
+    <div class="flip-card-inner">
+      <div class="flip-card-front"><div class="flip-card-word">to capture</div><div class="flip-card-pron">[ˈkæptʃər]</div><div class="flip-card-hint">click to reveal ↩</div></div>
+      <div class="flip-card-back"><div class="flip-card-pl">schwytać</div><div class="flip-card-example">He captured the boar in a net.</div></div>
+    </div>
+  </div>
+
+  <div class="flip-card" onclick="this.classList.toggle('flipped')" data-aos="zoom-in" data-aos-delay="300">
+    <div class="flip-card-inner">
+      <div class="flip-card-front"><div class="flip-card-word">exhausted</div><div class="flip-card-pron">[ɪɡˈzɔːstɪd]</div><div class="flip-card-hint">click to reveal ↩</div></div>
+      <div class="flip-card-back"><div class="flip-card-pl">wyczerpany</div><div class="flip-card-example">After the chase, the boar was exhausted.</div></div>
+    </div>
+  </div>
+
+  <div class="flip-card" onclick="this.classList.toggle('flipped')" data-aos="zoom-in" data-aos-delay="360">
+    <div class="flip-card-inner">
+      <div class="flip-card-front"><div class="flip-card-word">to divert</div><div class="flip-card-pron">[daɪˈvɜːrt]</div><div class="flip-card-hint">click to reveal ↩</div></div>
+      <div class="flip-card-back"><div class="flip-card-pl">przekierować</div><div class="flip-card-example">He diverted the river through the stables.</div></div>
+    </div>
+  </div>
+
+  <div class="flip-card" onclick="this.classList.toggle('flipped')" data-aos="zoom-in" data-aos-delay="420">
+    <div class="flip-card-inner">
+      <div class="flip-card-front"><div class="flip-card-word">poisonous</div><div class="flip-card-pron">[ˈpɔɪzənəs]</div><div class="flip-card-hint">click to reveal ↩</div></div>
+      <div class="flip-card-back"><div class="flip-card-pl">trujący</div><div class="flip-card-example">The arrows were poisonous.</div></div>
+    </div>
+  </div>
+
+  <div class="flip-card" onclick="this.classList.toggle('flipped')" data-aos="zoom-in" data-aos-delay="480">
+    <div class="flip-card-inner">
+      <div class="flip-card-front"><div class="flip-card-word">to wrestle</div><div class="flip-card-pron">[ˈrɛsl]</div><div class="flip-card-hint">click to reveal ↩</div></div>
+      <div class="flip-card-back"><div class="flip-card-pl">zapasować się</div><div class="flip-card-example">Hercules wrestled Cerberus to the ground.</div></div>
+    </div>
+  </div>
+
+  <div class="flip-card" onclick="this.classList.toggle('flipped')" data-aos="zoom-in" data-aos-delay="540">
+    <div class="flip-card-inner">
+      <div class="flip-card-front"><div class="flip-card-word">to trick</div><div class="flip-card-pron">[trɪk]</div><div class="flip-card-hint">click to reveal ↩</div></div>
+      <div class="flip-card-back"><div class="flip-card-pl">oszukać, przechytrzyć</div><div class="flip-card-example">He tricked Atlas into taking the sky back.</div></div>
+    </div>
+  </div>
+
+  <div class="flip-card" onclick="this.classList.toggle('flipped')" data-aos="zoom-in" data-aos-delay="600">
+    <div class="flip-card-inner">
+      <div class="flip-card-front"><div class="flip-card-word">warrior</div><div class="flip-card-pron">[ˈwɒriər]</div><div class="flip-card-hint">click to reveal ↩</div></div>
+      <div class="flip-card-back"><div class="flip-card-pl">wojownik/czka</div><div class="flip-card-example">The Amazons were female warriors.</div></div>
+    </div>
+  </div>
+
+  <div class="flip-card" onclick="this.classList.toggle('flipped')" data-aos="zoom-in" data-aos-delay="660">
+    <div class="flip-card-inner">
+      <div class="flip-card-front"><div class="flip-card-word">courage</div><div class="flip-card-pron">[ˈkɜːrɪdʒ]</div><div class="flip-card-hint">click to reveal ↩</div></div>
+      <div class="flip-card-back"><div class="flip-card-pl">odwaga</div><div class="flip-card-example">Helios admired Hercules's courage.</div></div>
+    </div>
+  </div>
+
+  <div class="flip-card" onclick="this.classList.toggle('flipped')" data-aos="zoom-in" data-aos-delay="720">
+    <div class="flip-card-inner">
+      <div class="flip-card-front"><div class="flip-card-word">permission</div><div class="flip-card-pron">[pərˈmɪʃn]</div><div class="flip-card-hint">click to reveal ↩</div></div>
+      <div class="flip-card-back"><div class="flip-card-pl">pozwolenie</div><div class="flip-card-example">Hades gave him permission to take Cerberus.</div></div>
+    </div>
+  </div>
+
+  <div class="flip-card" onclick="this.classList.toggle('flipped')" data-aos="zoom-in" data-aos-delay="780">
+    <div class="flip-card-inner">
+      <div class="flip-card-front"><div class="flip-card-word">penance</div><div class="flip-card-pron">[ˈpɛnəns]</div><div class="flip-card-hint">click to reveal ↩</div></div>
+      <div class="flip-card-back"><div class="flip-card-pl">pokuta</div><div class="flip-card-example">He sought penance for what he had done.</div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ========= EXERCISE 1: TRUE / FALSE ========= -->
+<div class="section-header">
+  <div class="section-header-line"></div>
+  <span class="section-title">Exercise 1 · True or False?</span>
+  <div class="section-header-line right"></div>
+</div>
+
+<div class="tf-section">
+  <h3>True or False?</h3>
+  <p class="tf-instruction">Read each statement. Is it TRUE or FALSE? Click to choose, then check the hint.</p>
+
+  <!-- Q1 -->
+  <div class="tf-item">
+    <span class="tf-num">1.</span>
+    <div>
+      <div class="tf-text">Hercules killed his family on purpose because he was evil.</div>
+      <div class="tf-btns">
+        <button class="tf-btn" onclick="checkTF(this, false, 'Hera drove him mad — he did not do it on purpose.')">TRUE</button>
+        <button class="tf-btn" onclick="checkTF(this, true, 'Correct! Hera drove him mad — he did not do it on purpose.')">FALSE</button>
+      </div>
+      <div class="tf-hint" id="tf-hint-0"></div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="tf-item">
+    <span class="tf-num">2.</span>
+    <div>
+      <div class="tf-text">The Nemean Lion's fur could not be cut by any weapon.</div>
+      <div class="tf-btns">
+        <button class="tf-btn" onclick="checkTF(this, true, 'Correct! Its fur was impenetrable.')">TRUE</button>
+        <button class="tf-btn" onclick="checkTF(this, false, 'Not quite — its fur was impenetrable (impossible to pierce).')">FALSE</button>
+      </div>
+      <div class="tf-hint" id="tf-hint-1"></div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="tf-item">
+    <span class="tf-num">3.</span>
+    <div>
+      <div class="tf-text">When Hercules cut one of the Hydra's heads, two new heads grew back.</div>
+      <div class="tf-btns">
+        <button class="tf-btn" onclick="checkTF(this, true, 'Correct! That\'s exactly what made the Hydra so dangerous.')">TRUE</button>
+        <button class="tf-btn" onclick="checkTF(this, false, 'Actually, two heads did grow back each time — that\'s why Iolaus had to burn the stumps.')">FALSE</button>
+      </div>
+      <div class="tf-hint" id="tf-hint-2"></div>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="tf-item">
+    <span class="tf-num">4.</span>
+    <div>
+      <div class="tf-text">Hercules killed the Ceryneian Hind because that was the task.</div>
+      <div class="tf-btns">
+        <button class="tf-btn" onclick="checkTF(this, false, 'He had to capture it alive — killing it was NOT allowed.')">TRUE</button>
+        <button class="tf-btn" onclick="checkTF(this, true, 'Correct! He had to capture it alive, not kill it.')">FALSE</button>
+      </div>
+      <div class="tf-hint" id="tf-hint-3"></div>
+    </div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="tf-item">
+    <span class="tf-num">5.</span>
+    <div>
+      <div class="tf-text">Hercules cleaned the stables by shoveling everything by hand.</div>
+      <div class="tf-btns">
+        <button class="tf-btn" onclick="checkTF(this, false, 'He diverted two rivers through the stables to wash them out — much smarter!')">TRUE</button>
+        <button class="tf-btn" onclick="checkTF(this, true, 'Correct! He cleverly diverted two rivers through the stables.')">FALSE</button>
+      </div>
+      <div class="tf-hint" id="tf-hint-4"></div>
+    </div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="tf-item">
+    <span class="tf-num">6.</span>
+    <div>
+      <div class="tf-text">The Cretan Bull became the constellation Taurus.</div>
+      <div class="tf-btns">
+        <button class="tf-btn" onclick="checkTF(this, true, 'Correct! Hercules tossed it into the sky and it became the constellation Taurus.')">TRUE</button>
+        <button class="tf-btn" onclick="checkTF(this, false, 'Actually, it did become Taurus — Hercules threw it into the sky.')">FALSE</button>
+      </div>
+      <div class="tf-hint" id="tf-hint-5"></div>
+    </div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="tf-item">
+    <span class="tf-num">7.</span>
+    <div>
+      <div class="tf-text">After completing all 12 labors, Hercules became immortal and went to live on Mount Olympus.</div>
+      <div class="tf-btns">
+        <button class="tf-btn" onclick="checkTF(this, true, 'Correct! He was forgiven and became a god on Mount Olympus.')">TRUE</button>
+        <button class="tf-btn" onclick="checkTF(this, false, 'He actually did become immortal and live on Mount Olympus — the happy ending!')">FALSE</button>
+      </div>
+      <div class="tf-hint" id="tf-hint-6"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ========= EXERCISE 2: FILL IN THE GAPS ========= -->
+<div class="section-header">
+  <div class="section-header-line"></div>
+  <span class="section-title">Exercise 2 · Fill in the Gaps</span>
+  <div class="section-header-line right"></div>
+</div>
+
+<div class="gap-section">
+  <h3>Complete the sentences</h3>
+  <p class="gap-instruction">Use the words from the box below to complete each sentence. One word per gap.</p>
+
+  <div class="word-bank">
+    <div class="word-bank-label">Word Bank</div>
+    <span class="bank-word">immortal</span>
+    <span class="bank-word">strangled</span>
+    <span class="bank-word">sacred</span>
+    <span class="bank-word">exhausted</span>
+    <span class="bank-word">diverted</span>
+    <span class="bank-word">poisonous</span>
+    <span class="bank-word">wrestled</span>
+    <span class="bank-word">warrior</span>
+    <span class="bank-word">trick</span>
+    <span class="bank-word">permission</span>
+  </div>
+
+  <div class="gap-sentence">
+    <span class="gap-num">1.</span>
+    Hercules <input class="gap-input" data-answer="strangled" placeholder=""> the Nemean Lion with his bare hands because no weapon could pierce its fur.
+  </div>
+  <div class="gap-sentence">
+    <span class="gap-num">2.</span>
+    The gods on Mount Olympus are <input class="gap-input" data-answer="immortal" placeholder=""> — they live forever.
+  </div>
+  <div class="gap-sentence">
+    <span class="gap-num">3.</span>
+    The golden deer was <input class="gap-input" data-answer="sacred" placeholder=""> to the goddess Artemis, so Hercules had to return it.
+  </div>
+  <div class="gap-sentence">
+    <span class="gap-num">4.</span>
+    After chasing the boar through deep snow, the animal was completely <input class="gap-input" data-answer="exhausted" placeholder=""> and easy to catch.
+  </div>
+  <div class="gap-sentence">
+    <span class="gap-num">5.</span>
+    Hercules <input class="gap-input" data-answer="diverted" placeholder=""> two rivers through the stables to clean them in a single day.
+  </div>
+  <div class="gap-sentence">
+    <span class="gap-num">6.</span>
+    Athena gave Hercules <input class="gap-input" data-answer="poisonous" placeholder=""> arrows to shoot down the Stymphalian Birds.
+  </div>
+  <div class="gap-sentence">
+    <span class="gap-num">7.</span>
+    He <input class="gap-input" data-answer="wrestled" placeholder=""> Cerberus to the ground before throwing the beast over his shoulders.
+  </div>
+  <div class="gap-sentence">
+    <span class="gap-num">8.</span>
+    Hippolyta was a powerful <input class="gap-input" data-answer="warrior" placeholder=""> and queen of the Amazons.
+  </div>
+  <div class="gap-sentence">
+    <span class="gap-num">9.</span>
+    Hercules used a clever <input class="gap-input" data-answer="trick" placeholder=""> to make Atlas take the weight of the sky back.
+  </div>
+  <div class="gap-sentence">
+    <span class="gap-num">10.</span>
+    Hades gave Hercules <input class="gap-input" data-answer="permission" placeholder=""> to take Cerberus to the surface.
+  </div>
+
+  <button class="gap-check-btn" onclick="checkGaps()">⚡ Check Answers</button>
+  <div class="gap-result" id="gapResult"></div>
+</div>
+
+<!-- ========= EXERCISE 3: MYTH QUIZ ========= -->
+<div class="section-header">
+  <div class="section-header-line"></div>
+  <span class="section-title">Exercise 3 · Myth Quiz</span>
+  <div class="section-header-line right"></div>
+</div>
+
+<div class="quiz-section">
+  <div class="quiz-inner">
+    <h3>Choose the correct answer</h3>
+    <p class="quiz-instruction">Only one answer is correct. Click to choose.</p>
+
+    <!-- Q1 -->
+    <div class="quiz-q" id="qq1">
+      <div class="quiz-q-text"><span class="quiz-q-num">1.</span> Why did Hercules have to complete the 12 labors?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answerQuiz(this, false, 1, 'Not quite — he was seeking penance for harming his family.')">He wanted to become rich.</button>
+        <button class="quiz-opt" onclick="answerQuiz(this, true, 1, 'Correct! He sought penance for what he did under Hera\'s spell.')">He sought forgiveness for harming his family.</button>
+        <button class="quiz-opt" onclick="answerQuiz(this, false, 1, 'No — he was told to serve Eurystheus, not Apollo.')">He was told to by the god Apollo.</button>
+        <button class="quiz-opt" onclick="answerQuiz(this, false, 1, 'Not quite — it was a punishment and penance, not just fun.')">He enjoyed fighting monsters.</button>
+      </div>
+      <div class="quiz-feedback" id="qf1"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="quiz-q" id="qq2">
+      <div class="quiz-q-text"><span class="quiz-q-num">2.</span> How did Iolaus help Hercules defeat the Hydra?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answerQuiz(this, false, 2, 'No — Iolaus burned the stumps, not the heads.')">He cut off the immortal head.</button>
+        <button class="quiz-opt" onclick="answerQuiz(this, false, 2, 'No — he used fire on the stumps, not a net.')">He caught the Hydra in a net.</button>
+        <button class="quiz-opt" onclick="answerQuiz(this, true, 2, 'Correct! He burned (cauterized) each stump to stop new heads from growing.')">He burned the neck stumps after each cut.</button>
+        <button class="quiz-opt" onclick="answerQuiz(this, false, 2, 'No — it was the golden sword that Athena gave Hercules.')">He gave Hercules a golden sword.</button>
+      </div>
+      <div class="quiz-feedback" id="qf2"></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="quiz-q" id="qq3">
+      <div class="quiz-q-text"><span class="quiz-q-num">3.</span> Why was Eurystheus often frightened when Hercules returned?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answerQuiz(this, false, 3, 'No — the tasks were designed to be very hard, not for him.')">He wanted Hercules to fail.</button>
+        <button class="quiz-opt" onclick="answerQuiz(this, true, 3, 'Correct! He kept thinking the monsters were still alive and dangerous.')">He was scared that the monsters were still alive.</button>
+        <button class="quiz-opt" onclick="answerQuiz(this, false, 3, 'No — he was hiding in fear, not planning anything clever.')">He wanted to trick Hercules.</button>
+        <button class="quiz-opt" onclick="answerQuiz(this, false, 3, 'No — Hera was the one who hated Hercules most.')">He was jealous of Hercules\'s strength.</button>
+      </div>
+      <div class="quiz-feedback" id="qf3"></div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="quiz-q" id="qq4">
+      <div class="quiz-q-text"><span class="quiz-q-num">4.</span> What did Hercules do to get Atlas's help with the golden apples?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answerQuiz(this, false, 4, 'No — he offered to hold the sky instead.')">He offered Atlas gold.</button>
+        <button class="quiz-opt" onclick="answerQuiz(this, true, 4, 'Correct! He offered to hold the sky while Atlas went to get the apples.')">He offered to hold the sky for Atlas.</button>
+        <button class="quiz-opt" onclick="answerQuiz(this, false, 4, 'No — he defeated Prometheus, who told him about Atlas.')">He fought Atlas and won.</button>
+        <button class="quiz-opt" onclick="answerQuiz(this, false, 4, 'No — Athena helped with other labors, not this one specifically.')">He asked Athena to help.</button>
+      </div>
+      <div class="quiz-feedback" id="qf4"></div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="quiz-q" id="qq5">
+      <div class="quiz-q-text"><span class="quiz-q-num">5.</span> What happened to Hercules after completing all 12 labors?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answerQuiz(this, false, 5, 'No — he became a god himself.')">He became king of Tiryns.</button>
+        <button class="quiz-opt" onclick="answerQuiz(this, false, 5, 'No — Hera actually made peace with him at the end.')">He was punished again by Hera.</button>
+        <button class="quiz-opt" onclick="answerQuiz(this, true, 5, 'Correct! He was forgiven, became immortal, and went to live on Mount Olympus.')">He became immortal and went to live on Mount Olympus.</button>
+        <button class="quiz-opt" onclick="answerQuiz(this, false, 5, 'No — after the labors he went to the gods, not to sea.')">He joined Jason and the Argonauts immediately.</button>
+      </div>
+      <div class="quiz-feedback" id="qf5"></div>
+    </div>
+
+    <div class="score-banner" id="scoreBanner">
+      <span>🏆</span>
+      <p id="scoreText">Well done!</p>
+    </div>
+
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<!-- ========= CELEBRATE BUTTON ========= -->
+<div class="celebrate-wrap" data-aos="fade-up">
+  <button class="celebrate-btn" onclick="grandFinale()">🏆 Celebrate! 🏆</button>
+</div>
+
+<!-- ========= FOOTER ========= -->
+<footer>
+  <p>Story source: <a href="https://www.kidslovegreece.com/greece_online/the-12-labors-of-hercules/" target="_blank">kidslovegreece.com — The 12 Labors of Hercules</a></p>
+  <p style="margin-top:0.3rem; opacity:0.65;">Educational worksheet · Greek Mythology · English language learning</p>
+</footer>
+
+<script>
+// ===== AOS =====
+AOS.init({ once: true, duration: 600, easing: 'ease-out-cubic' });
+
+// Add AOS to labor cards dynamically
+document.querySelectorAll('.labor-card').forEach(function(card, i) {
+  card.setAttribute('data-aos', 'fade-up');
+  card.setAttribute('data-aos-delay', String((i % 2) * 100));
+});
+
+// Add AOS to exercise sections
+document.querySelectorAll('.tf-section, .gap-section, .quiz-section').forEach(function(el) {
+  el.setAttribute('data-aos', 'fade-up');
+});
+
+// Re-init AOS after dynamic attrs
+AOS.refreshHard();
+
+// ===== PROGRESS BAR =====
+window.addEventListener('scroll', function() {
+  var doc = document.documentElement;
+  var scrollTop = window.scrollY || doc.scrollTop;
+  var scrollHeight = doc.scrollHeight - doc.clientHeight;
+  var pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+  document.getElementById('progressBar').style.width = pct + '%';
+});
+
+// ===== REVEAL TOGGLE =====
+function toggleReveal(btn) {
+  var answer = btn.nextElementSibling;
+  var isOpen = answer.classList.contains('open');
+  answer.classList.toggle('open', !isOpen);
+  btn.textContent = isOpen ? '🇵🇱 Polish hint' : '🙈 Hide hint';
+}
+
+// ===== TRUE / FALSE =====
+var tfHintIndex = 0;
+var tfHints = [null,null,null,null,null,null,null];
+// We use data attributes on each item instead
+function checkTF(btn, isCorrect, msg) {
+  var btns = btn.parentElement.querySelectorAll('.tf-btn');
+  var hintEl = btn.closest('[class^="tf-item"], .tf-item').querySelector('.tf-hint');
+  if (!hintEl) return;
+  if (hintEl.classList.contains('open')) return; // already answered
+
+  btns.forEach(function(b) {
+    b.classList.remove('selected-t','selected-f');
+    b.disabled = true;
+  });
+  hintEl.textContent = msg;
+  hintEl.classList.add('open');
+  if (isCorrect) {
+    btn.classList.add('correct');
+    hintEl.classList.add('correct-msg');
+    realisticConfetti();
+  } else {
+    btn.classList.add('wrong');
+    hintEl.classList.add('wrong-msg');
+  }
+}
+
+// ===== GAPS =====
+function checkGaps() {
+  var inputs = document.querySelectorAll('.gap-input');
+  var correct = 0;
+  inputs.forEach(function(inp) {
+    var val = inp.value.trim().toLowerCase();
+    var ans = inp.getAttribute('data-answer').toLowerCase();
+    inp.classList.remove('correct','wrong');
+    if (val === ans) {
+      inp.classList.add('correct');
+      correct++;
+    } else {
+      inp.classList.add('wrong');
+    }
+  });
+  var result = document.getElementById('gapResult');
+  result.textContent = correct + ' / ' + inputs.length + ' correct!';
+  if (correct === inputs.length) {
+    result.style.color = '#3a7a3a';
+    bigConfetti();
+  } else if (correct >= inputs.length * 0.7) {
+    result.style.color = '#7a5a1a';
+  } else {
+    result.style.color = '#8b3030';
+  }
+}
+
+// ===== QUIZ =====
+var quizAnswers = {};
+var quizTotal = 5;
+function answerQuiz(btn, isCorrect, num, msg) {
+  if (quizAnswers[num] !== undefined) return;
+  quizAnswers[num] = isCorrect;
+  var opts = document.querySelectorAll('#qq' + num + ' .quiz-opt');
+  opts.forEach(function(o) {
+    o.classList.add('disabled');
+  });
+  if (isCorrect) {
+    btn.classList.add('correct');
+  } else {
+    btn.classList.add('wrong');
+  }
+  var fb = document.getElementById('qf' + num);
+  fb.textContent = msg;
+  fb.classList.add('visible');
+  if (isCorrect) smallConfetti();
+  checkQuizComplete();
+}
+function checkQuizComplete() {
+  if (Object.keys(quizAnswers).length < quizTotal) return;
+  var score = 0;
+  for (var k in quizAnswers) { if (quizAnswers[k]) score++; }
+  var banner = document.getElementById('scoreBanner');
+  var txt = document.getElementById('scoreText');
+  banner.classList.add('show');
+  if (score === quizTotal) {
+    txt.textContent = score + ' / ' + quizTotal + ' — Magnificent! Hercules would be proud! 🏆';
+    bigConfetti();
+  } else if (score >= 3) {
+    txt.textContent = score + ' / ' + quizTotal + ' — Well done! A true hero in the making! ⚡';
+    realisticConfetti();
+  } else {
+    txt.textContent = score + ' / ' + quizTotal + ' — Keep studying the myths — Hercules never gave up! 💪';
+  }
+}
+
+// ===== CONFETTI =====
+function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+
+function smallConfetti() {
+  confetti({
+    particleCount: 50,
+    spread: 60,
+    origin: { y: 0.65 },
+    colors: ['#c9963a','#e8c06b','#f5e9cc','#8b7355','#fff'],
+    scalar: 0.9
+  });
+}
+
+function realisticConfetti() {
+  var count = 150;
+  var defaults = { origin: { y: 0.65 }, colors: ['#c9963a','#e8c06b','#f5e9cc','#4a7fa5','#5a6b2a'] };
+  confetti(Object.assign({}, defaults, { spread: 26, startVelocity: 55, particleCount: Math.floor(count * 0.25) }));
+  confetti(Object.assign({}, defaults, { spread: 60, particleCount: Math.floor(count * 0.2) }));
+  confetti(Object.assign({}, defaults, { spread: 100, decay: 0.91, scalar: 0.8, particleCount: Math.floor(count * 0.35) }));
+  confetti(Object.assign({}, defaults, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2, particleCount: Math.floor(count * 0.1) }));
+}
+
+function bigConfetti() {
+  realisticConfetti();
+  setTimeout(function() {
+    var scalar = 2;
+    var lightning = confetti.shapeFromText({ text: '⚡', scalar: scalar });
+    var star = confetti.shapeFromText({ text: '⭐', scalar: scalar });
+    var fire = confetti.shapeFromText({ text: '🔥', scalar: scalar });
+    confetti({
+      particleCount: 40,
+      spread: 120,
+      origin: { y: 0.55 },
+      shapes: [lightning, star, fire],
+      scalar: scalar
+    });
+  }, 600);
+}
+
+function grandFinale() {
+  // Fireworks from both sides
+  var end = Date.now() + 4000;
+  var colors = ['#c9963a','#e8c06b','#f5e9cc','#4a7fa5','#5a6b2a','#fff'];
+  (function frame() {
+    confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors: colors });
+    confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 }, colors: colors });
+    if (Date.now() < end) requestAnimationFrame(frame);
+  })();
+  // Emoji burst
+  setTimeout(function() {
+    var sc = 2.2;
+    confetti({
+      particleCount: 50, spread: 160, origin: { y: 0.5 },
+      shapes: [
+        confetti.shapeFromText({ text: '⚡', scalar: sc }),
+        confetti.shapeFromText({ text: '🦁', scalar: sc }),
+        confetti.shapeFromText({ text: '🏺', scalar: sc }),
+        confetti.shapeFromText({ text: '⭐', scalar: sc })
+      ],
+      scalar: sc
+    });
+  }, 1200);
+}
+</script>
+</body>
+</html>
