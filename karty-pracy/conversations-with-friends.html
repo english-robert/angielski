@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rozmowa ze znajomymi – karta pracy</title>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Delius&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -26,11 +26,42 @@
   --ink: #2a2420;
   --ink-mid: #5a4a40;
   --ink-soft: #8a7a72;
-  --serif: 'Playfair Display', Georgia, serif;
+  --serif: 'Delius', Georgia, sans-serif;
   --sans: 'DM Sans', system-ui, sans-serif;
-  --radius: 16px;
-  --shadow: 0 4px 24px rgba(42,36,32,0.10);
-  --shadow-lg: 0 12px 48px rgba(42,36,32,0.16);
+  --radius: 20px;
+  --shadow: 0 6px 32px rgba(42,36,32,0.12);
+  --shadow-lg: 0 16px 64px rgba(42,36,32,0.18);
+}
+
+@keyframes floatUp {
+  0% { opacity: 0; transform: translateY(40px) scale(0.96); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes shimmer {
+  0% { background-position: -600px 0; }
+  100% { background-position: 600px 0; }
+}
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(200,105,74,0); }
+  50% { box-shadow: 0 0 32px 8px rgba(200,105,74,0.22); }
+}
+@keyframes bounce-in {
+  0% { transform: scale(0.7); opacity: 0; }
+  60% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); }
+}
+@keyframes hero-float {
+  0%, 100% { transform: translateY(0px) rotate(-1deg); }
+  50% { transform: translateY(-14px) rotate(1deg); }
+}
+@keyframes orb-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50% { transform: scale(1.15); opacity: 1; }
+}
+@keyframes badge-pop {
+  0% { transform: scale(0) rotate(-10deg); opacity: 0; }
+  70% { transform: scale(1.1) rotate(2deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
 }
 
 html { scroll-behavior: smooth; }
@@ -46,7 +77,7 @@ body {
 /* ── HERO ────────────────────────────────────── */
 .hero {
   background: linear-gradient(135deg, #2a2420 0%, #4a3428 50%, #2a3828 100%);
-  padding: 4rem 2rem 5rem;
+  padding: 6rem 2rem 7rem;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -63,32 +94,38 @@ body {
   background: var(--terracotta);
   color: #fff;
   font-family: var(--sans);
-  font-size: 0.7rem;
+  font-size: 0.95rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  padding: 0.4em 1em;
+  padding: 0.55em 1.4em;
   border-radius: 100px;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  animation: badge-pop 0.6s cubic-bezier(.4,0,.2,1) both;
 }
 .hero h1 {
   font-family: var(--serif);
-  font-size: clamp(2rem, 5vw, 3.2rem);
-  font-weight: 900;
+  font-size: clamp(2.8rem, 7vw, 5rem);
+  font-weight: 700;
   color: #fff;
   line-height: 1.15;
-  margin-bottom: 0.75rem;
+  margin-bottom: 1.1rem;
+  animation: floatUp 0.8s 0.2s cubic-bezier(.4,0,.2,1) both;
 }
 .hero h1 em {
   font-style: italic;
   color: var(--gold-light);
+  display: block;
+  font-size: 0.75em;
+  animation: floatUp 0.8s 0.4s cubic-bezier(.4,0,.2,1) both;
 }
 .hero p {
   color: rgba(255,255,255,0.65);
-  font-size: 1rem;
-  max-width: 480px;
+  font-size: 1.25rem;
+  max-width: 540px;
   margin: 0 auto;
   font-weight: 300;
+  animation: floatUp 0.8s 0.55s cubic-bezier(.4,0,.2,1) both;
 }
 .hero-orb {
   position: absolute;
@@ -97,42 +134,46 @@ body {
   pointer-events: none;
 }
 .hero-orb-1 {
-  width: 300px; height: 300px;
+  width: 420px; height: 420px;
   background: rgba(200,105,74,0.3);
-  top: -80px; right: -60px;
+  top: -120px; right: -80px;
+  animation: orb-pulse 6s ease-in-out infinite;
 }
 .hero-orb-2 {
-  width: 200px; height: 200px;
+  width: 280px; height: 280px;
   background: rgba(91,143,201,0.25);
-  bottom: -50px; left: -30px;
+  bottom: -70px; left: -40px;
+  animation: orb-pulse 8s ease-in-out infinite reverse;
 }
 
 /* ── LAYOUT ──────────────────────────────────── */
-.wrap { max-width: 860px; margin: 0 auto; padding: 0 1.5rem; }
-.section { padding: 3rem 0 2rem; }
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 2rem; }
+.section { padding: 4rem 0 2.5rem; }
 .section-label {
-  display: flex; align-items: center; gap: 0.75rem;
-  margin-bottom: 1.5rem;
+  display: flex; align-items: center; gap: 1rem;
+  margin-bottom: 2rem;
 }
 .section-num {
-  width: 36px; height: 36px;
+  width: 52px; height: 52px;
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   font-family: var(--serif);
-  font-weight: 900;
-  font-size: 1rem;
+  font-weight: 700;
+  font-size: 1.3rem;
   flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(42,36,32,0.18);
 }
 .section-title {
   font-family: var(--serif);
-  font-size: 1.4rem;
+  font-size: 2rem;
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
 }
 .section-sub {
-  font-size: 0.82rem;
+  font-size: 1rem;
   color: var(--ink-soft);
-  margin-top: 0.2rem;
+  margin-top: 0.3rem;
 }
 
 /* divider */
@@ -146,24 +187,31 @@ body {
 .phrases-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  gap: 1.5rem;
 }
-@media (max-width: 580px) { .phrases-grid { grid-template-columns: 1fr; } }
+@media (max-width: 640px) { .phrases-grid { grid-template-columns: 1fr; } }
 
 .phrase-card {
   background: #fff;
   border-radius: var(--radius);
-  padding: 1.25rem 1.5rem;
+  padding: 1.75rem 2rem;
   box-shadow: var(--shadow);
   position: relative;
   overflow: hidden;
-  transition: box-shadow 0.2s;
+  transition: box-shadow 0.25s, transform 0.25s;
+  animation: floatUp 0.6s both;
 }
 .phrase-card::before {
   content: '';
   position: absolute; top: 0; left: 0; right: 0;
-  height: 3px;
-  border-radius: 3px 3px 0 0;
+  height: 4px;
+  border-radius: 4px 4px 0 0;
+}
+.phrase-card::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.6) 0%, transparent 50%);
+  pointer-events: none;
 }
 .phrase-card.terracotta::before { background: var(--terracotta); }
 .phrase-card.sage::before { background: var(--sage); }
@@ -173,48 +221,48 @@ body {
 
 .phrase-en {
   font-family: var(--serif);
-  font-size: 1.05rem;
+  font-size: 1.35rem;
   font-weight: 700;
   color: var(--ink);
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.3rem;
 }
 .phrase-pron {
-  font-size: 0.72rem;
+  font-size: 0.9rem;
   color: var(--ink-soft);
   font-style: italic;
-  margin-bottom: 0.7rem;
+  margin-bottom: 1rem;
   font-weight: 300;
 }
 .phrase-reveal-btn {
-  display: inline-flex; align-items: center; gap: 0.4rem;
+  display: inline-flex; align-items: center; gap: 0.5rem;
   background: var(--warm);
   color: var(--ink-mid);
   border: none;
-  border-radius: 8px;
-  padding: 0.35em 0.9em;
-  font-size: 0.78rem;
+  border-radius: 10px;
+  padding: 0.5em 1.2em;
+  font-size: 0.95rem;
   font-family: var(--sans);
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: background 0.15s, transform 0.1s;
 }
 .phrase-reveal-btn:hover { background: var(--sand); }
-.phrase-reveal-btn:active { transform: scale(0.97); }
-.phrase-reveal-btn .icon { font-size: 0.7rem; transition: transform 0.2s; }
+.phrase-reveal-btn:active { transform: scale(0.96); }
+.phrase-reveal-btn .icon { font-size: 0.8rem; transition: transform 0.2s; }
 .phrase-pl {
   display: none;
-  margin-top: 0.6rem;
-  padding: 0.55rem 0.9rem;
+  margin-top: 0.75rem;
+  padding: 0.7rem 1.1rem;
   background: var(--warm);
-  border-radius: 8px;
-  font-size: 0.88rem;
+  border-radius: 10px;
+  font-size: 1.05rem;
   color: var(--ink-mid);
   font-weight: 400;
   animation: fadeSlide 0.25s ease;
 }
 .phrase-pl.visible { display: block; }
 @keyframes fadeSlide {
-  from { opacity: 0; transform: translateY(-4px); }
+  from { opacity: 0; transform: translateY(-6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -222,42 +270,42 @@ body {
 .match-layout {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2rem;
+  gap: 2.5rem;
 }
 @media (max-width: 580px) { .match-layout { grid-template-columns: 1fr; } }
 
 .match-col-label {
-  font-size: 0.7rem;
+  font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-soft);
-  margin-bottom: 0.75rem;
+  margin-bottom: 1rem;
 }
 .match-item {
   background: #fff;
-  border-radius: 12px;
-  padding: 0.75rem 1.1rem;
-  margin-bottom: 0.6rem;
-  box-shadow: 0 2px 10px rgba(42,36,32,0.07);
+  border-radius: 14px;
+  padding: 1rem 1.4rem;
+  margin-bottom: 0.8rem;
+  box-shadow: 0 2px 12px rgba(42,36,32,0.08);
   cursor: pointer;
-  font-size: 0.92rem;
+  font-size: 1.1rem;
   font-weight: 500;
   transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
   user-select: none;
   border: 2px solid transparent;
 }
-.match-item:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(42,36,32,0.12); }
-.match-item.selected { border-color: var(--terracotta); background: rgba(200,105,74,0.06); }
-.match-item.matched-ok { border-color: var(--sage); background: rgba(122,158,138,0.1); color: var(--sage); pointer-events: none; }
+.match-item:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(42,36,32,0.14); }
+.match-item.selected { border-color: var(--terracotta); background: rgba(200,105,74,0.06); animation: pulse-glow 1.5s ease infinite; }
+.match-item.matched-ok { border-color: var(--sage); background: rgba(122,158,138,0.1); color: var(--sage); pointer-events: none; animation: bounce-in 0.4s ease both; }
 .match-item.matched-err { border-color: #e05555; background: rgba(224,85,85,0.07); }
 
 .match-check-row {
-  margin-top: 1.25rem;
+  margin-top: 1.5rem;
   display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
 }
 #matchResult {
-  font-size: 0.88rem;
+  font-size: 1rem;
   font-weight: 600;
   display: none;
 }
@@ -268,57 +316,58 @@ body {
 .gap-intro {
   background: var(--warm);
   border-radius: var(--radius);
-  padding: 1.25rem 1.5rem;
-  margin-bottom: 1.5rem;
-  font-size: 0.88rem;
+  padding: 1.5rem 2rem;
+  margin-bottom: 2rem;
+  font-size: 1rem;
   color: var(--ink-mid);
 }
 .gap-intro strong {
   display: block;
   font-family: var(--serif);
-  font-size: 1rem;
+  font-size: 1.25rem;
   color: var(--ink);
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.5rem;
 }
 .word-bank {
-  display: flex; flex-wrap: wrap; gap: 0.5rem;
-  margin-bottom: 1.75rem;
+  display: flex; flex-wrap: wrap; gap: 0.65rem;
+  margin-bottom: 2rem;
 }
 .word-chip {
   background: #fff;
   border-radius: 100px;
-  padding: 0.35em 1em;
-  font-size: 0.85rem;
+  padding: 0.45em 1.25em;
+  font-size: 1rem;
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(42,36,32,0.09);
+  box-shadow: 0 2px 10px rgba(42,36,32,0.09);
   color: var(--ink);
   cursor: default;
-  transition: opacity 0.2s;
+  transition: opacity 0.2s, transform 0.2s;
 }
-.word-chip.used { opacity: 0.35; text-decoration: line-through; }
+.word-chip.used { opacity: 0.3; text-decoration: line-through; transform: scale(0.95); }
 
 .gap-sentence {
   background: #fff;
-  border-radius: 14px;
-  padding: 1rem 1.25rem;
-  margin-bottom: 0.75rem;
-  box-shadow: 0 2px 10px rgba(42,36,32,0.07);
-  font-size: 0.95rem;
+  border-radius: 16px;
+  padding: 1.25rem 1.75rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 12px rgba(42,36,32,0.08);
+  font-size: 1.15rem;
   font-weight: 400;
-  display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+  display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
+  transition: box-shadow 0.2s;
 }
 .gap-input {
   border: none;
-  border-bottom: 2px solid var(--sand);
+  border-bottom: 2.5px solid var(--sand);
   background: transparent;
   font-family: var(--sans);
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: 1.1rem;
+  font-weight: 700;
   color: var(--terracotta);
   outline: none;
-  width: 120px;
+  width: 130px;
   text-align: center;
-  padding: 0.1em 0.3em;
+  padding: 0.15em 0.4em;
   transition: border-color 0.2s;
 }
 .gap-input:focus { border-color: var(--terracotta); }
@@ -327,17 +376,17 @@ body {
 .hint-icon {
   cursor: pointer;
   color: var(--gold);
-  font-size: 0.8rem;
+  font-size: 1rem;
   transition: transform 0.15s;
   user-select: none;
 }
-.hint-icon:hover { transform: scale(1.2); }
+.hint-icon:hover { transform: scale(1.3) rotate(-10deg); }
 
 .gap-check-row {
-  margin-top: 1.25rem;
-  display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;
+  margin-top: 1.5rem;
+  display: flex; gap: 0.9rem; flex-wrap: wrap; align-items: center;
 }
-#gapResult { font-size: 0.88rem; font-weight: 600; display: none; }
+#gapResult { font-size: 1rem; font-weight: 600; display: none; }
 #gapResult.ok { color: var(--sage); }
 #gapResult.err { color: #c0392b; }
 
@@ -345,94 +394,96 @@ body {
 .dialogue-box {
   background: #fff;
   border-radius: var(--radius);
-  padding: 2rem;
+  padding: 2.5rem;
   box-shadow: var(--shadow);
   position: relative;
   overflow: hidden;
 }
-.dialogue-box::after {
-  content: '"';
-  position: absolute;
-  font-family: var(--serif);
-  font-size: 12rem;
-  color: var(--warm);
-  top: -2rem; left: 1rem;
-  line-height: 1;
-  pointer-events: none;
-  z-index: 0;
-}
+
 .dialogue-line {
-  display: flex; gap: 0.75rem;
-  margin-bottom: 1.1rem;
+  display: flex; gap: 1rem;
+  margin-bottom: 1.4rem;
   position: relative; z-index: 1;
 }
 .dialogue-line.b { flex-direction: row-reverse; }
 .dial-avatar {
-  width: 36px; height: 36px; border-radius: 50%;
+  width: 46px; height: 46px; border-radius: 50%;
   flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 700;
 }
 .dial-avatar.a { background: var(--terracotta); color: #fff; font-family: var(--serif); }
 .dial-avatar.b { background: var(--sky); color: #fff; font-family: var(--serif); }
 .dial-bubble {
   background: var(--warm);
-  border-radius: 14px;
-  padding: 0.65rem 1rem;
-  font-size: 0.9rem;
-  line-height: 1.55;
+  border-radius: 18px;
+  padding: 0.9rem 1.3rem;
+  font-size: 1.05rem;
+  line-height: 1.6;
   max-width: 78%;
 }
 .dialogue-line.b .dial-bubble { background: #edf4fb; }
 .dial-bubble .gap-input { width: 100px; }
-.dial-en { font-style: italic; font-size: 0.78rem; color: var(--ink-soft); display: block; margin-top: 0.25rem; }
+.dial-en { font-style: italic; font-size: 0.88rem; color: var(--ink-soft); display: block; margin-top: 0.3rem; }
 
 /* ── FLIP CARDS (section 5) ──────────────────── */
 .flip-intro {
-  font-size: 0.82rem;
+  font-size: 1rem;
   color: var(--ink-soft);
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
 }
 .flip-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 1.25rem;
 }
 .flip-wrapper {
-  height: 130px;
-  perspective: 1000px;
+  height: 170px;
+  perspective: 1200px;
   cursor: pointer;
 }
 .flip-inner {
   position: relative; width: 100%; height: 100%;
   transform-style: preserve-3d;
-  transition: transform 0.55s cubic-bezier(.4,0,.2,1);
-  border-radius: 14px;
+  transition: transform 0.6s cubic-bezier(.4,0,.2,1);
+  border-radius: 18px;
 }
 .flip-wrapper.flipped .flip-inner { transform: rotateY(180deg); }
 .flip-front, .flip-back {
   position: absolute; inset: 0;
   backface-visibility: hidden;
-  border-radius: 14px;
+  border-radius: 18px;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  padding: 1rem;
+  padding: 1.25rem;
   text-align: center;
   box-shadow: var(--shadow);
 }
 .flip-front {
   background: #fff;
+  overflow: hidden;
 }
-.flip-front .card-emoji { font-size: 1.6rem; margin-bottom: 0.4rem; }
-.flip-front .card-en { font-family: var(--serif); font-size: 0.95rem; font-weight: 700; color: var(--ink); }
+.flip-front::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 60%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  transition: none;
+}
+.flip-wrapper:hover .flip-front::after {
+  animation: shimmer 0.7s ease forwards;
+}
+.flip-front .card-emoji { font-size: 2.2rem; margin-bottom: 0.5rem; }
+.flip-front .card-en { font-family: var(--serif); font-size: 1.1rem; font-weight: 700; color: var(--ink); }
 .flip-back {
   background: linear-gradient(135deg, var(--terracotta) 0%, var(--rust) 100%);
   transform: rotateY(180deg);
   color: #fff;
 }
-.flip-back .card-pl { font-size: 0.88rem; font-weight: 600; margin-bottom: 0.3rem; }
-.flip-back .card-pron { font-size: 0.7rem; opacity: 0.75; font-style: italic; }
+.flip-back .card-pl { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+.flip-back .card-pron { font-size: 0.82rem; opacity: 0.75; font-style: italic; }
 .flip-back.sage-card { background: linear-gradient(135deg, var(--sage) 0%, #5a8070 100%); }
 .flip-back.sky-card { background: linear-gradient(135deg, var(--sky) 0%, #3a6da0 100%); }
 .flip-back.plum-card { background: linear-gradient(135deg, var(--plum) 0%, #5c3d6a 100%); }
@@ -441,10 +492,10 @@ body {
 /* ── FINAL SCORE ─────────────────────────────── */
 .score-section {
   background: linear-gradient(135deg, #2a2420, #3a2820);
-  border-radius: 20px;
-  padding: 2.5rem 2rem;
+  border-radius: 24px;
+  padding: 3.5rem 2.5rem;
   text-align: center;
-  margin: 2rem 0 3rem;
+  margin: 2.5rem 0 4rem;
   position: relative;
   overflow: hidden;
   box-shadow: var(--shadow-lg);
@@ -452,78 +503,94 @@ body {
 .score-section::before {
   content: '';
   position: absolute; inset: 0;
-  background: radial-gradient(ellipse at 50% 0%, rgba(200,105,74,0.3) 0%, transparent 60%);
+  background: radial-gradient(ellipse at 50% 0%, rgba(200,105,74,0.35) 0%, transparent 65%);
 }
 .score-section h2 {
   font-family: var(--serif);
   color: #fff;
-  font-size: 1.6rem;
+  font-size: 2.2rem;
   position: relative; z-index: 1;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.6rem;
 }
 .score-section p {
   color: rgba(255,255,255,0.6);
-  font-size: 0.9rem;
-  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
   position: relative; z-index: 1;
 }
 #scoreCounter {
   font-family: var(--serif);
-  font-size: 3.5rem;
-  font-weight: 900;
+  font-size: 5rem;
+  font-weight: 700;
   color: var(--gold-light);
   display: block;
   position: relative; z-index: 1;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 40px rgba(228,184,76,0.4);
 }
 
 /* ── BUTTONS ─────────────────────────────────── */
 .btn {
-  display: inline-flex; align-items: center; gap: 0.5rem;
-  border: none; border-radius: 10px;
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  border: none; border-radius: 12px;
   font-family: var(--sans);
   font-weight: 700;
-  font-size: 0.85rem;
-  padding: 0.65em 1.4em;
+  font-size: 1rem;
+  padding: 0.75em 1.75em;
   cursor: pointer;
-  transition: transform 0.1s, filter 0.15s;
+  transition: transform 0.1s, filter 0.15s, box-shadow 0.15s;
 }
-.btn:active { transform: scale(0.96); }
-.btn-terra { background: var(--terracotta); color: #fff; }
-.btn-terra:hover { filter: brightness(1.08); }
-.btn-sage { background: var(--sage); color: #fff; }
+.btn:active { transform: scale(0.95); }
+.btn-terra { background: var(--terracotta); color: #fff; box-shadow: 0 4px 16px rgba(200,105,74,0.35); }
+.btn-terra:hover { filter: brightness(1.08); box-shadow: 0 6px 24px rgba(200,105,74,0.45); }
+.btn-sage { background: var(--sage); color: #fff; box-shadow: 0 4px 16px rgba(122,158,138,0.3); }
 .btn-sage:hover { filter: brightness(1.08); }
-.btn-sky { background: var(--sky); color: #fff; }
+.btn-sky { background: var(--sky); color: #fff; box-shadow: 0 4px 16px rgba(91,143,201,0.3); }
 .btn-sky:hover { filter: brightness(1.08); }
 .btn-ghost {
   background: var(--warm);
   color: var(--ink-mid);
 }
 .btn-ghost:hover { background: var(--sand); }
-.btn-gold { background: var(--gold); color: #fff; }
+.btn-gold { background: var(--gold); color: #fff; box-shadow: 0 4px 16px rgba(200,156,60,0.35); }
 .btn-gold:hover { filter: brightness(1.1); }
 
 /* ── PROGRESS BAR ────────────────────────────── */
 .progress-bar-wrap {
   background: var(--warm);
   border-radius: 100px;
-  height: 6px;
+  height: 8px;
   overflow: hidden;
-  margin-bottom: 2.5rem;
+  margin-bottom: 3rem;
 }
 .progress-bar {
   height: 100%;
   background: linear-gradient(to right, var(--terracotta), var(--gold-light));
   border-radius: 100px;
   width: 0%;
-  transition: width 0.6s cubic-bezier(.4,0,.2,1);
+  transition: width 0.7s cubic-bezier(.4,0,.2,1);
+  box-shadow: 0 0 12px rgba(200,105,74,0.4);
 }
 
-/* ── SCROLL REVEAL ───────────────────────────── */
+.phrase-card:nth-child(1) { animation-delay: 0.05s; }
+.phrase-card:nth-child(2) { animation-delay: 0.12s; }
+.phrase-card:nth-child(3) { animation-delay: 0.19s; }
+.phrase-card:nth-child(4) { animation-delay: 0.26s; }
+.phrase-card:nth-child(5) { animation-delay: 0.33s; }
+.phrase-card:nth-child(6) { animation-delay: 0.40s; }
+.phrase-card:nth-child(7) { animation-delay: 0.47s; }
+.phrase-card:nth-child(8) { animation-delay: 0.54s; }
+.phrase-card:nth-child(9) { animation-delay: 0.61s; }
+.phrase-card:nth-child(10) { animation-delay: 0.68s; }
+
+/* stagger flip cards */
+.flip-wrapper:nth-child(1) .flip-inner { transition-delay: 0s; }
+.flip-wrapper:nth-child(2) .flip-inner { transition-delay: 0s; }
+
 .reveal {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.55s ease, transform 0.55s ease;
+  transform: translateY(32px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
 }
 .reveal.visible { opacity: 1; transform: translateY(0); }
 </style>
@@ -534,7 +601,7 @@ body {
 <div class="hero">
   <div class="hero-orb hero-orb-1"></div>
   <div class="hero-orb hero-orb-2"></div>
-  <div class="hero-badge">Karta pracy · Poziom A1</div>
+  <div class="hero-badge">Worksheet · Level A1</div>
   <h1>Rozmowa ze znajomymi<br><em>Conversations with Friends</em></h1>
   <p>Najbardziej przydatne zwroty na co dzień — od powitania po pożegnanie</p>
 </div>
@@ -542,10 +609,10 @@ body {
 <div class="wrap">
 
 <!-- PROGRESS -->
-<div style="padding: 2rem 0 0;">
-  <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--ink-soft); margin-bottom:0.5rem;">
-    <span>Postęp</span>
-    <span id="progressLabel">0 / 3 zadań</span>
+<div style="padding: 2.5rem 0 0;">
+  <div style="display:flex; justify-content:space-between; font-size:0.9rem; color:var(--ink-soft); margin-bottom:0.6rem;">
+    <span>Progress</span>
+    <span id="progressLabel">0 / 3 tasks</span>
   </div>
   <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
 </div>
@@ -557,8 +624,8 @@ body {
   <div class="section-label">
     <div class="section-num" style="background:var(--terracotta); color:#fff;">1</div>
     <div>
-      <div class="section-title">Poznaj zwroty</div>
-      <div class="section-sub">Kliknij „Pokaż", żeby zobaczyć polskie tłumaczenie</div>
+      <div class="section-title">Learn the Phrases</div>
+      <div class="section-sub">Click "Show" to reveal the Polish translation</div>
     </div>
   </div>
 
@@ -568,70 +635,70 @@ body {
     <div class="phrase-card terracotta">
       <div class="phrase-en">Hey! How are you?</div>
       <div class="phrase-pron">[hej hau ɑː juː]</div>
-      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Pokaż</button>
+      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Show</button>
       <div class="phrase-pl">Hej! Jak się masz?</div>
     </div>
 
     <div class="phrase-card terracotta">
       <div class="phrase-en">I'm great, thanks! And you?</div>
       <div class="phrase-pron">[aɪm ɡreɪt θæŋks ænd juː]</div>
-      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Pokaż</button>
+      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Show</button>
       <div class="phrase-pl">Świetnie, dzięki! A ty?</div>
     </div>
 
     <div class="phrase-card sage">
       <div class="phrase-en">Long time no see!</div>
       <div class="phrase-pron">[lɒŋ taɪm nəʊ siː]</div>
-      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Pokaż</button>
+      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Show</button>
       <div class="phrase-pl">Dawno się nie widzieliśmy!</div>
     </div>
 
     <div class="phrase-card sage">
       <div class="phrase-en">What have you been up to?</div>
       <div class="phrase-pron">[wɒt hæv juː biːn ʌp tuː]</div>
-      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Pokaż</button>
+      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Show</button>
       <div class="phrase-pl">Co u ciebie słychać? / Co porabiasz?</div>
     </div>
 
     <div class="phrase-card sky">
       <div class="phrase-en">Same as usual.</div>
       <div class="phrase-pron">[seɪm æz ˈjuːʒuəl]</div>
-      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Pokaż</button>
+      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Show</button>
       <div class="phrase-pl">Tak jak zwykle.</div>
     </div>
 
     <div class="phrase-card sky">
       <div class="phrase-en">Not bad, actually.</div>
       <div class="phrase-pron">[nɒt bæd ˈæktʃuəli]</div>
-      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Pokaż</button>
+      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Show</button>
       <div class="phrase-pl">Właściwie nieźle.</div>
     </div>
 
     <div class="phrase-card plum">
       <div class="phrase-en">That sounds fun!</div>
       <div class="phrase-pron">[ðæt saʊndz fʌn]</div>
-      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Pokaż</button>
+      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Show</button>
       <div class="phrase-pl">Brzmi fajnie!</div>
     </div>
 
     <div class="phrase-card plum">
       <div class="phrase-en">Oh really? Tell me more!</div>
       <div class="phrase-pron">[əʊ ˈrɪəli tel miː mɔː]</div>
-      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Pokaż</button>
+      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Show</button>
       <div class="phrase-pl">Naprawdę? Opowiedz więcej!</div>
     </div>
 
     <div class="phrase-card gold">
       <div class="phrase-en">I have to go now.</div>
       <div class="phrase-pron">[aɪ hæv tuː ɡəʊ naʊ]</div>
-      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Pokaż</button>
+      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Show</button>
       <div class="phrase-pl">Muszę już iść.</div>
     </div>
 
     <div class="phrase-card gold">
       <div class="phrase-en">Take care! See you soon!</div>
       <div class="phrase-pron">[teɪk keə siː juː suːn]</div>
-      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Pokaż</button>
+      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Show</button>
       <div class="phrase-pl">Dbaj o siebie! Do zobaczenia wkrótce!</div>
     </div>
 
@@ -647,14 +714,14 @@ body {
   <div class="section-label">
     <div class="section-num" style="background:var(--sage); color:#fff;">2</div>
     <div>
-      <div class="section-title">Dopasuj parę</div>
-      <div class="section-sub">Kliknij angielski zwrot, potem jego polskie tłumaczenie</div>
+      <div class="section-title">Match the Pairs</div>
+      <div class="section-sub">Click an English phrase, then its Polish translation</div>
     </div>
   </div>
 
   <div class="match-layout">
     <div>
-      <div class="match-col-label">Po angielsku</div>
+      <div class="match-col-label">In English</div>
       <div class="match-item" data-id="m1" onclick="matchClick(this)">Hey! How are you?</div>
       <div class="match-item" data-id="m2" onclick="matchClick(this)">Long time no see!</div>
       <div class="match-item" data-id="m3" onclick="matchClick(this)">That sounds fun!</div>
@@ -662,7 +729,7 @@ body {
       <div class="match-item" data-id="m5" onclick="matchClick(this)">Same as usual.</div>
     </div>
     <div>
-      <div class="match-col-label">Po polsku</div>
+      <div class="match-col-label">In Polish</div>
       <div class="match-item" data-id="m3" onclick="matchClick(this)">Brzmi fajnie!</div>
       <div class="match-item" data-id="m1" onclick="matchClick(this)">Hej! Jak się masz?</div>
       <div class="match-item" data-id="m5" onclick="matchClick(this)">Tak jak zwykle.</div>
@@ -672,8 +739,8 @@ body {
   </div>
 
   <div class="match-check-row">
-    <button class="btn btn-sage" onclick="checkMatch()">Sprawdź</button>
-    <button class="btn btn-ghost" onclick="resetMatch()">Resetuj</button>
+    <button class="btn btn-sage" onclick="checkMatch()">Check</button>
+    <button class="btn btn-ghost" onclick="resetMatch()">Reset</button>
     <div id="matchResult"></div>
   </div>
 </div>
@@ -687,8 +754,8 @@ body {
   <div class="section-label">
     <div class="section-num" style="background:var(--sky); color:#fff;">3</div>
     <div>
-      <div class="section-title">Uzupełnij zdanie</div>
-      <div class="section-sub">Wpisz brakujące słowo. Kliknij 💡 po podpowiedź (pierwszą literę)</div>
+      <div class="section-title">Fill in the Gap</div>
+      <div class="section-sub">Type the missing word. Click 💡 for a hint (first letter)</div>
     </div>
   </div>
 
@@ -744,8 +811,8 @@ body {
   </div>
 
   <div class="gap-check-row">
-    <button class="btn btn-sky" onclick="checkGap()">Sprawdź</button>
-    <button class="btn btn-ghost" onclick="resetGap()">Resetuj</button>
+    <button class="btn btn-sky" onclick="checkGap()">Check</button>
+    <button class="btn btn-ghost" onclick="resetGap()">Reset</button>
     <div id="gapResult"></div>
   </div>
 </div>
@@ -759,8 +826,8 @@ body {
   <div class="section-label">
     <div class="section-num" style="background:var(--plum); color:#fff;">4</div>
     <div>
-      <div class="section-title">Dialog do uzupełnienia</div>
-      <div class="section-sub">Wpisz brakujące zwroty – sprawdź się z pamięci</div>
+      <div class="section-title">Complete the Dialogue</div>
+      <div class="section-sub">Type the missing words from memory</div>
     </div>
   </div>
 
@@ -834,9 +901,9 @@ body {
   </div>
 
   <div style="margin-top:1.25rem; display:flex; gap:0.75rem; flex-wrap:wrap; align-items:center;">
-    <button class="btn btn-terra" onclick="checkDialogue()">Sprawdź dialog</button>
-    <button class="btn btn-ghost" onclick="resetDialogue()">Resetuj</button>
-    <div id="dialogueResult" style="font-size:0.88rem; font-weight:600; display:none;"></div>
+    <button class="btn btn-terra" onclick="checkDialogue()">Check dialogue</button>
+    <button class="btn btn-ghost" onclick="resetDialogue()">Reset</button>
+    <div id="dialogueResult" style="font-size:1rem; font-weight:600; display:none;"></div>
   </div>
 </div>
 
@@ -849,11 +916,11 @@ body {
   <div class="section-label">
     <div class="section-num" style="background:var(--gold); color:#fff;">5</div>
     <div>
-      <div class="section-title">Fiszki – przejrzyj je</div>
-      <div class="section-sub">Kliknij kartę, żeby zobaczyć tłumaczenie</div>
+      <div class="section-title">Flashcards – Review</div>
+      <div class="section-sub">Click a card to see the translation</div>
     </div>
   </div>
-  <p class="flip-intro">Kliknij kartę raz jeszcze, żeby ją odwrócić z powrotem.</p>
+  <p class="flip-intro">Click a card again to flip it back.</p>
 
   <div class="flip-grid">
 
@@ -920,11 +987,11 @@ body {
      SCORE
 ════════════════════════════════════════════ -->
 <div class="score-section reveal">
-  <h2>Wynik końcowy</h2>
-  <p>Ukończ ćwiczenia 2, 3 i 4, żeby zobaczyć swój wynik</p>
+  <h2>Final Score</h2>
+  <p>Complete exercises 2, 3 and 4 to see your score</p>
   <span id="scoreCounter">–</span>
   <button class="btn btn-gold" id="celebrateBtn" onclick="celebrate()" style="display:none; margin:0 auto;">
-    🎉 Świętuj!
+    🎉 Celebrate!
   </button>
 </div>
 
@@ -938,8 +1005,8 @@ function revealPhrase(btn) {
   var isVisible = pl.classList.contains('visible');
   pl.classList.toggle('visible', !isVisible);
   btn.innerHTML = isVisible
-    ? '<span class="icon">▼</span> Pokaż'
-    : '<span class="icon">▲</span> Ukryj';
+    ? '<span class="icon">▼</span> Show'
+    : '<span class="icon">▲</span> Hide';
 }
 
 // ── FLIP CARDS ───────────────────────────────
