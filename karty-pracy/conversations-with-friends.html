@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rozmowa ze znajomymi – karta pracy</title>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --cream: #fdf8f2;
+  --warm: #f5ede0;
+  --sand: #e8d8c4;
+  --terracotta: #c8694a;
+  --terracotta-light: #e07d5e;
+  --rust: #a04535;
+  --sage: #7a9e8a;
+  --sage-light: #a3c4b0;
+  --sky: #5b8fc9;
+  --sky-light: #89b4e0;
+  --plum: #7c5c8a;
+  --gold: #c89c3c;
+  --gold-light: #e4b84c;
+  --ink: #2a2420;
+  --ink-mid: #5a4a40;
+  --ink-soft: #8a7a72;
+  --serif: 'Playfair Display', Georgia, serif;
+  --sans: 'DM Sans', system-ui, sans-serif;
+  --radius: 16px;
+  --shadow: 0 4px 24px rgba(42,36,32,0.10);
+  --shadow-lg: 0 12px 48px rgba(42,36,32,0.16);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--cream);
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── HERO ────────────────────────────────────── */
+.hero {
+  background: linear-gradient(135deg, #2a2420 0%, #4a3428 50%, #2a3828 100%);
+  padding: 4rem 2rem 5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 30% 50%, rgba(200,105,74,0.25) 0%, transparent 60%),
+              radial-gradient(ellipse at 75% 30%, rgba(91,143,201,0.2) 0%, transparent 55%);
+  pointer-events: none;
+}
+.hero-badge {
+  display: inline-block;
+  background: var(--terracotta);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.4em 1em;
+  border-radius: 100px;
+  margin-bottom: 1.5rem;
+}
+.hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.15;
+  margin-bottom: 0.75rem;
+}
+.hero h1 em {
+  font-style: italic;
+  color: var(--gold-light);
+}
+.hero p {
+  color: rgba(255,255,255,0.65);
+  font-size: 1rem;
+  max-width: 480px;
+  margin: 0 auto;
+  font-weight: 300;
+}
+.hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  pointer-events: none;
+}
+.hero-orb-1 {
+  width: 300px; height: 300px;
+  background: rgba(200,105,74,0.3);
+  top: -80px; right: -60px;
+}
+.hero-orb-2 {
+  width: 200px; height: 200px;
+  background: rgba(91,143,201,0.25);
+  bottom: -50px; left: -30px;
+}
+
+/* ── LAYOUT ──────────────────────────────────── */
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 1.5rem; }
+.section { padding: 3rem 0 2rem; }
+.section-label {
+  display: flex; align-items: center; gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+.section-num {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+.section-title {
+  font-family: var(--serif);
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.section-sub {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  margin-top: 0.2rem;
+}
+
+/* divider */
+.divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--sand), transparent);
+  margin: 1.5rem 0;
+}
+
+/* ── PHRASE CARDS (section 1) ────────────────── */
+.phrases-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+@media (max-width: 580px) { .phrases-grid { grid-template-columns: 1fr; } }
+
+.phrase-card {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+.phrase-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+}
+.phrase-card.terracotta::before { background: var(--terracotta); }
+.phrase-card.sage::before { background: var(--sage); }
+.phrase-card.sky::before { background: var(--sky); }
+.phrase-card.plum::before { background: var(--plum); }
+.phrase-card.gold::before { background: var(--gold); }
+
+.phrase-en {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 0.2rem;
+}
+.phrase-pron {
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  font-style: italic;
+  margin-bottom: 0.7rem;
+  font-weight: 300;
+}
+.phrase-reveal-btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: var(--warm);
+  color: var(--ink-mid);
+  border: none;
+  border-radius: 8px;
+  padding: 0.35em 0.9em;
+  font-size: 0.78rem;
+  font-family: var(--sans);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+.phrase-reveal-btn:hover { background: var(--sand); }
+.phrase-reveal-btn:active { transform: scale(0.97); }
+.phrase-reveal-btn .icon { font-size: 0.7rem; transition: transform 0.2s; }
+.phrase-pl {
+  display: none;
+  margin-top: 0.6rem;
+  padding: 0.55rem 0.9rem;
+  background: var(--warm);
+  border-radius: 8px;
+  font-size: 0.88rem;
+  color: var(--ink-mid);
+  font-weight: 400;
+  animation: fadeSlide 0.25s ease;
+}
+.phrase-pl.visible { display: block; }
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── MATCH (section 2) ───────────────────────── */
+.match-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+@media (max-width: 580px) { .match-layout { grid-template-columns: 1fr; } }
+
+.match-col-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 0.75rem;
+}
+.match-item {
+  background: #fff;
+  border-radius: 12px;
+  padding: 0.75rem 1.1rem;
+  margin-bottom: 0.6rem;
+  box-shadow: 0 2px 10px rgba(42,36,32,0.07);
+  cursor: pointer;
+  font-size: 0.92rem;
+  font-weight: 500;
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+  user-select: none;
+  border: 2px solid transparent;
+}
+.match-item:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(42,36,32,0.12); }
+.match-item.selected { border-color: var(--terracotta); background: rgba(200,105,74,0.06); }
+.match-item.matched-ok { border-color: var(--sage); background: rgba(122,158,138,0.1); color: var(--sage); pointer-events: none; }
+.match-item.matched-err { border-color: #e05555; background: rgba(224,85,85,0.07); }
+
+.match-check-row {
+  margin-top: 1.25rem;
+  display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+}
+#matchResult {
+  font-size: 0.88rem;
+  font-weight: 600;
+  display: none;
+}
+#matchResult.ok { color: var(--sage); }
+#matchResult.err { color: #c0392b; }
+
+/* ── FILL GAP (section 3) ────────────────────── */
+.gap-intro {
+  background: var(--warm);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.88rem;
+  color: var(--ink-mid);
+}
+.gap-intro strong {
+  display: block;
+  font-family: var(--serif);
+  font-size: 1rem;
+  color: var(--ink);
+  margin-bottom: 0.4rem;
+}
+.word-bank {
+  display: flex; flex-wrap: wrap; gap: 0.5rem;
+  margin-bottom: 1.75rem;
+}
+.word-chip {
+  background: #fff;
+  border-radius: 100px;
+  padding: 0.35em 1em;
+  font-size: 0.85rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(42,36,32,0.09);
+  color: var(--ink);
+  cursor: default;
+  transition: opacity 0.2s;
+}
+.word-chip.used { opacity: 0.35; text-decoration: line-through; }
+
+.gap-sentence {
+  background: #fff;
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 2px 10px rgba(42,36,32,0.07);
+  font-size: 0.95rem;
+  font-weight: 400;
+  display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+}
+.gap-input {
+  border: none;
+  border-bottom: 2px solid var(--sand);
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--terracotta);
+  outline: none;
+  width: 120px;
+  text-align: center;
+  padding: 0.1em 0.3em;
+  transition: border-color 0.2s;
+}
+.gap-input:focus { border-color: var(--terracotta); }
+.gap-input.ok { border-color: var(--sage); color: var(--sage); }
+.gap-input.err { border-color: #e05555; color: #c0392b; }
+.hint-icon {
+  cursor: pointer;
+  color: var(--gold);
+  font-size: 0.8rem;
+  transition: transform 0.15s;
+  user-select: none;
+}
+.hint-icon:hover { transform: scale(1.2); }
+
+.gap-check-row {
+  margin-top: 1.25rem;
+  display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;
+}
+#gapResult { font-size: 0.88rem; font-weight: 600; display: none; }
+#gapResult.ok { color: var(--sage); }
+#gapResult.err { color: #c0392b; }
+
+/* ── DIALOGUE (section 4) ─────────────────────── */
+.dialogue-box {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 2rem;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+.dialogue-box::after {
+  content: '"';
+  position: absolute;
+  font-family: var(--serif);
+  font-size: 12rem;
+  color: var(--warm);
+  top: -2rem; left: 1rem;
+  line-height: 1;
+  pointer-events: none;
+  z-index: 0;
+}
+.dialogue-line {
+  display: flex; gap: 0.75rem;
+  margin-bottom: 1.1rem;
+  position: relative; z-index: 1;
+}
+.dialogue-line.b { flex-direction: row-reverse; }
+.dial-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  font-weight: 700;
+}
+.dial-avatar.a { background: var(--terracotta); color: #fff; font-family: var(--serif); }
+.dial-avatar.b { background: var(--sky); color: #fff; font-family: var(--serif); }
+.dial-bubble {
+  background: var(--warm);
+  border-radius: 14px;
+  padding: 0.65rem 1rem;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  max-width: 78%;
+}
+.dialogue-line.b .dial-bubble { background: #edf4fb; }
+.dial-bubble .gap-input { width: 100px; }
+.dial-en { font-style: italic; font-size: 0.78rem; color: var(--ink-soft); display: block; margin-top: 0.25rem; }
+
+/* ── FLIP CARDS (section 5) ──────────────────── */
+.flip-intro {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  margin-bottom: 1.25rem;
+}
+.flip-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 1rem;
+}
+.flip-wrapper {
+  height: 130px;
+  perspective: 1000px;
+  cursor: pointer;
+}
+.flip-inner {
+  position: relative; width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(.4,0,.2,1);
+  border-radius: 14px;
+}
+.flip-wrapper.flipped .flip-inner { transform: rotateY(180deg); }
+.flip-front, .flip-back {
+  position: absolute; inset: 0;
+  backface-visibility: hidden;
+  border-radius: 14px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+.flip-front {
+  background: #fff;
+}
+.flip-front .card-emoji { font-size: 1.6rem; margin-bottom: 0.4rem; }
+.flip-front .card-en { font-family: var(--serif); font-size: 0.95rem; font-weight: 700; color: var(--ink); }
+.flip-back {
+  background: linear-gradient(135deg, var(--terracotta) 0%, var(--rust) 100%);
+  transform: rotateY(180deg);
+  color: #fff;
+}
+.flip-back .card-pl { font-size: 0.88rem; font-weight: 600; margin-bottom: 0.3rem; }
+.flip-back .card-pron { font-size: 0.7rem; opacity: 0.75; font-style: italic; }
+.flip-back.sage-card { background: linear-gradient(135deg, var(--sage) 0%, #5a8070 100%); }
+.flip-back.sky-card { background: linear-gradient(135deg, var(--sky) 0%, #3a6da0 100%); }
+.flip-back.plum-card { background: linear-gradient(135deg, var(--plum) 0%, #5c3d6a 100%); }
+.flip-back.gold-card { background: linear-gradient(135deg, var(--gold) 0%, #9a7020 100%); }
+
+/* ── FINAL SCORE ─────────────────────────────── */
+.score-section {
+  background: linear-gradient(135deg, #2a2420, #3a2820);
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  margin: 2rem 0 3rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+.score-section::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(200,105,74,0.3) 0%, transparent 60%);
+}
+.score-section h2 {
+  font-family: var(--serif);
+  color: #fff;
+  font-size: 1.6rem;
+  position: relative; z-index: 1;
+  margin-bottom: 0.5rem;
+}
+.score-section p {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  position: relative; z-index: 1;
+}
+#scoreCounter {
+  font-family: var(--serif);
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: var(--gold-light);
+  display: block;
+  position: relative; z-index: 1;
+  margin-bottom: 1rem;
+}
+
+/* ── BUTTONS ─────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  border: none; border-radius: 10px;
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.65em 1.4em;
+  cursor: pointer;
+  transition: transform 0.1s, filter 0.15s;
+}
+.btn:active { transform: scale(0.96); }
+.btn-terra { background: var(--terracotta); color: #fff; }
+.btn-terra:hover { filter: brightness(1.08); }
+.btn-sage { background: var(--sage); color: #fff; }
+.btn-sage:hover { filter: brightness(1.08); }
+.btn-sky { background: var(--sky); color: #fff; }
+.btn-sky:hover { filter: brightness(1.08); }
+.btn-ghost {
+  background: var(--warm);
+  color: var(--ink-mid);
+}
+.btn-ghost:hover { background: var(--sand); }
+.btn-gold { background: var(--gold); color: #fff; }
+.btn-gold:hover { filter: brightness(1.1); }
+
+/* ── PROGRESS BAR ────────────────────────────── */
+.progress-bar-wrap {
+  background: var(--warm);
+  border-radius: 100px;
+  height: 6px;
+  overflow: hidden;
+  margin-bottom: 2.5rem;
+}
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(to right, var(--terracotta), var(--gold-light));
+  border-radius: 100px;
+  width: 0%;
+  transition: width 0.6s cubic-bezier(.4,0,.2,1);
+}
+
+/* ── SCROLL REVEAL ───────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-badge">Karta pracy · Poziom A1</div>
+  <h1>Rozmowa ze znajomymi<br><em>Conversations with Friends</em></h1>
+  <p>Najbardziej przydatne zwroty na co dzień — od powitania po pożegnanie</p>
+</div>
+
+<div class="wrap">
+
+<!-- PROGRESS -->
+<div style="padding: 2rem 0 0;">
+  <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--ink-soft); margin-bottom:0.5rem;">
+    <span>Postęp</span>
+    <span id="progressLabel">0 / 3 zadań</span>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 1 – PHRASE CARDS
+════════════════════════════════════════════ -->
+<div class="section reveal">
+  <div class="section-label">
+    <div class="section-num" style="background:var(--terracotta); color:#fff;">1</div>
+    <div>
+      <div class="section-title">Poznaj zwroty</div>
+      <div class="section-sub">Kliknij „Pokaż", żeby zobaczyć polskie tłumaczenie</div>
+    </div>
+  </div>
+
+  <div class="phrases-grid">
+
+    <!-- Greetings -->
+    <div class="phrase-card terracotta">
+      <div class="phrase-en">Hey! How are you?</div>
+      <div class="phrase-pron">[hej hau ɑː juː]</div>
+      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Pokaż</button>
+      <div class="phrase-pl">Hej! Jak się masz?</div>
+    </div>
+
+    <div class="phrase-card terracotta">
+      <div class="phrase-en">I'm great, thanks! And you?</div>
+      <div class="phrase-pron">[aɪm ɡreɪt θæŋks ænd juː]</div>
+      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Pokaż</button>
+      <div class="phrase-pl">Świetnie, dzięki! A ty?</div>
+    </div>
+
+    <div class="phrase-card sage">
+      <div class="phrase-en">Long time no see!</div>
+      <div class="phrase-pron">[lɒŋ taɪm nəʊ siː]</div>
+      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Pokaż</button>
+      <div class="phrase-pl">Dawno się nie widzieliśmy!</div>
+    </div>
+
+    <div class="phrase-card sage">
+      <div class="phrase-en">What have you been up to?</div>
+      <div class="phrase-pron">[wɒt hæv juː biːn ʌp tuː]</div>
+      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Pokaż</button>
+      <div class="phrase-pl">Co u ciebie słychać? / Co porabiasz?</div>
+    </div>
+
+    <div class="phrase-card sky">
+      <div class="phrase-en">Same as usual.</div>
+      <div class="phrase-pron">[seɪm æz ˈjuːʒuəl]</div>
+      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Pokaż</button>
+      <div class="phrase-pl">Tak jak zwykle.</div>
+    </div>
+
+    <div class="phrase-card sky">
+      <div class="phrase-en">Not bad, actually.</div>
+      <div class="phrase-pron">[nɒt bæd ˈæktʃuəli]</div>
+      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Pokaż</button>
+      <div class="phrase-pl">Właściwie nieźle.</div>
+    </div>
+
+    <div class="phrase-card plum">
+      <div class="phrase-en">That sounds fun!</div>
+      <div class="phrase-pron">[ðæt saʊndz fʌn]</div>
+      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Pokaż</button>
+      <div class="phrase-pl">Brzmi fajnie!</div>
+    </div>
+
+    <div class="phrase-card plum">
+      <div class="phrase-en">Oh really? Tell me more!</div>
+      <div class="phrase-pron">[əʊ ˈrɪəli tel miː mɔː]</div>
+      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Pokaż</button>
+      <div class="phrase-pl">Naprawdę? Opowiedz więcej!</div>
+    </div>
+
+    <div class="phrase-card gold">
+      <div class="phrase-en">I have to go now.</div>
+      <div class="phrase-pron">[aɪ hæv tuː ɡəʊ naʊ]</div>
+      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Pokaż</button>
+      <div class="phrase-pl">Muszę już iść.</div>
+    </div>
+
+    <div class="phrase-card gold">
+      <div class="phrase-en">Take care! See you soon!</div>
+      <div class="phrase-pron">[teɪk keə siː juː suːn]</div>
+      <button class="phrase-reveal-btn" onclick="revealPhrase(this)"><span class="icon">▼</span> Pokaż</button>
+      <div class="phrase-pl">Dbaj o siebie! Do zobaczenia wkrótce!</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 2 – MATCH
+════════════════════════════════════════════ -->
+<div class="section reveal" id="matchSection">
+  <div class="section-label">
+    <div class="section-num" style="background:var(--sage); color:#fff;">2</div>
+    <div>
+      <div class="section-title">Dopasuj parę</div>
+      <div class="section-sub">Kliknij angielski zwrot, potem jego polskie tłumaczenie</div>
+    </div>
+  </div>
+
+  <div class="match-layout">
+    <div>
+      <div class="match-col-label">Po angielsku</div>
+      <div class="match-item" data-id="m1" onclick="matchClick(this)">Hey! How are you?</div>
+      <div class="match-item" data-id="m2" onclick="matchClick(this)">Long time no see!</div>
+      <div class="match-item" data-id="m3" onclick="matchClick(this)">That sounds fun!</div>
+      <div class="match-item" data-id="m4" onclick="matchClick(this)">I have to go now.</div>
+      <div class="match-item" data-id="m5" onclick="matchClick(this)">Same as usual.</div>
+    </div>
+    <div>
+      <div class="match-col-label">Po polsku</div>
+      <div class="match-item" data-id="m3" onclick="matchClick(this)">Brzmi fajnie!</div>
+      <div class="match-item" data-id="m1" onclick="matchClick(this)">Hej! Jak się masz?</div>
+      <div class="match-item" data-id="m5" onclick="matchClick(this)">Tak jak zwykle.</div>
+      <div class="match-item" data-id="m2" onclick="matchClick(this)">Dawno się nie widzieliśmy!</div>
+      <div class="match-item" data-id="m4" onclick="matchClick(this)">Muszę już iść.</div>
+    </div>
+  </div>
+
+  <div class="match-check-row">
+    <button class="btn btn-sage" onclick="checkMatch()">Sprawdź</button>
+    <button class="btn btn-ghost" onclick="resetMatch()">Resetuj</button>
+    <div id="matchResult"></div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 3 – FILL THE GAP
+════════════════════════════════════════════ -->
+<div class="section reveal" id="gapSection">
+  <div class="section-label">
+    <div class="section-num" style="background:var(--sky); color:#fff;">3</div>
+    <div>
+      <div class="section-title">Uzupełnij zdanie</div>
+      <div class="section-sub">Wpisz brakujące słowo. Kliknij 💡 po podpowiedź (pierwszą literę)</div>
+    </div>
+  </div>
+
+  <div class="word-bank">
+    <span class="word-chip" data-word="great">great</span>
+    <span class="word-chip" data-word="see">see</span>
+    <span class="word-chip" data-word="bad">bad</span>
+    <span class="word-chip" data-word="care">care</span>
+    <span class="word-chip" data-word="more">more</span>
+    <span class="word-chip" data-word="usual">usual</span>
+  </div>
+
+  <div class="gap-sentence">
+    <span>I'm</span>
+    <input class="gap-input" data-answer="great" placeholder="" id="g1" oninput="checkChip(this)">
+    <span>, thanks!</span>
+    <span class="hint-icon" onclick="giveHint('g1')">💡</span>
+  </div>
+
+  <div class="gap-sentence">
+    <span>Long time no</span>
+    <input class="gap-input" data-answer="see" placeholder="" id="g2" oninput="checkChip(this)">
+    <span>!</span>
+    <span class="hint-icon" onclick="giveHint('g2')">💡</span>
+  </div>
+
+  <div class="gap-sentence">
+    <span>Not</span>
+    <input class="gap-input" data-answer="bad" placeholder="" id="g3" oninput="checkChip(this)">
+    <span>, actually.</span>
+    <span class="hint-icon" onclick="giveHint('g3')">💡</span>
+  </div>
+
+  <div class="gap-sentence">
+    <span>Same as</span>
+    <input class="gap-input" data-answer="usual" placeholder="" id="g4" oninput="checkChip(this)">
+    <span>.</span>
+    <span class="hint-icon" onclick="giveHint('g4')">💡</span>
+  </div>
+
+  <div class="gap-sentence">
+    <span>Take</span>
+    <input class="gap-input" data-answer="care" placeholder="" id="g5" oninput="checkChip(this)">
+    <span>! See you soon!</span>
+    <span class="hint-icon" onclick="giveHint('g5')">💡</span>
+  </div>
+
+  <div class="gap-sentence">
+    <span>Oh really? Tell me</span>
+    <input class="gap-input" data-answer="more" placeholder="" id="g6" oninput="checkChip(this)">
+    <span>!</span>
+    <span class="hint-icon" onclick="giveHint('g6')">💡</span>
+  </div>
+
+  <div class="gap-check-row">
+    <button class="btn btn-sky" onclick="checkGap()">Sprawdź</button>
+    <button class="btn btn-ghost" onclick="resetGap()">Resetuj</button>
+    <div id="gapResult"></div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 4 – DIALOGUE
+════════════════════════════════════════════ -->
+<div class="section reveal">
+  <div class="section-label">
+    <div class="section-num" style="background:var(--plum); color:#fff;">4</div>
+    <div>
+      <div class="section-title">Dialog do uzupełnienia</div>
+      <div class="section-sub">Wpisz brakujące zwroty – sprawdź się z pamięci</div>
+    </div>
+  </div>
+
+  <div class="dialogue-box">
+
+    <div class="dialogue-line a">
+      <div class="dial-avatar a">A</div>
+      <div class="dial-bubble">
+        <input class="gap-input" data-answer="Hey" placeholder="" id="d1" style="width:70px;">
+        ! How are you? Long time no
+        <input class="gap-input" data-answer="see" placeholder="" id="d2" style="width:65px;">
+        !
+      </div>
+    </div>
+
+    <div class="dialogue-line b">
+      <div class="dial-avatar b">B</div>
+      <div class="dial-bubble">
+        I'm
+        <input class="gap-input" data-answer="great" placeholder="" id="d3" style="width:80px;">
+        , thanks! And you?
+      </div>
+    </div>
+
+    <div class="dialogue-line a">
+      <div class="dial-avatar a">A</div>
+      <div class="dial-bubble">
+        Not
+        <input class="gap-input" data-answer="bad" placeholder="" id="d4" style="width:65px;">
+        , actually. What have you been up to?
+      </div>
+    </div>
+
+    <div class="dialogue-line b">
+      <div class="dial-avatar b">B</div>
+      <div class="dial-bubble">
+        Oh, I went to Paris last week!
+        <span class="dial-en">Pojechałam do Paryża w zeszłym tygodniu!</span>
+      </div>
+    </div>
+
+    <div class="dialogue-line a">
+      <div class="dial-avatar a">A</div>
+      <div class="dial-bubble">
+        That sounds
+        <input class="gap-input" data-answer="fun" placeholder="" id="d5" style="width:65px;">
+        ! Oh really? Tell me
+        <input class="gap-input" data-answer="more" placeholder="" id="d6" style="width:70px;">
+        !
+      </div>
+    </div>
+
+    <div class="dialogue-line b">
+      <div class="dial-avatar b">B</div>
+      <div class="dial-bubble">
+        It was amazing! But sorry, I have to
+        <input class="gap-input" data-answer="go" placeholder="" id="d7" style="width:55px;">
+        now.
+      </div>
+    </div>
+
+    <div class="dialogue-line a">
+      <div class="dial-avatar a">A</div>
+      <div class="dial-bubble">
+        No problem! Take
+        <input class="gap-input" data-answer="care" placeholder="" id="d8" style="width:75px;">
+        ! See you soon!
+      </div>
+    </div>
+
+  </div>
+
+  <div style="margin-top:1.25rem; display:flex; gap:0.75rem; flex-wrap:wrap; align-items:center;">
+    <button class="btn btn-terra" onclick="checkDialogue()">Sprawdź dialog</button>
+    <button class="btn btn-ghost" onclick="resetDialogue()">Resetuj</button>
+    <div id="dialogueResult" style="font-size:0.88rem; font-weight:600; display:none;"></div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 5 – FLIP CARDS
+════════════════════════════════════════════ -->
+<div class="section reveal">
+  <div class="section-label">
+    <div class="section-num" style="background:var(--gold); color:#fff;">5</div>
+    <div>
+      <div class="section-title">Fiszki – przejrzyj je</div>
+      <div class="section-sub">Kliknij kartę, żeby zobaczyć tłumaczenie</div>
+    </div>
+  </div>
+  <p class="flip-intro">Kliknij kartę raz jeszcze, żeby ją odwrócić z powrotem.</p>
+
+  <div class="flip-grid">
+
+    <div class="flip-wrapper" onclick="flipCard(this)">
+      <div class="flip-inner">
+        <div class="flip-front"><div class="card-emoji">👋</div><div class="card-en">How are you?</div></div>
+        <div class="flip-back"><div class="card-pl">Jak się masz?</div><div class="card-pron">[hau ɑː juː]</div></div>
+      </div>
+    </div>
+
+    <div class="flip-wrapper" onclick="flipCard(this)">
+      <div class="flip-inner">
+        <div class="flip-front"><div class="card-emoji">⏳</div><div class="card-en">Long time no see!</div></div>
+        <div class="flip-back sage-card"><div class="card-pl">Dawno się nie widzieliśmy!</div><div class="card-pron">[lɒŋ taɪm nəʊ siː]</div></div>
+      </div>
+    </div>
+
+    <div class="flip-wrapper" onclick="flipCard(this)">
+      <div class="flip-inner">
+        <div class="flip-front"><div class="card-emoji">🤔</div><div class="card-en">What have you been up to?</div></div>
+        <div class="flip-back sky-card"><div class="card-pl">Co porabiasz?</div><div class="card-pron">[wɒt hæv juː biːn ʌp tuː]</div></div>
+      </div>
+    </div>
+
+    <div class="flip-wrapper" onclick="flipCard(this)">
+      <div class="flip-inner">
+        <div class="flip-front"><div class="card-emoji">😄</div><div class="card-en">That sounds fun!</div></div>
+        <div class="flip-back plum-card"><div class="card-pl">Brzmi fajnie!</div><div class="card-pron">[ðæt saʊndz fʌn]</div></div>
+      </div>
+    </div>
+
+    <div class="flip-wrapper" onclick="flipCard(this)">
+      <div class="flip-inner">
+        <div class="flip-front"><div class="card-emoji">😮</div><div class="card-en">Oh really? Tell me more!</div></div>
+        <div class="flip-back"><div class="card-pl">Naprawdę? Opowiedz więcej!</div><div class="card-pron">[əʊ ˈrɪəli]</div></div>
+      </div>
+    </div>
+
+    <div class="flip-wrapper" onclick="flipCard(this)">
+      <div class="flip-inner">
+        <div class="flip-front"><div class="card-emoji">🏃</div><div class="card-en">I have to go now.</div></div>
+        <div class="flip-back gold-card"><div class="card-pl">Muszę już iść.</div><div class="card-pron">[aɪ hæv tuː ɡəʊ naʊ]</div></div>
+      </div>
+    </div>
+
+    <div class="flip-wrapper" onclick="flipCard(this)">
+      <div class="flip-inner">
+        <div class="flip-front"><div class="card-emoji">💛</div><div class="card-en">Take care!</div></div>
+        <div class="flip-back sage-card"><div class="card-pl">Dbaj o siebie!</div><div class="card-pron">[teɪk keə]</div></div>
+      </div>
+    </div>
+
+    <div class="flip-wrapper" onclick="flipCard(this)">
+      <div class="flip-inner">
+        <div class="flip-front"><div class="card-emoji">😐</div><div class="card-en">Same as usual.</div></div>
+        <div class="flip-back sky-card"><div class="card-pl">Tak jak zwykle.</div><div class="card-pron">[seɪm æz ˈjuːʒuəl]</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SCORE
+════════════════════════════════════════════ -->
+<div class="score-section reveal">
+  <h2>Wynik końcowy</h2>
+  <p>Ukończ ćwiczenia 2, 3 i 4, żeby zobaczyć swój wynik</p>
+  <span id="scoreCounter">–</span>
+  <button class="btn btn-gold" id="celebrateBtn" onclick="celebrate()" style="display:none; margin:0 auto;">
+    🎉 Świętuj!
+  </button>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+// ── PHRASE REVEAL ────────────────────────────
+function revealPhrase(btn) {
+  var card = btn.closest('.phrase-card');
+  var pl = card.querySelector('.phrase-pl');
+  var isVisible = pl.classList.contains('visible');
+  pl.classList.toggle('visible', !isVisible);
+  btn.innerHTML = isVisible
+    ? '<span class="icon">▼</span> Pokaż'
+    : '<span class="icon">▲</span> Ukryj';
+}
+
+// ── FLIP CARDS ───────────────────────────────
+function flipCard(el) {
+  el.classList.toggle('flipped');
+}
+
+// ── MATCH ────────────────────────────────────
+var matchSelected = null;
+var matchScore = 0;
+var matchDone = false;
+var matchCorrect = 0;
+
+function matchClick(el) {
+  if (el.classList.contains('matched-ok')) return;
+  el.classList.remove('matched-err');
+
+  if (!matchSelected) {
+    if (matchSelected) matchSelected.classList.remove('selected');
+    matchSelected = el;
+    el.classList.add('selected');
+  } else {
+    if (matchSelected === el) {
+      matchSelected.classList.remove('selected');
+      matchSelected = null;
+      return;
+    }
+    if (matchSelected.dataset.id === el.dataset.id) {
+      matchSelected.classList.remove('selected');
+      matchSelected.classList.add('matched-ok');
+      el.classList.add('matched-ok');
+      matchCorrect++;
+      matchSelected = null;
+      if (matchCorrect === 5) {
+        var res = document.getElementById('matchResult');
+        res.textContent = '✓ Świetnie! Wszystkie pary poprawne!';
+        res.className = 'ok';
+        res.style.display = 'block';
+        markSectionDone('match');
+        miniConfetti();
+      }
+    } else {
+      matchSelected.classList.remove('selected');
+      matchSelected.classList.add('matched-err');
+      el.classList.add('matched-err');
+      setTimeout(function() {
+        matchSelected && matchSelected.classList.remove('matched-err', 'selected');
+        el.classList.remove('matched-err');
+        matchSelected = null;
+      }, 600);
+      matchSelected = null;
+    }
+  }
+}
+
+function checkMatch() {
+  var items = document.querySelectorAll('#matchSection .match-item');
+  var allOk = true;
+  items.forEach(function(i) { if (!i.classList.contains('matched-ok')) allOk = false; });
+  var res = document.getElementById('matchResult');
+  if (allOk) {
+    res.textContent = '✓ Wszystkie pary poprawne!';
+    res.className = 'ok';
+    markSectionDone('match');
+    miniConfetti();
+  } else {
+    res.textContent = '✗ Jeszcze nie wszystkie – dopasuj wszystkie pary.';
+    res.className = 'err';
+  }
+  res.style.display = 'block';
+}
+
+function resetMatch() {
+  matchSelected = null; matchCorrect = 0;
+  document.querySelectorAll('#matchSection .match-item').forEach(function(el) {
+    el.classList.remove('selected','matched-ok','matched-err');
+  });
+  var res = document.getElementById('matchResult');
+  res.style.display = 'none';
+}
+
+// ── GAP FILL ─────────────────────────────────
+function checkChip(input) {
+  input.classList.remove('ok','err');
+}
+
+function giveHint(id) {
+  var inp = document.getElementById(id);
+  var ans = inp.dataset.answer;
+  if (inp.value.length === 0) {
+    inp.value = ans[0];
+  } else if (inp.value.length < ans.length) {
+    inp.value = ans.slice(0, inp.value.length + 1);
+  }
+  updateChips();
+}
+
+function updateChips() {
+  var inputs = document.querySelectorAll('#gapSection .gap-input');
+  var usedWords = [];
+  inputs.forEach(function(inp) {
+    if (inp.value.toLowerCase().trim() === inp.dataset.answer.toLowerCase()) {
+      usedWords.push(inp.dataset.answer.toLowerCase());
+    }
+  });
+  document.querySelectorAll('.word-chip').forEach(function(chip) {
+    if (usedWords.includes(chip.dataset.word.toLowerCase())) {
+      chip.classList.add('used');
+    } else {
+      chip.classList.remove('used');
+    }
+  });
+}
+
+function checkGap() {
+  var inputs = document.querySelectorAll('#gapSection .gap-input');
+  var correct = 0;
+  inputs.forEach(function(inp) {
+    inp.classList.remove('ok','err');
+    if (inp.value.toLowerCase().trim() === inp.dataset.answer.toLowerCase()) {
+      inp.classList.add('ok'); correct++;
+    } else {
+      inp.classList.add('err');
+    }
+  });
+  var res = document.getElementById('gapResult');
+  if (correct === inputs.length) {
+    res.textContent = '✓ Brawo! Wszystko poprawnie!';
+    res.className = 'ok';
+    markSectionDone('gap');
+    miniConfetti();
+  } else {
+    res.textContent = '✗ ' + correct + ' / ' + inputs.length + ' poprawnie. Spróbuj jeszcze raz!';
+    res.className = 'err';
+  }
+  res.style.display = 'block';
+  updateChips();
+}
+
+function resetGap() {
+  document.querySelectorAll('#gapSection .gap-input').forEach(function(inp) {
+    inp.value = ''; inp.classList.remove('ok','err');
+  });
+  document.getElementById('gapResult').style.display = 'none';
+  document.querySelectorAll('.word-chip').forEach(function(c){ c.classList.remove('used'); });
+}
+
+// ── DIALOGUE ─────────────────────────────────
+function checkDialogue() {
+  var ids = ['d1','d2','d3','d4','d5','d6','d7','d8'];
+  var correct = 0;
+  ids.forEach(function(id) {
+    var inp = document.getElementById(id);
+    inp.classList.remove('ok','err');
+    if (inp.value.toLowerCase().trim() === inp.dataset.answer.toLowerCase()) {
+      inp.classList.add('ok'); correct++;
+    } else {
+      inp.classList.add('err');
+    }
+  });
+  var res = document.getElementById('dialogueResult');
+  res.style.display = 'block';
+  if (correct === ids.length) {
+    res.style.color = 'var(--sage)';
+    res.textContent = '✓ Doskonale! Dialog uzupełniony bezbłędnie!';
+    markSectionDone('dialogue');
+    miniConfetti();
+  } else {
+    res.style.color = '#c0392b';
+    res.textContent = '✗ ' + correct + ' / ' + ids.length + ' – popraw czerwone pola!';
+  }
+}
+
+function resetDialogue() {
+  ['d1','d2','d3','d4','d5','d6','d7','d8'].forEach(function(id) {
+    var inp = document.getElementById(id);
+    inp.value = ''; inp.classList.remove('ok','err');
+  });
+  document.getElementById('dialogueResult').style.display = 'none';
+}
+
+// ── SCORE / PROGRESS ─────────────────────────
+var doneSections = {};
+function markSectionDone(key) {
+  doneSections[key] = true;
+  updateProgress();
+}
+function updateProgress() {
+  var done = Object.keys(doneSections).length;
+  var total = 3;
+  document.getElementById('progressLabel').textContent = done + ' / ' + total + ' zadań';
+  document.getElementById('progressBar').style.width = (done / total * 100) + '%';
+  document.getElementById('scoreCounter').textContent = done + ' / ' + total;
+  if (done === total) {
+    document.getElementById('celebrateBtn').style.display = 'inline-flex';
+    celebrate();
+  }
+}
+
+// ── CONFETTI ──────────────────────────────────
+function miniConfetti() {
+  confetti({
+    particleCount: 60,
+    spread: 70,
+    origin: { y: 0.65 },
+    colors: ['#c8694a','#7a9e8a','#5b8fc9','#c89c3c','#7c5c8a']
+  });
+}
+
+function celebrate() {
+  var count = 200;
+  var defaults = { origin: { y: 0.7 } };
+  confetti(Object.assign({}, defaults, { spread: 26, startVelocity: 55, particleCount: Math.floor(count * 0.25), colors: ['#c8694a','#e4b84c'] }));
+  confetti(Object.assign({}, defaults, { spread: 60, particleCount: Math.floor(count * 0.2), colors: ['#7a9e8a','#5b8fc9'] }));
+  confetti(Object.assign({}, defaults, { spread: 100, decay: 0.91, scalar: 0.8, particleCount: Math.floor(count * 0.35), colors: ['#7c5c8a','#c8694a','#c89c3c'] }));
+  confetti(Object.assign({}, defaults, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2, particleCount: Math.floor(count * 0.1) }));
+  confetti(Object.assign({}, defaults, { spread: 120, startVelocity: 45, particleCount: Math.floor(count * 0.1) }));
+
+  setTimeout(function() {
+    var end = Date.now() + 2500;
+    (function frame() {
+      confetti({ particleCount: 2, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#c8694a','#e4b84c'] });
+      confetti({ particleCount: 2, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#7a9e8a','#5b8fc9'] });
+      if (Date.now() < end) requestAnimationFrame(frame);
+    })();
+  }, 400);
+}
+
+// ── SCROLL REVEAL ─────────────────────────────
+function checkReveal() {
+  document.querySelectorAll('.reveal').forEach(function(el) {
+    var rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight - 60) {
+      el.classList.add('visible');
+    }
+  });
+}
+window.addEventListener('scroll', checkReveal);
+checkReveal();
+</script>
+</body>
+</html>
