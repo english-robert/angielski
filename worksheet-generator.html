@@ -1,0 +1,2313 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generator Kart Pracy</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400&family=JetBrains+Mono:wght@400;500;700&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f4faf3;
+  --surface: #ffffff;
+  --surface-2: #ecf6ea;
+  --border: #cae0c4;
+  --border-bright: #6fa867;
+  --text: #0d2818;
+  --text-dim: #4a6b53;
+  --text-muted: #7a9582;
+  --accent: #1d8348;
+  --accent-bright: #2ecc71;
+  --accent-dim: rgba(29, 131, 72, 0.10);
+  --warn: #d97706;
+  --error: #dc2626;
+  --ok: #1d8348;
+  --highlight: #fef3c7;
+  --display: 'Fraunces', serif;
+  --body: 'Bricolage Grotesque', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 50% 40% at 90% 0%, rgba(46, 204, 113, 0.18), transparent 65%),
+    radial-gradient(ellipse 60% 45% at 5% 100%, rgba(29, 131, 72, 0.12), transparent 60%),
+    radial-gradient(ellipse 30% 25% at 50% 50%, rgba(254, 243, 199, 0.4), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.app { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem 6rem; position: relative; z-index: 1; }
+
+/* HEADER */
+.header { margin-bottom: 3rem; display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+.header-left { flex: 1; min-width: 300px; }
+.eyebrow {
+  font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.25em;
+  text-transform: uppercase; color: var(--accent-bright); margin-bottom: 0.6rem;
+  font-weight: 600;
+}
+.header h1 {
+  font-family: var(--display); font-weight: 900; font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+  line-height: 1.05; letter-spacing: -0.02em; color: var(--text);
+}
+.header h1 em {
+  font-style: italic; font-weight: 700;
+  background: linear-gradient(135deg, #1d8348 0%, #2ecc71 50%, #f59e0b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  padding: 0.05em 0.08em 0.15em;
+  letter-spacing: 0;
+  display: inline-block;
+  line-height: 1.15;
+  vertical-align: baseline;
+}
+.header p { color: var(--text-dim); margin-top: 0.6rem; max-width: 540px; font-size: 0.95rem; }
+.version-tag {
+  font-family: var(--mono); font-size: 0.7rem; color: var(--text-muted);
+  border: 1px solid var(--border); padding: 0.35rem 0.7rem; border-radius: 999px;
+}
+
+/* SECTIONS */
+.section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.75rem;
+  margin-bottom: 1.25rem;
+}
+.sec-head { display: flex; align-items: center; gap: 0.85rem; margin-bottom: 1.1rem; }
+.sec-num {
+  font-family: var(--mono); font-size: 0.75rem; font-weight: 700;
+  width: 32px; height: 32px; border-radius: 8px;
+  background: linear-gradient(135deg, #1d8348 0%, #2ecc71 100%);
+  color: #fff;
+  display: grid; place-items: center;
+  box-shadow: 0 2px 8px rgba(29, 131, 72, 0.3);
+}
+.sec-title { font-family: var(--display); font-weight: 700; font-size: 1.4rem; letter-spacing: -0.015em; }
+.sec-desc { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 1.2rem; margin-top: -0.6rem; padding-left: 2.65rem; }
+
+/* INPUTS */
+.field { margin-bottom: 1rem; }
+.field:last-child { margin-bottom: 0; }
+.label {
+  display: block; font-size: 0.78rem; font-weight: 600;
+  color: var(--text-dim); margin-bottom: 0.5rem;
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+.input, .textarea {
+  width: 100%;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 0.7rem 0.9rem;
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 0.95rem;
+  transition: border-color 0.18s, background 0.18s;
+}
+.input:focus, .textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--bg);
+}
+.textarea {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  min-height: 180px;
+  resize: vertical;
+  line-height: 1.55;
+}
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 600px) { .row { grid-template-columns: 1fr; } }
+
+/* HELPER PANEL UNDER TEXTAREA */
+.tsv-status {
+  margin-top: 0.7rem;
+  padding: 0.8rem 1rem;
+  border-radius: 9px;
+  font-size: 0.85rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+}
+.tsv-status.ok { border-color: rgba(74, 222, 128, 0.3); background: rgba(74, 222, 128, 0.05); }
+.tsv-status.warn { border-color: rgba(255, 180, 84, 0.3); background: rgba(255, 180, 84, 0.05); }
+.tsv-status.error { border-color: rgba(255, 107, 107, 0.3); background: rgba(255, 107, 107, 0.05); }
+.tsv-status .icon { display: inline-block; margin-right: 0.4rem; }
+.tsv-status strong { color: var(--text); }
+.tsv-status .hint { display: block; margin-top: 0.3rem; font-size: 0.78rem; color: var(--text-muted); }
+.tsv-status code {
+  font-family: var(--mono); font-size: 0.78rem;
+  background: var(--surface);
+  padding: 0.05rem 0.35rem; border-radius: 4px;
+  border: 1px solid var(--border);
+  color: var(--accent);
+}
+
+/* CHECKBOX TASK TYPES */
+.task-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.7rem; }
+.task-card {
+  display: flex; align-items: flex-start; gap: 0.7rem;
+  padding: 0.95rem 1rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  cursor: pointer;
+  transition: all 0.18s;
+  position: relative;
+}
+.task-card:hover:not(.disabled) { border-color: var(--border-bright); }
+.task-card.checked { border-color: var(--accent); background: rgba(196, 245, 58, 0.04); }
+.task-card.disabled { opacity: 0.4; cursor: not-allowed; }
+.task-card input { display: none; }
+.task-checkbox {
+  width: 18px; height: 18px; border: 1.5px solid var(--border-bright); border-radius: 5px;
+  flex-shrink: 0; margin-top: 2px;
+  display: grid; place-items: center;
+  transition: all 0.15s;
+}
+.task-card.checked .task-checkbox {
+  background: var(--accent); border-color: var(--accent);
+}
+.task-card.checked .task-checkbox::after {
+  content: '✓'; color: var(--bg); font-size: 0.85rem; font-weight: 900;
+}
+.task-info { flex: 1; }
+.task-info-name { font-weight: 600; font-size: 0.92rem; }
+.task-info-desc { color: var(--text-muted); font-size: 0.78rem; margin-top: 0.2rem; line-height: 1.35; }
+.task-card.disabled .task-info-desc { color: var(--warn); }
+
+.task-suboption {
+  display: none;
+  margin-top: 0.7rem;
+  padding-top: 0.7rem;
+  border-top: 1px dashed var(--border);
+}
+.task-card.checked .task-suboption { display: block; }
+.suboption-label {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  display: block;
+  margin-bottom: 0.4rem;
+}
+.suboption-buttons { display: flex; gap: 0.35rem; }
+.suboption-buttons button {
+  flex: 1;
+  font-family: var(--mono);
+  font-size: 0.85rem; font-weight: 600;
+  padding: 0.4rem 0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  color: var(--text-dim);
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.suboption-buttons button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.suboption-buttons button.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* PRESETS */
+.preset-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.8rem; }
+.preset-card {
+  position: relative; cursor: pointer;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.2s;
+  aspect-ratio: 4/3;
+}
+.preset-card:hover { transform: scale(1.02); border-color: var(--border-bright); }
+.preset-card.selected { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(196, 245, 58, 0.15); }
+.preset-thumb { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.preset-name {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 0.55rem 0.8rem;
+  background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+  color: white; font-size: 0.85rem; font-weight: 600;
+  font-family: var(--display);
+}
+
+/* PRESET THUMBNAILS - simulated previews */
+.thumb-vintage {
+  background: #faf7f2;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 14px, rgba(26,20,16,0.05) 14px, rgba(26,20,16,0.05) 15px),
+    repeating-linear-gradient(90deg, transparent, transparent 14px, rgba(26,20,16,0.025) 14px, rgba(26,20,16,0.025) 15px);
+}
+.thumb-vintage::before {
+  content: 'Aa'; font-family: 'Fraunces', serif; font-weight: 900; font-style: italic;
+  font-size: 3.5rem; color: #c0392b; line-height: 1;
+}
+.thumb-dark {
+  background: #0d1b2a;
+  background-image: radial-gradient(circle at 20% 30%, rgba(86, 207, 178, 0.15), transparent 40%),
+                    radial-gradient(circle at 80% 70%, rgba(255, 184, 0, 0.1), transparent 40%);
+}
+.thumb-dark::before {
+  content: 'Aa'; font-family: 'Fraunces', serif; font-weight: 900;
+  font-size: 3.5rem; color: #56cfb2; line-height: 1;
+}
+.thumb-pastel {
+  background: linear-gradient(135deg, #fef3f0 0%, #f0f4ff 100%);
+}
+.thumb-pastel::before {
+  content: 'Aa'; font-family: 'Fraunces', serif; font-weight: 700;
+  font-size: 3.5rem; color: #e8a4b0; line-height: 1;
+}
+
+/* COLOR PICKERS */
+.color-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; }
+.color-field {
+  display: flex; align-items: center; gap: 0.8rem;
+  padding: 0.7rem 0.9rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+}
+.color-field input[type="color"] {
+  width: 36px; height: 36px; padding: 0; border: none; border-radius: 8px;
+  background: transparent; cursor: pointer; flex-shrink: 0;
+  -webkit-appearance: none;
+}
+.color-field input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+.color-field input[type="color"]::-webkit-color-swatch { border: 1.5px solid var(--border-bright); border-radius: 7px; }
+.color-field-info { flex: 1; min-width: 0; }
+.color-field-label { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 0.1rem; font-weight: 500; }
+.color-field-hex { font-family: var(--mono); font-size: 0.85rem; color: var(--text); }
+.color-reset {
+  font-family: var(--mono); font-size: 0.7rem; color: var(--text-muted);
+  background: none; border: 1px solid var(--border); border-radius: 6px;
+  padding: 0.3rem 0.55rem; cursor: pointer; transition: all 0.15s;
+}
+.color-reset:hover { color: var(--accent); border-color: var(--accent); }
+@media (max-width: 700px) { .color-row { grid-template-columns: 1fr; } }
+
+/* GENERATE BUTTON */
+.generate-area { margin-top: 2rem; text-align: center; }
+.btn-generate {
+  font-family: var(--display);
+  font-weight: 700; font-size: 1.15rem;
+  background: linear-gradient(135deg, #1d8348 0%, #2ecc71 100%);
+  color: #fff;
+  border: none;
+  padding: 1.1rem 3rem;
+  border-radius: 14px;
+  cursor: pointer;
+  letter-spacing: -0.01em;
+  transition: all 0.2s;
+  box-shadow: 0 6px 24px rgba(29, 131, 72, 0.35), 0 2px 6px rgba(29, 131, 72, 0.2);
+  display: inline-flex; align-items: center; gap: 0.6rem;
+}
+.btn-generate:hover:not(:disabled) {
+  transform: scale(1.03);
+  box-shadow: 0 12px 32px rgba(29, 131, 72, 0.45), 0 4px 12px rgba(29, 131, 72, 0.3);
+}
+.btn-generate:disabled {
+  opacity: 0.5; cursor: not-allowed; box-shadow: none;
+  background: var(--border); color: var(--text-muted);
+}
+.btn-generate .arrow { font-size: 1.2rem; transition: transform 0.2s; }
+.btn-generate:hover:not(:disabled) .arrow { transform: translateX(3px); }
+
+.gen-hint { color: var(--text-muted); font-size: 0.82rem; margin-top: 0.85rem; font-family: var(--mono); }
+
+/* TSV EXAMPLE LINK */
+.tsv-example-toggle {
+  font-family: var(--mono); font-size: 0.75rem;
+  color: var(--accent);
+  background: none; border: none; cursor: pointer;
+  text-decoration: underline; text-underline-offset: 3px;
+  margin-top: 0.6rem;
+  padding: 0;
+}
+.tsv-example-box {
+  margin-top: 0.8rem;
+  padding: 0.85rem 1rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  font-family: var(--mono); font-size: 0.78rem;
+  color: var(--text-dim);
+  white-space: pre;
+  overflow-x: auto;
+  display: none;
+}
+.tsv-example-box.show { display: block; }
+
+/* FOOTER */
+.foot {
+  text-align: center; padding-top: 3rem;
+  font-size: 0.78rem; color: var(--text-muted);
+  font-family: var(--mono);
+}
+.foot a { color: var(--text-dim); text-decoration: none; border-bottom: 1px dotted var(--border-bright); }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="header">
+    <div class="header-left">
+      <div class="eyebrow">Worksheet Generator · v0.1</div>
+      <h1>Karta <em>pracy</em><br>w 30 sekund</h1>
+      <p>Wklej dane, wybierz styl i typy zadań, pobierz gotowy plik HTML. Działa offline, możesz wysłać uczniowi mailem albo wydrukować.</p>
+    </div>
+    <span class="version-tag">FAZA 1 · 3 typy zadań</span>
+  </header>
+
+  <!-- SECTION 1: DATA -->
+  <div class="section">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-title">Dane</div>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label class="label" for="title">Tytuł karty</label>
+        <input type="text" id="title" class="input" placeholder="np. 🍣 Sushi Vocabulary" value="Vocabulary Practice">
+      </div>
+      <div class="field">
+        <label class="label" for="subtitle">Podtytuł (opcjonalnie)</label>
+        <input type="text" id="subtitle" class="input" placeholder="np. Unit 5 · Food &amp; drinks">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label" for="tsv">Dane TSV (pierwszy wiersz to nagłówek)</label>
+      <textarea id="tsv" class="textarea" placeholder="pl	en
+kot	cat
+pies	dog
+..."></textarea>
+      <button type="button" class="tsv-example-toggle" id="tsvExampleToggle">▸ Pokaż przykładowe dane</button>
+      <div class="tsv-example-box" id="tsvExampleBox">pl	en
+kot	cat
+pies	dog
+ptak	bird
+ryba	fish
+koń	horse
+krowa	cow
+owca	sheep
+kura	chicken</div>
+      <div class="tsv-status" id="tsvStatus">
+        <span class="icon">ⓘ</span> Wklej dane, żeby zobaczyć dostępne typy zadań.
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: TASK TYPES -->
+  <div class="section">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-title">Typy zadań</div>
+    </div>
+    <div class="sec-desc">Wybierz, które sekcje mają znaleźć się na karcie pracy. Każda sekcja używa tych samych słówek.</div>
+
+    <div class="task-grid" id="taskGrid">
+      <div class="task-card" data-task="flashcards">
+        <input type="checkbox" checked hidden>
+        <div class="task-checkbox"></div>
+        <div class="task-info">
+          <div class="task-info-name">🃏 Flashcards</div>
+          <div class="task-info-desc">Fiszki 3D do odsłaniania tłumaczenia</div>
+        </div>
+      </div>
+      <div class="task-card" data-task="matching">
+        <input type="checkbox" checked hidden>
+        <div class="task-checkbox"></div>
+        <div class="task-info">
+          <div class="task-info-name">🔗 Matching</div>
+          <div class="task-info-desc">Łączenie słów w pary PL ↔ EN</div>
+        </div>
+      </div>
+      <div class="task-card" data-task="scramble">
+        <input type="checkbox" checked hidden>
+        <div class="task-checkbox"></div>
+        <div class="task-info">
+          <div class="task-info-name">🔤 Word scramble</div>
+          <div class="task-info-desc">Ułóż litery w poprawne słowo</div>
+        </div>
+      </div>
+      <div class="task-card" data-task="quiz">
+        <input type="checkbox" hidden>
+        <div class="task-checkbox"></div>
+        <div class="task-info">
+          <div class="task-info-name">✅ Quiz</div>
+          <div class="task-info-desc">Wielokrotny wybór tłumaczenia</div>
+          <div class="task-suboption" id="quizSubopt">
+            <label class="suboption-label">Liczba opcji do wyboru:</label>
+            <div class="suboption-buttons">
+              <button type="button" data-quiz-opts="3">3</button>
+              <button type="button" data-quiz-opts="4" class="active">4</button>
+              <button type="button" data-quiz-opts="5">5</button>
+              <button type="button" data-quiz-opts="6">6</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: STYLE -->
+  <div class="section">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-title">Styl wizualny</div>
+    </div>
+
+    <div class="field">
+      <label class="label">Preset</label>
+      <div class="preset-grid" id="presetGrid">
+        <div class="preset-card selected" data-preset="vintage">
+          <div class="preset-thumb thumb-vintage"></div>
+          <div class="preset-name">Vintage Paper</div>
+        </div>
+        <div class="preset-card" data-preset="dark">
+          <div class="preset-thumb thumb-dark"></div>
+          <div class="preset-name">Dark Neon</div>
+        </div>
+        <div class="preset-card" data-preset="pastel">
+          <div class="preset-thumb thumb-pastel"></div>
+          <div class="preset-name">Soft Pastel</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">Kolory (opcjonalnie - nadpisz domyślne dla presetu)</label>
+      <div class="color-row">
+        <div class="color-field">
+          <input type="color" id="colorAccent" value="#c0392b">
+          <div class="color-field-info">
+            <div class="color-field-label">Akcent</div>
+            <div class="color-field-hex" id="colorAccentHex">#c0392b</div>
+          </div>
+          <button type="button" class="color-reset" data-target="accent">RESET</button>
+        </div>
+        <div class="color-field">
+          <input type="color" id="colorBg" value="#f5f1e8">
+          <div class="color-field-info">
+            <div class="color-field-label">Tło karty</div>
+            <div class="color-field-hex" id="colorBgHex">#f5f1e8</div>
+          </div>
+          <button type="button" class="color-reset" data-target="bg">RESET</button>
+        </div>
+        <div class="color-field">
+          <input type="color" id="colorText" value="#1f1a14">
+          <div class="color-field-info">
+            <div class="color-field-label">Kolor tekstu</div>
+            <div class="color-field-hex" id="colorTextHex">#1f1a14</div>
+          </div>
+          <button type="button" class="color-reset" data-target="text">RESET</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GENERATE -->
+  <div class="generate-area">
+    <button type="button" id="btnGenerate" class="btn-generate" disabled>
+      Generuj &amp; pobierz HTML <span class="arrow">→</span>
+    </button>
+    <div class="gen-hint" id="genHint">Wklej dane, żeby aktywować przycisk</div>
+  </div>
+
+  <div class="foot">
+    Plik wygenerowany lokalnie · nic nie wysyła się na serwer · canvas-confetti via CDN
+  </div>
+</div>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+const STATE = {
+  rows: [],
+  headers: [],
+  preset: 'vintage',
+  customAccent: null,
+  customBg: null,
+  customText: null,
+  tasks: { flashcards: true, matching: true, scramble: true, quiz: false },
+  quizOptions: 4
+};
+
+// Default colors per preset
+const PRESET_DEFAULTS = {
+  vintage: { accent: '#c0392b', bg: '#f5f1e8', text: '#1f1a14' },
+  dark:    { accent: '#56cfb2', bg: '#0d1b2a', text: '#e8f4fd' },
+  pastel:  { accent: '#d65a8a', bg: '#fef6f3', text: '#3a2c33' }
+};
+
+// ============================================================
+// TSV PARSING
+// ============================================================
+function parseTSV(text) {
+  const lines = text.trim().split(/\r?\n/).filter(l => l.trim().length > 0);
+  if (lines.length < 2) return { headers: [], rows: [], error: 'Potrzebny jest nagłówek + co najmniej 1 wiersz danych.' };
+
+  const firstLine = lines[0];
+  let sep = '\t';
+  if (!firstLine.includes('\t')) {
+    if (firstLine.includes(';')) sep = ';';
+    else if (firstLine.includes(',')) sep = ',';
+  }
+
+  const headers = lines[0].split(sep).map(h => h.trim().toLowerCase());
+  const rows = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cells = lines[i].split(sep).map(c => c.trim());
+    if (cells.length < 2) continue;
+    const obj = {};
+    headers.forEach((h, idx) => { obj[h] = cells[idx] || ''; });
+    if (obj.pl && obj.en) {
+      // Parse tasks column if present (skróty f/m/s/q lub pełne nazwy, comma-separated)
+      obj._tasks = parseTaskTags(obj.tasks || '');
+      rows.push(obj);
+    }
+  }
+
+  if (rows.length === 0) return { headers, rows: [], error: 'Nie wykryto wierszy z danymi PL/EN. Czy nagłówki to "pl" i "en"?' };
+  return { headers, rows, error: null };
+}
+
+// Parse "f,m" -> ['flashcards','matching']. Empty -> [] (means: include in all selected types).
+function parseTaskTags(s) {
+  if (!s.trim()) return [];
+  const map = {
+    f: 'flashcards', flashcard: 'flashcards', flashcards: 'flashcards',
+    m: 'matching', match: 'matching', matching: 'matching',
+    s: 'scramble', scramble: 'scramble',
+    q: 'quiz', quiz: 'quiz'
+  };
+  const result = [];
+  s.split(/[,;|]/).forEach(tag => {
+    const t = tag.trim().toLowerCase();
+    if (map[t]) result.push(map[t]);
+  });
+  return result;
+}
+
+// Filter rows for a given task type. If row has no tags -> belongs to all selected types. If row has tags -> only if task is in tags.
+function rowsForTask(taskName) {
+  return STATE.rows.filter(r => r._tasks.length === 0 || r._tasks.includes(taskName));
+}
+
+function updateTSVStatus() {
+  const text = document.getElementById('tsv').value;
+  const status = document.getElementById('tsvStatus');
+  const btn = document.getElementById('btnGenerate');
+  const hint = document.getElementById('genHint');
+
+  if (!text.trim()) {
+    status.className = 'tsv-status';
+    status.innerHTML = '<span class="icon">ⓘ</span> Wklej dane, żeby zobaczyć dostępne typy zadań.';
+    STATE.rows = [];
+    STATE.headers = [];
+    btn.disabled = true;
+    hint.textContent = 'Wklej dane, żeby aktywować przycisk';
+    updateTaskAvailability();
+    return;
+  }
+
+  const result = parseTSV(text);
+  if (result.error) {
+    status.className = 'tsv-status error';
+    status.innerHTML = `<span class="icon">⚠</span> <strong>Błąd:</strong> ${result.error}<span class="hint">Format: nagłówek "pl⇥en" w pierwszym wierszu, potem dane oddzielone tabulatorem.</span>`;
+    STATE.rows = [];
+    STATE.headers = [];
+    btn.disabled = true;
+    hint.textContent = 'Popraw dane, żeby aktywować';
+    updateTaskAvailability();
+    return;
+  }
+
+  STATE.rows = result.rows;
+  STATE.headers = result.headers;
+
+  // Stats per task type
+  const counts = {
+    flashcards: rowsForTask('flashcards').length,
+    matching: rowsForTask('matching').length,
+    scramble: rowsForTask('scramble').length,
+    quiz: rowsForTask('quiz').length
+  };
+  const hasTagsCol = result.headers.includes('tasks');
+  const taggedRows = result.rows.filter(r => r._tasks.length > 0).length;
+
+  status.className = 'tsv-status ok';
+  let msg = `<span class="icon">✓</span> <strong>Wykryto ${result.rows.length} wierszy.</strong>`;
+  if (hasTagsCol && taggedRows > 0) {
+    msg += `<span class="hint">Klasyfikacja zadań: flashcards: ${counts.flashcards}, matching: ${counts.matching}, scramble: ${counts.scramble}, quiz: ${counts.quiz} (${taggedRows} wierszy ze specyficznymi tagami)</span>`;
+  } else {
+    msg += `<span class="hint">Wszystkie wiersze trafią do każdego zaznaczonego typu zadania. Aby przypisać wiersze do konkretnych typów, dodaj kolumnę <code>tasks</code> z tagami: f, m, s, q (lub kombinacje typu f,m).</span>`;
+  }
+  status.innerHTML = msg;
+  updateTaskAvailability();
+  validateGenerate();
+}
+
+function updateTaskAvailability() {
+  const cards = document.querySelectorAll('.task-card');
+  cards.forEach(card => {
+    const task = card.dataset.task;
+    const taskRows = STATE.rows.length > 0 ? rowsForTask(task) : [];
+    const cb = card.querySelector('input');
+    let ok = taskRows.length > 0;
+    let reason = '';
+
+    if (task === 'matching' && taskRows.length < 3) {
+      ok = false;
+      reason = `Potrzeba min. 3 wiersze (jest ${taskRows.length})`;
+    }
+    if (task === 'quiz' && taskRows.length < STATE.quizOptions) {
+      ok = false;
+      reason = `Potrzeba min. ${STATE.quizOptions} wiersze dla quizu (jest ${taskRows.length})`;
+    }
+
+    const desc = card.querySelector('.task-info-desc');
+    if (!desc.dataset.original) desc.dataset.original = desc.textContent;
+
+    if (STATE.rows.length === 0) {
+      card.classList.remove('disabled');
+      desc.textContent = desc.dataset.original;
+      return;
+    }
+
+    if (!ok) {
+      card.classList.add('disabled');
+      cb.checked = false;
+      card.classList.remove('checked');
+      STATE.tasks[task] = false;
+      desc.textContent = reason || desc.dataset.original;
+    } else {
+      card.classList.remove('disabled');
+      desc.textContent = desc.dataset.original + ` · ${taskRows.length} wierszy`;
+    }
+  });
+}
+
+function validateGenerate() {
+  const btn = document.getElementById('btnGenerate');
+  const hint = document.getElementById('genHint');
+  const anyTask = Object.values(STATE.tasks).some(v => v);
+
+  if (STATE.rows.length === 0) {
+    btn.disabled = true;
+    hint.textContent = 'Wklej dane, żeby aktywować przycisk';
+    return;
+  }
+  if (!anyTask) {
+    btn.disabled = true;
+    hint.textContent = 'Wybierz przynajmniej jeden typ zadania';
+    return;
+  }
+  btn.disabled = false;
+  const taskCount = Object.values(STATE.tasks).filter(v => v).length;
+  hint.textContent = `Gotowe · ${STATE.rows.length} słów · ${taskCount} ${taskCount === 1 ? 'sekcja' : 'sekcje'}`;
+}
+
+// ============================================================
+// EVENT LISTENERS
+// ============================================================
+document.getElementById('tsv').addEventListener('input', updateTSVStatus);
+
+document.getElementById('tsvExampleToggle').addEventListener('click', () => {
+  document.getElementById('tsvExampleBox').classList.toggle('show');
+});
+
+document.querySelectorAll('.task-card').forEach(card => {
+  card.addEventListener('click', e => {
+    if (card.classList.contains('disabled')) return;
+    // Kliknięcie w przyciski liczby opcji quizu nie toggle'uje karty
+    if (e.target.closest('.suboption-buttons')) return;
+    const cb = card.querySelector('input');
+    cb.checked = !cb.checked;
+    card.classList.toggle('checked', cb.checked);
+    STATE.tasks[card.dataset.task] = cb.checked;
+    validateGenerate();
+  });
+  // initial state
+  if (card.querySelector('input').checked) card.classList.add('checked');
+});
+
+// Quiz suboption buttons
+document.querySelectorAll('.suboption-buttons button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const n = parseInt(btn.dataset.quizOpts);
+    STATE.quizOptions = n;
+    document.querySelectorAll('.suboption-buttons button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    updateTaskAvailability(); // może zmienić dostępność quiz jeśli mało wierszy
+    validateGenerate();
+  });
+});
+
+document.querySelectorAll('.preset-card').forEach(card => {
+  card.addEventListener('click', () => {
+    document.querySelectorAll('.preset-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    STATE.preset = card.dataset.preset;
+    const def = PRESET_DEFAULTS[STATE.preset];
+    document.getElementById('colorAccent').value = def.accent;
+    document.getElementById('colorAccentHex').textContent = def.accent;
+    document.getElementById('colorBg').value = def.bg;
+    document.getElementById('colorBgHex').textContent = def.bg;
+    document.getElementById('colorText').value = def.text;
+    document.getElementById('colorTextHex').textContent = def.text;
+    STATE.customAccent = null;
+    STATE.customBg = null;
+    STATE.customText = null;
+  });
+});
+
+document.getElementById('colorAccent').addEventListener('input', e => {
+  STATE.customAccent = e.target.value;
+  document.getElementById('colorAccentHex').textContent = e.target.value;
+});
+document.getElementById('colorBg').addEventListener('input', e => {
+  STATE.customBg = e.target.value;
+  document.getElementById('colorBgHex').textContent = e.target.value;
+});
+document.getElementById('colorText').addEventListener('input', e => {
+  STATE.customText = e.target.value;
+  document.getElementById('colorTextHex').textContent = e.target.value;
+});
+
+document.querySelectorAll('.color-reset').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.target;
+    const def = PRESET_DEFAULTS[STATE.preset];
+    if (target === 'accent') {
+      document.getElementById('colorAccent').value = def.accent;
+      document.getElementById('colorAccentHex').textContent = def.accent;
+      STATE.customAccent = null;
+    } else if (target === 'bg') {
+      document.getElementById('colorBg').value = def.bg;
+      document.getElementById('colorBgHex').textContent = def.bg;
+      STATE.customBg = null;
+    } else if (target === 'text') {
+      document.getElementById('colorText').value = def.text;
+      document.getElementById('colorTextHex').textContent = def.text;
+      STATE.customText = null;
+    }
+  });
+});
+
+document.getElementById('btnGenerate').addEventListener('click', () => {
+  const html = buildWorksheetHTML();
+  downloadHTML(html);
+});
+
+// Initialize
+updateTSVStatus();
+
+// ============================================================
+// HELPERS
+// ============================================================
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// Hex to RGB tuple
+function hexToRgb(hex) {
+  const h = hex.replace('#', '');
+  const n = parseInt(h.length === 3 ? h.split('').map(c => c + c).join('') : h, 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+
+// Lighten/darken: factor -1..1 (negative darkens)
+function shiftColor(hex, factor) {
+  const [r, g, b] = hexToRgb(hex);
+  const f = factor;
+  const apply = c => Math.max(0, Math.min(255, Math.round(c + (f >= 0 ? (255 - c) * f : c * f))));
+  const nr = apply(r), ng = apply(g), nb = apply(b);
+  return '#' + [nr, ng, nb].map(x => x.toString(16).padStart(2, '0')).join('');
+}
+
+function rgba(hex, alpha) {
+  const [r, g, b] = hexToRgb(hex);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+// Determine if color is dark
+function isDark(hex) {
+  const [r, g, b] = hexToRgb(hex);
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance < 0.5;
+}
+
+function downloadHTML(html) {
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const date = new Date().toISOString().split('T')[0];
+  const titleSlug = (document.getElementById('title').value || 'worksheet')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 40) || 'worksheet';
+  a.href = url;
+  a.download = `${titleSlug}-${date}.html`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+// ============================================================
+// WORKSHEET BUILDER
+// ============================================================
+function buildWorksheetHTML() {
+  const title = document.getElementById('title').value.trim() || 'Vocabulary Practice';
+  const subtitle = document.getElementById('subtitle').value.trim();
+  const preset = STATE.preset;
+  const def = PRESET_DEFAULTS[preset];
+  const accent = STATE.customAccent || def.accent;
+  const bg = STATE.customBg || def.bg;
+  const textColor = STATE.customText || def.text;
+
+  // Build sections in order
+  const sectionsHTML = [];
+  const sectionsJS = [];
+  let sectionCount = 0;
+
+  if (STATE.tasks.flashcards) {
+    sectionCount++;
+    sectionsHTML.push(buildFlashcardsSection(sectionCount));
+    sectionsJS.push(buildFlashcardsJS(sectionCount));
+  }
+  if (STATE.tasks.matching) {
+    sectionCount++;
+    sectionsHTML.push(buildMatchingSection(sectionCount));
+    sectionsJS.push(buildMatchingJS(sectionCount));
+  }
+  if (STATE.tasks.scramble) {
+    sectionCount++;
+    sectionsHTML.push(buildScrambleSection(sectionCount));
+    sectionsJS.push(buildScrambleJS(sectionCount));
+  }
+  if (STATE.tasks.quiz) {
+    sectionCount++;
+    sectionsHTML.push(buildQuizSection(sectionCount));
+    sectionsJS.push(buildQuizJS(sectionCount));
+  }
+
+  // Build the full HTML based on preset
+  return buildWorksheetTemplate({
+    title,
+    subtitle,
+    preset,
+    accent,
+    bg,
+    textColor,
+    sectionCount,
+    sectionsHTML: sectionsHTML.join('\n'),
+    sectionsJS: sectionsJS.join('\n'),
+    rowsJSON: JSON.stringify(STATE.rows)
+  });
+}
+
+// ============================================================
+// SECTION BUILDERS - return HTML strings for the worksheet
+// ============================================================
+
+function buildFlashcardsSection(num) {
+  const rows = rowsForTask('flashcards');
+  const cards = rows.map((r, i) => {
+    // Auto-skala fontu w zależności od długości tekstu
+    const longest = Math.max(r.pl.length, r.en.length);
+    let sizeClass = 'fc-size-l';
+    if (longest > 80) sizeClass = 'fc-size-xs';
+    else if (longest > 50) sizeClass = 'fc-size-s';
+    else if (longest > 25) sizeClass = 'fc-size-m';
+    return `
+        <div class="flashcard ${sizeClass}" data-idx="${i}" onclick="flipCard(this)">
+          <div class="flashcard-inner">
+            <div class="flashcard-face flashcard-front">
+              <div class="flash-word">${escapeHtml(r.pl)}</div>
+            </div>
+            <div class="flashcard-face flashcard-back">
+              <div class="flash-word-back-pl">${escapeHtml(r.pl)}</div>
+              <div class="flash-word-back">${escapeHtml(r.en)}</div>
+            </div>
+          </div>
+        </div>`;
+  }).join('');
+
+  return `
+    <section class="ws-section" data-section="${num}" id="sec-${num}">
+      <div class="ws-sec-head">
+        <div class="ws-sec-num">0${num}</div>
+        <h2 class="ws-sec-title">Flashcards</h2>
+      </div>
+      <p class="ws-sec-desc">Kliknij kartę, żeby odsłonić tłumaczenie. Spróbuj najpierw zgadnąć w głowie!</p>
+      <div class="flashcards-grid">${cards}</div>
+      <div class="ws-actions">
+        <button class="ws-btn-solve" onclick="solveFlashcards()">Pokaż wszystkie odpowiedzi</button>
+      </div>
+      <div class="ws-feedback" id="fb-${num}"></div>
+    </section>`;
+}
+
+function buildFlashcardsJS(num) {
+  const rows = rowsForTask('flashcards');
+  return `
+  // ── FLASHCARDS (section ${num}) ──
+  const _flashTotal_${num} = ${rows.length};
+  let _flashFlipped_${num} = new Set();
+
+  window.flipCard = function(el) {
+    el.classList.toggle('flipped');
+    const idx = parseInt(el.dataset.idx);
+    if (!_flashFlipped_${num}.has(idx)) {
+      _flashFlipped_${num}.add(idx);
+      if (_flashFlipped_${num}.size === _flashTotal_${num}) {
+        showSectionFeedback(${num}, true, '🃏 Wszystkie fiszki przejrzane!');
+        markSectionDone(${num});
+      }
+    }
+  };
+
+  window.solveFlashcards = function() {
+    document.querySelectorAll('#sec-${num} .flashcard').forEach((c, i) => {
+      c.classList.add('flipped');
+      _flashFlipped_${num}.add(i);
+    });
+    showSectionFeedback(${num}, true, '✓ Wszystkie odsłonięte');
+    markSectionDone(${num});
+  };
+`;
+}
+
+function buildMatchingSection(num) {
+  const rows = rowsForTask('matching');
+  const pairs = rows.slice(0, 8);
+  const plList = pairs.map((r, i) => `<button class="match-item match-pl" data-idx="${i}" onclick="pickMatch(this, 'pl')">${escapeHtml(r.pl)}</button>`).join('');
+  const shuffledEn = shuffle(pairs.map((r, i) => ({ idx: i, en: r.en })));
+  const enList = shuffledEn.map(item => `<button class="match-item match-en" data-idx="${item.idx}" onclick="pickMatch(this, 'en')">${escapeHtml(item.en)}</button>`).join('');
+
+  return `
+    <section class="ws-section" data-section="${num}" id="sec-${num}">
+      <div class="ws-sec-head">
+        <div class="ws-sec-num">0${num}</div>
+        <h2 class="ws-sec-title">Matching · Połącz w pary</h2>
+      </div>
+      <p class="ws-sec-desc">Kliknij słowo z lewej strony, potem jego tłumaczenie z prawej.</p>
+      <div class="match-grid">
+        <div class="match-col">
+          ${plList}
+        </div>
+        <div class="match-col">
+          ${enList}
+        </div>
+      </div>
+      <div class="ws-actions">
+        <button class="ws-btn-solve" onclick="solveMatching()">Pokaż odpowiedzi</button>
+      </div>
+      <div class="ws-feedback" id="fb-${num}"></div>
+    </section>`;
+}
+
+function buildMatchingJS(num) {
+  const rows = rowsForTask('matching');
+  const total = Math.min(rows.length, 8);
+  return `
+  // ── MATCHING (section ${num}) ──
+  let _matchSelPL_${num} = null;
+  let _matchSelEN_${num} = null;
+  let _matchedPairs_${num} = new Set();
+  const _matchTotal_${num} = ${total};
+  const _matchColors_${num} = ['#7c3aed', '#0891b2', '#ea580c', '#16a34a', '#db2777', '#0d9488', '#ca8a04', '#dc2626'];
+
+  window.pickMatch = function(el, side) {
+    if (el.classList.contains('matched')) return;
+    const sec = document.getElementById('sec-${num}');
+
+    if (side === 'pl') {
+      if (_matchSelPL_${num}) _matchSelPL_${num}.classList.remove('selected');
+      el.classList.add('selected');
+      _matchSelPL_${num} = el;
+    } else {
+      if (_matchSelEN_${num}) _matchSelEN_${num}.classList.remove('selected');
+      el.classList.add('selected');
+      _matchSelEN_${num} = el;
+    }
+
+    if (_matchSelPL_${num} && _matchSelEN_${num}) {
+      const plIdx = parseInt(_matchSelPL_${num}.dataset.idx);
+      const enIdx = parseInt(_matchSelEN_${num}.dataset.idx);
+      if (plIdx === enIdx) {
+        const color = _matchColors_${num}[_matchedPairs_${num}.size % _matchColors_${num}.length];
+        _matchSelPL_${num}.classList.remove('selected');
+        _matchSelEN_${num}.classList.remove('selected');
+        _matchSelPL_${num}.classList.add('matched');
+        _matchSelEN_${num}.classList.add('matched');
+        [_matchSelPL_${num}, _matchSelEN_${num}].forEach(e => {
+          e.style.borderColor = color;
+          e.style.background = color + '1f';
+          e.style.color = color;
+          e.style.setProperty('--pair-color', color);
+        });
+        const badgeNum = _matchedPairs_${num}.size + 1;
+        _matchSelPL_${num}.setAttribute('data-pair', badgeNum);
+        _matchSelEN_${num}.setAttribute('data-pair', badgeNum);
+        _matchedPairs_${num}.add(plIdx);
+        _matchSelPL_${num} = null;
+        _matchSelEN_${num} = null;
+        if (_matchedPairs_${num}.size === _matchTotal_${num}) {
+          showSectionFeedback(${num}, true, '🔗 Wszystkie pary połączone!');
+          markSectionDone(${num});
+          confettiFire();
+        }
+      } else {
+        _matchSelPL_${num}.classList.add('wrong');
+        _matchSelEN_${num}.classList.add('wrong');
+        const a = _matchSelPL_${num}, b = _matchSelEN_${num};
+        setTimeout(() => {
+          a.classList.remove('wrong', 'selected');
+          b.classList.remove('wrong', 'selected');
+        }, 500);
+        _matchSelPL_${num} = null;
+        _matchSelEN_${num} = null;
+      }
+    }
+  };
+
+  window.solveMatching = function() {
+    document.querySelectorAll('#sec-${num} .match-pl').forEach(el => {
+      const idx = parseInt(el.dataset.idx);
+      if (_matchedPairs_${num}.has(idx)) return;
+      const enEl = document.querySelector('#sec-${num} .match-en[data-idx="' + idx + '"]');
+      if (!enEl) return;
+      const color = _matchColors_${num}[_matchedPairs_${num}.size % _matchColors_${num}.length];
+      [el, enEl].forEach(e => {
+        e.classList.add('matched');
+        e.style.borderColor = color;
+        e.style.background = color + '1f';
+        e.style.color = color;
+        e.style.setProperty('--pair-color', color);
+      });
+      const badgeNum = _matchedPairs_${num}.size + 1;
+      el.setAttribute('data-pair', badgeNum);
+      enEl.setAttribute('data-pair', badgeNum);
+      _matchedPairs_${num}.add(idx);
+    });
+    showSectionFeedback(${num}, true, '✓ Wszystkie pary pokazane');
+    markSectionDone(${num});
+  };
+`;
+}
+
+function buildScrambleSection(num) {
+  const rows = rowsForTask('scramble');
+  const words = rows.slice(0, 8);
+  const items = words.map((r, i) => {
+    const letters = r.en.split('');
+    let scrambled;
+    // try up to 5 times to avoid identical-to-original scramble
+    for (let attempt = 0; attempt < 5; attempt++) {
+      scrambled = shuffle(letters).join('');
+      if (scrambled.toLowerCase() !== r.en.toLowerCase()) break;
+    }
+    // if still same (e.g. all letters identical like 'aaa'), force swap
+    if (scrambled.toLowerCase() === r.en.toLowerCase() && letters.length > 1) {
+      const arr = letters.slice();
+      [arr[0], arr[arr.length - 1]] = [arr[arr.length - 1], arr[0]];
+      scrambled = arr.join('');
+    }
+    return `
+      <div class="scramble-card" data-idx="${i}">
+        <div class="scramble-prompt">
+          <span class="scramble-pl">${escapeHtml(r.pl)}</span>
+          <button class="scramble-show-jumbled" onclick="toggleJumbled(this, ${num}, ${i})">
+            <span class="scramble-jumbled-hidden">🔤 Pokaż rozsypankę</span>
+            <span class="scramble-jumbled-shown" data-jumbled="${escapeHtml(scrambled)}">${escapeHtml(scrambled)}</span>
+          </button>
+        </div>
+        <div class="scramble-input-row">
+          <input type="text" class="scramble-input" data-answer="${escapeHtml(r.en.toLowerCase())}" placeholder="Wpisz słowo..." onkeydown="if(event.key==='Enter') checkScramble(this, ${num})">
+          <button class="scramble-check" onclick="checkScramble(this.previousElementSibling, ${num})" title="Sprawdź">✓</button>
+          <button class="scramble-hint-btn" onclick="hintScramble(${num}, ${i})" title="Podpowiedź - wstaw kolejną literę">?</button>
+        </div>
+      </div>`;
+  }).join('');
+
+  return `
+    <section class="ws-section" data-section="${num}" id="sec-${num}">
+      <div class="ws-sec-head">
+        <div class="ws-sec-num">0${num}</div>
+        <h2 class="ws-sec-title">Word Scramble · Ułóż litery</h2>
+      </div>
+      <p class="ws-sec-desc">Wpisz angielskie słowo (Enter sprawdza). Kliknij rozsypankę, żeby zobaczyć pomieszane litery. Kliknij "?" żeby wstawić kolejną literę odpowiedzi.</p>
+      <div class="scramble-grid">${items}</div>
+      <div class="ws-actions">
+        <button class="ws-btn-solve" onclick="solveScramble(${num})">Pokaż wszystkie odpowiedzi</button>
+      </div>
+      <div class="ws-feedback" id="fb-${num}"></div>
+    </section>`;
+}
+
+function buildScrambleJS(num) {
+  const rows = rowsForTask('scramble').slice(0, 8);
+  const wordsJSON = JSON.stringify(rows.map(r => ({ pl: r.pl, en: r.en })));
+  return `
+  // ── SCRAMBLE (section ${num}) ──
+  const _scrambleWords_${num} = ${wordsJSON};
+  let _scrambleDone_${num} = new Set();
+  const _scrambleTotal_${num} = _scrambleWords_${num}.length;
+
+  window.toggleJumbled = function(btn, secNum, idx) {
+    btn.classList.toggle('revealed');
+  };
+
+  window.checkScramble = function(input, secNum) {
+    const ans = input.dataset.answer;
+    const val = input.value.trim().toLowerCase();
+    if (val === ans) {
+      input.classList.remove('wrong');
+      input.classList.add('correct');
+      input.disabled = true;
+      const card = input.closest('.scramble-card');
+      card.classList.add('done');
+      const idx = parseInt(card.dataset.idx);
+      _scrambleDone_${num}.add(idx);
+      if (_scrambleDone_${num}.size === _scrambleTotal_${num}) {
+        showSectionFeedback(${num}, true, '🔤 Wszystkie słowa ułożone!');
+        markSectionDone(${num});
+        confettiFire();
+      }
+    } else {
+      input.classList.remove('correct');
+      input.classList.add('wrong');
+      setTimeout(() => input.classList.remove('wrong'), 500);
+    }
+  };
+
+  // Hint: wstawia kolejną literę odpowiedzi w input. Jeśli to co wpisał użytkownik
+  // ma poprawny prefix, dokleja kolejną literę. Jeśli nie - kasuje błędne i wstawia
+  // poprawny prefix do najdalszej zgodnej pozycji + jedną kolejną literę.
+  window.hintScramble = function(secNum, idx) {
+    const card = document.querySelector('#sec-${num} .scramble-card[data-idx="' + idx + '"]');
+    if (!card) return;
+    const input = card.querySelector('.scramble-input');
+    if (input.disabled) return;
+    const ans = input.dataset.answer;
+    const cur = input.value.toLowerCase();
+    // znajdź najdłuższy zgodny prefix
+    let matchLen = 0;
+    for (let i = 0; i < Math.min(cur.length, ans.length); i++) {
+      if (cur[i] === ans[i]) matchLen++;
+      else break;
+    }
+    // wstaw poprawny prefix + jedną kolejną literę
+    const newLen = Math.min(matchLen + 1, ans.length);
+    input.value = ans.slice(0, newLen);
+    input.classList.remove('wrong');
+    input.focus();
+    // jeśli to już całe słowo, automatycznie zaznacz jako correct
+    if (newLen === ans.length) {
+      checkScramble(input, secNum);
+    }
+  };
+
+  window.solveScramble = function(secNum) {
+    document.querySelectorAll('#sec-${num} .scramble-input').forEach(inp => {
+      if (inp.classList.contains('correct')) return;
+      inp.value = inp.dataset.answer;
+      inp.classList.add('correct');
+      inp.disabled = true;
+      const card = inp.closest('.scramble-card');
+      card.classList.add('done');
+      _scrambleDone_${num}.add(parseInt(card.dataset.idx));
+    });
+    showSectionFeedback(${num}, true, '✓ Wszystkie odpowiedzi pokazane');
+    markSectionDone(${num});
+  };
+`;
+}
+
+// ============================================================
+// QUIZ
+// ============================================================
+function buildQuizSection(num) {
+  const rows = rowsForTask('quiz');
+  const numOpts = STATE.quizOptions;
+  // Generate questions: each row's EN as correct, others as distractors
+  const items = rows.map((r, i) => {
+    const distractors = shuffle(rows.filter((_, j) => j !== i)).slice(0, numOpts - 1).map(d => d.en);
+    const options = shuffle([r.en, ...distractors]);
+    const correctIdx = options.indexOf(r.en);
+    const optHTML = options.map((opt, oi) => `
+      <button class="quiz-option" data-correct="${oi === correctIdx ? '1' : '0'}" onclick="pickQuiz(this, ${num}, ${i})">
+        <span class="quiz-opt-letter">${String.fromCharCode(65 + oi)}</span>
+        <span class="quiz-opt-text">${escapeHtml(opt)}</span>
+      </button>`).join('');
+    return `
+      <div class="quiz-card" data-idx="${i}">
+        <div class="quiz-question">
+          <span class="quiz-q-num">${i + 1}.</span>
+          <span class="quiz-q-text">${escapeHtml(r.pl)}</span>
+        </div>
+        <div class="quiz-options">${optHTML}</div>
+      </div>`;
+  }).join('');
+
+  return `
+    <section class="ws-section" data-section="${num}" id="sec-${num}">
+      <div class="ws-sec-head">
+        <div class="ws-sec-num">0${num}</div>
+        <h2 class="ws-sec-title">Quiz · Wybierz tłumaczenie</h2>
+      </div>
+      <p class="ws-sec-desc">Wybierz prawidłowe tłumaczenie polskiego słowa. Tylko jedna odpowiedź jest poprawna.</p>
+      <div class="quiz-grid">${items}</div>
+      <div class="ws-actions">
+        <button class="ws-btn-solve" onclick="solveQuiz(${num})">Pokaż odpowiedzi</button>
+      </div>
+      <div class="ws-feedback" id="fb-${num}"></div>
+    </section>`;
+}
+
+function buildQuizJS(num) {
+  const total = rowsForTask('quiz').length;
+  return `
+  // ── QUIZ (section ${num}) ──
+  let _quizDone_${num} = new Set();
+  const _quizTotal_${num} = ${total};
+
+  window.pickQuiz = function(btn, secNum, qIdx) {
+    const card = btn.closest('.quiz-card');
+    if (card.classList.contains('answered')) return;
+    const correct = btn.dataset.correct === '1';
+    btn.classList.add(correct ? 'quiz-correct' : 'quiz-wrong');
+    if (!correct) {
+      // also highlight correct one
+      card.querySelectorAll('.quiz-option').forEach(b => {
+        if (b.dataset.correct === '1') b.classList.add('quiz-correct');
+      });
+    }
+    card.classList.add('answered');
+    _quizDone_${num}.add(qIdx);
+    if (_quizDone_${num}.size === _quizTotal_${num}) {
+      showSectionFeedback(${num}, true, '✅ Quiz ukończony!');
+      markSectionDone(${num});
+      confettiFire();
+    }
+  };
+
+  window.solveQuiz = function(secNum) {
+    document.querySelectorAll('#sec-${num} .quiz-card').forEach((card, qIdx) => {
+      if (card.classList.contains('answered')) return;
+      card.querySelectorAll('.quiz-option').forEach(b => {
+        if (b.dataset.correct === '1') b.classList.add('quiz-correct');
+      });
+      card.classList.add('answered');
+      _quizDone_${num}.add(qIdx);
+    });
+    showSectionFeedback(${num}, true, '✓ Wszystkie odpowiedzi pokazane');
+    markSectionDone(${num});
+  };
+`;
+}
+
+// ============================================================
+// MAIN TEMPLATE - the worksheet HTML
+// ============================================================
+function buildWorksheetTemplate({ title, subtitle, preset, accent, bg, textColor, sectionCount, sectionsHTML, sectionsJS, rowsJSON }) {
+  const presetTheme = getPresetTheme(preset, accent, bg, textColor);
+  const fontImports = presetTheme.fontImports;
+  const css = buildWorksheetCSS(presetTheme);
+  const bgEffectHTML = presetTheme.bgEffect;
+
+  return `<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${escapeHtml(title)}</title>
+${fontImports}
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"><\/script>
+<style>
+${css}
+</style>
+</head>
+<body>
+${bgEffectHTML}
+<div class="ws-app">
+  <header class="ws-header">
+    <div class="ws-eyebrow">Worksheet</div>
+    <h1 class="ws-title">${escapeHtml(title)}</h1>
+    ${subtitle ? `<p class="ws-subtitle">${escapeHtml(subtitle)}</p>` : ''}
+    <div class="ws-line"></div>
+  </header>
+
+  <div class="ws-progress-wrap">
+    <div class="ws-progress-top">
+      <span class="ws-progress-label">Postęp</span>
+      <span class="ws-progress-score" id="wsProgressScore">0 / ${sectionCount}</span>
+    </div>
+    <div class="ws-progress-track"><div class="ws-progress-fill" id="wsProgressFill"></div></div>
+  </div>
+
+  ${sectionsHTML}
+
+  <div class="ws-finale" id="wsFinale">
+    <div class="ws-finale-icon">🏆</div>
+    <h2 class="ws-finale-title">Wszystko ukończone!</h2>
+    <p class="ws-finale-text">Świetna robota.</p>
+    <button class="ws-btn-celebrate" onclick="bigCelebrate()">🎉 Celebrate!</button>
+    <button class="ws-btn-reset" onclick="resetWorksheet()">🔄 Zacznij od nowa</button>
+  </div>
+
+  <footer class="ws-footer">
+    <button class="ws-btn-save" onclick="saveProgress()">💾 Zapisz postęp</button>
+    <button class="ws-btn-reset-foot" onclick="resetWorksheet()">Reset</button>
+  </footer>
+</div>
+
+<script>
+const WS_DATA = ${rowsJSON};
+const WS_SECTION_COUNT = ${sectionCount};
+const WS_STORAGE_KEY = 'ws-progress-' + ${JSON.stringify(title)};
+let _wsDone = new Set();
+
+function markSectionDone(num) {
+  if (_wsDone.has(num)) return;
+  _wsDone.add(num);
+  const sec = document.querySelector('[data-section="' + num + '"]');
+  if (sec) sec.classList.add('ws-done');
+  updateProgress();
+}
+
+function updateProgress() {
+  const n = _wsDone.size;
+  document.getElementById('wsProgressScore').textContent = n + ' / ' + WS_SECTION_COUNT;
+  document.getElementById('wsProgressFill').style.width = (n / WS_SECTION_COUNT * 100) + '%';
+  if (n === WS_SECTION_COUNT) {
+    document.getElementById('wsFinale').classList.add('show');
+    setTimeout(() => {
+      document.getElementById('wsFinale').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 300);
+  }
+}
+
+function showSectionFeedback(num, ok, msg) {
+  const fb = document.getElementById('fb-' + num);
+  if (!fb) return;
+  fb.className = 'ws-feedback show ' + (ok ? 'fb-ok' : 'fb-no');
+  fb.textContent = msg;
+}
+
+const WS_CONFETTI_COLORS = ${JSON.stringify(presetTheme.confettiColors)};
+function confettiFire() {
+  if (typeof confetti !== 'function') return;
+  confetti({
+    particleCount: 60,
+    spread: 65,
+    origin: { y: 0.7 },
+    colors: WS_CONFETTI_COLORS
+  });
+}
+
+function bigCelebrate() {
+  if (typeof confetti !== 'function') return;
+  const end = Date.now() + 3000;
+  (function frame() {
+    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: WS_CONFETTI_COLORS });
+    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: WS_CONFETTI_COLORS });
+    confetti({ particleCount: 8, spread: 100, origin: { y: Math.random() * 0.4 + 0.4 }, colors: WS_CONFETTI_COLORS });
+    if (Date.now() < end) requestAnimationFrame(frame);
+  })();
+}
+
+function saveProgress() {
+  try {
+    const state = {
+      done: Array.from(_wsDone),
+      flashFlipped: Array.from(document.querySelectorAll('.flashcard.flipped')).map(c => c.dataset.idx),
+      matchedPL: Array.from(document.querySelectorAll('.match-pl.matched')).map(e => ({ idx: e.dataset.idx, color: e.style.borderColor, pair: e.getAttribute('data-pair') })),
+      scramble: Array.from(document.querySelectorAll('.scramble-input.correct')).map(e => e.dataset.answer)
+    };
+    localStorage.setItem(WS_STORAGE_KEY, JSON.stringify(state));
+    showToast('💾 Postęp zapisany');
+  } catch (e) {
+    showToast('Nie udało się zapisać', true);
+  }
+}
+
+function loadProgress() {
+  try {
+    const raw = localStorage.getItem(WS_STORAGE_KEY);
+    if (!raw) return;
+    const state = JSON.parse(raw);
+    // Restore flashcards
+    if (state.flashFlipped) {
+      state.flashFlipped.forEach(idx => {
+        const c = document.querySelector('.flashcard[data-idx="' + idx + '"]');
+        if (c) c.classList.add('flipped');
+      });
+    }
+    // Mark sections done
+    if (state.done) state.done.forEach(num => markSectionDone(num));
+  } catch (e) { /* ignore */ }
+}
+
+function resetWorksheet() {
+  if (!confirm('Wyczyścić wszystkie odpowiedzi?')) return;
+  localStorage.removeItem(WS_STORAGE_KEY);
+  location.reload();
+}
+
+function showToast(msg, isError) {
+  const t = document.createElement('div');
+  t.className = 'ws-toast' + (isError ? ' err' : '');
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.classList.add('show'), 10);
+  setTimeout(() => {
+    t.classList.remove('show');
+    setTimeout(() => t.remove(), 300);
+  }, 2000);
+}
+
+// Section-specific scripts
+${sectionsJS}
+
+// Load saved progress
+window.addEventListener('load', loadProgress);
+
+// Generate stars for dark theme (no-op if container missing)
+(function generateStars() {
+  const container = document.getElementById('wsBgStars');
+  if (!container) return;
+  const count = 80;
+  let html = '';
+  for (let i = 0; i < count; i++) {
+    const size = Math.random() * 2 + 0.5;
+    const x = Math.random() * 100;
+    const y = Math.random() * 100;
+    const delay = Math.random() * 4;
+    const dur = 2 + Math.random() * 3;
+    html += '<div class="ws-star" style="width:' + size + 'px;height:' + size + 'px;left:' + x + '%;top:' + y + '%;--delay:' + delay + 's;--d:' + dur + 's;"></div>';
+  }
+  container.innerHTML = html;
+})();
+<\/script>
+</body>
+</html>`;
+}
+
+// ============================================================
+// PRESET THEMES
+// ============================================================
+function getPresetTheme(preset, accent, bg, textColor) {
+  if (preset === 'vintage') return getVintageTheme(accent, bg, textColor);
+  if (preset === 'dark') return getDarkTheme(accent, bg, textColor);
+  if (preset === 'pastel') return getPastelTheme(accent, bg, textColor);
+  return getVintageTheme(accent, bg, textColor);
+}
+
+function getVintageTheme(accent, bg, textColor) {
+  const text = textColor || '#1f1a14';
+  return {
+    name: 'vintage',
+    accent,
+    bg,
+    text,
+    textDim: '#6b5d44',
+    surface: '#fbf8f0',
+    border: 'rgba(31, 26, 20, 0.22)',
+    borderStrong: 'rgba(31, 26, 20, 0.42)',
+    confettiColors: [accent, '#b8761a', '#1a6b6b', '#c8341a', '#1f1a14'],
+    fontImports: '<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">',
+    displayFont: "'Fraunces', serif",
+    bodyFont: "'Lora', serif",
+    monoFont: "'DM Mono', monospace",
+    bgEffect: `<div class="ws-bg-pattern"></div>`,
+    extraBgCSS: `
+.ws-bg-pattern {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(31,26,20,0.06) 28px, rgba(31,26,20,0.06) 29px),
+    repeating-linear-gradient(90deg, transparent, transparent 28px, rgba(31,26,20,0.04) 28px, rgba(31,26,20,0.04) 29px);
+}`,
+    cardBg: '#fbf8f0',
+    cardShadow: '0 1px 3px rgba(31,26,20,0.08), 0 8px 24px rgba(31,26,20,0.05)'
+  };
+}
+
+function getDarkTheme(accent, bg, textColor) {
+  const text = textColor || '#e8f4fd';
+  return {
+    name: 'dark',
+    accent,
+    bg,
+    text,
+    textDim: '#7a9bbf',
+    surface: shiftColor(bg, 0.08),
+    border: 'rgba(255,255,255,0.14)',
+    borderStrong: 'rgba(255,255,255,0.28)',
+    confettiColors: [accent, '#4fc3f7', '#ffb800', '#ff6b6b', '#ffffff'],
+    fontImports: '<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">',
+    displayFont: "'Syne', sans-serif",
+    bodyFont: "'Bricolage Grotesque', sans-serif",
+    monoFont: "'JetBrains Mono', monospace",
+    bgEffect: `<div class="ws-bg-stars" id="wsBgStars"></div>`,
+    extraBgCSS: `
+.ws-bg-stars {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+  background: linear-gradient(180deg, ${bg} 0%, ${shiftColor(bg, 0.08)} 60%, ${bg} 100%);
+}
+.ws-star {
+  position: absolute; border-radius: 50%; background: white;
+  animation: wsTwinkle var(--d, 3s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+@keyframes wsTwinkle {
+  0%, 100% { opacity: 0.2; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.3); }
+}`,
+    cardBg: shiftColor(bg, 0.05),
+    cardShadow: '0 4px 12px rgba(0,0,0,0.3)'
+  };
+}
+
+function getPastelTheme(accent, bg, textColor) {
+  const text = textColor || '#3a2c33';
+  return {
+    name: 'pastel',
+    accent,
+    bg,
+    text,
+    textDim: '#7a6a72',
+    surface: '#ffffff',
+    border: 'rgba(58, 44, 51, 0.18)',
+    borderStrong: 'rgba(58, 44, 51, 0.36)',
+    confettiColors: [accent, '#7eb5d4', '#e8c4a4', '#a87bc8', '#7bc89d'],
+    fontImports: '<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">',
+    displayFont: "'Fraunces', serif",
+    bodyFont: "'Bricolage Grotesque', sans-serif",
+    monoFont: "'JetBrains Mono', monospace",
+    bgEffect: `<div class="ws-bg-blobs"></div>`,
+    extraBgCSS: `
+.ws-bg-blobs {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(ellipse 50% 40% at 10% 20%, ${rgba(accent, 0.14)}, transparent 50%),
+    radial-gradient(ellipse 40% 30% at 90% 80%, ${rgba(accent, 0.10)}, transparent 50%),
+    radial-gradient(ellipse 30% 30% at 80% 20%, rgba(126, 181, 212, 0.18), transparent 50%);
+}`,
+    cardBg: '#ffffff',
+    cardShadow: '0 2px 6px rgba(58, 44, 51, 0.05), 0 12px 32px rgba(58, 44, 51, 0.07)'
+  };
+}
+
+// ============================================================
+// WORKSHEET CSS - shared structure, themed via theme object
+// ============================================================
+function buildWorksheetCSS(t) {
+  const accentRgba = (a) => rgba(t.accent, a);
+  const isDarkTheme = isDark(t.bg);
+
+  return `
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ws-bg: ${t.bg};
+  --ws-text: ${t.text};
+  --ws-text-dim: ${t.textDim};
+  --ws-accent: ${t.accent};
+  --ws-accent-soft: ${accentRgba(0.1)};
+  --ws-accent-strong: ${accentRgba(0.25)};
+  --ws-surface: ${t.surface};
+  --ws-card: ${t.cardBg};
+  --ws-border: ${t.border};
+  --ws-border-strong: ${t.borderStrong};
+  --ws-display: ${t.displayFont};
+  --ws-body: ${t.bodyFont};
+  --ws-mono: ${t.monoFont};
+  --ws-shadow: ${t.cardShadow};
+  --ws-ok: #16a34a;
+  --ws-ok-bg: rgba(22, 163, 74, 0.1);
+  --ws-no: #dc2626;
+  --ws-no-bg: rgba(220, 38, 38, 0.1);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--ws-bg);
+  color: var(--ws-text);
+  font-family: var(--ws-body);
+  font-size: 16px;
+  line-height: 1.55;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+${t.extraBgCSS}
+
+.ws-app {
+  position: relative; z-index: 1;
+  max-width: 880px; margin: 0 auto;
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 3vw, 2rem) 6rem;
+}
+
+/* HEADER */
+.ws-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 1rem 0 1.5rem;
+  animation: wsSlideDown 0.8s cubic-bezier(0.16,1,0.3,1) both;
+}
+@keyframes wsSlideDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.ws-eyebrow {
+  font-family: var(--ws-mono);
+  font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--ws-accent); margin-bottom: 0.7rem;
+}
+.ws-title {
+  font-family: var(--ws-display);
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  font-weight: 700;
+  line-height: 1.1; letter-spacing: -0.02em;
+  color: var(--ws-text);
+}
+.ws-subtitle {
+  color: var(--ws-text-dim);
+  margin-top: 0.6rem;
+  font-size: 1rem;
+}
+.ws-line {
+  width: 50px; height: 3px;
+  background: var(--ws-accent);
+  margin: 1.2rem auto 0;
+  border-radius: 2px;
+}
+
+/* PROGRESS */
+.ws-progress-wrap {
+  margin-bottom: 2rem;
+  padding: 1rem 1.2rem;
+  background: var(--ws-surface);
+  border: 1px solid var(--ws-border);
+  border-radius: 12px;
+  position: sticky;
+  top: 1rem;
+  z-index: 10;
+  backdrop-filter: blur(8px);
+  box-shadow: var(--ws-shadow);
+}
+.ws-progress-top {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 0.55rem;
+}
+.ws-progress-label {
+  font-family: var(--ws-mono); font-size: 0.7rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--ws-text-dim);
+}
+.ws-progress-score {
+  font-family: var(--ws-display); font-weight: 700; font-size: 1.05rem;
+  color: var(--ws-accent);
+}
+.ws-progress-track {
+  height: 6px; border-radius: 3px;
+  background: var(--ws-border);
+  overflow: hidden;
+}
+.ws-progress-fill {
+  height: 100%; width: 0%;
+  background: var(--ws-accent);
+  border-radius: 3px;
+  transition: width 0.6s cubic-bezier(0.16,1,0.3,1);
+}
+
+/* SECTIONS */
+.ws-section {
+  background: var(--ws-card);
+  border: 1px solid var(--ws-border);
+  border-radius: 18px;
+  padding: clamp(1.2rem, 3vw, 2rem);
+  margin-bottom: 1.4rem;
+  box-shadow: var(--ws-shadow);
+  transition: border-color 0.4s;
+  animation: wsFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) both;
+  animation-delay: 0.1s;
+}
+@keyframes wsFadeUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.ws-section.ws-done { border-color: var(--ws-accent); }
+
+.ws-sec-head { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.7rem; }
+.ws-sec-num {
+  font-family: var(--ws-mono);
+  font-size: 0.85rem; font-weight: 700;
+  width: 42px; height: 42px;
+  border-radius: 10px;
+  background: var(--ws-accent);
+  color: ${isDarkTheme ? t.bg : '#fff'};
+  display: grid; place-items: center;
+  letter-spacing: -0.03em;
+  flex-shrink: 0;
+}
+.ws-sec-title {
+  font-family: var(--ws-display); font-weight: 700;
+  font-size: clamp(1.3rem, 2.6vw, 1.55rem);
+  letter-spacing: -0.02em;
+}
+.ws-sec-desc {
+  color: var(--ws-text-dim);
+  font-size: 0.92rem;
+  margin: 0 0 1.3rem 3.4rem;
+}
+
+/* FEEDBACK */
+.ws-feedback {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 9px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  display: none;
+  animation: wsFadeIn 0.3s ease-out;
+}
+.ws-feedback.show { display: block; }
+.ws-feedback.fb-ok { background: var(--ws-ok-bg); color: var(--ws-ok); border: 1px solid var(--ws-ok); }
+.ws-feedback.fb-no { background: var(--ws-no-bg); color: var(--ws-no); border: 1px solid var(--ws-no); }
+@keyframes wsFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ACTION BUTTONS */
+.ws-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 1.2rem; }
+.ws-btn-solve {
+  font-family: var(--ws-body);
+  font-size: 0.82rem; font-weight: 500;
+  padding: 0.55rem 1rem;
+  background: transparent;
+  border: 1px solid var(--ws-border-strong);
+  color: var(--ws-text-dim);
+  border-radius: 9px;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.ws-btn-solve:hover {
+  border-color: var(--ws-accent);
+  color: var(--ws-accent);
+  background: var(--ws-accent-soft);
+}
+
+/* ========== FLASHCARDS ========== */
+.flashcards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 0.85rem;
+}
+.flashcard {
+  aspect-ratio: 4/3;
+  perspective: 1200px;
+  cursor: pointer;
+}
+.flashcard.fc-size-s, .flashcard.fc-size-xs { aspect-ratio: 4/3.5; }
+.flashcard-inner {
+  position: relative; width: 100%; height: 100%;
+  transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
+  transform-style: preserve-3d;
+}
+.flashcard.flipped .flashcard-inner {
+  transform: rotateY(180deg);
+}
+.flashcard-face {
+  position: absolute; inset: 0;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  border-radius: 14px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 1rem;
+  text-align: center;
+  border: 1.5px solid var(--ws-border-strong);
+  background: var(--ws-surface);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: transform 0.18s, box-shadow 0.18s;
+}
+.flashcard:hover .flashcard-face {
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+.flashcard-back {
+  transform: rotateY(180deg);
+  background: ${rgba(t.accent, 0.07)};
+  border-color: var(--ws-accent);
+}
+.flash-lang {
+  font-family: var(--ws-mono);
+  font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--ws-text-dim); margin-bottom: 0.5rem;
+}
+.flashcard-back .flash-lang { color: var(--ws-accent); }
+.flash-word {
+  font-family: var(--ws-display);
+  font-weight: 700;
+  color: var(--ws-text);
+  line-height: 1.2;
+  word-break: break-word;
+  hyphens: auto;
+}
+.flashcard.fc-size-l .flash-word { font-size: 1.3rem; }
+.flashcard.fc-size-m .flash-word { font-size: 1.05rem; }
+.flashcard.fc-size-s .flash-word { font-size: 0.85rem; line-height: 1.3; }
+.flashcard.fc-size-xs .flash-word { font-size: 0.7rem; line-height: 1.35; }
+.flash-word-back-pl {
+  font-family: var(--ws-body);
+  font-size: 0.78rem;
+  color: var(--ws-text-dim);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  opacity: 0.75;
+  word-break: break-word;
+  line-height: 1.3;
+}
+.flashcard.fc-size-s .flash-word-back-pl,
+.flashcard.fc-size-xs .flash-word-back-pl {
+  font-size: 0.68rem;
+  margin-bottom: 0.3rem;
+}
+.flash-word-back {
+  font-family: var(--ws-display);
+  font-weight: 700;
+  color: var(--ws-accent);
+  line-height: 1.2;
+  word-break: break-word;
+  hyphens: auto;
+}
+.flashcard.fc-size-l .flash-word-back { font-size: 1.3rem; }
+.flashcard.fc-size-m .flash-word-back { font-size: 1.05rem; }
+.flashcard.fc-size-s .flash-word-back { font-size: 0.85rem; line-height: 1.3; }
+.flashcard.fc-size-xs .flash-word-back { font-size: 0.7rem; line-height: 1.35; }
+.flash-hint {
+  font-family: var(--ws-mono);
+  font-size: 0.65rem;
+  color: var(--ws-text-dim);
+  margin-top: 0.6rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  opacity: 0.7;
+}
+
+/* ========== MATCHING ========== */
+.match-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+}
+.match-col { display: flex; flex-direction: column; gap: 0.5rem; }
+.match-col-label {
+  font-family: var(--ws-mono);
+  font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--ws-text-dim);
+  margin-bottom: 0.3rem;
+  text-align: center;
+}
+.match-item {
+  position: relative;
+  font-family: var(--ws-body);
+  font-size: 1rem; font-weight: 500;
+  padding: 0.85rem 1.1rem 0.85rem 1.1rem;
+  background: var(--ws-surface);
+  border: 1.5px solid var(--ws-border-strong);
+  color: var(--ws-text);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.18s, background 0.18s;
+  text-align: left;
+  width: 100%;
+}
+.match-item:hover:not(.matched) { border-color: var(--ws-accent); }
+.match-item.selected {
+  border-color: var(--ws-accent);
+  background: var(--ws-accent-soft);
+  color: var(--ws-accent);
+}
+.match-item.matched {
+  cursor: default;
+  font-weight: 700;
+  padding-left: 3.2rem;
+}
+.match-item.matched::before {
+  content: attr(data-pair);
+  position: absolute;
+  top: 50%; left: 0.7rem;
+  transform: translateY(-50%);
+  font-family: var(--ws-display);
+  font-size: 0.95rem; font-weight: 800;
+  width: 28px; height: 28px;
+  border-radius: 7px;
+  background: var(--pair-color, currentColor);
+  color: #fff;
+  display: grid; place-items: center;
+  letter-spacing: 0;
+}
+.match-item.matched::after {
+  content: '';
+  position: absolute;
+  top: 0.7rem; bottom: 0.7rem; left: 2.55rem;
+  width: 1.5px;
+  background: var(--pair-color, currentColor);
+  opacity: 0.4;
+}
+.match-item.matched::after {
+  content: '';
+  position: absolute;
+  top: 0.7rem; bottom: 0.7rem; left: 2.55rem;
+  width: 1.5px;
+  background: currentColor;
+  opacity: 0.4;
+}
+.match-item.wrong {
+  border-color: var(--ws-no);
+  background: var(--ws-no-bg);
+  color: var(--ws-no);
+  animation: wsShake 0.4s;
+}
+@keyframes wsShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+@media (max-width: 540px) {
+  .match-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+}
+
+/* ========== SCRAMBLE ========== */
+.scramble-grid {
+  display: grid; gap: 0.85rem;
+}
+.scramble-card {
+  background: var(--ws-surface);
+  border: 1px solid var(--ws-border-strong);
+  border-radius: 12px;
+  padding: 0.95rem 1.1rem;
+  transition: all 0.3s;
+}
+.scramble-card.done {
+  border-color: var(--ws-ok);
+  background: var(--ws-ok-bg);
+}
+.scramble-prompt {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; flex-wrap: wrap;
+  margin-bottom: 0.7rem;
+}
+.scramble-pl {
+  font-family: var(--ws-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--ws-text);
+}
+.scramble-jumbled,
+.scramble-show-jumbled {
+  font-family: var(--ws-mono);
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.25em;
+  color: ${isDarkTheme ? t.bg : '#fff'};
+  background: var(--ws-accent);
+  padding: 0.4rem 0.85rem;
+  border-radius: 7px;
+  text-transform: lowercase;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.18s;
+}
+.scramble-show-jumbled .scramble-jumbled-shown {
+  display: none;
+  letter-spacing: 0.25em;
+}
+.scramble-show-jumbled.revealed .scramble-jumbled-hidden {
+  display: none;
+}
+.scramble-show-jumbled.revealed .scramble-jumbled-shown {
+  display: inline;
+}
+.scramble-show-jumbled .scramble-jumbled-hidden {
+  font-family: var(--ws-body);
+  letter-spacing: 0.02em;
+  font-size: 0.85rem;
+  text-transform: none;
+  font-weight: 600;
+  opacity: 0.95;
+}
+.scramble-show-jumbled:hover { opacity: 0.85; }
+.scramble-input-row {
+  display: flex; gap: 0.5rem;
+  align-items: stretch;
+}
+.scramble-input {
+  flex: 1;
+  font-family: var(--ws-body);
+  font-size: 0.95rem;
+  padding: 0.65rem 0.9rem;
+  background: var(--ws-bg);
+  border: 1.5px solid var(--ws-border-strong);
+  color: var(--ws-text);
+  border-radius: 9px;
+  transition: all 0.18s;
+}
+.scramble-input:focus { outline: none; border-color: var(--ws-accent); }
+.scramble-input.correct {
+  border-color: var(--ws-ok); color: var(--ws-ok);
+  background: var(--ws-ok-bg);
+}
+.scramble-input.wrong {
+  border-color: var(--ws-no); color: var(--ws-no);
+  animation: wsShake 0.4s;
+}
+.scramble-check, .scramble-hint-btn {
+  font-family: var(--ws-body); font-weight: 600;
+  border: 1.5px solid var(--ws-border-strong);
+  background: var(--ws-bg);
+  color: var(--ws-text);
+  border-radius: 9px;
+  cursor: pointer;
+  width: 42px;
+  transition: all 0.18s;
+  font-size: 1rem;
+}
+.scramble-check:hover { border-color: var(--ws-accent); color: var(--ws-accent); }
+.scramble-hint-btn:hover { border-color: var(--ws-accent); color: var(--ws-accent); }
+.scramble-hint-text {
+  font-family: var(--ws-mono);
+  font-size: 0.85rem;
+  color: var(--ws-accent);
+  margin-top: 0.55rem;
+  display: none;
+  letter-spacing: 0.05em;
+}
+.scramble-hint-text.show { display: block; }
+
+/* ========== FINALE ========== */
+.ws-finale {
+  display: none;
+  text-align: center;
+  margin: 2rem 0;
+  padding: 2rem 1.5rem;
+  background: var(--ws-card);
+  border: 2px solid var(--ws-accent);
+  border-radius: 18px;
+  box-shadow: 0 8px 32px ${accentRgba(0.15)};
+  animation: wsFinaleIn 0.7s cubic-bezier(0.16,1,0.3,1);
+}
+.ws-finale.show { display: block; }
+@keyframes wsFinaleIn {
+  from { opacity: 0; transform: scale(0.95) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.ws-finale-icon { font-size: 3.5rem; line-height: 1; margin-bottom: 0.7rem; }
+.ws-finale-title {
+  font-family: var(--ws-display);
+  font-weight: 700; font-size: 1.7rem;
+  color: var(--ws-text);
+  margin-bottom: 0.4rem;
+}
+.ws-finale-text { color: var(--ws-text-dim); margin-bottom: 1.4rem; }
+.ws-btn-celebrate {
+  font-family: var(--ws-display);
+  font-weight: 700; font-size: 1rem;
+  padding: 0.85rem 2rem;
+  background: var(--ws-accent);
+  color: ${isDarkTheme ? t.bg : '#fff'};
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin: 0 0.4rem 0.5rem;
+  box-shadow: 0 6px 20px ${accentRgba(0.3)};
+}
+.ws-btn-celebrate:hover {
+  transform: scale(1.04);
+  box-shadow: 0 10px 28px ${accentRgba(0.45)};
+}
+.ws-btn-reset {
+  font-family: var(--ws-body); font-size: 0.85rem;
+  padding: 0.65rem 1.3rem;
+  background: transparent;
+  color: var(--ws-text-dim);
+  border: 1px solid var(--ws-border-strong);
+  border-radius: 9px;
+  cursor: pointer;
+  transition: all 0.18s;
+  margin: 0 0.4rem;
+}
+.ws-btn-reset:hover { color: var(--ws-text); border-color: var(--ws-text-dim); }
+
+/* FOOTER */
+.ws-footer {
+  display: flex; justify-content: center; gap: 0.7rem;
+  margin-top: 2.5rem; padding-top: 2rem;
+  border-top: 1px solid var(--ws-border);
+}
+.ws-btn-save, .ws-btn-reset-foot {
+  font-family: var(--ws-body); font-size: 0.82rem; font-weight: 500;
+  padding: 0.55rem 1rem;
+  background: transparent;
+  border: 1px solid var(--ws-border-strong);
+  color: var(--ws-text-dim);
+  border-radius: 9px;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.ws-btn-save:hover { border-color: var(--ws-accent); color: var(--ws-accent); }
+.ws-btn-reset-foot:hover { color: var(--ws-no); border-color: var(--ws-no); }
+
+/* ========== QUIZ ========== */
+.quiz-grid {
+  display: grid; gap: 1rem;
+}
+.quiz-card {
+  background: var(--ws-surface);
+  border: 1px solid var(--ws-border-strong);
+  border-radius: 12px;
+  padding: 1.1rem 1.2rem;
+  transition: border-color 0.3s;
+}
+.quiz-card.answered {
+  border-color: var(--ws-accent);
+}
+.quiz-question {
+  display: flex; gap: 0.7rem; align-items: baseline;
+  margin-bottom: 0.85rem;
+}
+.quiz-q-num {
+  font-family: var(--ws-mono);
+  font-size: 0.8rem; font-weight: 700;
+  color: var(--ws-text-dim);
+  flex-shrink: 0;
+}
+.quiz-q-text {
+  font-family: var(--ws-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--ws-text);
+  line-height: 1.3;
+}
+.quiz-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.5rem;
+}
+.quiz-option {
+  display: flex; align-items: center; gap: 0.65rem;
+  font-family: var(--ws-body);
+  font-size: 0.92rem; font-weight: 500;
+  padding: 0.7rem 0.85rem;
+  background: var(--ws-bg);
+  border: 1.5px solid var(--ws-border-strong);
+  color: var(--ws-text);
+  border-radius: 9px;
+  cursor: pointer;
+  transition: border-color 0.18s, background 0.18s;
+  text-align: left;
+}
+.quiz-option:hover:not(.quiz-correct):not(.quiz-wrong) {
+  border-color: var(--ws-accent);
+}
+.quiz-card.answered .quiz-option {
+  cursor: default;
+}
+.quiz-card.answered .quiz-option:not(.quiz-correct):not(.quiz-wrong) {
+  opacity: 0.45;
+}
+.quiz-opt-letter {
+  font-family: var(--ws-mono); font-weight: 700;
+  font-size: 0.78rem;
+  width: 22px; height: 22px;
+  border-radius: 5px;
+  background: var(--ws-accent-soft);
+  color: var(--ws-accent);
+  display: grid; place-items: center;
+  flex-shrink: 0;
+}
+.quiz-opt-text {
+  flex: 1;
+  word-break: break-word;
+}
+.quiz-option.quiz-correct {
+  border-color: var(--ws-ok);
+  background: var(--ws-ok-bg);
+  color: var(--ws-ok);
+}
+.quiz-option.quiz-correct .quiz-opt-letter {
+  background: var(--ws-ok); color: #fff;
+}
+.quiz-option.quiz-wrong {
+  border-color: var(--ws-no);
+  background: var(--ws-no-bg);
+  color: var(--ws-no);
+  animation: wsShake 0.4s;
+}
+.quiz-option.quiz-wrong .quiz-opt-letter {
+  background: var(--ws-no); color: #fff;
+}
+
+/* TOAST */
+.ws-toast {
+  position: fixed; bottom: 1.5rem; left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--ws-text);
+  color: var(--ws-bg);
+  padding: 0.7rem 1.3rem;
+  border-radius: 11px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-family: var(--ws-body);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+  z-index: 999;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+}
+.ws-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.ws-toast.err { background: var(--ws-no); color: white; }
+`;
+}
+</script>
+
+</body>
+</html>
