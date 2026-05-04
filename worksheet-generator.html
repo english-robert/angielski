@@ -1306,9 +1306,21 @@ function buildWorksheetHTML() {
   STATE.taskOrder.forEach(taskName => {
     if (!STATE.tasks[taskName]) return;
     if (!builders[taskName]) return;
-    sectionCount++;
-    sectionsHTML.push(builders[taskName].html(sectionCount));
-    sectionsJS.push(builders[taskName].js(sectionCount));
+    // Matching i scramble dzielimy na sekcje po max 8 par
+    if (taskName === 'matching' || taskName === 'scramble') {
+      const allRows = rowsForTask(taskName);
+      const totalParts = Math.max(1, Math.ceil(allRows.length / 8));
+      for (let part = 0; part < totalParts; part++) {
+        sectionCount++;
+        const opts = { startIdx: part * 8, partNum: part + 1, totalParts };
+        sectionsHTML.push(builders[taskName].html(sectionCount, opts));
+        sectionsJS.push(builders[taskName].js(sectionCount, opts));
+      }
+    } else {
+      sectionCount++;
+      sectionsHTML.push(builders[taskName].html(sectionCount));
+      sectionsJS.push(builders[taskName].js(sectionCount));
+    }
   });
 
   // Build the full HTML based on preset
@@ -1417,22 +1429,28 @@ function buildFlashcardsJS(num) {
 `;
 }
 
-function buildMatchingSection(num) {
-  const rows = rowsForTask('matching');
-  const pairs = rows.slice(0, 8);
-  const plList = pairs.map((r, i) => `<button class="match-item match-pl" data-idx="${i}" onclick="pickMatch(this, 'pl')">${escapeHtml(r.pl)}</button>`).join('');
+function buildMatchingSection(num, options = {}) {
+  const allRows = rowsForTask('matching');
+  const startIdx = options.startIdx || 0;
+  const endIdx = Math.min(startIdx + 8, allRows.length);
+  const partNum = options.partNum;
+  const totalParts = options.totalParts;
+  const pairs = allRows.slice(startIdx, endIdx);
+  const plList = pairs.map((r, i) => `<button class="match-item match-pl" data-idx="${i}" onclick="pickMatch_${num}(this, 'pl')">${escapeHtml(r.pl)}</button>`).join('');
   const shuffledEn = shuffle(pairs.map((r, i) => ({ idx: i, en: r.en })));
   const enList = shuffledEn.map(item => `
     <div class="match-item-wrap">
-      <button class="match-item match-en" data-idx="${item.idx}" onclick="pickMatch(this, 'en')">${escapeHtml(item.en)}</button>
+      <button class="match-item match-en" data-idx="${item.idx}" onclick="pickMatch_${num}(this, 'en')">${escapeHtml(item.en)}</button>
       <button class="tts-btn tts-btn-side" onclick="ttsBtnClick(event, ${JSON.stringify(item.en).replace(/"/g, '&quot;')})" title="Czytaj" aria-label="Czytaj">🔊</button>
     </div>`).join('');
+
+  const titleSuffix = totalParts > 1 ? ` · Część ${partNum}/${totalParts}` : '';
 
   return `
     <section class="ws-section" data-section="${num}" id="sec-${num}">
       <div class="ws-sec-head">
         <div class="ws-sec-num">0${num}</div>
-        <h2 class="ws-sec-title">Matching · Połącz w pary</h2>
+        <h2 class="ws-sec-title">Matching · Połącz w pary${titleSuffix}</h2>
       </div>
       <p class="ws-sec-desc">Kliknij słowo z lewej strony, potem jego tłumaczenie z prawej.</p>
       <div class="match-grid">
@@ -1444,15 +1462,17 @@ function buildMatchingSection(num) {
         </div>
       </div>
       <div class="ws-actions">
-        <button class="ws-btn-solve" onclick="solveMatching()">Pokaż odpowiedzi</button>
+        <button class="ws-btn-solve" onclick="solveMatching_${num}()">Pokaż odpowiedzi</button>
       </div>
       <div class="ws-feedback" id="fb-${num}"></div>
     </section>`;
 }
 
-function buildMatchingJS(num) {
-  const rows = rowsForTask('matching');
-  const total = Math.min(rows.length, 8);
+function buildMatchingJS(num, options = {}) {
+  const allRows = rowsForTask('matching');
+  const startIdx = options.startIdx || 0;
+  const endIdx = Math.min(startIdx + 8, allRows.length);
+  const total = endIdx - startIdx;
   return `
   // ── MATCHING (section ${num}) ──
   let _matchSelPL_${num} = null;
@@ -1461,9 +1481,14 @@ function buildMatchingJS(num) {
   const _matchTotal_${num} = ${total};
   const _matchColors_${num} = ['#7c3aed', '#0891b2', '#ea580c', '#16a34a', '#db2777', '#0d9488', '#ca8a04', '#dc2626'];
 
-  window.pickMatch = function(el, side) {
+  if (typeof window.pickMatch !== 'function') {
+    // Backward compat - jeśli stary kod gdzieś wywołuje pickMatch, deleguj
+    window.pickMatch = function() {};
+  }
+
+  // Per-section pick handler
+  window.pickMatch_${num} = function(el, side) {
     if (el.classList.contains('matched')) return;
-    const sec = document.getElementById('sec-${num}');
 
     if (side === 'pl') {
       if (_matchSelPL_${num}) _matchSelPL_${num}.classList.remove('selected');
@@ -1493,6 +1518,19 @@ function buildMatchingJS(num) {
         const badgeNum = _matchedPairs_${num}.size + 1;
         _matchSelPL_${num}.setAttribute('data-pair', badgeNum);
         _matchSelEN_${num}.setAttribute('data-pair', badgeNum);
+        // Detekcja jedno/wielo liniowości
+        [_matchSelPL_${num}, _matchSelEN_${num}].forEach(e => {
+          // używamy jeden frame opóźnienia żeby przeglądarka policzyła wysokość po zmianach
+          requestAnimationFrame(() => {
+            const lineHeight = parseFloat(getComputedStyle(e).lineHeight) || 22;
+            // wysokość kafelka - paddingi
+            const cs = getComputedStyle(e);
+            const padTop = parseFloat(cs.paddingTop);
+            const padBottom = parseFloat(cs.paddingBottom);
+            const contentHeight = e.offsetHeight - padTop - padBottom;
+            if (contentHeight <= lineHeight * 1.5) e.classList.add('single-line');
+          });
+        });
         _matchedPairs_${num}.add(plIdx);
         _matchSelPL_${num} = null;
         _matchSelEN_${num} = null;
@@ -1515,7 +1553,8 @@ function buildMatchingJS(num) {
     }
   };
 
-  window.solveMatching = function() {
+  // Solver per-section
+  window.solveMatching_${num} = function() {
     document.querySelectorAll('#sec-${num} .match-pl').forEach(el => {
       const idx = parseInt(el.dataset.idx);
       if (_matchedPairs_${num}.has(idx)) return;
@@ -1532,6 +1571,16 @@ function buildMatchingJS(num) {
       const badgeNum = _matchedPairs_${num}.size + 1;
       el.setAttribute('data-pair', badgeNum);
       enEl.setAttribute('data-pair', badgeNum);
+      [el, enEl].forEach(e => {
+        requestAnimationFrame(() => {
+          const lineHeight = parseFloat(getComputedStyle(e).lineHeight) || 22;
+          const cs = getComputedStyle(e);
+          const padTop = parseFloat(cs.paddingTop);
+          const padBottom = parseFloat(cs.paddingBottom);
+          const contentHeight = e.offsetHeight - padTop - padBottom;
+          if (contentHeight <= lineHeight * 1.5) e.classList.add('single-line');
+        });
+      });
       _matchedPairs_${num}.add(idx);
     });
     showSectionFeedback(${num}, true, '✓ Wszystkie pary pokazane');
@@ -1540,18 +1589,21 @@ function buildMatchingJS(num) {
 `;
 }
 
-function buildScrambleSection(num) {
-  const rows = rowsForTask('scramble');
-  const words = rows.slice(0, 8);
+function buildScrambleSection(num, options = {}) {
+  const allRows = rowsForTask('scramble');
+  const startIdx = options.startIdx || 0;
+  const endIdx = Math.min(startIdx + 8, allRows.length);
+  const partNum = options.partNum;
+  const totalParts = options.totalParts;
+  const words = allRows.slice(startIdx, endIdx);
+  const titleSuffix = totalParts > 1 ? ` · Część ${partNum}/${totalParts}` : '';
   const items = words.map((r, i) => {
     const letters = r.en.split('');
     let scrambled;
-    // try up to 5 times to avoid identical-to-original scramble
     for (let attempt = 0; attempt < 5; attempt++) {
       scrambled = shuffle(letters).join('');
       if (scrambled.toLowerCase() !== r.en.toLowerCase()) break;
     }
-    // if still same (e.g. all letters identical like 'aaa'), force swap
     if (scrambled.toLowerCase() === r.en.toLowerCase() && letters.length > 1) {
       const arr = letters.slice();
       [arr[0], arr[arr.length - 1]] = [arr[arr.length - 1], arr[0]];
@@ -1561,15 +1613,15 @@ function buildScrambleSection(num) {
       <div class="scramble-card" data-idx="${i}">
         <div class="scramble-prompt">
           <span class="scramble-pl">${escapeHtml(r.pl)}</span>
-          <button class="scramble-show-jumbled" onclick="toggleJumbled(this, ${num}, ${i})">
+          <button class="scramble-show-jumbled" onclick="toggleJumbled_${num}(this, ${num}, ${i})">
             <span class="scramble-jumbled-hidden">🔤 Pokaż rozsypankę</span>
             <span class="scramble-jumbled-shown" data-jumbled="${escapeHtml(scrambled)}">${escapeHtml(scrambled)}</span>
           </button>
         </div>
         <div class="scramble-input-row">
-          <input type="text" class="scramble-input" data-answer="${escapeHtml(r.en.toLowerCase())}" placeholder="Wpisz słowo..." onkeydown="if(event.key==='Enter') checkScramble(this, ${num})">
-          <button class="scramble-check" onclick="checkScramble(this.previousElementSibling, ${num})" title="Sprawdź">✓</button>
-          <button class="scramble-hint-btn" onclick="hintScramble(${num}, ${i})" title="Podpowiedź - wstaw kolejną literę">?</button>
+          <input type="text" class="scramble-input" data-answer="${escapeHtml(r.en.toLowerCase())}" placeholder="Wpisz słowo..." onkeydown="if(event.key==='Enter') checkScramble_${num}(this)">
+          <button class="scramble-check" onclick="checkScramble_${num}(this.previousElementSibling)" title="Sprawdź">✓</button>
+          <button class="scramble-hint-btn" onclick="hintScramble_${num}(${i})" title="Podpowiedź - wstaw kolejną literę">?</button>
           <button class="scramble-tts-btn tts-btn" onclick="ttsBtnClick(event, ${JSON.stringify(r.en).replace(/"/g, '&quot;')})" title="Posłuchaj" aria-label="Czytaj">🔊</button>
         </div>
       </div>`;
@@ -1579,19 +1631,22 @@ function buildScrambleSection(num) {
     <section class="ws-section" data-section="${num}" id="sec-${num}">
       <div class="ws-sec-head">
         <div class="ws-sec-num">0${num}</div>
-        <h2 class="ws-sec-title">Word Scramble · Ułóż litery</h2>
+        <h2 class="ws-sec-title">Word Scramble · Ułóż litery${titleSuffix}</h2>
       </div>
       <p class="ws-sec-desc">Wpisz angielskie słowo (Enter sprawdza). Kliknij rozsypankę, żeby zobaczyć pomieszane litery. Kliknij "?" żeby wstawić kolejną literę odpowiedzi.</p>
       <div class="scramble-grid">${items}</div>
       <div class="ws-actions">
-        <button class="ws-btn-solve" onclick="solveScramble(${num})">Pokaż wszystkie odpowiedzi</button>
+        <button class="ws-btn-solve" onclick="solveScramble_${num}()">Pokaż wszystkie odpowiedzi</button>
       </div>
       <div class="ws-feedback" id="fb-${num}"></div>
     </section>`;
 }
 
-function buildScrambleJS(num) {
-  const rows = rowsForTask('scramble').slice(0, 8);
+function buildScrambleJS(num, options = {}) {
+  const allRows = rowsForTask('scramble');
+  const startIdx = options.startIdx || 0;
+  const endIdx = Math.min(startIdx + 8, allRows.length);
+  const rows = allRows.slice(startIdx, endIdx);
   const wordsJSON = JSON.stringify(rows.map(r => ({ pl: r.pl, en: r.en })));
   return `
   // ── SCRAMBLE (section ${num}) ──
@@ -1599,11 +1654,11 @@ function buildScrambleJS(num) {
   let _scrambleDone_${num} = new Set();
   const _scrambleTotal_${num} = _scrambleWords_${num}.length;
 
-  window.toggleJumbled = function(btn, secNum, idx) {
+  window.toggleJumbled_${num} = function(btn, secNum, idx) {
     btn.classList.toggle('revealed');
   };
 
-  window.checkScramble = function(input, secNum) {
+  window.checkScramble_${num} = function(input) {
     const ans = input.dataset.answer;
     const val = input.value.trim().toLowerCase();
     if (val === ans) {
@@ -1626,34 +1681,28 @@ function buildScrambleJS(num) {
     }
   };
 
-  // Hint: wstawia kolejną literę odpowiedzi w input. Jeśli to co wpisał użytkownik
-  // ma poprawny prefix, dokleja kolejną literę. Jeśli nie - kasuje błędne i wstawia
-  // poprawny prefix do najdalszej zgodnej pozycji + jedną kolejną literę.
-  window.hintScramble = function(secNum, idx) {
+  window.hintScramble_${num} = function(idx) {
     const card = document.querySelector('#sec-${num} .scramble-card[data-idx="' + idx + '"]');
     if (!card) return;
     const input = card.querySelector('.scramble-input');
     if (input.disabled) return;
     const ans = input.dataset.answer;
     const cur = input.value.toLowerCase();
-    // znajdź najdłuższy zgodny prefix
     let matchLen = 0;
     for (let i = 0; i < Math.min(cur.length, ans.length); i++) {
       if (cur[i] === ans[i]) matchLen++;
       else break;
     }
-    // wstaw poprawny prefix + jedną kolejną literę
     const newLen = Math.min(matchLen + 1, ans.length);
     input.value = ans.slice(0, newLen);
     input.classList.remove('wrong');
     input.focus();
-    // jeśli to już całe słowo, automatycznie zaznacz jako correct
     if (newLen === ans.length) {
-      checkScramble(input, secNum);
+      window.checkScramble_${num}(input);
     }
   };
 
-  window.solveScramble = function(secNum) {
+  window.solveScramble_${num} = function() {
     document.querySelectorAll('#sec-${num} .scramble-input').forEach(inp => {
       if (inp.classList.contains('correct')) return;
       inp.value = inp.dataset.answer;
@@ -2068,6 +2117,10 @@ function buildCornellSection(num) {
         <span class="cornell-q-text">${escapeHtml(r.pl)}</span>
         <span class="cornell-q-arrow">▾</span>
       </button>
+      <div class="cornell-write" id="cornell-w-${num}-${i}">
+        <button class="cornell-write-toggle" onclick="toggleCornellWrite(${num}, ${i})">✎ Napisz odpowiedź</button>
+        <textarea class="cornell-write-area" placeholder="Napisz tu swoją odpowiedź zanim sprawdzisz wzorcową..." rows="3"></textarea>
+      </div>
       <div class="cornell-a" id="cornell-a-${num}-${i}">
         <div class="cornell-a-inner">${escapeHtml(r.en)}</div>
       </div>
@@ -2107,6 +2160,16 @@ function buildCornellJS(num) {
         showSectionFeedback(${num}, true, '📖 Wszystkie odpowiedzi przejrzane!');
         markSectionDone(${num});
       }
+    }
+  };
+
+  window.toggleCornellWrite = function(secNum, idx) {
+    const card = document.querySelector('#sec-${num} .cornell-card[data-idx="' + idx + '"]');
+    if (!card) return;
+    card.classList.toggle('writing');
+    const ta = card.querySelector('.cornell-write-area');
+    if (card.classList.contains('writing') && ta) {
+      setTimeout(() => ta.focus(), 250);
     }
   };
 
@@ -2823,8 +2886,7 @@ ${t.extraBgCSS}
 .match-item.matched::before {
   content: attr(data-pair);
   position: absolute;
-  top: 50%; left: 0.8rem;
-  transform: translateY(-50%);
+  top: 0.95rem; left: 0.8rem;
   font-family: var(--ws-display);
   font-size: 1.05rem; font-weight: 800;
   width: 32px; height: 32px;
@@ -2837,10 +2899,18 @@ ${t.extraBgCSS}
 .match-item.matched::after {
   content: '';
   position: absolute;
-  top: 0.8rem; bottom: 0.8rem; left: 2.85rem;
+  top: 3.4rem; bottom: 0.8rem; left: 2.85rem;
   width: 1.5px;
   background: var(--pair-color, currentColor);
   opacity: 0.4;
+}
+/* Jeśli treść jest jednoliniowa (krótka), numerek się centruje */
+.match-item.matched.single-line::before {
+  top: 50%;
+  transform: translateY(-50%);
+}
+.match-item.matched.single-line::after {
+  display: none;
 }
 .match-item.matched::after {
   content: '';
@@ -3365,6 +3435,67 @@ ${t.extraBgCSS}
   color: var(--ws-text);
   border-top: 1px dashed var(--ws-border);
   margin-top: 0;
+}
+
+.cornell-write {
+  padding: 0 1.1rem 0 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.25s ease, margin-bottom 0.25s ease;
+}
+.cornell-card.writing .cornell-write {
+  max-height: 220px;
+  padding-top: 0.85rem;
+  padding-bottom: 0.85rem;
+  margin-bottom: 0;
+}
+.cornell-write-toggle {
+  align-self: flex-start;
+  font-family: var(--ws-body);
+  font-size: 0.86rem;
+  font-weight: 500;
+  background: transparent;
+  border: 1px dashed var(--ws-border-strong);
+  color: var(--ws-text-dim);
+  padding: 0.4rem 0.85rem;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: none;
+}
+/* Pokaż przycisk gdy NIE w trybie writing */
+.cornell-card:not(.writing) .cornell-write {
+  max-height: 50px;
+  padding-top: 0.5rem;
+  padding-bottom: 0.85rem;
+}
+.cornell-card:not(.writing) .cornell-write-toggle { display: inline-flex; }
+.cornell-card:not(.writing) .cornell-write-area { display: none; }
+.cornell-write-toggle:hover {
+  border-color: var(--ws-accent);
+  color: var(--ws-accent);
+  border-style: solid;
+}
+.cornell-write-area {
+  font-family: var(--ws-body);
+  font-size: 1rem;
+  padding: 0.7rem 0.9rem;
+  background: var(--ws-bg);
+  border: 1.5px solid var(--ws-border-strong);
+  border-radius: 9px;
+  color: var(--ws-text);
+  resize: vertical;
+  min-height: 80px;
+  width: 100%;
+  font-family: var(--ws-body);
+}
+.cornell-write-area:focus {
+  outline: none;
+  border-color: var(--ws-accent);
 }
 
 /* ========== QUIZ ========== */
