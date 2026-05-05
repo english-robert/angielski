@@ -645,6 +645,14 @@ kura	chicken</div>
           </div>
           <button type="button" class="color-reset" data-target="text">RESET</button>
         </div>
+        <div class="color-field">
+          <input type="color" id="colorCard" value="#fbf8f0">
+          <div class="color-field-info">
+            <div class="color-field-label">Kolor sekcji</div>
+            <div class="color-field-hex" id="colorCardHex">#fbf8f0</div>
+          </div>
+          <button type="button" class="color-reset" data-target="card">RESET</button>
+        </div>
       </div>
     </div>
   </div>
@@ -695,6 +703,31 @@ kura	chicken</div>
       </div>
     </div>
   </div>
+
+  <!-- SECTION 5: LOGO -->
+  <div class="section">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-title">Logo na karcie</div>
+    </div>
+
+    <div class="field">
+      <label class="checkbox-row">
+        <input type="checkbox" id="logoEnabled" checked>
+        <span class="checkbox-mark"></span>
+        <span class="checkbox-label">Pokaż logo na górze i dole karty</span>
+      </label>
+    </div>
+
+    <div class="field" id="logoConfig">
+      <label class="label" for="logoUrl">URL pliku SVG logo</label>
+      <input type="text" id="logoUrl" class="input" value="https://bertlingo-learning.github.io/Angielski/Obrazki/loga/ewr-logo.svg" placeholder="https://...">
+      <div class="tts-info">
+        ⓘ Logo ładuje się z podanego URL. Wymaga że URL jest publicznie dostępny i przeglądarka ma internet przy otwieraniu karty (po pierwszym otwarciu jest cache'owane). Domyślny URL wskazuje na twoje GitHub Pages.
+      </div>
+    </div>
+  </div>
+
   <div class="generate-area">
     <button type="button" id="btnGenerate" class="btn-generate" disabled>
       Generuj &amp; pobierz HTML <span class="arrow">→</span>
@@ -718,19 +751,22 @@ const STATE = {
   customAccent: null,
   customBg: null,
   customText: null,
+  customCard: null,
   tasks: { flashcards: true, matching: true, scramble: true, quiz: false, unscramble: false, cornell: false },
   taskOrder: ['flashcards', 'matching', 'scramble', 'quiz', 'unscramble', 'cornell'],
   quizOptions: 4,
   ttsEnabled: true,
   ttsLang: 'en-GB',
-  ttsVoice: ''
+  ttsVoice: '',
+  logoEnabled: true,
+  logoUrl: 'https://bertlingo-learning.github.io/Angielski/Obrazki/loga/ewr-logo.svg'
 };
 
 // Default colors per preset
 const PRESET_DEFAULTS = {
-  vintage: { accent: '#c0392b', bg: '#f5f1e8', text: '#1f1a14' },
-  dark:    { accent: '#56cfb2', bg: '#0d1b2a', text: '#e8f4fd' },
-  pastel:  { accent: '#d65a8a', bg: '#fef6f3', text: '#3a2c33' }
+  vintage: { accent: '#c0392b', bg: '#f5f1e8', text: '#1f1a14', card: '#fbf8f0' },
+  dark:    { accent: '#56cfb2', bg: '#0d1b2a', text: '#e8f4fd', card: '#1a2738' },
+  pastel:  { accent: '#d65a8a', bg: '#fef6f3', text: '#3a2c33', card: '#ffffff' }
 };
 
 // ============================================================
@@ -1058,9 +1094,12 @@ document.querySelectorAll('.preset-card').forEach(card => {
     document.getElementById('colorBgHex').textContent = def.bg;
     document.getElementById('colorText').value = def.text;
     document.getElementById('colorTextHex').textContent = def.text;
+    document.getElementById('colorCard').value = def.card;
+    document.getElementById('colorCardHex').textContent = def.card;
     STATE.customAccent = null;
     STATE.customBg = null;
     STATE.customText = null;
+    STATE.customCard = null;
   });
 });
 
@@ -1075,6 +1114,10 @@ document.getElementById('colorBg').addEventListener('input', e => {
 document.getElementById('colorText').addEventListener('input', e => {
   STATE.customText = e.target.value;
   document.getElementById('colorTextHex').textContent = e.target.value;
+});
+document.getElementById('colorCard').addEventListener('input', e => {
+  STATE.customCard = e.target.value;
+  document.getElementById('colorCardHex').textContent = e.target.value;
 });
 
 document.querySelectorAll('.color-reset').forEach(btn => {
@@ -1093,6 +1136,10 @@ document.querySelectorAll('.color-reset').forEach(btn => {
       document.getElementById('colorText').value = def.text;
       document.getElementById('colorTextHex').textContent = def.text;
       STATE.customText = null;
+    } else if (target === 'card') {
+      document.getElementById('colorCard').value = def.card;
+      document.getElementById('colorCardHex').textContent = def.card;
+      STATE.customCard = null;
     }
   });
 });
@@ -1207,6 +1254,18 @@ if (window.speechSynthesis) {
   STATE.ttsEnabled = false;
 }
 
+// ============================================================
+// LOGO
+// ============================================================
+document.getElementById('logoEnabled').addEventListener('change', e => {
+  STATE.logoEnabled = e.target.checked;
+  document.getElementById('logoConfig').classList.toggle('disabled', !e.target.checked);
+});
+
+document.getElementById('logoUrl').addEventListener('input', e => {
+  STATE.logoUrl = e.target.value.trim();
+});
+
 // Initialize
 updateTSVStatus();
 
@@ -1288,6 +1347,7 @@ function buildWorksheetHTML() {
   const accent = STATE.customAccent || def.accent;
   const bg = STATE.customBg || def.bg;
   const textColor = STATE.customText || def.text;
+  const cardColor = STATE.customCard || def.card;
 
   // Build sections in order according to STATE.taskOrder
   const sectionsHTML = [];
@@ -1331,6 +1391,7 @@ function buildWorksheetHTML() {
     accent,
     bg,
     textColor,
+    cardColor,
     sectionCount,
     sectionsHTML: sectionsHTML.join('\n'),
     sectionsJS: sectionsJS.join('\n'),
@@ -1339,6 +1400,10 @@ function buildWorksheetHTML() {
       enabled: STATE.ttsEnabled,
       lang: STATE.ttsLang,
       voiceName: STATE.ttsVoice
+    },
+    logoConfig: {
+      show: STATE.logoEnabled,
+      url: STATE.logoUrl
     }
   });
 }
@@ -1444,13 +1509,14 @@ function buildMatchingSection(num, options = {}) {
       <button class="tts-btn tts-btn-side" onclick="ttsBtnClick(event, ${JSON.stringify(item.en).replace(/"/g, '&quot;')})" title="Czytaj" aria-label="Czytaj">🔊</button>
     </div>`).join('');
 
-  const titleSuffix = totalParts > 1 ? ` · Część ${partNum}/${totalParts}` : '';
+  const partBadge = totalParts > 1 ? `<span class="ws-part-badge">Część ${partNum}/${totalParts}</span>` : '';
 
   return `
     <section class="ws-section" data-section="${num}" id="sec-${num}">
       <div class="ws-sec-head">
         <div class="ws-sec-num">0${num}</div>
-        <h2 class="ws-sec-title">Matching · Połącz w pary${titleSuffix}</h2>
+        <h2 class="ws-sec-title">Matching · Połącz w pary</h2>
+        ${partBadge}
       </div>
       <p class="ws-sec-desc">Kliknij słowo z lewej strony, potem jego tłumaczenie z prawej.</p>
       <div class="match-grid">
@@ -1596,7 +1662,8 @@ function buildScrambleSection(num, options = {}) {
   const partNum = options.partNum;
   const totalParts = options.totalParts;
   const words = allRows.slice(startIdx, endIdx);
-  const titleSuffix = totalParts > 1 ? ` · Część ${partNum}/${totalParts}` : '';
+  const titleSuffix = '';
+  const partBadge = totalParts > 1 ? `<span class="ws-part-badge">Część ${partNum}/${totalParts}</span>` : '';
   const items = words.map((r, i) => {
     const letters = r.en.split('');
     let scrambled;
@@ -1631,7 +1698,8 @@ function buildScrambleSection(num, options = {}) {
     <section class="ws-section" data-section="${num}" id="sec-${num}">
       <div class="ws-sec-head">
         <div class="ws-sec-num">0${num}</div>
-        <h2 class="ws-sec-title">Word Scramble · Ułóż litery${titleSuffix}</h2>
+        <h2 class="ws-sec-title">Word Scramble · Ułóż litery</h2>
+        ${partBadge}
       </div>
       <p class="ws-sec-desc">Wpisz angielskie słowo (Enter sprawdza). Kliknij rozsypankę, żeby zobaczyć pomieszane litery. Kliknij "?" żeby wstawić kolejną literę odpowiedzi.</p>
       <div class="scramble-grid">${items}</div>
@@ -2118,7 +2186,10 @@ function buildCornellSection(num) {
         <span class="cornell-q-arrow">▾</span>
       </button>
       <div class="cornell-write" id="cornell-w-${num}-${i}">
-        <button class="cornell-write-toggle" onclick="toggleCornellWrite(${num}, ${i})">✎ Napisz odpowiedź</button>
+        <button class="cornell-write-toggle" onclick="toggleCornellWrite(${num}, ${i})">
+          <span class="cornell-write-toggle-open">✎ Napisz odpowiedź</span>
+          <span class="cornell-write-toggle-close">✕ Schowaj pole</span>
+        </button>
         <textarea class="cornell-write-area" placeholder="Napisz tu swoją odpowiedź zanim sprawdzisz wzorcową..." rows="3"></textarea>
       </div>
       <div class="cornell-a" id="cornell-a-${num}-${i}">
@@ -2189,8 +2260,8 @@ function buildCornellJS(num) {
 // ============================================================
 // MAIN TEMPLATE - the worksheet HTML
 // ============================================================
-function buildWorksheetTemplate({ title, subtitle, preset, accent, bg, textColor, sectionCount, sectionsHTML, sectionsJS, rowsJSON, ttsConfig }) {
-  const presetTheme = getPresetTheme(preset, accent, bg, textColor);
+function buildWorksheetTemplate({ title, subtitle, preset, accent, bg, textColor, cardColor, sectionCount, sectionsHTML, sectionsJS, rowsJSON, ttsConfig, logoConfig }) {
+  const presetTheme = getPresetTheme(preset, accent, bg, textColor, cardColor);
   const fontImports = presetTheme.fontImports;
   const css = buildWorksheetCSS(presetTheme);
   const bgEffectHTML = presetTheme.bgEffect;
@@ -2210,11 +2281,14 @@ ${css}
 <body>
 ${bgEffectHTML}
 <div class="ws-app">
-  <header class="ws-header">
-    <div class="ws-eyebrow">Worksheet</div>
-    <h1 class="ws-title">${escapeHtml(title)}</h1>
-    ${subtitle ? `<p class="ws-subtitle">${escapeHtml(subtitle)}</p>` : ''}
-    <div class="ws-line"></div>
+  <header class="ws-header ${logoConfig.show ? 'ws-header-with-logo' : ''}">
+    ${logoConfig.show ? `<div class="ws-logo ws-logo-top"><img src="${logoConfig.url}" alt="Logo" loading="lazy" /></div>` : ''}
+    <div class="ws-header-text">
+      <div class="ws-eyebrow">Worksheet</div>
+      <h1 class="ws-title">${escapeHtml(title)}</h1>
+      ${subtitle ? `<p class="ws-subtitle">${escapeHtml(subtitle)}</p>` : ''}
+      <div class="ws-line"></div>
+    </div>
   </header>
 
   <div class="ws-progress-wrap">
@@ -2424,14 +2498,14 @@ window.addEventListener('load', loadProgress);
 // ============================================================
 // PRESET THEMES
 // ============================================================
-function getPresetTheme(preset, accent, bg, textColor) {
-  if (preset === 'vintage') return getVintageTheme(accent, bg, textColor);
-  if (preset === 'dark') return getDarkTheme(accent, bg, textColor);
-  if (preset === 'pastel') return getPastelTheme(accent, bg, textColor);
-  return getVintageTheme(accent, bg, textColor);
+function getPresetTheme(preset, accent, bg, textColor, cardColor) {
+  if (preset === 'vintage') return getVintageTheme(accent, bg, textColor, cardColor);
+  if (preset === 'dark') return getDarkTheme(accent, bg, textColor, cardColor);
+  if (preset === 'pastel') return getPastelTheme(accent, bg, textColor, cardColor);
+  return getVintageTheme(accent, bg, textColor, cardColor);
 }
 
-function getVintageTheme(accent, bg, textColor) {
+function getVintageTheme(accent, bg, textColor, cardColor) {
   const text = textColor || '#1f1a14';
   return {
     name: 'vintage',
@@ -2455,12 +2529,12 @@ function getVintageTheme(accent, bg, textColor) {
     repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(31,26,20,0.06) 28px, rgba(31,26,20,0.06) 29px),
     repeating-linear-gradient(90deg, transparent, transparent 28px, rgba(31,26,20,0.04) 28px, rgba(31,26,20,0.04) 29px);
 }`,
-    cardBg: '#fbf8f0',
+    cardBg: cardColor || '#fbf8f0',
     cardShadow: '0 1px 3px rgba(31,26,20,0.08), 0 8px 24px rgba(31,26,20,0.05)'
   };
 }
 
-function getDarkTheme(accent, bg, textColor) {
+function getDarkTheme(accent, bg, textColor, cardColor) {
   const text = textColor || '#e8f4fd';
   return {
     name: 'dark',
@@ -2491,12 +2565,12 @@ function getDarkTheme(accent, bg, textColor) {
   0%, 100% { opacity: 0.2; transform: scale(1); }
   50% { opacity: 1; transform: scale(1.3); }
 }`,
-    cardBg: shiftColor(bg, 0.05),
+    cardBg: cardColor || shiftColor(bg, 0.05),
     cardShadow: '0 4px 12px rgba(0,0,0,0.3)'
   };
 }
 
-function getPastelTheme(accent, bg, textColor) {
+function getPastelTheme(accent, bg, textColor, cardColor) {
   const text = textColor || '#3a2c33';
   return {
     name: 'pastel',
@@ -2521,7 +2595,7 @@ function getPastelTheme(accent, bg, textColor) {
     radial-gradient(ellipse 40% 30% at 90% 80%, ${rgba(accent, 0.10)}, transparent 50%),
     radial-gradient(ellipse 30% 30% at 80% 20%, rgba(126, 181, 212, 0.18), transparent 50%);
 }`,
-    cardBg: '#ffffff',
+    cardBg: cardColor || '#ffffff',
     cardShadow: '0 2px 6px rgba(58, 44, 51, 0.05), 0 12px 32px rgba(58, 44, 51, 0.07)'
   };
 }
@@ -2583,6 +2657,23 @@ ${t.extraBgCSS}
   margin-bottom: 2rem;
   padding: 1rem 0 1.5rem;
   animation: wsSlideDown 0.8s cubic-bezier(0.16,1,0.3,1) both;
+}
+.ws-header-with-logo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1.6rem;
+  text-align: left;
+}
+.ws-header-with-logo .ws-line {
+  margin-left: 0;
+  margin-right: 0;
+  width: 100%;
+  height: 2px;
+}
+.ws-header-text {
+  flex: 1;
+  min-width: 0;
 }
 @keyframes wsSlideDown {
   from { opacity: 0; transform: translateY(-20px); }
@@ -2668,7 +2759,36 @@ ${t.extraBgCSS}
 }
 .ws-section.ws-done { border-color: var(--ws-accent); }
 
-.ws-sec-head { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.7rem; }
+.ws-sec-head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.7rem;
+  flex-wrap: wrap;
+}
+.ws-sec-head .ws-sec-title { flex: 1; min-width: 0; }
+.ws-part-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--ws-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--ws-accent);
+  background: var(--ws-accent-soft);
+  border: 1.5px solid var(--ws-accent);
+  padding: 0.32rem 0.7rem 0.32rem 0.55rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.ws-part-badge::before {
+  content: '◆';
+  font-size: 0.6rem;
+  opacity: 0.75;
+}
 .ws-sec-num {
   font-family: var(--ws-mono);
   font-size: 0.95rem; font-weight: 700;
@@ -2899,7 +3019,7 @@ ${t.extraBgCSS}
 .match-item.matched::after {
   content: '';
   position: absolute;
-  top: 3.4rem; bottom: 0.8rem; left: 2.85rem;
+  top: 3.4rem; bottom: 0.8rem; left: 3.05rem;
   width: 1.5px;
   background: var(--pair-color, currentColor);
   opacity: 0.4;
@@ -2911,14 +3031,6 @@ ${t.extraBgCSS}
 }
 .match-item.matched.single-line::after {
   display: none;
-}
-.match-item.matched::after {
-  content: '';
-  position: absolute;
-  top: 0.7rem; bottom: 0.7rem; left: 2.55rem;
-  width: 1.5px;
-  background: currentColor;
-  opacity: 0.4;
 }
 .match-item.wrong {
   border-color: var(--ws-no);
@@ -3465,16 +3577,24 @@ ${t.extraBgCSS}
   border-radius: 7px;
   cursor: pointer;
   transition: all 0.15s;
-  display: none;
+  display: inline-flex;
 }
-/* Pokaż przycisk gdy NIE w trybie writing */
+/* Zachowanie textarea ale przyciski toggle zawsze widoczne */
 .cornell-card:not(.writing) .cornell-write {
   max-height: 50px;
   padding-top: 0.5rem;
   padding-bottom: 0.85rem;
 }
-.cornell-card:not(.writing) .cornell-write-toggle { display: inline-flex; }
 .cornell-card:not(.writing) .cornell-write-area { display: none; }
+/* Przełączanie tekstu przycisku */
+.cornell-write-toggle-close { display: none; }
+.cornell-card.writing .cornell-write-toggle-open { display: none; }
+.cornell-card.writing .cornell-write-toggle-close { display: inline; }
+.cornell-card.writing .cornell-write-toggle {
+  border-color: var(--ws-accent);
+  color: var(--ws-accent);
+  border-style: solid;
+}
 .cornell-write-toggle:hover {
   border-color: var(--ws-accent);
   color: var(--ws-accent);
@@ -3606,6 +3726,84 @@ ${t.extraBgCSS}
 }
 .ws-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 .ws-toast.err { background: var(--ws-no); color: white; }
+
+/* LOGO */
+.ws-logo {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+  opacity: 0.92;
+  transition: opacity 0.3s;
+}
+.ws-logo:hover { opacity: 1; }
+.ws-logo img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+.ws-logo-top {
+  margin: 0;
+  flex-shrink: 0;
+}
+.ws-logo-top img {
+  height: 115px;
+  width: auto;
+}
+.ws-logo-bottom {
+  margin-top: 2rem;
+  opacity: 0.55;
+}
+.ws-logo-bottom img {
+  height: 50px;
+  width: auto;
+}
+@media print {
+  .ws-logo-bottom { display: none; }
+  .ws-logo-top img { height: 90px; }
+}
+
+/* DRUK / PDF - tylko niezbędne poprawki, bez ruszania marginesów strony */
+@media print {
+  /* Fiszki: tylko tył (zawiera PL i EN) */
+  .flashcard {
+    aspect-ratio: auto;
+    min-height: auto;
+    perspective: none;
+  }
+  .flashcard-inner {
+    transform: none !important;
+    transform-style: flat;
+    position: static;
+    height: auto;
+  }
+  .flashcard-front {
+    display: none !important;
+  }
+  .flashcard-back {
+    position: static;
+    backface-visibility: visible;
+    -webkit-backface-visibility: visible;
+    transform: none !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    min-height: 90px;
+    border-radius: 14px;
+  }
+  /* Ukryj przyciski TTS przy druku */
+  .tts-btn { display: none !important; }
+  /* Ukryj progress bar i przyciski akcji */
+  .ws-progress-wrap { display: none !important; }
+  .ws-actions { display: none !important; }
+  /* Cornell - rozwiń wszystkie odpowiedzi przy druku */
+  .cornell-card .cornell-a {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  .cornell-card .cornell-write { display: none !important; }
+  .cornell-q-arrow { display: none !important; }
+  /* Sekcje nie łamać między stronami jeśli się da */
+  .ws-section { page-break-inside: avoid; break-inside: avoid; }
+}
 `;
 }
 </script>
