@@ -1,0 +1,2173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Perfect Aspect · Worksheet</title>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700;9..144,900&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --bg: #f3ece0;
+    --paper: #fbf6ec;
+    --paper-warm: #f6eedf;
+    --ink: #1d2733;
+    --ink-soft: #3a4a5d;
+    --muted: #6e7986;
+    --line: #d8cdb8;
+    --line-soft: #e8dfcc;
+
+    --teal: #136e7a;
+    --teal-deep: #0d4a52;
+    --teal-light: #d4ecef;
+
+    --gold: #c89b3c;
+    --gold-deep: #8c6a1f;
+    --gold-light: #f4e7c5;
+
+    --burgundy: #8a2031;
+    --burgundy-light: #f3d8dc;
+
+    --moss: #4a6a3b;
+    --moss-light: #dfe8d3;
+
+    --correct: #2f7a3e;
+    --correct-bg: #d8ecd9;
+    --wrong: #b1303f;
+    --wrong-bg: #f4dada;
+
+    --serif: 'Fraunces', Georgia, serif;
+    --body: 'Lora', Georgia, serif;
+    --mono: 'JetBrains Mono', monospace;
+}
+
+html { scroll-behavior: smooth; }
+body {
+    font-family: var(--body);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.65;
+    font-size: 17px;
+    background-image:
+        radial-gradient(ellipse 800px 400px at 10% 0%, rgba(200,155,60,0.08), transparent 60%),
+        radial-gradient(ellipse 600px 500px at 100% 30%, rgba(19,110,122,0.07), transparent 60%),
+        radial-gradient(ellipse 700px 400px at 50% 110%, rgba(138,32,49,0.05), transparent 60%);
+    min-height: 100vh;
+}
+
+::selection { background: var(--gold); color: var(--ink); }
+
+.wrap {
+    max-width: 940px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 6rem;
+}
+
+/* ============== HEADER ============== */
+.masthead {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 3rem 3rem 2.5rem;
+    margin-bottom: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.02), 0 20px 50px -30px rgba(13,74,82,0.25);
+}
+.masthead::before {
+    content: '';
+    position: absolute;
+    inset: 12px;
+    border: 1px solid var(--line-soft);
+    border-radius: 2px;
+    pointer-events: none;
+}
+.masthead-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    color: var(--teal);
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+.masthead-eyebrow::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--teal) 0%, transparent 100%);
+    opacity: 0.4;
+}
+.masthead h1 {
+    font-family: var(--serif);
+    font-weight: 900;
+    font-size: clamp(2.4rem, 5vw, 3.6rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+}
+.masthead h1 .accent {
+    background: linear-gradient(135deg, var(--teal-deep) 0%, var(--teal) 50%, var(--gold-deep) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-style: italic;
+}
+.masthead .lede {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-style: italic;
+    font-size: 1.2rem;
+    color: var(--ink-soft);
+    max-width: 640px;
+    margin-top: 0.75rem;
+    line-height: 1.5;
+}
+.masthead-meta {
+    display: flex;
+    gap: 1.25rem;
+    margin-top: 1.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line-soft);
+    flex-wrap: wrap;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+.masthead-meta span { display: flex; align-items: center; gap: 0.4rem; }
+.masthead-meta .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+}
+
+/* ============== INTRO PROSE ============== */
+.intro {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 2.5rem 3rem;
+    margin-bottom: 2.5rem;
+}
+.intro h2 {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 1.7rem;
+    color: var(--teal-deep);
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+}
+.intro p {
+    margin-bottom: 1rem;
+    color: var(--ink-soft);
+}
+.intro p:last-child { margin-bottom: 0; }
+.intro em { color: var(--burgundy); font-style: italic; }
+.intro strong { color: var(--ink); font-weight: 700; }
+
+.timeline-svg {
+    width: 100%;
+    max-width: 720px;
+    margin: 1.5rem auto;
+    display: block;
+}
+
+.callout {
+    background: var(--gold-light);
+    border-radius: 4px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+    color: var(--ink);
+    border: 1px solid #e6d4a3;
+}
+.callout-title {
+    font-family: var(--serif);
+    font-weight: 700;
+    color: var(--gold-deep);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.78rem;
+    margin-bottom: 0.4rem;
+}
+
+/* ============== SECTIONS ============== */
+.section {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 2.5rem 3rem;
+    margin-bottom: 2rem;
+    position: relative;
+}
+.section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--line-soft);
+}
+.section-num {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--muted);
+    background: var(--paper-warm);
+    padding: 0.2rem 0.55rem;
+    border-radius: 3px;
+    border: 1px solid var(--line-soft);
+    letter-spacing: 0.1em;
+}
+.section h2 {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    flex: 1;
+    min-width: 200px;
+}
+.section h2 em {
+    color: var(--teal);
+    font-style: italic;
+}
+.section-instruction {
+    font-family: var(--body);
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 1rem;
+    margin-bottom: 1.25rem;
+    max-width: 640px;
+}
+
+/* ============== FLIPCARDS ============== */
+.flip-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+    perspective: 1200px;
+}
+.flip-card {
+    aspect-ratio: 3/4;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+.flip-card.flipped { transform: rotateY(180deg); }
+.flip-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 6px;
+    padding: 1.5rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--line);
+    overflow: hidden;
+}
+.flip-front {
+    background: linear-gradient(155deg, var(--teal-deep) 0%, var(--teal) 100%);
+    color: var(--paper);
+    justify-content: space-between;
+}
+.flip-front.gold {
+    background: linear-gradient(155deg, #6b4d10 0%, var(--gold-deep) 100%);
+}
+.flip-front.burg {
+    background: linear-gradient(155deg, #5d141f 0%, var(--burgundy) 100%);
+}
+.flip-front .roman {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    opacity: 0.7;
+}
+.flip-front .name {
+    font-family: var(--serif);
+    font-weight: 900;
+    font-size: 1.35rem;
+    line-height: 1.1;
+    margin-top: auto;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+}
+.flip-front .name em { font-style: italic; font-weight: 500; }
+.flip-front .question {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 0.92rem;
+    line-height: 1.35;
+    opacity: 0.92;
+    border-top: 1px solid rgba(255,255,255,0.25);
+    padding-top: 0.6rem;
+}
+.flip-front .flip-hint {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.55;
+}
+.flip-back {
+    transform: rotateY(180deg);
+    background: var(--paper-warm);
+    color: var(--ink);
+    justify-content: flex-start;
+    overflow-y: auto;
+}
+.flip-back.teal { background: linear-gradient(155deg, #e8f2f3 0%, #f6eedf 100%); }
+.flip-back.gold { background: linear-gradient(155deg, #f7eccb 0%, #f6eedf 100%); }
+.flip-back.burg { background: linear-gradient(155deg, #f7e1e3 0%, #f6eedf 100%); }
+.flip-back .back-name {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--teal-deep);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+}
+.flip-back.gold .back-name { color: var(--gold-deep); }
+.flip-back.burg .back-name { color: var(--burgundy); }
+.flip-back .back-def {
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    margin-bottom: 0.7rem;
+    line-height: 1.45;
+}
+.flip-back .back-ex {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--ink);
+    padding: 0.4rem 0.6rem;
+    background: rgba(255,255,255,0.45);
+    border-radius: 3px;
+    margin-bottom: 0.4rem;
+    line-height: 1.35;
+}
+.flip-back .back-ex b { font-style: normal; color: var(--burgundy); font-weight: 600; }
+.flip-back .back-mark {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: auto;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--line-soft);
+}
+
+/* ============== EXERCISE 1: TYPE PICKER ============== */
+.type-q {
+    padding: 1.25rem 0;
+    border-bottom: 1px dashed var(--line-soft);
+}
+.type-q:last-child { border-bottom: none; }
+.type-q-num {
+    display: inline-block;
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--gold-deep);
+    margin-right: 0.5rem;
+}
+.type-q-sentence {
+    font-family: var(--serif);
+    font-size: 1.15rem;
+    color: var(--ink);
+    margin-bottom: 0.6rem;
+    line-height: 1.4;
+}
+.type-q-sentence em { font-style: italic; color: var(--burgundy); font-weight: 500; }
+.type-options {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+.type-opt {
+    font-family: var(--body);
+    font-size: 0.9rem;
+    font-weight: 500;
+    background: transparent;
+    color: var(--ink-soft);
+    border: 1.5px solid var(--line);
+    border-radius: 22px;
+    padding: 0.45rem 1rem;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.type-opt:hover { border-color: var(--teal); color: var(--teal); }
+.type-opt.correct {
+    background: var(--correct-bg);
+    border-color: var(--correct);
+    color: var(--correct);
+    font-weight: 600;
+}
+.type-opt.wrong {
+    background: var(--wrong-bg);
+    border-color: var(--wrong);
+    color: var(--wrong);
+    text-decoration: line-through;
+}
+.type-opt:disabled { cursor: default; }
+.type-feedback {
+    margin-top: 0.6rem;
+    font-size: 0.9rem;
+    font-style: italic;
+    color: var(--ink-soft);
+    display: none;
+}
+.type-feedback.show { display: block; }
+.type-feedback strong { color: var(--teal-deep); font-style: normal; }
+
+/* ============== EXERCISE 2/4: FILL ============== */
+.fill-q {
+    padding: 1rem 0;
+    border-bottom: 1px dashed var(--line-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.fill-q:last-child { border-bottom: none; }
+.fill-text {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+.fill-text .num {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--gold-deep);
+    margin-right: 0.4rem;
+    font-weight: 600;
+}
+.fill-text .pl {
+    display: block;
+    font-family: var(--body);
+    font-style: italic;
+    color: var(--muted);
+    font-size: 0.92rem;
+    margin-top: 0.15rem;
+    margin-left: 1.7rem;
+}
+.fill-input {
+    font-family: var(--serif);
+    font-size: 1.05rem;
+    padding: 0.4rem 0.65rem;
+    border: none;
+    border-bottom: 2px solid var(--gold);
+    background: rgba(244, 231, 197, 0.4);
+    color: var(--ink);
+    width: 240px;
+    outline: none;
+    transition: background 0.2s, border-color 0.2s;
+    border-radius: 3px 3px 0 0;
+}
+.fill-input::placeholder {
+    color: #b9a982;
+    font-style: italic;
+    font-family: var(--body);
+    font-size: 0.9rem;
+}
+.fill-input:focus {
+    background: rgba(244, 231, 197, 0.7);
+    border-bottom-color: var(--teal);
+}
+.fill-input.correct {
+    background: var(--correct-bg);
+    border-bottom-color: var(--correct);
+    color: var(--correct);
+}
+.fill-input.wrong {
+    background: var(--wrong-bg);
+    border-bottom-color: var(--wrong);
+    color: var(--wrong);
+}
+.fill-line {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-left: 1.7rem;
+}
+.fill-hint-btn {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    background: transparent;
+    color: var(--teal);
+    border: 1px solid var(--teal-light);
+    padding: 0.3rem 0.65rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.fill-hint-btn:hover { background: var(--teal-light); }
+.fill-hint-btn.active { background: var(--teal); color: var(--paper); border-color: var(--teal); }
+.fill-hint-text {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 0.88rem;
+    color: var(--teal-deep);
+    background: var(--teal-light);
+    padding: 0.4rem 0.7rem;
+    border-radius: 3px;
+    display: none;
+    margin-left: 1.7rem;
+}
+.fill-hint-text.show { display: block; }
+
+/* ============== TYPE LABEL ============== */
+.fill-tag {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    padding: 0.18rem 0.5rem;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    margin-left: 0.4rem;
+}
+.tag-res { background: var(--teal-light); color: var(--teal-deep); }
+.tag-exp { background: var(--gold-light); color: var(--gold-deep); }
+.tag-cont { background: var(--burgundy-light); color: var(--burgundy); }
+
+/* ============== MATCHING ============== */
+.match-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem 2.5rem;
+    align-items: start;
+}
+.match-col h4 {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--line-soft);
+}
+.match-item {
+    background: var(--paper-warm);
+    border: 1.5px solid var(--line);
+    border-radius: 4px;
+    padding: 0.85rem 1rem;
+    margin-bottom: 0.6rem;
+    cursor: pointer;
+    font-family: var(--serif);
+    font-size: 0.98rem;
+    line-height: 1.4;
+    color: var(--ink);
+    transition: background 0.15s, border-color 0.15s;
+    position: relative;
+}
+.match-item:hover { border-color: var(--teal); }
+.match-item.selected {
+    border-color: var(--teal);
+    background: var(--teal-light);
+}
+.match-item.matched {
+    cursor: default;
+}
+.match-item .match-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: 0.78rem;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--paper);
+}
+.match-item.matched .match-badge { display: flex; }
+
+/* matched colors - pairs share a color */
+.match-item.matched-1 { background: #fbe9c5; border-color: #c89b3c; }
+.match-item.matched-1 .match-badge { background: #c89b3c; }
+.match-item.matched-2 { background: #d4ecef; border-color: #136e7a; }
+.match-item.matched-2 .match-badge { background: #136e7a; }
+.match-item.matched-3 { background: #f3d8dc; border-color: #8a2031; }
+.match-item.matched-3 .match-badge { background: #8a2031; }
+.match-item.matched-4 { background: #dfe8d3; border-color: #4a6a3b; }
+.match-item.matched-4 .match-badge { background: #4a6a3b; }
+.match-item.matched-5 { background: #e0d7e8; border-color: #5e3d8a; }
+.match-item.matched-5 .match-badge { background: #5e3d8a; }
+.match-item.matched-6 { background: #f3e2cf; border-color: #a55e1f; }
+.match-item.matched-6 .match-badge { background: #a55e1f; }
+
+/* ============== ANTERIOR TRAP - prose box with vote ============== */
+.trap-box {
+    background: linear-gradient(135deg, var(--paper-warm) 0%, var(--paper) 100%);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--burgundy);
+    padding: 1.5rem 2rem;
+    border-radius: 4px;
+    margin-bottom: 1.25rem;
+}
+.trap-box h3 {
+    font-family: var(--serif);
+    font-weight: 700;
+    color: var(--burgundy);
+    margin-bottom: 0.6rem;
+}
+.trap-box p { color: var(--ink-soft); margin-bottom: 0.5rem; font-size: 0.96rem; }
+.trap-box p:last-of-type { margin-bottom: 0; }
+.trap-vote {
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+.trap-vote .q-text {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--ink);
+}
+.trap-options { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+/* ============== SOLVE BUTTON ============== */
+.solve-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line-soft);
+}
+.solve-btn {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-weight: 600;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    padding: 0.65rem 1.4rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: filter 0.15s;
+}
+.solve-btn:hover { filter: brightness(1.18); }
+
+/* ============== PROGRESS BAR ============== */
+.progress-fixed {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 0.7rem 1rem;
+    z-index: 100;
+    box-shadow: 0 8px 24px -10px rgba(13,74,82,0.3);
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    min-width: 180px;
+}
+.progress-fixed-label {
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.66rem;
+    color: var(--muted);
+    margin-bottom: 0.35rem;
+    display: flex;
+    justify-content: space-between;
+}
+.progress-fixed-bar {
+    height: 5px;
+    background: var(--line-soft);
+    border-radius: 3px;
+    overflow: hidden;
+}
+.progress-fixed-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal) 0%, var(--gold) 100%);
+    width: 0%;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============== SAVE / RESET BUTTONS ============== */
+.toolbar {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+.toolbar button {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    background: transparent;
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+    padding: 0.45rem 0.85rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+.toolbar button:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+/* ============== REFERENCES ============== */
+.refs {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 2.25rem 3rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+.refs-head {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid var(--line-soft);
+}
+.refs-head h2 {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+}
+.refs-head h2 em { color: var(--teal); font-style: italic; }
+.refs-intro {
+    font-family: var(--body);
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+    margin-bottom: 1.25rem;
+    max-width: 640px;
+}
+.refs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    list-style: none;
+    counter-reset: ref;
+    padding: 0;
+}
+.refs-list li {
+    counter-increment: ref;
+    padding-left: 2.2rem;
+    position: relative;
+    font-family: var(--body);
+    font-size: 0.93rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+}
+.refs-list li::before {
+    content: counter(ref, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--gold-deep);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    background: var(--gold-light);
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+}
+.refs-list li .author {
+    font-family: var(--serif);
+    font-weight: 700;
+    color: var(--ink);
+}
+.refs-list li .title {
+    font-style: italic;
+    color: var(--ink);
+}
+.refs-list li .pub {
+    color: var(--muted);
+    font-size: 0.88rem;
+}
+.refs-note {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--line-soft);
+    font-family: var(--body);
+    font-style: italic;
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.55;
+}
+
+/* ============== CELEBRATE BUTTON ============== */
+.celebrate-section {
+    text-align: center;
+    margin-top: 3rem;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, var(--paper) 0%, var(--paper-warm) 100%);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+}
+.celebrate-section::before {
+    content: '';
+    position: absolute;
+    inset: 12px;
+    border: 1px solid var(--line-soft);
+    border-radius: 2px;
+    pointer-events: none;
+}
+.celebrate-section h2 {
+    font-family: var(--serif);
+    font-weight: 900;
+    font-style: italic;
+    font-size: 2.2rem;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+}
+.celebrate-section h2 .accent {
+    background: linear-gradient(135deg, var(--teal-deep) 0%, var(--gold-deep) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+.celebrate-section p {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--ink-soft);
+    margin-bottom: 2rem;
+    max-width: 540px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.celebrate-btn {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 1.15rem;
+    background: linear-gradient(135deg, var(--teal-deep) 0%, var(--teal) 100%);
+    color: var(--paper);
+    border: none;
+    padding: 1rem 2.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    box-shadow: 0 6px 20px -6px rgba(13,74,82,0.5);
+    transition: transform 0.15s, filter 0.15s;
+    position: relative;
+    z-index: 1;
+}
+.celebrate-btn:hover { filter: brightness(1.08); transform: scale(1.02); }
+.celebrate-btn:active { transform: scale(0.98); }
+
+/* ============== RESPONSIVE ============== */
+@media (max-width: 720px) {
+    .wrap { padding: 1.5rem 1rem 4rem; }
+    .masthead, .intro, .section { padding: 1.75rem 1.25rem; }
+    .flip-grid { grid-template-columns: 1fr; }
+    .match-grid { grid-template-columns: 1fr; gap: 1rem; }
+    .progress-fixed { display: none; }
+    .fill-line { margin-left: 0; }
+    .fill-text .pl { margin-left: 0; }
+    .fill-input { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============== PROGRESS ============== -->
+<div class="progress-fixed">
+    <div class="progress-fixed-label">
+        <span>Progress</span>
+        <span><span id="progressNum">0</span>/<span id="progressTotal">0</span></span>
+    </div>
+    <div class="progress-fixed-bar"><div class="progress-fixed-fill" id="progressFill"></div></div>
+</div>
+
+<div class="wrap">
+
+<!-- ============== HERO ============== -->
+<header class="masthead">
+    <div class="masthead-eyebrow">English Grammar Worksheet · Advanced</div>
+    <h1>The <span class="accent">Perfect</span> Aspect</h1>
+    <p class="lede">A bridge between two points in time. Three faces of the same form: resultative, experiential, continuative.</p>
+    <div class="masthead-meta">
+        <span><span class="dot"></span>Level: B2 / C1</span>
+        <span><span class="dot"></span>Sections: 7</span>
+        <span><span class="dot"></span>Focus: Present &amp; Past Perfect</span>
+    </div>
+    <div class="toolbar">
+        <button onclick="saveProgress()">💾 Save progress</button>
+        <button onclick="resetAll()">↺ Reset</button>
+    </div>
+</header>
+
+<!-- ============== INTRO ============== -->
+<section class="intro">
+    <h2>What is the perfect aspect?</h2>
+    <p>The perfect aspect signals that an action, event, or state happened <em>before</em> some reference point on the timeline, and that this earlier event still <em>matters</em> for that point. The reference point is usually the present (<strong>present perfect</strong>) or another moment in the past (<strong>past perfect</strong>). The Latin root <em>perfectum</em> means "completed", but the form does more than mark completion: it builds a bridge between then and now.</p>
+
+    <svg class="timeline-svg" viewBox="0 0 720 180" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <linearGradient id="bridgeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#c89b3c" stop-opacity="0.85"/>
+                <stop offset="100%" stop-color="#136e7a" stop-opacity="0.85"/>
+            </linearGradient>
+            <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                <polygon points="0 0, 8 3, 0 6" fill="#1d2733"/>
+            </marker>
+        </defs>
+        <!-- main timeline -->
+        <line x1="40" y1="120" x2="680" y2="120" stroke="#1d2733" stroke-width="2" marker-end="url(#arrowhead)"/>
+        <!-- ticks -->
+        <line x1="160" y1="115" x2="160" y2="125" stroke="#1d2733" stroke-width="2"/>
+        <line x1="540" y1="115" x2="540" y2="125" stroke="#1d2733" stroke-width="2"/>
+        <!-- bridge arc -->
+        <path d="M 160 120 Q 350 30 540 120" fill="none" stroke="url(#bridgeGrad)" stroke-width="3" stroke-dasharray="6 4"/>
+        <!-- event point -->
+        <circle cx="160" cy="120" r="9" fill="#8a2031"/>
+        <circle cx="160" cy="120" r="14" fill="none" stroke="#8a2031" stroke-opacity="0.3" stroke-width="2"/>
+        <!-- reference point -->
+        <circle cx="540" cy="120" r="9" fill="#136e7a"/>
+        <circle cx="540" cy="120" r="14" fill="none" stroke="#136e7a" stroke-opacity="0.3" stroke-width="2"/>
+        <!-- labels -->
+        <text x="160" y="155" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#8a2031">EVENT</text>
+        <text x="160" y="170" text-anchor="middle" font-family="Lora, serif" font-size="11" font-style="italic" fill="#6e7986">earlier moment</text>
+        <text x="540" y="155" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#136e7a">REFERENCE</text>
+        <text x="540" y="170" text-anchor="middle" font-family="Lora, serif" font-size="11" font-style="italic" fill="#6e7986">now / past anchor</text>
+        <!-- bridge label -->
+        <text x="350" y="35" text-anchor="middle" font-family="Fraunces, serif" font-style="italic" font-weight="500" font-size="14" fill="#0d4a52">connection · relevance · the bridge</text>
+        <!-- past / future hint -->
+        <text x="50" y="110" font-family="JetBrains Mono, monospace" font-size="10" fill="#6e7986">past</text>
+        <text x="660" y="110" font-family="JetBrains Mono, monospace" font-size="10" fill="#6e7986" text-anchor="end">→</text>
+    </svg>
+
+    <p>If the bridge is missing (no real connection between the earlier event and the later moment), what you have is not the perfect aspect at all. It is a simple form. This is the line that divides <strong>I lost my keys</strong> (a fact reported about the past) from <strong>I have lost my keys</strong> (a current state of being key-less, caused by an earlier loss).</p>
+
+    <div class="callout">
+        <div class="callout-title">A note on terminology</div>
+        Typological literature (Bybee, Dahl) sometimes uses <em>anterior</em> as a cover term for the entire perfect aspect, precisely because its core function is locating an event before a reference point with a connection between them. Older works split off a separate "anterior of recent past" inside the perfect, but most modern accounts (Iatridou, Pancheva, Mittwoch) fold it into the resultative reading. You will meet that older split in some textbooks. It is not wrong, just outdated.
+        <br><br>
+        A second note: this worksheet uses three readings (resultative, experiential, continuative), following Huddleston &amp; Pullum's <em>Cambridge Grammar of the English Language</em>. Other sources draw the lines differently: Comrie (1976) lists four (adding "recent past"), Wikipedia lists five, Iatridou et al. (2001) collapse them into two (universal vs existential, where their <em>universal</em> is what we call <em>continuative</em>). The three-way split is a pedagogical choice that maps cleanly onto the diagnostics, not the only possible carving.
+    </div>
+
+    <p>Three semantic readings live inside the perfect aspect, and the tasks below will walk you through all three.</p>
+</section>
+
+<!-- ============== SECTION 1: FLIPCARDS - THREE READINGS ============== -->
+<section class="section" id="s1">
+    <div class="section-head">
+        <span class="section-num">§ 01</span>
+        <h2>The three readings <em>of perfect</em></h2>
+    </div>
+    <p class="section-instruction">Click each card to reveal the definition, examples, and the diagnostic that helps you spot this reading. All three cards must be flipped to count toward progress.</p>
+
+    <div class="flip-grid">
+        <!-- CARD 1: RESULTATIVE -->
+        <div class="flip-card" data-card="1" onclick="flipCard(this)">
+            <div class="flip-face flip-front">
+                <div class="roman">I.</div>
+                <div class="flip-hint">tap to flip</div>
+                <div>
+                    <div class="name"><em>Resultative</em><br>perfect</div>
+                    <div class="question">An earlier event leaves a state behind. The state is what counts now.</div>
+                </div>
+            </div>
+            <div class="flip-face flip-back teal">
+                <div class="back-name">I. Resultative perfect</div>
+                <div class="back-def">Refers to a state at the reference point that is the direct consequence of an earlier event. The focus is on the lingering result, not on the event itself. If the result no longer holds, the sentence stops being appropriate.</div>
+                <div class="back-ex"><b>I have lost my keys.</b> · result: I do not have them now.</div>
+                <div class="back-ex"><b>She has broken her leg.</b> · result: her leg is in a cast.</div>
+                <div class="back-ex"><b>It has rained.</b> · result: the streets are wet.</div>
+                <div class="back-mark">Cue · just, recently, already</div>
+            </div>
+        </div>
+
+        <!-- CARD 2: EXPERIENTIAL -->
+        <div class="flip-card" data-card="2" onclick="flipCard(this)">
+            <div class="flip-face flip-front gold">
+                <div class="roman">II.</div>
+                <div class="flip-hint">tap to flip</div>
+                <div>
+                    <div class="name"><em>Experiential</em><br>perfect</div>
+                    <div class="question">Something has happened at least once in the open period leading up to now.</div>
+                </div>
+            </div>
+            <div class="flip-face flip-back gold">
+                <div class="back-name">II. Experiential perfect</div>
+                <div class="back-def">States that a situation has occurred at least once in the period up to the reference point. The whole past is treated as an open window. Focus is on the bare fact of the experience, not when it happened or what state it left.</div>
+                <div class="back-ex"><b>I have been to Japan.</b> · at least once in my life.</div>
+                <div class="back-ex"><b>Have you ever read Ulysses?</b></div>
+                <div class="back-ex"><b>She has visited Rome three times.</b></div>
+                <div class="back-mark">Cue · ever, never, X times</div>
+            </div>
+        </div>
+
+        <!-- CARD 3: CONTINUATIVE -->
+        <div class="flip-card" data-card="3" onclick="flipCard(this)">
+            <div class="flip-face flip-front burg">
+                <div class="roman">III.</div>
+                <div class="flip-hint">tap to flip</div>
+                <div>
+                    <div class="name"><em>Continuative</em><br>perfect</div>
+                    <div class="question">A situation began earlier and is still going on at the reference point.</div>
+                </div>
+            </div>
+            <div class="flip-face flip-back burg">
+                <div class="back-name">III. Continuative perfect</div>
+                <div class="back-def">A situation that started in the past and continues without interruption up to the reference point (and often beyond). Also called <em>perfect of persistent situation</em> (Comrie) or <em>universal perfect</em> (Iatridou et al.). Same category, different names.</div>
+                <div class="back-ex"><b>I have lived here for 10 years.</b> · still living here.</div>
+                <div class="back-ex"><b>She has worked at the bank since 1997.</b></div>
+                <div class="back-ex"><b>We have known each other our whole lives.</b></div>
+                <div class="back-mark">Cue · for X, since Y, no break</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============== SECTION 2: IDENTIFY THE TYPE ============== -->
+<section class="section" id="s2">
+    <div class="section-head">
+        <span class="section-num">§ 02</span>
+        <h2>Identify <em>the reading</em></h2>
+    </div>
+    <p class="section-instruction">Read each sentence. Decide whether the perfect form here is resultative, experiential, or continuative. Tap your answer for instant feedback.</p>
+
+    <div id="typeQs"></div>
+
+    <div class="solve-row">
+        <button class="solve-btn" onclick="solveTypes()">Show all answers</button>
+    </div>
+</section>
+
+<!-- ============== SECTION 3: PRESENT PERFECT vs PAST SIMPLE ============== -->
+<section class="section" id="s3">
+    <div class="section-head">
+        <span class="section-num">§ 03</span>
+        <h2>Perfect or simple? <em>Mind the bridge.</em></h2>
+    </div>
+    <p class="section-instruction">Fill in the correct form: present perfect or past simple. Press Enter to check. The choice depends on whether the speaker is building a bridge to now, or just reporting a closed past fact.</p>
+
+    <div id="ppQs"></div>
+
+    <div class="solve-row">
+        <button class="solve-btn" onclick="solveFill('ppQs', ppData)">Show all answers</button>
+    </div>
+</section>
+
+<!-- ============== SECTION 4: CONTINUATIVE vs EXPERIENTIAL ============== -->
+<section class="section" id="s4">
+    <div class="section-head">
+        <span class="section-num">§ 04</span>
+        <h2>Continuative <em>or</em> experiential?</h2>
+    </div>
+    <p class="section-instruction">Both readings can use <em>have lived</em>, <em>have worked</em>, <em>have studied</em>. The trick is whether the situation is ongoing without interruption (continuative) or a counted experience that may be over (experiential). Mark the right reading for each sentence.</p>
+
+    <div id="cevsQs"></div>
+
+    <div class="solve-row">
+        <button class="solve-btn" onclick="solveCEvs()">Show all answers</button>
+    </div>
+</section>
+
+<!-- ============== SECTION 5: TRANSLATION (PL → EN) ============== -->
+<section class="section" id="s5">
+    <div class="section-head">
+        <span class="section-num">§ 05</span>
+        <h2>Build the bridge <em>in English</em></h2>
+    </div>
+    <p class="section-instruction">Translate each Polish sentence into English. Each one needs the perfect aspect (present or past). Type your answer and press Enter. A hint button is there if you need a nudge.</p>
+
+    <div id="trQs"></div>
+
+    <div class="solve-row">
+        <button class="solve-btn" onclick="solveFill('trQs', trData)">Show all answers</button>
+    </div>
+</section>
+
+<!-- ============== SECTION 6: MATCHING ============== -->
+<section class="section" id="s6">
+    <div class="section-head">
+        <span class="section-num">§ 06</span>
+        <h2>Match the situation <em>to its reading</em></h2>
+    </div>
+    <p class="section-instruction">Click a sentence on the left, then click the reading on the right that captures what is going on semantically. Matched pairs share a colour and number.</p>
+
+    <div class="match-grid">
+        <div class="match-col">
+            <h4>Sentence in context</h4>
+            <div id="matchLeft"></div>
+        </div>
+        <div class="match-col">
+            <h4>Reading · diagnostic</h4>
+            <div id="matchRight"></div>
+        </div>
+    </div>
+
+    <div class="solve-row">
+        <button class="solve-btn" onclick="solveMatch()">Show all answers</button>
+    </div>
+</section>
+
+<!-- ============== SECTION 7: ANTERIOR TRAP ============== -->
+<section class="section" id="s7">
+    <div class="section-head">
+        <span class="section-num">§ 07</span>
+        <h2>The <em>anterior</em> trap</h2>
+    </div>
+    <p class="section-instruction">Some reference sources (including the current Wikipedia entry on the perfect, and earlier descriptive grammars rooted in Comrie 1976) split the perfect into a <em>resultative</em> reading and a separate <em>anterior of recent past</em>, treating the second as "weaker": no specific result state, just a closed action with general relevance. The example often given was <em>It has rained</em> as anterior, but <em>I have lost my keys</em> as resultative. Newer accounts disagree.</p>
+
+    <div class="trap-box">
+        <h3>Why the split is artificial</h3>
+        <p>If the overarching definition of the perfect aspect already requires a connection between the earlier event and the reference point, then every present perfect by definition has some connection. Carving out a category called "connection, but weaker" duplicates work the aspect itself already does.</p>
+        <p>That is why current literature folds the older "anterior" reading into the resultative reading, and reserves the term <em>anterior</em> for the perfect aspect as a whole, not a sub-reading inside it.</p>
+    </div>
+
+    <div id="antQs"></div>
+
+    <div class="solve-row">
+        <button class="solve-btn" onclick="solveAnt()">Show all answers</button>
+    </div>
+</section>
+
+<!-- ============== REFERENCES ============== -->
+<section class="refs">
+    <div class="refs-head">
+        <span class="section-num">§ Sources</span>
+        <h2>References <em>and further reading</em></h2>
+    </div>
+    <p class="refs-intro">The terminology and the three-way classification used in this worksheet draw on the following sources. Where authors disagree (and they do), the choices made here lean on Huddleston &amp; Pullum and Mittwoch.</p>
+    <ol class="refs-list">
+        <li>
+            <span class="author">Comrie, Bernard</span> (1976). <span class="title">Aspect: An Introduction to the Study of Verbal Aspect and Related Problems.</span> <span class="pub">Cambridge University Press.</span> The classic four-way split: <em>perfect of result</em>, <em>experiential perfect</em>, <em>perfect of persistent situation</em>, <em>perfect of recent past</em>. Still widely cited.
+        </li>
+        <li>
+            <span class="author">Bybee, Joan, Revere Perkins &amp; William Pagliuca</span> (1994). <span class="title">The Evolution of Grammar: Tense, Aspect, and Modality in the Languages of the World.</span> <span class="pub">University of Chicago Press.</span> Source of the typological term <em>anterior</em> as a cover label for the perfect aspect across languages.
+        </li>
+        <li>
+            <span class="author">Iatridou, Sabine, Elena Anagnostopoulou &amp; Roumyana Izvorski</span> (2001). <span class="title">Observations about the form and meaning of the perfect.</span> <span class="pub">In Michael Kenstowicz (ed.), Ken Hale: A Life in Language, MIT Press, 189-238.</span> Two-way <em>universal</em> vs <em>existential</em> split; their <em>universal</em> matches what this worksheet calls <em>continuative</em>.
+        </li>
+        <li>
+            <span class="author">Huddleston, Rodney &amp; Geoffrey K. Pullum</span> (2002). <span class="title">The Cambridge Grammar of the English Language.</span> <span class="pub">Cambridge University Press.</span> The descriptive grammar that uses the term <em>continuative perfect</em>; primary source of the three-way split adopted here.
+        </li>
+        <li>
+            <span class="author">Pancheva, Roumyana</span> (2003). <span class="title">The aspectual makeup of perfect participles and the interpretations of the perfect.</span> <span class="pub">In Alexiadou, Rathert &amp; von Stechow (eds.), Perfect Explorations, Mouton de Gruyter, 277-306.</span> Argues for grouping resultative and experiential under a single <em>existential perfect</em>, contrasted with the <em>universal</em> reading.
+        </li>
+        <li>
+            <span class="author">Mittwoch, Anita</span> (2008). <span class="title">The English Resultative Perfect and Its Relationship to the Experiential Perfect and the Simple Past Tense.</span> <span class="pub">Linguistics and Philosophy 31(3): 323-351.</span> The argument for folding Comrie's <em>perfect of recent past</em> into the resultative reading.
+        </li>
+    </ol>
+    <p class="refs-note">A reminder: every author cited here is reading the same English data, but cuts the cake differently. The three-way split used in this worksheet is the most pedagogically tractable, not a settled metaphysical fact about the language.</p>
+</section>
+
+<!-- ============== CELEBRATE ============== -->
+<section class="celebrate-section">
+    <h2>Bridge <span class="accent">complete.</span></h2>
+    <p>You have made it through the perfect aspect, all three readings, the anterior subtlety, and the simple-vs-perfect divide. Time to mark the moment.</p>
+    <button class="celebrate-btn" onclick="bigCelebration()">🎉 Celebrate!</button>
+</section>
+
+</div>
+
+<script>
+/* ===================================================================
+   DATA
+=================================================================== */
+
+// ---- Section 2: identify the type ----
+// types: 'res' (resultative) | 'exp' (experiential) | 'cont' (continuative)
+const typeData = [
+    {
+        s: "Look at this kitchen. The cat <em>has knocked</em> all the plants off the windowsill.",
+        type: "res",
+        why: "The earlier event leaves a visible state right now: plants on the floor."
+    },
+    {
+        s: "We <em>have known</em> each other since we were six.",
+        type: "cont",
+        why: "Knowing started long ago and has not stopped. <em>Since</em> + uninterrupted situation."
+    },
+    {
+        s: "Have you ever <em>tried</em> octopus? It is far better than people say.",
+        type: "exp",
+        why: "<em>Ever</em> opens the whole life so far as a window. Bare fact of having tried it once."
+    },
+    {
+        s: "I <em>have read</em> War and Peace twice, actually.",
+        type: "exp",
+        why: "Counted experiences in the open period up to now. <em>X times</em> is the giveaway."
+    },
+    {
+        s: "She <em>has just walked</em> in. Tell her the news yourself.",
+        type: "res",
+        why: "<em>Just</em> highlights the freshness of the result. She is now here."
+    },
+    {
+        s: "They <em>have been</em> married for thirty years and counting.",
+        type: "cont",
+        why: "The state began thirty years ago and has held without interruption to now."
+    },
+    {
+        s: "I <em>have lost</em> my passport. The flight is in four hours.",
+        type: "res",
+        why: "The current crisis is the result of an earlier loss. The passport is not in hand now."
+    },
+    {
+        s: "<em>Has</em> anyone in this room ever <em>spoken</em> publicly about it?",
+        type: "exp",
+        why: "<em>Ever</em> + open period. The question is about a possible single occurrence in anyone's history."
+    }
+];
+
+// ---- Section 3: present perfect vs past simple ----
+// answers can have multiple acceptable forms
+const ppData = [
+    {
+        before: "I ",
+        gap: { answers: ["have lived", "'ve lived"], placeholder: "(live)", verb: "live" },
+        after: " in three different countries, but I cannot decide which one I liked best.",
+        pl: "Mieszkałem w trzech różnych krajach, ale nie potrafię zdecydować, który najbardziej mi się podobał.",
+        hint: "Counted experience, period open to now: present perfect.",
+        type: "exp"
+    },
+    {
+        before: "I ",
+        gap: { answers: ["lived"], placeholder: "(live)", verb: "live" },
+        after: " in Berlin from 2014 to 2017. Those were good years.",
+        pl: "Mieszkałem w Berlinie od 2014 do 2017. To były dobre lata.",
+        hint: "A closed period in the past, no bridge to now: past simple.",
+        type: "simple"
+    },
+    {
+        before: "Sorry I am late. The bus ",
+        gap: { answers: ["broke down", "broke"], placeholder: "(break down)", verb: "break down" },
+        after: " on the bridge.",
+        pl: "Przepraszam za spóźnienie. Autobus zepsuł się na moście.",
+        hint: "A specific past event that explains the lateness; English uses past simple here, not perfect.",
+        type: "simple"
+    },
+    {
+        before: "I cannot find my glasses anywhere. I think I ",
+        gap: { answers: ["have left", "'ve left"], placeholder: "(leave)", verb: "leave" },
+        after: " them at the office.",
+        pl: "Nie mogę nigdzie znaleźć okularów. Chyba zostawiłam je w biurze.",
+        hint: "Result reading: the glasses are not here now.",
+        type: "res"
+    },
+    {
+        before: "He ",
+        gap: { answers: ["has been", "'s been"], placeholder: "(be)", verb: "be" },
+        after: " a teacher since the late nineties.",
+        pl: "Jest nauczycielem od końca lat dziewięćdziesiątych.",
+        hint: "Continuative state. Started then, still true now: present perfect.",
+        type: "cont"
+    },
+    {
+        before: "When the police arrived, the burglar ",
+        gap: { answers: ["had escaped", "'d escaped"], placeholder: "(escape)", verb: "escape" },
+        after: " through the back window.",
+        pl: "Kiedy przybyła policja, włamywacz uciekł już przez tylne okno.",
+        hint: "Past perfect: an event before another past event, with consequence (he is gone).",
+        type: "past_perfect"
+    },
+    {
+        before: "She ",
+        gap: { answers: ["has visited", "'s visited"], placeholder: "(visit)", verb: "visit" },
+        after: " her grandmother every Sunday for as long as I can remember.",
+        pl: "Odwiedza babcię w każdą niedzielę odkąd pamiętam.",
+        hint: "Habit that began in the past and continues now: present perfect.",
+        type: "cont"
+    },
+    {
+        before: "Did you hear? They ",
+        gap: { answers: ["have cancelled", "'ve cancelled", "have canceled", "'ve canceled"], placeholder: "(cancel)", verb: "cancel" },
+        after: " the concert. Apparently the lead singer is sick.",
+        pl: "Słyszałeś? Odwołali koncert. Podobno wokalista jest chory.",
+        hint: "Fresh news with present consequences: present perfect.",
+        type: "res"
+    }
+];
+
+// ---- Section 4: continuative vs experiential ----
+const ceData = [
+    {
+        s: "I <em>have lived</em> here for ten years.",
+        type: "cont",
+        why: "Living started ten years ago and has not stopped: continuative is the default reading. (In a context where the speaker is moving out, the same sentence can shift to experiential, but here the bare statement reads as ongoing.)"
+    },
+    {
+        s: "I <em>have lived</em> in three countries.",
+        type: "exp",
+        why: "Counted residences over a lifetime, not a single ongoing one: experiential."
+    },
+    {
+        s: "She <em>has worked</em> at the bank since 1997.",
+        type: "cont",
+        why: "Same job, no break, since a fixed point: continuative."
+    },
+    {
+        s: "She <em>has worked</em> for several charities over the years.",
+        type: "exp",
+        why: "Multiple separate jobs in an open period: experiential."
+    },
+    {
+        s: "We <em>have known</em> each other our whole lives.",
+        type: "cont",
+        why: "Continuous state of acquaintance, never interrupted: continuative."
+    },
+    {
+        s: "I <em>have studied</em> Latin, Greek, and a bit of Sanskrit.",
+        type: "exp",
+        why: "A list of finished study experiences in a life so far: experiential."
+    }
+];
+
+// ---- Section 5: translation PL → EN ----
+const trData = [
+    {
+        before: "",
+        gap: {
+            answers: [
+                "she has been to paris twice",
+                "she's been to paris twice"
+            ],
+            placeholder: "(your translation)",
+            verb: "translate"
+        },
+        after: ".",
+        pl: "Była w Paryżu dwa razy.",
+        hint: "Counted experiences in life so far: <em>twice</em>. Use <em>has been</em>.",
+        canonical: "She has been to Paris twice."
+    },
+    {
+        before: "",
+        gap: {
+            answers: [
+                "i have just finished the report",
+                "i've just finished the report"
+            ],
+            placeholder: "(your translation)",
+            verb: "translate"
+        },
+        after: ".",
+        pl: "Właśnie skończyłem raport.",
+        hint: "<em>Just</em> + present perfect: the result is fresh.",
+        canonical: "I have just finished the report."
+    },
+    {
+        before: "",
+        gap: {
+            answers: [
+                "they have lived in this house since 2010",
+                "they've lived in this house since 2010"
+            ],
+            placeholder: "(your translation)",
+            verb: "translate"
+        },
+        after: ".",
+        pl: "Mieszkają w tym domu od 2010 roku.",
+        hint: "Continuative: ongoing situation. <em>Since</em> + present perfect.",
+        canonical: "They have lived in this house since 2010."
+    },
+    {
+        before: "",
+        gap: {
+            answers: [
+                "by the time we arrived the film had started",
+                "by the time we arrived, the film had started"
+            ],
+            placeholder: "(your translation)",
+            verb: "translate"
+        },
+        after: ".",
+        pl: "Zanim dotarliśmy, film już się zaczął.",
+        hint: "Two past events in sequence: use past perfect for the earlier one.",
+        canonical: "By the time we arrived, the film had started."
+    },
+    {
+        before: "",
+        gap: {
+            answers: [
+                "have you ever eaten sushi",
+                "have you ever had sushi"
+            ],
+            placeholder: "(your translation)",
+            verb: "translate"
+        },
+        after: "?",
+        pl: "Jadłeś kiedyś sushi?",
+        hint: "Experiential question with <em>ever</em>: present perfect.",
+        canonical: "Have you ever eaten sushi?"
+    },
+    {
+        before: "",
+        gap: {
+            answers: [
+                "she has broken her arm and cannot drive",
+                "she's broken her arm and cannot drive",
+                "she has broken her arm and can't drive",
+                "she's broken her arm and can't drive"
+            ],
+            placeholder: "(your translation)",
+            verb: "translate"
+        },
+        after: ".",
+        pl: "Złamała rękę i nie może prowadzić.",
+        hint: "Resultative: the consequence is what matters now.",
+        canonical: "She has broken her arm and cannot drive."
+    }
+];
+
+// ---- Section 6: matching ----
+const matchPairs = [
+    {
+        left: "She still cannot walk properly. She broke her ankle on the stairs.",
+        right: "Resultative · the current state matters more than when it happened",
+        eng: "She has broken her ankle."
+    },
+    {
+        left: "I have eaten frog legs once, on a trip to Lyon. Not my favourite.",
+        right: "Experiential · a counted, completed event in life so far",
+        eng: "I have eaten frog legs once."
+    },
+    {
+        left: "He started teaching maths in 2003. He still teaches the same class.",
+        right: "Continuative · uninterrupted situation since a fixed point",
+        eng: "He has taught this class since 2003."
+    },
+    {
+        left: "Two glasses are missing from the cupboard. The puppy was in the kitchen.",
+        right: "Resultative · an earlier event explains a present absence",
+        eng: "The puppy has broken two glasses."
+    },
+    {
+        left: "Asked at a job interview about your travel: have you ever been to Asia?",
+        right: "Experiential · open window over a lifetime, focus on the bare fact",
+        eng: "Have you ever been to Asia?"
+    },
+    {
+        left: "We met in primary school. We are still friends thirty years later.",
+        right: "Continuative · relationship that began long ago and never stopped",
+        eng: "We have been friends since primary school."
+    }
+];
+
+// ---- Section 7: anterior trap ----
+const antData = [
+    {
+        q: "True or false? In current linguistic descriptions following Mittwoch (2008) and Iatridou et al. (2001), <em>It has rained</em> and <em>I have lost my keys</em> are treated as the same reading of the perfect.",
+        options: [
+            { text: "True · both are resultative readings", correct: true, why: "Yes, this reflects the modern consensus. Mittwoch (2008) and others fold the older 'anterior of recent past' into the resultative reading, arguing that every present perfect already encodes connection by definition. Note: older descriptive frameworks (Comrie 1976) still maintain the split and remain widely cited in textbooks." },
+            { text: "False · the first is anterior, the second is resultative", correct: false, why: "That is the older split (Comrie 1976, current Wikipedia). It is a respectable and still-cited tradition, but newer accounts argue the boundary collapses on inspection: every present perfect already encodes connection by definition." }
+        ]
+    },
+    {
+        q: "What does <em>anterior</em> refer to in the typological literature (Bybee, Dahl)?",
+        options: [
+            { text: "The whole perfect aspect", correct: true, why: "Right. In typology, <em>anterior</em> is a cover term for the perfect aspect itself. It captures the core idea: an event located before a reference point with continued connection." },
+            { text: "A weaker subtype of the resultative reading", correct: false, why: "That is the older intra-perfect distinction, not the typological use. Bybee and Dahl use <em>anterior</em> for the entire category." },
+            { text: "A separate aspect distinct from the perfect", correct: false, why: "No. <em>Anterior</em> and <em>perfect</em> are taken to denote the same category in typological work, just with different terminological traditions." }
+        ]
+    }
+];
+
+
+/* ===================================================================
+   STATE
+=================================================================== */
+const state = {
+    flipped: new Set(),
+    typeAnswers: {},   // index -> 'res' | 'exp' | 'cont'
+    ppAnswers: {},
+    ceAnswers: {},
+    trAnswers: {},
+    matchAnswers: {},  // pairId -> matchNumber
+    antAnswers: {},
+    progress: 0
+};
+
+const PALETTE = ['#136e7a', '#c89b3c', '#8a2031', '#4a6a3b', '#0d4a52', '#8c6a1f'];
+
+
+/* ===================================================================
+   FLIPCARDS
+=================================================================== */
+function flipCard(el) {
+    el.classList.toggle('flipped');
+    const id = el.dataset.card;
+    if (el.classList.contains('flipped')) {
+        state.flipped.add(id);
+    } else {
+        state.flipped.delete(id);
+    }
+    updateProgress();
+}
+
+
+/* ===================================================================
+   SECTION 2: TYPE PICKER
+=================================================================== */
+function buildTypes() {
+    const wrap = document.getElementById('typeQs');
+    wrap.innerHTML = typeData.map((q, i) => `
+        <div class="type-q" data-i="${i}">
+            <div class="type-q-sentence"><span class="type-q-num">${i + 1}.</span>${q.s}</div>
+            <div class="type-options">
+                <button class="type-opt" data-type="res" onclick="pickType(${i}, 'res', this)">Resultative</button>
+                <button class="type-opt" data-type="exp" onclick="pickType(${i}, 'exp', this)">Experiential</button>
+                <button class="type-opt" data-type="cont" onclick="pickType(${i}, 'cont', this)">Continuative</button>
+            </div>
+            <div class="type-feedback" id="typeFb${i}"></div>
+        </div>
+    `).join('');
+}
+
+function pickType(i, picked, btn) {
+    const correctType = typeData[i].type;
+    const parent = btn.parentElement;
+    const correctBtn = parent.querySelector(`[data-type="${correctType}"]`);
+    const fb = document.getElementById('typeFb' + i);
+    if (picked === correctType) {
+        btn.classList.add('correct');
+        fb.innerHTML = `<strong>Correct.</strong> ${typeData[i].why}`;
+        fb.classList.add('show');
+        parent.querySelectorAll('.type-opt').forEach(b => b.disabled = true);
+        sectionConfetti(['#136e7a','#c89b3c','#8a2031'], 0.4);
+    } else {
+        btn.classList.add('wrong');
+        // do not disable yet - allow another pick
+    }
+    state.typeAnswers[i] = picked === correctType;
+    updateProgress();
+}
+
+function solveTypes() {
+    typeData.forEach((q, i) => {
+        if (state.typeAnswers[i] === true) return;
+        const parent = document.querySelector(`#typeQs .type-q[data-i="${i}"] .type-options`);
+        parent.querySelectorAll('.type-opt').forEach(b => {
+            b.classList.remove('wrong');
+            if (b.dataset.type === q.type) b.classList.add('correct');
+            b.disabled = true;
+        });
+        const fb = document.getElementById('typeFb' + i);
+        fb.innerHTML = `<strong>Answer:</strong> ${q.why}`;
+        fb.classList.add('show');
+        state.typeAnswers[i] = 'solved';
+    });
+    updateProgress();
+}
+
+
+/* ===================================================================
+   SECTIONS 3 & 5: FILL-IN-THE-GAP (with hints and prompt)
+=================================================================== */
+function buildFill(containerId, data, withTranslation) {
+    const wrap = document.getElementById(containerId);
+    wrap.innerHTML = data.map((q, i) => {
+        const inputId = `${containerId}_in_${i}`;
+        const hintId = `${containerId}_hint_${i}`;
+        return `
+        <div class="fill-q" data-i="${i}">
+            <div class="fill-text">
+                <span class="num">${i + 1}.</span>
+                ${withTranslation ? '' : (q.before + '<input type="text" class="fill-input" id="' + inputId + '" data-i="' + i + '" data-container="' + containerId + '" placeholder="' + q.gap.placeholder + '" autocomplete="off" spellcheck="false">' + q.after)}
+                ${withTranslation ? '<span class="pl">' + q.pl + '</span>' : '<span class="pl">' + q.pl + '</span>'}
+            </div>
+            ${withTranslation ? `
+                <div class="fill-line">
+                    <input type="text" class="fill-input" id="${inputId}" data-i="${i}" data-container="${containerId}" placeholder="${q.gap.placeholder}" style="width: 380px; max-width: 100%;" autocomplete="off" spellcheck="false">
+                    <button class="fill-hint-btn" onclick="toggleHint('${hintId}', this)">Hint ✦</button>
+                </div>
+            ` : `
+                <div class="fill-line">
+                    <button class="fill-hint-btn" onclick="toggleHint('${hintId}', this)">Hint ✦</button>
+                </div>
+            `}
+            <div class="fill-hint-text" id="${hintId}">${q.hint}</div>
+        </div>
+    `;
+    }).join('');
+
+    // attach Enter handlers
+    data.forEach((q, i) => {
+        const input = document.getElementById(`${containerId}_in_${i}`);
+        if (!input) return;
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                checkFill(containerId, data, i);
+            }
+        });
+        input.addEventListener('input', () => {
+            input.classList.remove('correct', 'wrong');
+        });
+    });
+}
+
+function normalize(s) {
+    return s.trim().toLowerCase().replace(/\s+/g, ' ').replace(/[.!?,]+$/, '').replace(/'/g, "'");
+}
+
+function checkFill(containerId, data, i) {
+    const input = document.getElementById(`${containerId}_in_${i}`);
+    const val = normalize(input.value);
+    if (!val) return;
+    const accepted = data[i].gap.answers.map(normalize);
+    const ok = accepted.includes(val);
+    input.classList.remove('correct', 'wrong');
+    if (ok) {
+        input.classList.add('correct');
+        if (containerId === 'ppQs') state.ppAnswers[i] = true;
+        if (containerId === 'trQs') state.trAnswers[i] = true;
+        sectionConfetti(['#136e7a','#c89b3c','#8a2031'], 0.3);
+    } else {
+        input.classList.add('wrong');
+    }
+    updateProgress();
+}
+
+function toggleHint(hintId, btn) {
+    const el = document.getElementById(hintId);
+    el.classList.toggle('show');
+    btn.classList.toggle('active');
+    btn.textContent = el.classList.contains('show') ? 'Hide hint' : 'Hint ✦';
+}
+
+function solveFill(containerId, data) {
+    data.forEach((q, i) => {
+        const input = document.getElementById(`${containerId}_in_${i}`);
+        if (!input) return;
+        if (input.classList.contains('correct')) return;
+        // pick canonical: first accepted answer or canonical field
+        let answer = q.canonical || q.gap.answers[0];
+        // restore proper casing for first-letter for pp
+        if (containerId === 'ppQs') {
+            // these answers are sentence-internal usually
+            answer = q.gap.answers[0];
+        }
+        input.value = answer;
+        input.classList.remove('wrong');
+        input.classList.add('correct');
+        input.disabled = true;
+        if (containerId === 'ppQs') state.ppAnswers[i] = 'solved';
+        if (containerId === 'trQs') state.trAnswers[i] = 'solved';
+    });
+    updateProgress();
+}
+
+
+/* ===================================================================
+   SECTION 4: CONTINUATIVE vs EXPERIENTIAL
+=================================================================== */
+function buildCEvs() {
+    const wrap = document.getElementById('cevsQs');
+    wrap.innerHTML = ceData.map((q, i) => `
+        <div class="type-q" data-i="${i}">
+            <div class="type-q-sentence"><span class="type-q-num">${i + 1}.</span>${q.s}</div>
+            <div class="type-options">
+                <button class="type-opt" data-type="cont" onclick="pickCE(${i}, 'cont', this)">Continuative</button>
+                <button class="type-opt" data-type="exp" onclick="pickCE(${i}, 'exp', this)">Experiential</button>
+            </div>
+            <div class="type-feedback" id="ceFb${i}"></div>
+        </div>
+    `).join('');
+}
+
+function pickCE(i, picked, btn) {
+    const correctType = ceData[i].type;
+    const parent = btn.parentElement;
+    const fb = document.getElementById('ceFb' + i);
+    if (picked === correctType) {
+        btn.classList.add('correct');
+        fb.innerHTML = `<strong>Correct.</strong> ${ceData[i].why}`;
+        fb.classList.add('show');
+        parent.querySelectorAll('.type-opt').forEach(b => b.disabled = true);
+        state.ceAnswers[i] = true;
+        sectionConfetti(['#8a2031','#c89b3c'], 0.3);
+    } else {
+        btn.classList.add('wrong');
+    }
+    updateProgress();
+}
+
+function solveCEvs() {
+    ceData.forEach((q, i) => {
+        if (state.ceAnswers[i] === true) return;
+        const parent = document.querySelector(`#cevsQs .type-q[data-i="${i}"] .type-options`);
+        parent.querySelectorAll('.type-opt').forEach(b => {
+            b.classList.remove('wrong');
+            if (b.dataset.type === q.type) b.classList.add('correct');
+            b.disabled = true;
+        });
+        const fb = document.getElementById('ceFb' + i);
+        fb.innerHTML = `<strong>Answer:</strong> ${q.why}`;
+        fb.classList.add('show');
+        state.ceAnswers[i] = 'solved';
+    });
+    updateProgress();
+}
+
+
+/* ===================================================================
+   SECTION 6: MATCHING
+=================================================================== */
+let matchSelected = null;     // { side: 'L'|'R', id: index, el: node }
+let matchCounter = 0;
+let matchShuffleR = [];
+
+function buildMatch() {
+    matchShuffleR = matchPairs.map((_, i) => i);
+    // shuffle right side
+    for (let i = matchShuffleR.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [matchShuffleR[i], matchShuffleR[j]] = [matchShuffleR[j], matchShuffleR[i]];
+    }
+    const left = document.getElementById('matchLeft');
+    const right = document.getElementById('matchRight');
+    left.innerHTML = matchPairs.map((p, i) => `
+        <div class="match-item" data-side="L" data-id="${i}" onclick="pickMatch(this)">
+            ${p.left}
+            <div class="match-badge"></div>
+        </div>
+    `).join('');
+    right.innerHTML = matchShuffleR.map((origI, displayI) => `
+        <div class="match-item" data-side="R" data-id="${origI}" onclick="pickMatch(this)">
+            ${matchPairs[origI].right}
+            <div class="match-badge"></div>
+        </div>
+    `).join('');
+}
+
+function pickMatch(el) {
+    if (el.classList.contains('matched')) return;
+    const side = el.dataset.side;
+    const id = parseInt(el.dataset.id);
+
+    if (matchSelected && matchSelected.side === side && matchSelected.id === id) {
+        // deselect
+        el.classList.remove('selected');
+        matchSelected = null;
+        return;
+    }
+    if (matchSelected && matchSelected.side === side) {
+        // change selection on same side
+        matchSelected.el.classList.remove('selected');
+        el.classList.add('selected');
+        matchSelected = { side, id, el };
+        return;
+    }
+    if (!matchSelected) {
+        el.classList.add('selected');
+        matchSelected = { side, id, el };
+        return;
+    }
+    // we have a partner from the other side
+    const otherEl = matchSelected.el;
+    const otherId = matchSelected.id;
+    if (otherId === id) {
+        // CORRECT pair
+        matchCounter++;
+        const colorClass = `matched-${(matchCounter - 1) % 6 + 1}`;
+        el.classList.remove('selected');
+        otherEl.classList.remove('selected');
+        el.classList.add('matched', colorClass);
+        otherEl.classList.add('matched', colorClass);
+        el.querySelector('.match-badge').textContent = matchCounter;
+        otherEl.querySelector('.match-badge').textContent = matchCounter;
+        state.matchAnswers[id] = matchCounter;
+        matchSelected = null;
+        sectionConfetti(['#136e7a','#c89b3c','#8a2031','#4a6a3b'], 0.35);
+        if (Object.keys(state.matchAnswers).length === matchPairs.length) {
+            setTimeout(() => sectionConfetti(['#136e7a','#c89b3c','#8a2031','#4a6a3b'], 0.6), 200);
+        }
+    } else {
+        // wrong pair - flash red and reset
+        el.classList.add('selected');
+        const flash = (node) => {
+            node.style.transition = 'background 0.3s, border-color 0.3s';
+            const oldBg = node.style.background;
+            const oldBorder = node.style.borderColor;
+            node.style.background = 'var(--wrong-bg)';
+            node.style.borderColor = 'var(--wrong)';
+            setTimeout(() => {
+                node.style.background = oldBg;
+                node.style.borderColor = oldBorder;
+                node.classList.remove('selected');
+            }, 600);
+        };
+        flash(el);
+        flash(otherEl);
+        matchSelected = null;
+    }
+    updateProgress();
+}
+
+function solveMatch() {
+    matchPairs.forEach((p, i) => {
+        if (state.matchAnswers[i]) return;
+        matchCounter++;
+        const colorClass = `matched-${(matchCounter - 1) % 6 + 1}`;
+        const lEl = document.querySelector(`#matchLeft .match-item[data-id="${i}"]`);
+        const rEl = document.querySelector(`#matchRight .match-item[data-id="${i}"]`);
+        if (lEl && rEl) {
+            lEl.classList.remove('selected');
+            rEl.classList.remove('selected');
+            lEl.classList.add('matched', colorClass);
+            rEl.classList.add('matched', colorClass);
+            lEl.querySelector('.match-badge').textContent = matchCounter;
+            rEl.querySelector('.match-badge').textContent = matchCounter;
+            state.matchAnswers[i] = matchCounter;
+        }
+    });
+    updateProgress();
+}
+
+
+/* ===================================================================
+   SECTION 7: ANTERIOR TRAP
+=================================================================== */
+function buildAnt() {
+    const wrap = document.getElementById('antQs');
+    wrap.innerHTML = antData.map((q, i) => `
+        <div class="trap-vote" data-i="${i}" style="${i > 0 ? 'border-top:1px solid var(--line-soft); padding-top:1.25rem; margin-top:1.25rem;' : ''}">
+            <div class="q-text"><span class="type-q-num">${i + 1}.</span>${q.q}</div>
+            <div class="trap-options">
+                ${q.options.map((o, j) => `
+                    <button class="type-opt" data-correct="${o.correct}" onclick="pickAnt(${i}, ${j}, this)">${o.text}</button>
+                `).join('')}
+            </div>
+            <div class="type-feedback" id="antFb${i}"></div>
+        </div>
+    `).join('');
+}
+
+function pickAnt(i, j, btn) {
+    const opt = antData[i].options[j];
+    const fb = document.getElementById('antFb' + i);
+    if (opt.correct) {
+        btn.classList.add('correct');
+        fb.innerHTML = `<strong>Correct.</strong> ${opt.why}`;
+        fb.classList.add('show');
+        btn.parentElement.querySelectorAll('.type-opt').forEach(b => b.disabled = true);
+        state.antAnswers[i] = true;
+        sectionConfetti(['#8a2031','#0d4a52','#c89b3c'], 0.35);
+    } else {
+        btn.classList.add('wrong');
+        fb.innerHTML = `${opt.why}`;
+        fb.classList.add('show');
+    }
+    updateProgress();
+}
+
+function solveAnt() {
+    antData.forEach((q, i) => {
+        if (state.antAnswers[i] === true) return;
+        const parent = document.querySelector(`#antQs .trap-vote[data-i="${i}"] .trap-options`);
+        parent.querySelectorAll('.type-opt').forEach((b, j) => {
+            b.classList.remove('wrong');
+            if (q.options[j].correct) b.classList.add('correct');
+            b.disabled = true;
+        });
+        const fb = document.getElementById('antFb' + i);
+        const correctOpt = q.options.find(o => o.correct);
+        fb.innerHTML = `<strong>Answer:</strong> ${correctOpt.why}`;
+        fb.classList.add('show');
+        state.antAnswers[i] = 'solved';
+    });
+    updateProgress();
+}
+
+
+/* ===================================================================
+   PROGRESS
+=================================================================== */
+function updateProgress() {
+    let total = 0;
+    let done = 0;
+    // flipcards
+    total += 3;
+    done += state.flipped.size;
+    // type identification
+    total += typeData.length;
+    done += Object.values(state.typeAnswers).filter(Boolean).length;
+    // pp
+    total += ppData.length;
+    done += Object.values(state.ppAnswers).filter(Boolean).length;
+    // ce
+    total += ceData.length;
+    done += Object.values(state.ceAnswers).filter(Boolean).length;
+    // tr
+    total += trData.length;
+    done += Object.values(state.trAnswers).filter(Boolean).length;
+    // match
+    total += matchPairs.length;
+    done += Object.keys(state.matchAnswers).length;
+    // anterior
+    total += antData.length;
+    done += Object.values(state.antAnswers).filter(Boolean).length;
+
+    document.getElementById('progressNum').textContent = done;
+    document.getElementById('progressTotal').textContent = total;
+    document.getElementById('progressFill').style.width = (done / total * 100) + '%';
+}
+
+
+/* ===================================================================
+   CONFETTI
+=================================================================== */
+function sectionConfetti(colors, intensity) {
+    if (typeof confetti !== 'function') return;
+    confetti({
+        particleCount: Math.floor(40 * intensity),
+        spread: 60,
+        origin: { y: 0.7 },
+        colors: colors,
+        disableForReducedMotion: true,
+        scalar: 0.9
+    });
+}
+
+function bigCelebration() {
+    if (typeof confetti !== 'function') return;
+    const colors = ['#136e7a', '#0d4a52', '#c89b3c', '#8c6a1f', '#8a2031', '#4a6a3b'];
+
+    // realistic burst from center
+    const count = 200;
+    const defaults = { origin: { y: 0.7 }, colors: colors, disableForReducedMotion: true };
+    confetti(Object.assign({}, defaults, { spread: 26, startVelocity: 55, particleCount: Math.floor(count * 0.25) }));
+    confetti(Object.assign({}, defaults, { spread: 60, particleCount: Math.floor(count * 0.2) }));
+    confetti(Object.assign({}, defaults, { spread: 100, decay: 0.91, scalar: 0.8, particleCount: Math.floor(count * 0.35) }));
+    confetti(Object.assign({}, defaults, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2, particleCount: Math.floor(count * 0.1) }));
+    confetti(Object.assign({}, defaults, { spread: 120, startVelocity: 45, particleCount: Math.floor(count * 0.1) }));
+
+    // side fireworks
+    const end = Date.now() + 2800;
+    (function frame() {
+        confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0, y: 0.7 }, colors: colors, disableForReducedMotion: true });
+        confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1, y: 0.7 }, colors: colors, disableForReducedMotion: true });
+        if (Date.now() < end) requestAnimationFrame(frame);
+    })();
+
+    // stars on top
+    setTimeout(() => {
+        confetti({
+            particleCount: 60,
+            spread: 100,
+            shapes: ['star'],
+            colors: ['#c89b3c', '#8c6a1f', '#f4e7c5'],
+            origin: { y: 0.5 },
+            disableForReducedMotion: true,
+            scalar: 1.2
+        });
+    }, 500);
+}
+
+
+/* ===================================================================
+   SAVE / RESET (localStorage)
+=================================================================== */
+const STORAGE_KEY = 'perfect_aspect_worksheet_v1';
+
+function saveProgress() {
+    // gather inputs values for fill sections
+    const inputs = {};
+    document.querySelectorAll('input.fill-input').forEach(i => {
+        inputs[i.id] = {
+            value: i.value,
+            correct: i.classList.contains('correct'),
+            wrong: i.classList.contains('wrong'),
+            disabled: i.disabled
+        };
+    });
+
+    const snapshot = {
+        flipped: Array.from(state.flipped),
+        typeAnswers: state.typeAnswers,
+        ppAnswers: state.ppAnswers,
+        ceAnswers: state.ceAnswers,
+        trAnswers: state.trAnswers,
+        matchAnswers: state.matchAnswers,
+        antAnswers: state.antAnswers,
+        matchCounter: matchCounter,
+        inputs: inputs
+    };
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
+        flashSavedToast('Saved.');
+    } catch (e) {
+        flashSavedToast('Save failed.');
+    }
+}
+
+function restoreProgress() {
+    let raw;
+    try { raw = localStorage.getItem(STORAGE_KEY); } catch (e) { return; }
+    if (!raw) return;
+    let snap;
+    try { snap = JSON.parse(raw); } catch (e) { return; }
+
+    // flipcards
+    (snap.flipped || []).forEach(id => {
+        const el = document.querySelector(`.flip-card[data-card="${id}"]`);
+        if (el) {
+            el.classList.add('flipped');
+            state.flipped.add(id);
+        }
+    });
+
+    // type identification
+    Object.entries(snap.typeAnswers || {}).forEach(([i, val]) => {
+        const idx = parseInt(i);
+        if (val === true || val === 'solved') {
+            const parent = document.querySelector(`#typeQs .type-q[data-i="${idx}"] .type-options`);
+            if (parent) {
+                const correct = typeData[idx].type;
+                parent.querySelectorAll('.type-opt').forEach(b => {
+                    if (b.dataset.type === correct) b.classList.add('correct');
+                    b.disabled = true;
+                });
+                const fb = document.getElementById('typeFb' + idx);
+                if (fb) {
+                    fb.innerHTML = (val === 'solved' ? '<strong>Answer:</strong> ' : '<strong>Correct.</strong> ') + typeData[idx].why;
+                    fb.classList.add('show');
+                }
+                state.typeAnswers[idx] = val;
+            }
+        }
+    });
+
+    // ce
+    Object.entries(snap.ceAnswers || {}).forEach(([i, val]) => {
+        const idx = parseInt(i);
+        if (val === true || val === 'solved') {
+            const parent = document.querySelector(`#cevsQs .type-q[data-i="${idx}"] .type-options`);
+            if (parent) {
+                const correct = ceData[idx].type;
+                parent.querySelectorAll('.type-opt').forEach(b => {
+                    if (b.dataset.type === correct) b.classList.add('correct');
+                    b.disabled = true;
+                });
+                const fb = document.getElementById('ceFb' + idx);
+                if (fb) {
+                    fb.innerHTML = (val === 'solved' ? '<strong>Answer:</strong> ' : '<strong>Correct.</strong> ') + ceData[idx].why;
+                    fb.classList.add('show');
+                }
+                state.ceAnswers[idx] = val;
+            }
+        }
+    });
+
+    // anterior
+    Object.entries(snap.antAnswers || {}).forEach(([i, val]) => {
+        const idx = parseInt(i);
+        if (val === true || val === 'solved') {
+            const parent = document.querySelector(`#antQs .trap-vote[data-i="${idx}"] .trap-options`);
+            if (parent) {
+                parent.querySelectorAll('.type-opt').forEach((b, j) => {
+                    if (antData[idx].options[j].correct) b.classList.add('correct');
+                    b.disabled = true;
+                });
+                const fb = document.getElementById('antFb' + idx);
+                if (fb) {
+                    const correctOpt = antData[idx].options.find(o => o.correct);
+                    fb.innerHTML = (val === 'solved' ? '<strong>Answer:</strong> ' : '<strong>Correct.</strong> ') + correctOpt.why;
+                    fb.classList.add('show');
+                }
+                state.antAnswers[idx] = val;
+            }
+        }
+    });
+
+    // inputs
+    Object.entries(snap.inputs || {}).forEach(([id, info]) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.value = info.value || '';
+        if (info.correct) el.classList.add('correct');
+        if (info.wrong) el.classList.add('wrong');
+        if (info.disabled) el.disabled = true;
+    });
+    state.ppAnswers = snap.ppAnswers || {};
+    state.trAnswers = snap.trAnswers || {};
+
+    // match - need to redo as user had it
+    matchCounter = snap.matchCounter || 0;
+    Object.entries(snap.matchAnswers || {}).forEach(([id, num]) => {
+        const idx = parseInt(id);
+        const colorClass = `matched-${(num - 1) % 6 + 1}`;
+        const lEl = document.querySelector(`#matchLeft .match-item[data-id="${idx}"]`);
+        const rEl = document.querySelector(`#matchRight .match-item[data-id="${idx}"]`);
+        if (lEl && rEl) {
+            lEl.classList.add('matched', colorClass);
+            rEl.classList.add('matched', colorClass);
+            lEl.querySelector('.match-badge').textContent = num;
+            rEl.querySelector('.match-badge').textContent = num;
+            state.matchAnswers[idx] = num;
+        }
+    });
+
+    updateProgress();
+}
+
+function resetAll() {
+    if (!confirm('Reset all progress on this worksheet?')) return;
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    location.reload();
+}
+
+function flashSavedToast(msg) {
+    let toast = document.getElementById('savedToast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'savedToast';
+        toast.style.cssText = 'position:fixed; bottom:1.5rem; left:50%; transform:translateX(-50%); background:var(--ink); color:var(--paper); padding:0.75rem 1.5rem; border-radius:4px; font-family:var(--mono); font-size:0.8rem; letter-spacing:0.1em; text-transform:uppercase; z-index:200; box-shadow:0 8px 24px rgba(0,0,0,0.25); transition:opacity 0.3s;';
+        document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.style.opacity = '1';
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => { toast.style.opacity = '0'; }, 1700);
+}
+
+
+/* ===================================================================
+   INIT
+=================================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+    buildTypes();
+    buildFill('ppQs', ppData, false);
+    buildCEvs();
+    buildFill('trQs', trData, true);
+    buildMatch();
+    buildAnt();
+    restoreProgress();
+    updateProgress();
+});
+</script>
+
+</body>
+</html>
