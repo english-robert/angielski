@@ -589,6 +589,30 @@ kura	chicken</div>
           <div class="task-info-desc">Rozwijane sekcje z odpowiedziami (gramatyka, definicje)</div>
         </div>
       </div>
+      <div class="task-card" data-task="gapfill">
+        <input type="checkbox" hidden>
+        <div class="task-checkbox"></div>
+        <div class="task-info">
+          <div class="task-info-name">🧩 Gap fill</div>
+          <div class="task-info-desc">Uzupełnij luki w zdaniu. W TSV w kolumnie EN użyj klamr: <code>I {go} to school</code></div>
+        </div>
+      </div>
+      <div class="task-card" data-task="translate">
+        <input type="checkbox" hidden>
+        <div class="task-checkbox"></div>
+        <div class="task-info">
+          <div class="task-info-name">🌐 Translate</div>
+          <div class="task-info-desc">Przetłumacz całe zdanie z PL na EN (bez rozsypanki)</div>
+        </div>
+      </div>
+      <div class="task-card" data-task="writing">
+        <input type="checkbox" hidden>
+        <div class="task-checkbox"></div>
+        <div class="task-info">
+          <div class="task-info-name">✍️ Writing</div>
+          <div class="task-info-desc">Polecenie do wypracowania - duże pole tekstowe na własny tekst</div>
+        </div>
+      </div>
     </div>
     <button type="button" class="reorder-reset" id="reorderReset">↻ Resetuj kolejność do domyślnej</button>
   </div>
@@ -644,14 +668,6 @@ kura	chicken</div>
             <div class="color-field-hex" id="colorTextHex">#1f1a14</div>
           </div>
           <button type="button" class="color-reset" data-target="text">RESET</button>
-        </div>
-        <div class="color-field">
-          <input type="color" id="colorCard" value="#fbf8f0">
-          <div class="color-field-info">
-            <div class="color-field-label">Kolor sekcji</div>
-            <div class="color-field-hex" id="colorCardHex">#fbf8f0</div>
-          </div>
-          <button type="button" class="color-reset" data-target="card">RESET</button>
         </div>
       </div>
     </div>
@@ -751,9 +767,8 @@ const STATE = {
   customAccent: null,
   customBg: null,
   customText: null,
-  customCard: null,
-  tasks: { flashcards: true, matching: true, scramble: true, quiz: false, unscramble: false, cornell: false },
-  taskOrder: ['flashcards', 'matching', 'scramble', 'quiz', 'unscramble', 'cornell'],
+  tasks: { flashcards: true, matching: true, scramble: true, quiz: false, unscramble: false, cornell: false, gapfill: false, translate: false, writing: false },
+  taskOrder: ['flashcards', 'matching', 'scramble', 'quiz', 'unscramble', 'cornell', 'gapfill', 'translate', 'writing'],
   quizOptions: 4,
   ttsEnabled: true,
   ttsLang: 'en-GB',
@@ -762,11 +777,11 @@ const STATE = {
   logoUrl: 'https://bertlingo-learning.github.io/Angielski/Obrazki/loga/ewr-logo.svg'
 };
 
-// Default colors per preset
+// Default colors per preset (cardBg, border, textDim itp. są wyliczane z akcentu w themach)
 const PRESET_DEFAULTS = {
-  vintage: { accent: '#c0392b', bg: '#f5f1e8', text: '#1f1a14', card: '#fbf8f0' },
-  dark:    { accent: '#56cfb2', bg: '#0d1b2a', text: '#e8f4fd', card: '#1a2738' },
-  pastel:  { accent: '#d65a8a', bg: '#fef6f3', text: '#3a2c33', card: '#ffffff' }
+  vintage: { accent: '#c0392b', bg: '#f5f1e8', text: '#1f1a14' },
+  dark:    { accent: '#56cfb2', bg: '#0d1b2a', text: '#e8f4fd' },
+  pastel:  { accent: '#d65a8a', bg: '#fef6f3', text: '#3a2c33' }
 };
 
 // ============================================================
@@ -810,7 +825,10 @@ function parseTaskTags(s) {
     s: 'scramble', scramble: 'scramble',
     q: 'quiz', quiz: 'quiz',
     u: 'unscramble', unscramble: 'unscramble', sentence: 'unscramble',
-    c: 'cornell', cornell: 'cornell'
+    c: 'cornell', cornell: 'cornell',
+    g: 'gapfill', gap: 'gapfill', gapfill: 'gapfill', fill: 'gapfill',
+    t: 'translate', translate: 'translate', translation: 'translate',
+    w: 'writing', writing: 'writing', write: 'writing'
   };
   const result = [];
   s.split(/[,;|]/).forEach(tag => {
@@ -827,7 +845,7 @@ function rowsForTask(taskName) {
 
 // Sprawdza, czy są wiersze z tagami dla nieaktywnych typów zadań
 function getOrphanedTagWarnings() {
-  const taskNames = ['flashcards', 'matching', 'scramble', 'quiz', 'unscramble', 'cornell'];
+  const taskNames = ['flashcards', 'matching', 'scramble', 'quiz', 'unscramble', 'cornell', 'gapfill', 'translate', 'writing'];
   const warnings = [];
   taskNames.forEach(task => {
     if (STATE.tasks[task]) return; // typ jest aktywny, OK
@@ -841,7 +859,7 @@ function getOrphanedTagWarnings() {
       // tylko te które mają TEN konkretny tag
       const withThisTag = orphans.filter(r => r._tasks.includes(task));
       if (withThisTag.length > 0) {
-        const labels = { flashcards: 'Flashcards', matching: 'Matching', scramble: 'Word Scramble', quiz: 'Quiz', unscramble: 'Sentence Unscramble', cornell: 'Pytania & odpowiedzi' };
+        const labels = { flashcards: 'Flashcards', matching: 'Matching', scramble: 'Word Scramble', quiz: 'Quiz', unscramble: 'Sentence Unscramble', cornell: 'Pytania & odpowiedzi', gapfill: 'Gap Fill', translate: 'Translate', writing: 'Writing' };
         warnings.push({ task, count: withThisTag.length, label: labels[task] });
       }
     }
@@ -908,7 +926,10 @@ function updateTSVStatus() {
     scramble: rowsForTask('scramble').length,
     quiz: rowsForTask('quiz').length,
     unscramble: rowsForTask('unscramble').length,
-    cornell: rowsForTask('cornell').length
+    cornell: rowsForTask('cornell').length,
+    gapfill: rowsForTask('gapfill').length,
+    translate: rowsForTask('translate').length,
+    writing: rowsForTask('writing').length
   };
   const hasTagsCol = result.headers.includes('tasks');
   const taggedRows = result.rows.filter(r => r._tasks.length > 0).length;
@@ -916,9 +937,9 @@ function updateTSVStatus() {
   status.className = 'tsv-status ok';
   let msg = `<span class="icon">✓</span> <strong>Wykryto ${result.rows.length} wierszy.</strong>`;
   if (hasTagsCol && taggedRows > 0) {
-    msg += `<span class="hint">Klasyfikacja: flashcards: ${counts.flashcards}, matching: ${counts.matching}, scramble: ${counts.scramble}, quiz: ${counts.quiz}, unscramble: ${counts.unscramble}, cornell: ${counts.cornell} (${taggedRows} wierszy ze specyficznymi tagami)</span>`;
+    msg += `<span class="hint">Klasyfikacja: flashcards: ${counts.flashcards}, matching: ${counts.matching}, scramble: ${counts.scramble}, quiz: ${counts.quiz}, unscramble: ${counts.unscramble}, cornell: ${counts.cornell}, gapfill: ${counts.gapfill}, translate: ${counts.translate}, writing: ${counts.writing} (${taggedRows} wierszy ze specyficznymi tagami)</span>`;
   } else {
-    msg += `<span class="hint">Wszystkie wiersze trafią do każdego zaznaczonego typu zadania. Aby przypisać wiersze do konkretnych typów, dodaj kolumnę <code>tasks</code> z tagami: f, m, s, q, u, c (lub kombinacje typu f,m).</span>`;
+    msg += `<span class="hint">Wszystkie wiersze trafią do każdego zaznaczonego typu zadania. Aby przypisać wiersze do konkretnych typów, dodaj kolumnę <code>tasks</code> z tagami: f, m, s, q, u, c, g, t, w (lub kombinacje typu f,m).</span>`;
   }
   status.innerHTML = msg;
   updateTaskAvailability();
@@ -945,6 +966,20 @@ function updateTaskAvailability() {
     }
     // unscramble - bez minimum, ale wiersz musi mieć przynajmniej 2 słowa w en
     if (task === 'unscramble' && taskRows.length === 0) {
+      ok = false;
+    }
+    // gapfill: tylko wiersze z klamrami {...} w en mają sens
+    if (task === 'gapfill') {
+      const validGapRows = taskRows.filter(r => /\{[^}]+\}/.test(r.en));
+      if (validGapRows.length === 0) {
+        ok = false;
+        reason = taskRows.length > 0
+          ? `Brak wierszy z lukami (potrzebne klamry {…} w EN)`
+          : `Potrzeba wierszy z lukami w klamrach`;
+      }
+    }
+    // translate / writing: wystarczy 1+ wiersz
+    if ((task === 'translate' || task === 'writing') && taskRows.length === 0) {
       ok = false;
     }
 
@@ -1061,7 +1096,7 @@ function updateTaskOrder() {
 }
 
 document.getElementById('reorderReset').addEventListener('click', () => {
-  const defaultOrder = ['flashcards', 'matching', 'scramble', 'quiz', 'unscramble', 'cornell'];
+  const defaultOrder = ['flashcards', 'matching', 'scramble', 'quiz', 'unscramble', 'cornell', 'gapfill', 'translate', 'writing'];
   const grid = document.getElementById('taskGrid');
   defaultOrder.forEach(taskName => {
     const card = grid.querySelector('.task-card[data-task="' + taskName + '"]');
@@ -1094,12 +1129,9 @@ document.querySelectorAll('.preset-card').forEach(card => {
     document.getElementById('colorBgHex').textContent = def.bg;
     document.getElementById('colorText').value = def.text;
     document.getElementById('colorTextHex').textContent = def.text;
-    document.getElementById('colorCard').value = def.card;
-    document.getElementById('colorCardHex').textContent = def.card;
     STATE.customAccent = null;
     STATE.customBg = null;
     STATE.customText = null;
-    STATE.customCard = null;
   });
 });
 
@@ -1114,10 +1146,6 @@ document.getElementById('colorBg').addEventListener('input', e => {
 document.getElementById('colorText').addEventListener('input', e => {
   STATE.customText = e.target.value;
   document.getElementById('colorTextHex').textContent = e.target.value;
-});
-document.getElementById('colorCard').addEventListener('input', e => {
-  STATE.customCard = e.target.value;
-  document.getElementById('colorCardHex').textContent = e.target.value;
 });
 
 document.querySelectorAll('.color-reset').forEach(btn => {
@@ -1136,10 +1164,6 @@ document.querySelectorAll('.color-reset').forEach(btn => {
       document.getElementById('colorText').value = def.text;
       document.getElementById('colorTextHex').textContent = def.text;
       STATE.customText = null;
-    } else if (target === 'card') {
-      document.getElementById('colorCard').value = def.card;
-      document.getElementById('colorCardHex').textContent = def.card;
-      STATE.customCard = null;
     }
   });
 });
@@ -1311,6 +1335,15 @@ function rgba(hex, alpha) {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
+// Miesza dwa kolory hex w stosunku t (0 = pierwszy, 1 = drugi)
+function mixColors(hexA, hexB, t) {
+  const [r1, g1, b1] = hexToRgb(hexA);
+  const [r2, g2, b2] = hexToRgb(hexB);
+  const lerp = (a, b) => Math.round(a + (b - a) * t);
+  const nr = lerp(r1, r2), ng = lerp(g1, g2), nb = lerp(b1, b2);
+  return '#' + [nr, ng, nb].map(x => x.toString(16).padStart(2, '0')).join('');
+}
+
 // Determine if color is dark
 function isDark(hex) {
   const [r, g, b] = hexToRgb(hex);
@@ -1347,7 +1380,6 @@ function buildWorksheetHTML() {
   const accent = STATE.customAccent || def.accent;
   const bg = STATE.customBg || def.bg;
   const textColor = STATE.customText || def.text;
-  const cardColor = STATE.customCard || def.card;
 
   // Build sections in order according to STATE.taskOrder
   const sectionsHTML = [];
@@ -1360,14 +1392,17 @@ function buildWorksheetHTML() {
     scramble: { html: buildScrambleSection, js: buildScrambleJS },
     quiz: { html: buildQuizSection, js: buildQuizJS },
     unscramble: { html: buildUnscrambleSection, js: buildUnscrambleJS },
-    cornell: { html: buildCornellSection, js: buildCornellJS }
+    cornell: { html: buildCornellSection, js: buildCornellJS },
+    gapfill: { html: buildGapfillSection, js: buildGapfillJS },
+    translate: { html: buildTranslateSection, js: buildTranslateJS },
+    writing: { html: buildWritingSection, js: buildWritingJS }
   };
 
   STATE.taskOrder.forEach(taskName => {
     if (!STATE.tasks[taskName]) return;
     if (!builders[taskName]) return;
-    // Matching i scramble dzielimy na sekcje po max 8 par
-    if (taskName === 'matching' || taskName === 'scramble') {
+    // Matching dzielimy na sekcje po max 8 par. Word Scramble idzie w jednej sekcji bez limitu.
+    if (taskName === 'matching') {
       const allRows = rowsForTask(taskName);
       const totalParts = Math.max(1, Math.ceil(allRows.length / 8));
       for (let part = 0; part < totalParts; part++) {
@@ -1391,7 +1426,6 @@ function buildWorksheetHTML() {
     accent,
     bg,
     textColor,
-    cardColor,
     sectionCount,
     sectionsHTML: sectionsHTML.join('\n'),
     sectionsJS: sectionsJS.join('\n'),
@@ -1594,6 +1628,7 @@ function buildMatchingJS(num, options = {}) {
             const padTop = parseFloat(cs.paddingTop);
             const padBottom = parseFloat(cs.paddingBottom);
             const contentHeight = e.offsetHeight - padTop - padBottom;
+            // Dla 1-liniowej treści chowamy kreskę pod numerkiem (i tak nie ma sensu) i centrujemy numerek pionowo
             if (contentHeight <= lineHeight * 1.5) e.classList.add('single-line');
           });
         });
@@ -1644,6 +1679,8 @@ function buildMatchingJS(num, options = {}) {
           const padTop = parseFloat(cs.paddingTop);
           const padBottom = parseFloat(cs.paddingBottom);
           const contentHeight = e.offsetHeight - padTop - padBottom;
+          // Dla 1-liniowej treści chowamy kreskę pod numerkiem (i tak nie ma sensu) i centrujemy numerek pionowo
+          // (krótsza treść = brzydka, kurcząca się kreska bez sensu)
           if (contentHeight <= lineHeight * 1.5) e.classList.add('single-line');
         });
       });
@@ -1656,14 +1693,7 @@ function buildMatchingJS(num, options = {}) {
 }
 
 function buildScrambleSection(num, options = {}) {
-  const allRows = rowsForTask('scramble');
-  const startIdx = options.startIdx || 0;
-  const endIdx = Math.min(startIdx + 8, allRows.length);
-  const partNum = options.partNum;
-  const totalParts = options.totalParts;
-  const words = allRows.slice(startIdx, endIdx);
-  const titleSuffix = '';
-  const partBadge = totalParts > 1 ? `<span class="ws-part-badge">Część ${partNum}/${totalParts}</span>` : '';
+  const words = rowsForTask('scramble');
   const items = words.map((r, i) => {
     const letters = r.en.split('');
     let scrambled;
@@ -1699,7 +1729,6 @@ function buildScrambleSection(num, options = {}) {
       <div class="ws-sec-head">
         <div class="ws-sec-num">0${num}</div>
         <h2 class="ws-sec-title">Word Scramble · Ułóż litery</h2>
-        ${partBadge}
       </div>
       <p class="ws-sec-desc">Wpisz angielskie słowo (Enter sprawdza). Kliknij rozsypankę, żeby zobaczyć pomieszane litery. Kliknij "?" żeby wstawić kolejną literę odpowiedzi.</p>
       <div class="scramble-grid">${items}</div>
@@ -1711,10 +1740,7 @@ function buildScrambleSection(num, options = {}) {
 }
 
 function buildScrambleJS(num, options = {}) {
-  const allRows = rowsForTask('scramble');
-  const startIdx = options.startIdx || 0;
-  const endIdx = Math.min(startIdx + 8, allRows.length);
-  const rows = allRows.slice(startIdx, endIdx);
+  const rows = rowsForTask('scramble');
   const wordsJSON = JSON.stringify(rows.map(r => ({ pl: r.pl, en: r.en })));
   return `
   // ── SCRAMBLE (section ${num}) ──
@@ -2258,10 +2284,353 @@ function buildCornellJS(num) {
 }
 
 // ============================================================
+// GAP FILL - luki w zdaniu w klamrach {...}
+// W kolumnie EN klamra {word} oznacza lukę (np. "I {go} to school every {day}")
+// Po uzupełnieniu wszystkich luk w danym zdaniu odsłania się tłumaczenie PL.
+// ============================================================
+function buildGapfillSection(num) {
+  const allRows = rowsForTask('gapfill');
+  // Filtrujemy tylko wiersze które faktycznie mają klamry w en
+  const rows = allRows.filter(r => /\{[^}]+\}/.test(r.en));
+  const items = rows.map((r, i) => {
+    // Parsujemy zdanie EN na fragmenty: tekst + luki
+    // np. "I {go} to {school}" -> ['I ', {gap: 'go'}, ' to ', {gap: 'school'}]
+    const parts = [];
+    let lastEnd = 0;
+    const re = /\{([^}]+)\}/g;
+    let m;
+    let gapIdx = 0;
+    while ((m = re.exec(r.en)) !== null) {
+      if (m.index > lastEnd) {
+        parts.push({ type: 'text', text: r.en.slice(lastEnd, m.index) });
+      }
+      parts.push({ type: 'gap', answer: m[1], idx: gapIdx++ });
+      lastEnd = m.index + m[0].length;
+    }
+    if (lastEnd < r.en.length) {
+      parts.push({ type: 'text', text: r.en.slice(lastEnd) });
+    }
+    const sentenceHTML = parts.map(p => {
+      if (p.type === 'text') return escapeHtml(p.text);
+      // szerokość pola input: trochę więcej niż długość odpowiedzi
+      const w = Math.max(p.answer.length + 2, 5);
+      return `<input type="text" class="gap-input" data-answer="${escapeHtml(p.answer.toLowerCase())}" data-gap-idx="${p.idx}" size="${w}" placeholder="✎" onkeydown="if(event.key==='Enter') checkGap_${num}(this)">`;
+    }).join('');
+    // pełne zdanie EN bez klamr (do TTS)
+    const enClean = r.en.replace(/\{([^}]+)\}/g, '$1');
+    const totalGaps = gapIdx;
+    return `
+      <div class="gap-card" data-idx="${i}" data-total-gaps="${totalGaps}">
+        <div class="gap-sentence">${sentenceHTML}
+          <button class="tts-btn tts-btn-gap" onclick="ttsBtnClick(event, ${JSON.stringify(enClean).replace(/"/g, '&quot;')})" title="Posłuchaj całego zdania" aria-label="Czytaj">🔊</button>
+        </div>
+        <div class="gap-translation" id="gap-tr-${num}-${i}">
+          <span class="gap-translation-label">PL:</span> <span class="gap-translation-text">${escapeHtml(r.pl)}</span>
+        </div>
+      </div>`;
+  }).join('');
+
+  return `
+    <section class="ws-section" data-section="${num}" id="sec-${num}">
+      <div class="ws-sec-head">
+        <div class="ws-sec-num">0${num}</div>
+        <h2 class="ws-sec-title">Gap Fill · Uzupełnij luki</h2>
+      </div>
+      <p class="ws-sec-desc">Wpisz brakujące słowa w lukach (Enter sprawdza). Po uzupełnieniu wszystkich luk w zdaniu pojawi się polskie tłumaczenie.</p>
+      <div class="gap-grid">${items}</div>
+      <div class="ws-actions">
+        <button class="ws-btn-solve" onclick="solveGap_${num}()">Pokaż wszystkie odpowiedzi</button>
+      </div>
+      <div class="ws-feedback" id="fb-${num}"></div>
+    </section>`;
+}
+
+function buildGapfillJS(num) {
+  return `
+  // ── GAP FILL (section ${num}) ──
+  let _gapDone_${num} = new Set();
+  const _gapTotal_${num} = document.querySelectorAll('#sec-${num} .gap-card').length;
+
+  window.checkGap_${num} = function(input) {
+    const ans = input.dataset.answer;
+    const val = input.value.trim().toLowerCase();
+    if (val === ans) {
+      input.classList.remove('gap-wrong');
+      input.classList.add('gap-correct');
+      input.disabled = true;
+      _gapCheckCardComplete_${num}(input.closest('.gap-card'));
+      // przeskocz do następnej luki w tej samej karcie albo do pierwszej w następnej
+      const card = input.closest('.gap-card');
+      const remaining = card.querySelectorAll('.gap-input:not([disabled])');
+      if (remaining.length > 0) {
+        remaining[0].focus();
+      } else {
+        const nextCard = card.nextElementSibling;
+        if (nextCard) {
+          const firstInput = nextCard.querySelector('.gap-input:not([disabled])');
+          if (firstInput) firstInput.focus();
+        }
+      }
+    } else {
+      input.classList.remove('gap-correct');
+      input.classList.add('gap-wrong');
+      setTimeout(() => input.classList.remove('gap-wrong'), 500);
+    }
+  };
+
+  function _gapCheckCardComplete_${num}(card) {
+    const all = card.querySelectorAll('.gap-input');
+    const done = card.querySelectorAll('.gap-input.gap-correct');
+    if (all.length === done.length) {
+      card.classList.add('done');
+      // odsłoń tłumaczenie
+      const tr = card.querySelector('.gap-translation');
+      if (tr) tr.classList.add('show');
+      const cardIdx = parseInt(card.dataset.idx);
+      _gapDone_${num}.add(cardIdx);
+      if (_gapDone_${num}.size === _gapTotal_${num}) {
+        showSectionFeedback(${num}, true, '🧩 Wszystkie luki uzupełnione!');
+        markSectionDone(${num});
+        confettiFire();
+      }
+    }
+  }
+
+  window.solveGap_${num} = function() {
+    document.querySelectorAll('#sec-${num} .gap-card').forEach(card => {
+      card.querySelectorAll('.gap-input').forEach(inp => {
+        if (inp.classList.contains('gap-correct')) return;
+        inp.value = inp.dataset.answer;
+        inp.classList.add('gap-correct');
+        inp.disabled = true;
+      });
+      card.classList.add('done');
+      const tr = card.querySelector('.gap-translation');
+      if (tr) tr.classList.add('show');
+      _gapDone_${num}.add(parseInt(card.dataset.idx));
+    });
+    showSectionFeedback(${num}, true, '✓ Wszystkie odpowiedzi pokazane');
+    markSectionDone(${num});
+  };
+`;
+}
+
+// ============================================================
+// TRANSLATE - tłumaczenie zdania PL -> EN bez rozsypanki
+// PL widoczne, użytkownik wpisuje pełne zdanie w EN.
+// Sprawdzanie tolerancyjne: ignoruje wielkie/małe litery, podwójne spacje,
+// i interpunkcję na końcu (kropki, znaki zapytania).
+// ============================================================
+function buildTranslateSection(num) {
+  const rows = rowsForTask('translate');
+  const items = rows.map((r, i) => {
+    return `
+      <div class="trans-card" data-idx="${i}">
+        <div class="trans-pl">
+          <span class="trans-pl-label">PL</span>
+          <span class="trans-pl-text">${escapeHtml(r.pl)}</span>
+        </div>
+        <div class="trans-input-row">
+          <textarea class="trans-input" data-answer="${escapeHtml(r.en)}" rows="2" placeholder="Wpisz tłumaczenie po angielsku..." onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();checkTranslate_${num}(this);}"></textarea>
+          <div class="trans-input-actions">
+            <button class="trans-check" onclick="checkTranslate_${num}(this.closest('.trans-card').querySelector('.trans-input'))" title="Sprawdź">✓</button>
+            <button class="trans-hint-btn" onclick="hintTranslate_${num}(${i})" title="Podpowiedź - kolejne słowo">?</button>
+            <button class="tts-btn tts-btn-trans" onclick="ttsBtnClick(event, ${JSON.stringify(r.en).replace(/"/g, '&quot;')})" title="Posłuchaj poprawnego tłumaczenia" aria-label="Czytaj">🔊</button>
+          </div>
+        </div>
+        <div class="trans-correct" id="trans-c-${num}-${i}">
+          <span class="trans-correct-label">Wzór:</span> <span class="trans-correct-text">${escapeHtml(r.en)}</span>
+        </div>
+      </div>`;
+  }).join('');
+
+  return `
+    <section class="ws-section" data-section="${num}" id="sec-${num}">
+      <div class="ws-sec-head">
+        <div class="ws-sec-num">0${num}</div>
+        <h2 class="ws-sec-title">Translate · Przetłumacz zdanie</h2>
+      </div>
+      <p class="ws-sec-desc">Przetłumacz polskie zdanie na angielski (Enter sprawdza, Shift+Enter dodaje nową linię). Sprawdzanie pomija wielkość liter i kropkę na końcu.</p>
+      <div class="trans-grid">${items}</div>
+      <div class="ws-actions">
+        <button class="ws-btn-solve" onclick="solveTranslate_${num}()">Pokaż wszystkie odpowiedzi</button>
+      </div>
+      <div class="ws-feedback" id="fb-${num}"></div>
+    </section>`;
+}
+
+function buildTranslateJS(num) {
+  return `
+  // ── TRANSLATE (section ${num}) ──
+  let _transDone_${num} = new Set();
+  const _transTotal_${num} = document.querySelectorAll('#sec-${num} .trans-card').length;
+
+  function _transNormalize_${num}(s) {
+    return s.toLowerCase()
+      .replace(/[.!?]+$/g, '')           // koncowa interpunkcja
+      .replace(/\\s+/g, ' ')             // wielokrotne spacje -> jedna
+      .trim();
+  }
+
+  window.checkTranslate_${num} = function(textarea) {
+    const ans = textarea.dataset.answer;
+    const val = textarea.value;
+    if (_transNormalize_${num}(val) === _transNormalize_${num}(ans)) {
+      textarea.classList.remove('trans-wrong');
+      textarea.classList.add('trans-correct');
+      textarea.disabled = true;
+      const card = textarea.closest('.trans-card');
+      card.classList.add('done');
+      // pokaż wzorzec (na wypadek gdyby user wpisał wariant z innym układem słów ale akceptowalny)
+      const correct = card.querySelector('.trans-correct');
+      if (correct) correct.classList.add('show');
+      const idx = parseInt(card.dataset.idx);
+      _transDone_${num}.add(idx);
+      if (_transDone_${num}.size === _transTotal_${num}) {
+        showSectionFeedback(${num}, true, '🌐 Wszystkie zdania przetłumaczone!');
+        markSectionDone(${num});
+        confettiFire();
+      }
+    } else {
+      textarea.classList.remove('trans-correct');
+      textarea.classList.add('trans-wrong');
+      setTimeout(() => textarea.classList.remove('trans-wrong'), 500);
+    }
+  };
+
+  // Hint: dolewa kolejne poprawne słowo do tego co user już wpisał
+  window.hintTranslate_${num} = function(idx) {
+    const card = document.querySelector('#sec-${num} .trans-card[data-idx="' + idx + '"]');
+    if (!card) return;
+    const ta = card.querySelector('.trans-input');
+    if (ta.disabled) return;
+    const ans = ta.dataset.answer;
+    const ansWords = ans.trim().split(/\\s+/);
+    const userWords = ta.value.trim() ? ta.value.trim().split(/\\s+/) : [];
+    // policz ile słów user trafił w ciągu (ignoruj case i interpunkcje)
+    const norm = w => w.toLowerCase().replace(/[.,!?;:]+$/g, '');
+    let matchLen = 0;
+    for (let i = 0; i < Math.min(userWords.length, ansWords.length); i++) {
+      if (norm(userWords[i]) === norm(ansWords[i])) matchLen++;
+      else break;
+    }
+    if (matchLen >= ansWords.length) return; // już wszystko
+    // zbuduj nową wartość: pierwsze matchLen+1 słów z odpowiedzi
+    const newVal = ansWords.slice(0, matchLen + 1).join(' ');
+    ta.value = newVal;
+    ta.classList.remove('trans-wrong');
+    ta.focus();
+    if (matchLen + 1 === ansWords.length) {
+      window.checkTranslate_${num}(ta);
+    }
+  };
+
+  window.solveTranslate_${num} = function() {
+    document.querySelectorAll('#sec-${num} .trans-card').forEach(card => {
+      const ta = card.querySelector('.trans-input');
+      if (ta.classList.contains('trans-correct')) return;
+      ta.value = ta.dataset.answer;
+      ta.classList.add('trans-correct');
+      ta.disabled = true;
+      card.classList.add('done');
+      const correct = card.querySelector('.trans-correct');
+      if (correct) correct.classList.add('show');
+      _transDone_${num}.add(parseInt(card.dataset.idx));
+    });
+    showSectionFeedback(${num}, true, '✓ Wszystkie odpowiedzi pokazane');
+    markSectionDone(${num});
+  };
+`;
+}
+
+// ============================================================
+// WRITING - polecenie do wypracowania
+// Każdy wiersz = jedno polecenie. PL i/lub EN (jak puste, nie pokazuje).
+// Duże textarea z licznikiem słów. Sekcja zaliczona po napisaniu min 20 słów
+// w którymkolwiek z poleceń (i kliknięciu "Zapisz" - dzięki temu user
+// świadomie kończy zadanie, a nie przypadkowo).
+// ============================================================
+function buildWritingSection(num) {
+  const rows = rowsForTask('writing');
+  const items = rows.map((r, i) => {
+    const plBlock = r.pl ? `<div class="write-prompt-pl"><span class="write-prompt-flag">PL</span> ${escapeHtml(r.pl)}</div>` : '';
+    const enBlock = r.en ? `<div class="write-prompt-en"><span class="write-prompt-flag">EN</span> ${escapeHtml(r.en)} <button class="tts-btn tts-btn-write" onclick="ttsBtnClick(event, ${JSON.stringify(r.en).replace(/"/g, '&quot;')})" title="Posłuchaj polecenia" aria-label="Czytaj">🔊</button></div>` : '';
+    return `
+      <div class="write-card" data-idx="${i}">
+        <div class="write-prompt">
+          ${plBlock}
+          ${enBlock}
+        </div>
+        <textarea class="write-area" placeholder="Tutaj napisz swoją odpowiedź..." oninput="updateWriteCounter_${num}(this)"></textarea>
+        <div class="write-footer">
+          <span class="write-counter"><span class="write-counter-num">0</span> słów</span>
+          <button class="write-save" onclick="saveWrite_${num}(this)">✓ Gotowe</button>
+        </div>
+      </div>`;
+  }).join('');
+
+  return `
+    <section class="ws-section" data-section="${num}" id="sec-${num}">
+      <div class="ws-sec-head">
+        <div class="ws-sec-num">0${num}</div>
+        <h2 class="ws-sec-title">Writing · Napisz własny tekst</h2>
+      </div>
+      <p class="ws-sec-desc">Napisz odpowiedź według polecenia. Sekcja kończy się po kliknięciu "Gotowe" przy którymkolwiek poleceniu (minimum 20 słów).</p>
+      <div class="write-grid">${items}</div>
+      <div class="ws-feedback" id="fb-${num}"></div>
+    </section>`;
+}
+
+function buildWritingJS(num) {
+  return `
+  // ── WRITING (section ${num}) ──
+  let _writeSaved_${num} = new Set();
+
+  function _writeWordCount(text) {
+    const t = text.trim();
+    if (!t) return 0;
+    return t.split(/\\s+/).length;
+  }
+
+  window.updateWriteCounter_${num} = function(textarea) {
+    const card = textarea.closest('.write-card');
+    const counter = card.querySelector('.write-counter-num');
+    const n = _writeWordCount(textarea.value);
+    if (counter) counter.textContent = n;
+    const saveBtn = card.querySelector('.write-save');
+    if (saveBtn && !_writeSaved_${num}.has(parseInt(card.dataset.idx))) {
+      saveBtn.classList.toggle('write-save-ready', n >= 20);
+    }
+  };
+
+  window.saveWrite_${num} = function(btn) {
+    const card = btn.closest('.write-card');
+    const ta = card.querySelector('.write-area');
+    const n = _writeWordCount(ta.value);
+    if (n < 20) {
+      showSectionFeedback(${num}, false, 'Napisz min. 20 słów (masz ' + n + ')');
+      setTimeout(() => {
+        const fb = document.getElementById('fb-${num}');
+        if (fb) fb.classList.remove('show');
+      }, 2200);
+      return;
+    }
+    card.classList.add('done');
+    btn.disabled = true;
+    btn.textContent = '✓ Zapisane';
+    _writeSaved_${num}.add(parseInt(card.dataset.idx));
+    showSectionFeedback(${num}, true, '✍️ Świetnie, tekst zapisany!');
+    markSectionDone(${num});
+    confettiFire();
+  };
+`;
+}
+
+// ============================================================
 // MAIN TEMPLATE - the worksheet HTML
 // ============================================================
-function buildWorksheetTemplate({ title, subtitle, preset, accent, bg, textColor, cardColor, sectionCount, sectionsHTML, sectionsJS, rowsJSON, ttsConfig, logoConfig }) {
-  const presetTheme = getPresetTheme(preset, accent, bg, textColor, cardColor);
+function buildWorksheetTemplate({ title, subtitle, preset, accent, bg, textColor, sectionCount, sectionsHTML, sectionsJS, rowsJSON, ttsConfig, logoConfig }) {
+  const presetTheme = getPresetTheme(preset, accent, bg, textColor);
   const fontImports = presetTheme.fontImports;
   const css = buildWorksheetCSS(presetTheme);
   const bgEffectHTML = presetTheme.bgEffect;
@@ -2498,14 +2867,14 @@ window.addEventListener('load', loadProgress);
 // ============================================================
 // PRESET THEMES
 // ============================================================
-function getPresetTheme(preset, accent, bg, textColor, cardColor) {
-  if (preset === 'vintage') return getVintageTheme(accent, bg, textColor, cardColor);
-  if (preset === 'dark') return getDarkTheme(accent, bg, textColor, cardColor);
-  if (preset === 'pastel') return getPastelTheme(accent, bg, textColor, cardColor);
-  return getVintageTheme(accent, bg, textColor, cardColor);
+function getPresetTheme(preset, accent, bg, textColor) {
+  if (preset === 'vintage') return getVintageTheme(accent, bg, textColor);
+  if (preset === 'dark') return getDarkTheme(accent, bg, textColor);
+  if (preset === 'pastel') return getPastelTheme(accent, bg, textColor);
+  return getVintageTheme(accent, bg, textColor);
 }
 
-function getVintageTheme(accent, bg, textColor, cardColor) {
+function getVintageTheme(accent, bg, textColor) {
   const text = textColor || '#1f1a14';
   return {
     name: 'vintage',
@@ -2529,12 +2898,12 @@ function getVintageTheme(accent, bg, textColor, cardColor) {
     repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(31,26,20,0.06) 28px, rgba(31,26,20,0.06) 29px),
     repeating-linear-gradient(90deg, transparent, transparent 28px, rgba(31,26,20,0.04) 28px, rgba(31,26,20,0.04) 29px);
 }`,
-    cardBg: cardColor || '#fbf8f0',
+    cardBg: '#fbf8f0',
     cardShadow: '0 1px 3px rgba(31,26,20,0.08), 0 8px 24px rgba(31,26,20,0.05)'
   };
 }
 
-function getDarkTheme(accent, bg, textColor, cardColor) {
+function getDarkTheme(accent, bg, textColor) {
   const text = textColor || '#e8f4fd';
   return {
     name: 'dark',
@@ -2565,12 +2934,12 @@ function getDarkTheme(accent, bg, textColor, cardColor) {
   0%, 100% { opacity: 0.2; transform: scale(1); }
   50% { opacity: 1; transform: scale(1.3); }
 }`,
-    cardBg: cardColor || shiftColor(bg, 0.05),
+    cardBg: shiftColor(bg, 0.05),
     cardShadow: '0 4px 12px rgba(0,0,0,0.3)'
   };
 }
 
-function getPastelTheme(accent, bg, textColor, cardColor) {
+function getPastelTheme(accent, bg, textColor) {
   const text = textColor || '#3a2c33';
   return {
     name: 'pastel',
@@ -2595,7 +2964,7 @@ function getPastelTheme(accent, bg, textColor, cardColor) {
     radial-gradient(ellipse 40% 30% at 90% 80%, ${rgba(accent, 0.10)}, transparent 50%),
     radial-gradient(ellipse 30% 30% at 80% 20%, rgba(126, 181, 212, 0.18), transparent 50%);
 }`,
-    cardBg: cardColor || '#ffffff',
+    cardBg: '#ffffff',
     cardShadow: '0 2px 6px rgba(58, 44, 51, 0.05), 0 12px 32px rgba(58, 44, 51, 0.07)'
   };
 }
@@ -3002,6 +3371,9 @@ ${t.extraBgCSS}
   cursor: default;
   font-weight: 700;
   padding-left: 3.6rem;
+  /* Min wysokość, żeby kreska pod numerkiem miała sensowną długość.
+     Dla 1-liniowych treści klasa .single-line chowa kreskę. */
+  min-height: 5rem;
 }
 .match-item.matched::before {
   content: attr(data-pair);
@@ -3019,10 +3391,16 @@ ${t.extraBgCSS}
 .match-item.matched::after {
   content: '';
   position: absolute;
-  top: 3.4rem; bottom: 0.8rem; left: 3.05rem;
-  width: 1.5px;
+  /* Numerek ma top 0.95rem i wysokość 32px (~2rem) -> kończy się na ~2.95rem.
+     Kreska startuje 0.1rem pod nim i schodzi do dolnego paddingu (1rem od dołu).
+     Min-height 5rem na kafelku gwarantuje min ~1rem wysokości kreski. */
+  top: 3.05rem;
+  bottom: 1rem;
+  left: 3.05rem;
+  width: 2px;
+  border-radius: 1px;
   background: var(--pair-color, currentColor);
-  opacity: 0.4;
+  opacity: 0.55;
 }
 /* Jeśli treść jest jednoliniowa (krótka), numerek się centruje */
 .match-item.matched.single-line::before {
@@ -3757,6 +4135,345 @@ ${t.extraBgCSS}
   height: 50px;
   width: auto;
 }
+
+/* ===== GAP FILL ===== */
+.gap-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.gap-card {
+  background: var(--ws-surface);
+  border: 1.5px solid var(--ws-border);
+  border-radius: 12px;
+  padding: 1.25rem 1.4rem;
+  transition: border-color 0.25s, background 0.25s;
+}
+.gap-card.done {
+  border-color: var(--ws-accent);
+  background: var(--ws-accent-soft);
+}
+.gap-sentence {
+  font-family: var(--ws-body);
+  font-size: 1.18rem;
+  line-height: 2.1;
+  color: var(--ws-text);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem;
+}
+.gap-sentence .tts-btn-gap {
+  margin-left: 0.4rem;
+}
+.gap-input {
+  display: inline-block;
+  font-family: var(--ws-mono);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.35rem 0.7rem;
+  margin: 0 0.15rem;
+  background: var(--ws-bg);
+  border: none;
+  border-bottom: 2.5px solid var(--ws-accent);
+  border-radius: 6px 6px 0 0;
+  color: var(--ws-text);
+  text-align: center;
+  min-width: 80px;
+  transition: background 0.18s, border-color 0.18s;
+}
+.gap-input:focus {
+  outline: none;
+  background: var(--ws-accent-soft);
+}
+.gap-input.gap-correct {
+  background: var(--ws-ok-bg);
+  border-bottom-color: var(--ws-ok);
+  color: var(--ws-ok);
+}
+.gap-input.gap-wrong {
+  background: var(--ws-no-bg);
+  border-bottom-color: var(--ws-no);
+  color: var(--ws-no);
+  animation: wsShake 0.4s;
+}
+.gap-input::placeholder {
+  color: var(--ws-text-dim);
+  opacity: 0.55;
+  font-weight: 400;
+}
+.gap-translation {
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px dashed var(--ws-border);
+  font-size: 0.98rem;
+  color: var(--ws-text-dim);
+  display: none;
+  animation: wsFadeIn 0.4s ease-out;
+}
+.gap-translation.show { display: block; }
+.gap-translation-label {
+  font-family: var(--ws-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ws-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-right: 0.35rem;
+}
+.gap-translation-text {
+  color: var(--ws-text);
+  font-style: italic;
+}
+
+/* ===== TRANSLATE ===== */
+.trans-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+.trans-card {
+  background: var(--ws-surface);
+  border: 1.5px solid var(--ws-border);
+  border-radius: 12px;
+  padding: 1.25rem 1.4rem;
+  transition: border-color 0.25s, background 0.25s;
+}
+.trans-card.done {
+  border-color: var(--ws-accent);
+  background: var(--ws-accent-soft);
+}
+.trans-pl {
+  display: flex;
+  align-items: baseline;
+  gap: 0.65rem;
+  margin-bottom: 0.85rem;
+}
+.trans-pl-label {
+  font-family: var(--ws-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--ws-accent);
+  background: var(--ws-accent-soft);
+  border: 1px solid var(--ws-accent);
+  border-radius: 4px;
+  padding: 0.18rem 0.45rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  flex-shrink: 0;
+}
+.trans-pl-text {
+  font-family: var(--ws-body);
+  font-size: 1.18rem;
+  font-weight: 600;
+  color: var(--ws-text);
+  line-height: 1.4;
+}
+.trans-input-row {
+  display: flex;
+  gap: 0.6rem;
+  align-items: stretch;
+}
+.trans-input {
+  flex: 1;
+  font-family: var(--ws-body);
+  font-size: 1.05rem;
+  padding: 0.7rem 0.9rem;
+  background: var(--ws-bg);
+  border: 1.5px solid var(--ws-border-strong);
+  border-radius: 9px;
+  color: var(--ws-text);
+  resize: vertical;
+  min-height: 3rem;
+  line-height: 1.45;
+  transition: border-color 0.18s, background 0.18s;
+}
+.trans-input:focus {
+  outline: none;
+  border-color: var(--ws-accent);
+}
+.trans-input.trans-correct {
+  background: var(--ws-ok-bg);
+  border-color: var(--ws-ok);
+  color: var(--ws-ok);
+  font-weight: 600;
+}
+.trans-input.trans-wrong {
+  border-color: var(--ws-no);
+  background: var(--ws-no-bg);
+  color: var(--ws-no);
+  animation: wsShake 0.4s;
+}
+.trans-input-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+.trans-check, .trans-hint-btn, .tts-btn-trans {
+  width: 2.4rem; height: 2.4rem;
+  border-radius: 8px;
+  border: 1.5px solid var(--ws-border-strong);
+  background: var(--ws-bg);
+  color: var(--ws-text);
+  cursor: pointer;
+  font-size: 1.05rem;
+  font-weight: 700;
+  display: grid; place-items: center;
+  transition: transform 0.15s, border-color 0.15s, background 0.15s;
+}
+.trans-check { color: var(--ws-ok); border-color: var(--ws-ok); }
+.trans-check:hover { background: var(--ws-ok-bg); transform: scale(1.05); }
+.trans-hint-btn { color: var(--ws-accent); border-color: var(--ws-accent); }
+.trans-hint-btn:hover { background: var(--ws-accent-soft); transform: scale(1.05); }
+.trans-correct {
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px dashed var(--ws-border);
+  font-size: 0.98rem;
+  color: var(--ws-text-dim);
+  display: none;
+  animation: wsFadeIn 0.4s ease-out;
+}
+.trans-correct.show { display: block; }
+.trans-correct-label {
+  font-family: var(--ws-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ws-ok);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-right: 0.35rem;
+}
+.trans-correct-text {
+  color: var(--ws-text);
+  font-style: italic;
+}
+
+/* ===== WRITING ===== */
+.write-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.write-card {
+  background: var(--ws-surface);
+  border: 1.5px solid var(--ws-border);
+  border-radius: 14px;
+  padding: 1.6rem 1.7rem;
+  transition: border-color 0.25s;
+}
+.write-card.done {
+  border-color: var(--ws-accent);
+}
+.write-prompt {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.1rem;
+  padding-bottom: 1.1rem;
+  border-bottom: 1px dashed var(--ws-border);
+}
+.write-prompt-pl, .write-prompt-en {
+  font-family: var(--ws-body);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--ws-text);
+  line-height: 1.4;
+  display: flex;
+  align-items: baseline;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+.write-prompt-en {
+  font-style: italic;
+  color: var(--ws-text-dim);
+  font-size: 1.18rem;
+}
+.write-prompt-flag {
+  font-family: var(--ws-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--ws-accent);
+  background: var(--ws-accent-soft);
+  border: 1px solid var(--ws-accent);
+  border-radius: 4px;
+  padding: 0.18rem 0.45rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  flex-shrink: 0;
+  align-self: center;
+}
+.write-area {
+  width: 100%;
+  font-family: var(--ws-body);
+  font-size: 1.08rem;
+  padding: 1rem 1.15rem;
+  background: var(--ws-bg);
+  border: 1.5px solid var(--ws-border-strong);
+  border-radius: 10px;
+  color: var(--ws-text);
+  resize: vertical;
+  min-height: 8rem;
+  line-height: 1.55;
+  transition: border-color 0.18s;
+}
+.write-area:focus {
+  outline: none;
+  border-color: var(--ws-accent);
+}
+.write-card.done .write-area {
+  background: var(--ws-accent-soft);
+  border-color: var(--ws-accent);
+}
+.write-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.85rem;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.write-counter {
+  font-family: var(--ws-mono);
+  font-size: 0.85rem;
+  color: var(--ws-text-dim);
+}
+.write-counter-num {
+  color: var(--ws-text);
+  font-weight: 700;
+}
+.write-save {
+  font-family: var(--ws-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.55rem 1.1rem;
+  border-radius: 8px;
+  border: 1.5px solid var(--ws-border-strong);
+  background: var(--ws-bg);
+  color: var(--ws-text-dim);
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s, background 0.15s, color 0.15s;
+}
+.write-save.write-save-ready {
+  border-color: var(--ws-accent);
+  color: var(--ws-accent);
+  background: var(--ws-accent-soft);
+}
+.write-save.write-save-ready:hover {
+  background: var(--ws-accent);
+  color: var(--ws-bg);
+  transform: scale(1.03);
+}
+.write-save:disabled {
+  opacity: 0.7;
+  cursor: default;
+  background: var(--ws-ok-bg);
+  border-color: var(--ws-ok);
+  color: var(--ws-ok);
+  transform: none;
+}
+
 @media print {
   .ws-logo-bottom { display: none; }
   .ws-logo-top img { height: 90px; }
@@ -3801,8 +4518,18 @@ ${t.extraBgCSS}
   }
   .cornell-card .cornell-write { display: none !important; }
   .cornell-q-arrow { display: none !important; }
-  /* Sekcje nie łamać między stronami jeśli się da */
-  .ws-section { page-break-inside: avoid; break-inside: avoid; }
+  /* Gap-fill: pokaż tłumaczenia, ukryj inputy puste -> jako linia do napisania */
+  .gap-translation { display: block !important; }
+  /* Translate: ukryj wzór (żeby był do uzupełnienia) - chyba że kliknięte solve */
+  .trans-input-actions { display: none !important; }
+  /* Writing: ukryj licznik i przycisk Gotowe (puste pole na pisanie) */
+  .write-footer { display: none !important; }
+  .write-area {
+    min-height: 12rem !important;
+    background: transparent !important;
+  }
+  /* Sekcje płyną normalnie między stronami - mogą się łamać. */
+  /* (wcześniej była tu reguła page-break-inside: avoid, która wypychała każdą sekcję na osobną stronę) */
 }
 `;
 }
