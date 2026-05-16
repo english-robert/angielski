@@ -1,924 +1,980 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Materiały Roberta – Nauka Angielskiego</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --pink: #ff7aac;
-      --pink-dark: #d13d76;
-      --pink-light: #ffe5f0;
-      --pink-mid: #ffd6e8;
-      --teal: #19ac91;
-      --teal-light: #d8f8f2;
-      --blue: #0450b4;
-      --blue-light: #cce2ff;
-      --text: #121117;
-      --text-mid: #4d4c5c;
-      --text-muted: #6a697c;
-      --border: #dcdce5;
-      --border-light: #ebebf1;
-      --bg: #ffffff;
-      --bg-soft: #f4f4f8;
-      --shadow-sm: 0 1px 4px rgba(18,17,23,0.08);
-      --shadow: 0 4px 16px rgba(18,17,23,0.10);
-      --shadow-md: 0 8px 32px rgba(18,17,23,0.13);
-      --radius: 12px;
-      --radius-sm: 8px;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-    }
-
-    /* NAV */
-    nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 32px;
-      height: 64px;
-      border-bottom: 1px solid var(--border);
-      background: #fff;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .nav-logo { display: flex; align-items: center; }
-
-    .nav-link {
-      font-size: 0.875rem;
-      color: var(--text-mid);
-      text-decoration: none;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 14px;
-      border-radius: var(--radius-sm);
-      border: 1.5px solid var(--border);
-      transition: border-color 0.15s, background 0.15s;
-    }
-
-    .nav-link:hover { border-color: var(--pink); background: var(--pink-light); }
-
-    /* HERO */
-    .hero {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 48px 24px 0;
-    }
-
-    .profile-header {
-      display: flex;
-      align-items: flex-start;
-      gap: 24px;
-      padding-bottom: 32px;
-      border-bottom: 1px solid var(--border-light);
-    }
-
-    .photo-wrap {
-      position: relative;
-      flex-shrink: 0;
-    }
-
-    .photo-wrap img {
-      width: 100px;
-      height: 100px;
-      border-radius: 4px;
-      object-fit: cover;
-      display: block;
-      border: 1.5px solid rgba(18,17,23,0.15);
-    }
-
-    .profile-info { flex: 1; }
-
-    .profile-name {
-      font-size: 1.75rem;
-      font-weight: 800;
-      color: var(--text);
-      letter-spacing: -0.02em;
-      margin-bottom: 4px;
-    }
-
-    .profile-sub {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.875rem;
-      color: var(--text-muted);
-      margin-bottom: 10px;
-      flex-wrap: wrap;
-    }
-
-    .profile-sub .dot { color: var(--border); }
-
-    .flag-img { width: 16px; height: 12px; vertical-align: middle; }
-
-    .profile-tagline {
-      font-size: 0.9rem;
-      color: var(--text-mid);
-      line-height: 1.5;
-      margin-bottom: 16px;
-    }
-
-    .badge-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      padding: 5px 12px;
-      border-radius: 20px;
-    }
-
-    .badge-teal {
-      background: var(--teal-light);
-      color: var(--teal);
-    }
-
-    .badge-blue {
-      background: var(--blue-light);
-      color: var(--blue);
-    }
-
-    .badge svg { width: 14px; height: 14px; fill: currentColor; }
-
-    /* STATS */
-    .stats-row {
-      display: flex;
-      gap: 32px;
-      padding: 24px 0;
-      border-bottom: 1px solid var(--border-light);
-    }
-
-    .stat-item { display: flex; flex-direction: column; gap: 2px; }
-
-    .stat-value {
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: var(--text);
-      letter-spacing: -0.02em;
-    }
-
-    .stat-label {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-    }
-
-    /* BADGES SECTION */
-    .badges-section {
-      padding: 28px 0;
-      border-bottom: 1px solid var(--border-light);
-    }
-
-    .section-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      margin-bottom: 16px;
-    }
-
-    .section-row:last-child { margin-bottom: 0; }
-
-    .section-icon {
-      width: 20px;
-      height: 20px;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-
-    .section-icon svg {
-      width: 20px;
-      height: 20px;
-      fill: var(--teal);
-    }
-
-    .section-icon-blue svg { fill: var(--blue); }
-
-    .section-text strong {
-      display: block;
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 2px;
-    }
-
-    .section-text p {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
-
-    .details-link {
-      color: var(--text);
-      font-weight: 700;
-      text-decoration: underline;
-      transition: color 0.15s;
-    }
-
-    .details-link:hover {
-      color: var(--pink);
-    }
-
-    /* PREPLY BUTTON */
-    .btn-pink {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      background: var(--pink);
-      color: var(--text);
-      font-weight: 600;
-      font-size: 0.9rem;
-      padding: 12px 24px;
-      border: 2px solid var(--text);
-      border-radius: 8px;
-      text-decoration: none;
-      transition: background 0.15s;
-      margin-top: 20px;
-      box-sizing: border-box;
-    }
-
-    .btn-pink:hover { background: #fe9fc3; }
-
-    /* MATERIALS SECTION */
-    .materials {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 48px 24px 80px;
-    }
-
-    .materials-title {
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: var(--text);
-      letter-spacing: -0.02em;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .materials-count {
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--pink-dark);
-      background: var(--pink-light);
-      padding: 4px 12px;
-      border-radius: 20px;
-      letter-spacing: 0;
-    }
-
-    .materials-sub {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      margin-bottom: 32px;
-    }
-
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 16px;
-    }
-
-    .card {
-      background: #fff;
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      transition: border-color 0.15s, box-shadow 0.15s;
-    }
-
-    .card:hover {
-      border-color: var(--pink);
-      box-shadow: var(--shadow);
-    }
-
-    .card-icon-wrap {
-      width: 40px; height: 40px;
-      background: var(--pink-light);
-      border-radius: var(--radius-sm);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-    }
-
-    .card-title {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: var(--text);
-    }
-
-    .card-desc {
-      font-size: 0.82rem;
-      color: var(--text-muted);
-      line-height: 1.55;
-      flex: 1;
-    }
-
-    .card-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      background: var(--pink);
-      color: var(--text);
-      font-size: 0.82rem;
-      font-weight: 600;
-      padding: 9px 16px;
-      border-radius: var(--radius-sm);
-      text-decoration: none;
-      border: 2px solid var(--text);
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-
-    .card-btn:hover { background: #fe9fc3; }
-
-    /* DIVIDER */
-    .section-divider {
-      height: 1px;
-      background: var(--border-light);
-      margin: 0 24px;
-    }
-
-    /* FOOTER */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 24px 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .footer-copy { font-size: 0.8rem; color: var(--text-muted); }
-
-    .footer-preply {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
-    /* RECOMMENDED RESOURCES */
-    .recommended {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 48px 24px 64px;
-    }
-
-    .recommended-title {
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: var(--text);
-      letter-spacing: -0.02em;
-      margin-bottom: 8px;
-    }
-
-    .recommended-sub {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      margin-bottom: 24px;
-    }
-
-    .rec-list {
-      border-top: 1px solid var(--border-light);
-    }
-
-    .rec-item {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 16px 12px;
-      border-bottom: 1px solid var(--border-light);
-      text-decoration: none;
-      color: inherit;
-      transition: background 0.15s;
-      border-radius: 0;
-    }
-
-    .rec-item:hover {
-      background: var(--bg-soft);
-    }
-
-    .rec-logo {
-      width: 104px;
-      height: 104px;
-      border-radius: var(--radius-sm);
-      object-fit: contain;
-      flex-shrink: 0;
-      border: 1px solid var(--border-light);
-      background: #fff;
-      padding: 8px;
-    }
-
-    .rec-logo-photo {
-      object-fit: cover;
-      padding: 0;
-    }
-
-    .rec-logo-dark {
-      background: #0b1a3b;
-      border-color: #0b1a3b;
-    }
-
-    .rec-content {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .rec-name {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 3px;
-    }
-
-    .rec-desc {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
-
-    .rec-arrow {
-      flex-shrink: 0;
-      width: 16px;
-      height: 16px;
-      color: var(--text-muted);
-      opacity: 0;
-      transition: opacity 0.15s, transform 0.15s;
-    }
-
-    .rec-item:hover .rec-arrow {
-      opacity: 1;
-      transform: translateX(2px);
-    }
-
-    /* KONKRETNE MATERIAŁY (PICKS) */
-    .picks {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 48px 24px 64px;
-    }
-
-    .picks-title {
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: var(--text);
-      letter-spacing: -0.02em;
-      margin-bottom: 8px;
-    }
-
-    .picks-sub {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      margin-bottom: 24px;
-    }
-
-    .picks-list {
-      border-top: 1px solid var(--border-light);
-    }
-
-    .pick-item {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 14px 12px;
-      border-bottom: 1px solid var(--border-light);
-      text-decoration: none;
-      color: inherit;
-      transition: background 0.15s;
-    }
-
-    .pick-item:hover {
-      background: var(--bg-soft);
-    }
-
-    .pick-icon {
-      width: 34px;
-      height: 34px;
-      border-radius: var(--radius-sm);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .pick-icon-yt {
-      background: #ff0000;
-    }
-
-    .pick-icon-article {
-      background: var(--bg-soft);
-      border: 1px solid var(--border-light);
-    }
-
-    .pick-content {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .pick-name {
-      font-size: 0.88rem;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 2px;
-    }
-
-    .pick-meta {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-    }
-
-    .pick-tags {
-      display: flex;
-      gap: 5px;
-      flex-shrink: 0;
-    }
-
-    .pick-tag {
-      font-size: 0.72rem;
-      font-weight: 600;
-      padding: 3px 10px;
-      border-radius: 20px;
-    }
-
-    .pick-tag-vocab { background: var(--blue-light); color: var(--blue); }
-    .pick-tag-grammar { background: #fff3cd; color: #856404; }
-    .pick-tag-speaking { background: var(--teal-light); color: var(--teal); }
-    .pick-tag-beginner { background: var(--pink-light); color: var(--pink-dark); }
-
-    .pick-arrow {
-      flex-shrink: 0;
-      width: 16px;
-      height: 16px;
-      color: var(--text-muted);
-      opacity: 0;
-      transition: opacity 0.15s, transform 0.15s;
-    }
-
-    .pick-item:hover .pick-arrow {
-      opacity: 1;
-      transform: translateX(2px);
-    }
-
-    /* COMING SOON */
-    .coming-soon {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 16px;
-      text-align: center;
-      border-bottom: 1px solid var(--border-light);
-    }
-
-    .coming-soon-icon {
-      font-size: 2rem;
-      margin-bottom: 12px;
-    }
-
-    .coming-soon-text {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 4px;
-    }
-
-    .coming-soon-sub {
-      font-size: 0.82rem;
-      color: var(--text-muted);
-    }
-
-    /* AUTH GATE */
-    .gated-wrapper {
-      position: relative;
-    }
-
-    .gated-content {
-      filter: blur(8px);
-      pointer-events: none;
-      user-select: none;
-    }
-
-    .gated-content.unlocked {
-      filter: none;
-      pointer-events: auto;
-      user-select: auto;
-    }
-
-    .gate-overlay {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-      background: rgba(255,255,255,0.6);
-      border-radius: var(--radius);
-      padding: 32px 24px;
-      text-align: center;
-    }
-
-    .gate-overlay.hidden {
-      display: none;
-    }
-
-    .gate-lock {
-      font-size: 2.5rem;
-      margin-bottom: 12px;
-    }
-
-    .gate-title {
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: var(--text);
-      margin-bottom: 6px;
-    }
-
-    .gate-desc {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      max-width: 360px;
-      line-height: 1.5;
-      margin-bottom: 20px;
-    }
-
-    .gate-form {
-      display: flex;
-      gap: 8px;
-      width: 100%;
-      max-width: 320px;
-    }
-
-    .gate-input {
-      flex: 1;
-      padding: 10px 14px;
-      border: 2px solid var(--border);
-      border-radius: var(--radius-sm);
-      font-family: 'Inter', sans-serif;
-      font-size: 0.85rem;
-      outline: none;
-      transition: border-color 0.15s;
-    }
-
-    .gate-input:focus {
-      border-color: var(--pink);
-    }
-
-    .gate-input.gate-error {
-      border-color: #e74c3c;
-      animation: shake 0.3s;
-    }
-
-    .gate-submit {
-      padding: 10px 20px;
-      background: var(--pink);
-      color: var(--text);
-      font-weight: 600;
-      font-size: 0.85rem;
-      border: 2px solid var(--text);
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      font-family: 'Inter', sans-serif;
-      transition: background 0.15s;
-      white-space: nowrap;
-    }
-
-    .gate-submit:hover {
-      background: #fe9fc3;
-    }
-
-    .gate-cta {
-      margin-top: 14px;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
-    .gate-cta a {
-      color: var(--text);
-      font-weight: 700;
-      text-decoration: underline;
-      transition: color 0.15s;
-    }
-
-    .gate-cta a:hover {
-      color: var(--pink);
-    }
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-6px); }
-      75% { transform: translateX(6px); }
-    }
-
-    @media (max-width: 600px) {
-      .profile-header { flex-direction: column; }
-      .stats-row { gap: 20px; flex-wrap: wrap; }
-      nav { padding: 0 16px; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Materiały Roberta — Nauka Angielskiego</title>
+
+<!-- Fonts: Bricolage Grotesque (display) + Montserrat (body) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+/* ═════════════════════════════════════════
+   RESET + TOKENS
+═════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg: #fafafa;            /* jasny szary */
+  --bg-alt: #f3f3f5;        /* nieco ciemniejsze sekcje */
+  --paper: #ffffff;         /* karty */
+  --ink: #0f1115;           /* prawie czerń, ciepły grafit */
+  --ink-soft: #2e3038;
+  --ink-muted: #6a6d78;
+  --line: #e5e6ea;          /* neutralne linie */
+  --line-strong: #c8cad0;
+  --accent: #1e2a5e;        /* granat z logo */
+  --accent-deep: #0f1840;
+  --accent-soft: #e7e9f2;
+  --gold: #b8995a;
+  --tag-blue: #1e2a5e;
+  --tag-blue-bg: #e7e9f2;
+  --tag-green: #2d6b4f;
+  --tag-green-bg: #dbeee2;
+  --tag-amber: #8a6d2b;
+  --tag-amber-bg: #f5ecd0;
+  --tag-rose: #8a3a4c;
+  --tag-rose-bg: #f4dde2;
+  --shadow-soft: 0 1px 3px rgba(15,17,21,0.04), 0 1px 2px rgba(15,17,21,0.06);
+  --shadow-mid: 0 4px 20px rgba(15,17,21,0.06), 0 2px 6px rgba(15,17,21,0.04);
+  --shadow-card: 0 30px 60px -20px rgba(30,42,94,0.18), 0 18px 36px -18px rgba(15,17,21,0.10);
+
+  --display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --sans: 'Montserrat', system-ui, sans-serif;
+}
+
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-weight:400;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+
+/* ═════════════════════════════════════════
+   SCROLL PROGRESS
+═════════════════════════════════════════ */
+#scroll-progress{
+  position:fixed;top:0;left:0;
+  height:2px;width:0%;
+  background:var(--accent);
+  z-index:9999;
+  transition:width 0.05s linear;
+}
+
+/* ═════════════════════════════════════════
+   NAV
+═════════════════════════════════════════ */
+nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(251,248,243,0.88);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+  height:72px;
+  display:flex;align-items:center;
+}
+.nav-inner{
+  max-width:1100px;width:100%;margin:0 auto;
+  padding:0 2rem;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.nav-logo{
+  display:flex;align-items:baseline;gap:0.6rem;
+  font-family:var(--display);
+  font-weight:800;
+  font-size:1rem;
+  letter-spacing:-0.025em;
+}
+.nav-logo .mark{
+  color:var(--accent);
+  font-weight:800;
+  font-size:1.1rem;
+  letter-spacing:-0.02em;
+}
+.nav-logo .nav-logo-sub{
+  font-family:var(--sans);
+  font-weight:500;
+  font-size:0.72rem;
+  text-transform:uppercase;
+  letter-spacing:0.18em;
+  color:var(--ink-muted);
+}
+.nav-links{
+  display:flex;gap:2rem;
+  list-style:none;
+  font-size:0.74rem;
+  text-transform:uppercase;
+  letter-spacing:0.16em;
+  font-weight:500;
+}
+.nav-links a{
+  color:var(--ink-soft);
+  transition:color 0.2s;
+  position:relative;
+  padding:0.4rem 0;
+}
+.nav-links a::after{
+  content:'';
+  position:absolute;
+  left:0;right:0;bottom:0;
+  height:1px;
+  background:var(--accent);
+  transform:scaleX(0);
+  transform-origin:left;
+  transition:transform 0.3s cubic-bezier(.16,1,.3,1);
+}
+.nav-links a:hover{color:var(--accent)}
+.nav-links a:hover::after{transform:scaleX(1)}
+
+/* ═════════════════════════════════════════
+   LAYOUT
+═════════════════════════════════════════ */
+.wrap{
+  max-width:1100px;
+  margin:0 auto;
+  padding:0 2rem;
+  position:relative;
+  z-index:2;
+}
+section{position:relative;z-index:2}
+
+.sec-eyebrow{
+  display:inline-flex;align-items:center;gap:0.8rem;
+  font-size:0.7rem;
+  text-transform:uppercase;
+  letter-spacing:0.22em;
+  font-weight:600;
+  color:var(--ink-muted);
+  margin-bottom:1.2rem;
+}
+.sec-eyebrow::before{
+  content:'';
+  width:32px;height:1px;
+  background:var(--line-strong);
+}
+
+.sec-title{
+  font-family:var(--display);
+  font-weight:700;
+  font-size:clamp(2rem, 4.2vw, 3.4rem);
+  line-height:1.05;
+  letter-spacing:-0.035em;
+  color:var(--ink);
+  margin-bottom:0.8rem;
+}
+.sec-title em{
+  font-style:normal;
+  color:var(--accent);
+  font-weight:700;
+}
+.sec-lead{
+  font-size:1.02rem;
+  color:var(--ink-soft);
+  max-width:60ch;
+  line-height:1.65;
+}
+
+/* SCROLL REVEAL */
+.reveal{
+  opacity:0;
+  transform:translateY(24px);
+  transition:opacity 0.8s cubic-bezier(.16,1,.3,1), transform 0.8s cubic-bezier(.16,1,.3,1);
+}
+.reveal.in{opacity:1;transform:none}
+.reveal[data-delay="1"]{transition-delay:0.08s}
+.reveal[data-delay="2"]{transition-delay:0.16s}
+.reveal[data-delay="3"]{transition-delay:0.24s}
+
+/* ═════════════════════════════════════════
+   HERO / PROFIL
+═════════════════════════════════════════ */
+#hero{
+  padding:5rem 0 5rem;
+  position:relative;
+}
+
+.hero-inner{
+  max-width:1100px;
+  margin:0 auto;
+}
+
+/* Główny układ: logo po lewej | treść po prawej */
+.hero-main-grid{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:4.5rem;
+  align-items:center;
+}
+.hero-logo-col{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:240px;
+  flex-shrink:0;
+}
+.hero-logo-inline{
+  width:100%;
+  max-width:240px;
+  height:auto;
+  display:block;
+  animation:logo-float 6s ease-in-out infinite;
+}
+@keyframes logo-float{
+  0%, 100% {transform:translateY(0)}
+  50% {transform:translateY(-6px)}
+}
+.hero-content-col{
+  min-width:0;
+}
+
+.eyebrow{
+  font-size:0.72rem;
+  text-transform:uppercase;
+  letter-spacing:0.28em;
+  color:var(--accent);
+  font-weight:600;
+  margin-bottom:1.5rem;
+  display:flex;align-items:center;gap:0.8rem;
+}
+.eyebrow::before{
+  content:'';
+  width:40px;height:1px;
+  background:var(--accent);
+}
+
+.hero-identity{
+  display:flex;
+  align-items:center;
+  gap:1.2rem;
+  margin-bottom:1.8rem;
+}
+.hero-avatar{
+  width:72px;
+  height:72px;
+  border-radius:50%;
+  overflow:hidden;
+  flex-shrink:0;
+  background:var(--accent-soft);
+  box-shadow:var(--shadow-mid);
+  border:3px solid var(--paper);
+  outline:1px solid var(--line);
+}
+.hero-avatar img{
+  width:100%;height:100%;
+  object-fit:cover;
+}
+.hero-identity-text{
+  flex:1;
+  min-width:0;
+}
+.profile-name{
+  font-family:var(--display);
+  font-weight:700;
+  font-size:clamp(1.8rem, 3.5vw, 2.4rem);
+  line-height:1.05;
+  letter-spacing:-0.035em;
+  color:var(--ink);
+  margin-bottom:0.4rem;
+}
+.profile-name .em{
+  color:var(--accent);
+  font-weight:700;
+}
+.profile-sub-row{
+  display:flex;align-items:center;gap:0.6rem;
+  font-size:0.85rem;
+  color:var(--ink-muted);
+  flex-wrap:wrap;
+  font-weight:500;
+}
+.profile-sub-row .dot{color:var(--line-strong)}
+.profile-sub-row .flag-img{width:18px;height:13px;vertical-align:middle;border-radius:2px}
+.live-dot{
+  display:inline-block;
+  width:8px;height:8px;
+  background:#2d6b4f;
+  border-radius:50%;
+  position:relative;
+  margin-right:0.1rem;
+  vertical-align:middle;
+}
+.live-dot::after{
+  content:'';
+  position:absolute;
+  inset:-4px;
+  border-radius:50%;
+  border:2px solid #2d6b4f;
+  opacity:0;
+  animation:live-pulse 2s ease-out infinite;
+}
+@keyframes live-pulse{
+  0%   {transform:scale(0.6);opacity:0.8}
+  100% {transform:scale(1.6);opacity:0}
+}
+
+.profile-tagline{
+  font-family:var(--display);
+  font-weight:500;
+  font-size:1.25rem;
+  line-height:1.4;
+  letter-spacing:-0.015em;
+  color:var(--ink);
+  margin-bottom:1.8rem;
+  max-width:56ch;
+}
+.profile-tagline em{
+  color:var(--accent);
+  font-style:normal;
+  font-weight:600;
+}
+
+.badge-row{
+  display:flex;align-items:center;gap:0.6rem;
+  flex-wrap:wrap;
+}
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:0.4rem;
+  font-size:0.72rem;
+  font-weight:600;
+  padding:0.45rem 0.9rem;
+  border-radius:999px;
+  letter-spacing:0.04em;
+  border:1px solid;
+  transition:transform 0.25s cubic-bezier(.16,1,.3,1), box-shadow 0.25s;
+  cursor:default;
+  position:relative;
+  overflow:hidden;
+}
+.badge::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.5) 50%, transparent 70%);
+  transform:translateX(-100%);
+  transition:transform 0.6s cubic-bezier(.16,1,.3,1);
+  pointer-events:none;
+}
+.badge:hover{
+  transform:scale(1.05);
+  box-shadow:0 4px 12px rgba(15,17,21,0.08);
+}
+.badge:hover::before{
+  transform:translateX(100%);
+}
+.badge svg{width:14px;height:14px;fill:currentColor;position:relative;z-index:1}
+.badge-c1{
+  background:var(--tag-green-bg);
+  color:var(--tag-green);
+  border-color:rgba(45,107,79,0.2);
+}
+.badge-pro{
+  background:var(--accent-soft);
+  color:var(--accent);
+  border-color:rgba(30,42,94,0.2);
+}
+
+/* ═════════════════════════════════════════
+   INFO PANEL (Profesjonalny lektor / Nauczany przedmiot)
+═════════════════════════════════════════ */
+#info-panel{
+  padding:4rem 0;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(135deg, #eef0f7 0%, #f3f3f5 50%, #eaecf3 100%);
+  position:relative;
+  overflow:hidden;
+}
+#info-panel::before{
+  content:'';
+  position:absolute;
+  top:-30%;left:-5%;
+  width:500px;height:500px;
+  background:radial-gradient(circle, rgba(30,42,94,0.18), transparent 60%);
+  pointer-events:none;
+  filter:blur(40px);
+}
+#info-panel::after{
+  content:'';
+  position:absolute;
+  bottom:-30%;right:-5%;
+  width:450px;height:450px;
+  background:radial-gradient(circle, rgba(184,153,90,0.15), transparent 60%);
+  pointer-events:none;
+  filter:blur(40px);
+}
+.info-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1.5rem;
+  position:relative;
+  z-index:2;
+}
+.info-card{
+  display:flex;
+  gap:1.2rem;
+  align-items:flex-start;
+  padding:1.8rem;
+  background:rgba(255,255,255,0.35);
+  backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  border:1px solid rgba(255,255,255,0.9);
+  border-radius:16px;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.9) inset,
+    0 -1px 0 rgba(255,255,255,0.4) inset,
+    0 10px 30px -10px rgba(15,17,21,0.15),
+    0 4px 12px -4px rgba(30,42,94,0.08);
+  transition:transform 0.3s cubic-bezier(.16,1,.3,1), box-shadow 0.3s, background 0.3s;
+  position:relative;
+}
+.info-card::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:16px;
+  background:linear-gradient(135deg, rgba(255,255,255,0.4) 0%, transparent 50%, rgba(255,255,255,0.1) 100%);
+  pointer-events:none;
+}
+.info-card:hover{
+  transform:scale(1.02);
+  background:rgba(255,255,255,0.5);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,1) inset,
+    0 -1px 0 rgba(255,255,255,0.5) inset,
+    0 20px 40px -12px rgba(15,17,21,0.2),
+    0 8px 16px -4px rgba(30,42,94,0.12);
+}
+.info-icon{
+  width:48px;height:48px;
+  flex-shrink:0;
+  border-radius:12px;
+  background:rgba(255,255,255,0.6);
+  backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.9);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.9),
+    0 2px 6px -2px rgba(30,42,94,0.15);
+  position:relative;
+  z-index:1;
+}
+.info-icon svg{width:22px;height:22px;fill:var(--accent)}
+.info-card .info-title{
+  font-family:var(--display);
+  font-weight:700;
+  font-size:1.15rem;
+  letter-spacing:-0.02em;
+  margin-bottom:0.35rem;
+  color:var(--ink);
+  position:relative;
+  z-index:1;
+}
+.info-card p{
+  font-size:0.92rem;
+  color:var(--ink-soft);
+  line-height:1.6;
+  position:relative;
+  z-index:1;
+}
+
+/* ═════════════════════════════════════════
+   MATERIALS — KARTY PRACY
+═════════════════════════════════════════ */
+#materials{
+  padding:7rem 0 5rem;
+}
+.materials-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:2rem;
+  flex-wrap:wrap;
+  margin-bottom:3rem;
+}
+.materials-count-pill{
+  font-size:0.72rem;
+  font-weight:600;
+  color:var(--accent);
+  background:var(--accent-soft);
+  padding:0.45rem 1rem;
+  border-radius:999px;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  border:1px solid rgba(30,42,94,0.15);
+  white-space:nowrap;
+}
+
+/* GATE OVERLAY */
+.gated-wrapper{position:relative}
+.gated-content{
+  filter:blur(8px);
+  pointer-events:none;
+  user-select:none;
+  transition:filter 0.4s;
+}
+.gated-content.unlocked{
+  filter:none;
+  pointer-events:auto;
+  user-select:auto;
+}
+.gate-overlay{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  z-index:10;
+  background:rgba(251,248,243,0.85);
+  backdrop-filter:blur(2px);
+  border-radius:8px;
+  padding:3rem 2rem;
+  text-align:center;
+}
+.gate-overlay.hidden{display:none}
+.gate-lock-icon{
+  width:56px;height:56px;
+  background:var(--accent);
+  color:var(--bg);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:1.2rem;
+  box-shadow:var(--shadow-mid);
+}
+.gate-lock-icon svg{width:24px;height:24px;stroke:currentColor;stroke-width:1.8;fill:none}
+.gate-title{
+  font-family:var(--display);
+  font-weight:700;
+  font-size:1.5rem;
+  letter-spacing:-0.025em;
+  color:var(--ink);
+  margin-bottom:0.5rem;
+}
+.gate-desc{
+  font-size:0.92rem;
+  color:var(--ink-soft);
+  max-width:42ch;
+  line-height:1.6;
+  margin-bottom:1.8rem;
+}
+.gate-form{
+  display:flex;
+  gap:0.5rem;
+  width:100%;
+  max-width:380px;
+}
+.gate-input{
+  flex:1;
+  padding:0.9rem 1.1rem;
+  background:var(--paper);
+  border:1px solid var(--line-strong);
+  border-radius:6px;
+  font-family:var(--sans);
+  font-size:0.92rem;
+  font-weight:500;
+  color:var(--ink);
+  outline:none;
+  transition:border-color 0.2s, box-shadow 0.2s;
+}
+.gate-input:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-soft);
+}
+.gate-input.gate-error{
+  border-color:#c0392b;
+  animation:shake 0.35s;
+}
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-6px)}
+  75%{transform:translateX(6px)}
+}
+.gate-submit{
+  padding:0.9rem 1.5rem;
+  background:var(--accent);
+  color:var(--bg);
+  font-weight:600;
+  font-size:0.8rem;
+  text-transform:uppercase;
+  letter-spacing:0.12em;
+  border-radius:6px;
+  cursor:pointer;
+  transition:background 0.2s, transform 0.2s;
+}
+.gate-submit:hover{
+  background:var(--accent-deep);
+  transform:scale(1.03);
+}
+.gate-cta{
+  margin-top:1.2rem;
+  font-size:0.85rem;
+  color:var(--ink-muted);
+}
+.gate-cta a{
+  color:var(--accent);
+  font-weight:600;
+  border-bottom:1px solid var(--accent);
+  transition:opacity 0.2s;
+}
+.gate-cta a:hover{opacity:0.75}
+
+/* CARDS GRID — czyste karty z hover scale + glow */
+.cards-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
+  gap:1.5rem;
+}
+.card{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:1.75rem;
+  display:flex;
+  flex-direction:column;
+  gap:1rem;
+  position:relative;
+  transition:transform 0.3s cubic-bezier(.16,1,.3,1), box-shadow 0.3s, border-color 0.2s;
+  box-shadow:var(--shadow-soft);
+  min-height:320px;
+  overflow:hidden;
+}
+.card::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(30,42,94,0.08), transparent 50%);
+  opacity:0;
+  transition:opacity 0.3s;
+  pointer-events:none;
+}
+.card:hover{
+  transform:scale(1.02);
+  border-color:var(--line-strong);
+  box-shadow:var(--shadow-card);
+}
+.card:hover::before{opacity:1}
+
+.card-icon-wrap{
+  width:44px;height:44px;
+  background:var(--accent-soft);
+  border-radius:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1.3rem;
+}
+.card-title{
+  font-family:var(--display);
+  font-weight:700;
+  font-size:1.1rem;
+  letter-spacing:-0.02em;
+  line-height:1.25;
+  color:var(--ink);
+}
+.card-desc{
+  font-size:0.83rem;
+  color:var(--ink-soft);
+  line-height:1.55;
+  flex:1;
+}
+.card-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:0.5rem;
+  background:var(--ink);
+  color:var(--bg);
+  font-size:0.76rem;
+  font-weight:600;
+  padding:0.7rem 1rem;
+  border-radius:6px;
+  text-transform:uppercase;
+  letter-spacing:0.1em;
+  transition:background 0.2s, transform 0.25s cubic-bezier(.16,1,.3,1);
+}
+.card-btn:hover{
+  background:var(--accent);
+  transform:scale(1.03);
+}
+.card-btn .arrow{
+  transition:transform 0.3s cubic-bezier(.16,1,.3,1);
+}
+.card-btn:hover .arrow{transform:translateX(3px)}
+
+/* ═════════════════════════════════════════
+   RECOMMENDED MATERIALS
+═════════════════════════════════════════ */
+#recommended{
+  padding:5rem 0;
+  background:var(--bg-alt);
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+}
+.rec-head{margin-bottom:2.5rem}
+
+.rec-list{
+  border-top:1px solid var(--line);
+  background:var(--paper);
+  border-left:1px solid var(--line);
+  border-right:1px solid var(--line);
+  border-radius:8px;
+  overflow:hidden;
+  box-shadow:var(--shadow-soft);
+}
+.rec-item{
+  display:flex;
+  align-items:center;
+  gap:1.2rem;
+  padding:1.3rem 1.5rem;
+  border-bottom:1px solid var(--line);
+  transition:background 0.2s, transform 0.25s cubic-bezier(.16,1,.3,1);
+}
+.rec-item:last-child{border-bottom:none}
+.rec-item:hover{
+  background:var(--bg-alt);
+  transform:scale(1.005);
+}
+.rec-logo{
+  width:88px;
+  height:88px;
+  border-radius:8px;
+  object-fit:contain;
+  flex-shrink:0;
+  border:1px solid var(--line);
+  background:var(--paper);
+  padding:0.5rem;
+}
+.rec-logo-photo{
+  object-fit:cover;
+  padding:0;
+}
+.rec-logo-dark{
+  background:#0b1a3b;
+  border-color:#0b1a3b;
+}
+.rec-content{
+  flex:1;
+  min-width:0;
+}
+.rec-name{
+  font-family:var(--display);
+  font-weight:700;
+  font-size:1.1rem;
+  letter-spacing:-0.02em;
+  color:var(--ink);
+  margin-bottom:0.25rem;
+}
+.rec-desc{
+  font-size:0.87rem;
+  color:var(--ink-soft);
+  line-height:1.55;
+}
+.rec-arrow{
+  flex-shrink:0;
+  color:var(--ink-muted);
+  opacity:0;
+  transition:opacity 0.2s, transform 0.3s cubic-bezier(.16,1,.3,1), color 0.2s;
+}
+.rec-arrow svg{width:18px;height:18px;stroke:currentColor;stroke-width:1.8;fill:none}
+.rec-item:hover .rec-arrow{
+  opacity:1;
+  transform:translateX(4px);
+  color:var(--accent);
+}
+
+/* ═════════════════════════════════════════
+   PICKS (Wybrane materiały)
+═════════════════════════════════════════ */
+#picks{
+  padding:5rem 0 4rem;
+}
+.picks-head{margin-bottom:2.5rem}
+
+.coming-soon{
+  background:var(--paper);
+  border:1px dashed var(--line-strong);
+  border-radius:8px;
+  padding:3.5rem 2rem;
+  text-align:center;
+  max-width:560px;
+  margin:0 auto;
+}
+.coming-soon-icon{
+  width:56px;height:56px;
+  margin:0 auto 1.2rem;
+  background:var(--accent-soft);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.8rem;
+}
+.coming-soon-text{
+  font-family:var(--display);
+  font-weight:700;
+  font-size:1.4rem;
+  letter-spacing:-0.025em;
+  color:var(--ink);
+  margin-bottom:0.5rem;
+}
+.coming-soon-text em{font-style:normal;color:var(--accent);font-weight:700}
+.coming-soon-sub{
+  font-size:0.92rem;
+  color:var(--ink-soft);
+  line-height:1.6;
+  max-width:44ch;
+  margin:0 auto;
+}
+
+/* ═════════════════════════════════════════
+   FOOTER
+═════════════════════════════════════════ */
+footer{
+  padding:3rem 0 2rem;
+  border-top:1px solid var(--line);
+  background:var(--bg);
+}
+.footer-inner{
+  max-width:1100px;
+  margin:0 auto;
+  padding:0 2rem;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1.5rem;
+  flex-wrap:wrap;
+}
+.footer-brand{
+  display:flex;align-items:baseline;gap:0.6rem;
+  font-family:var(--display);
+}
+.footer-brand-mark{
+  color:var(--accent);
+  font-weight:800;
+  font-size:1.1rem;
+  letter-spacing:-0.02em;
+}
+.footer-brand-sub{
+  font-family:var(--sans);
+  font-weight:500;
+  font-size:0.72rem;
+  text-transform:uppercase;
+  letter-spacing:0.18em;
+  color:var(--ink-muted);
+}
+.footer-copy{
+  font-size:0.8rem;
+  color:var(--ink-muted);
+}
+.footer-copy em{
+  font-style:normal;
+}
+
+/* ═════════════════════════════════════════
+   RESPONSIVE
+═════════════════════════════════════════ */
+@media (max-width:900px){
+  .hero-main-grid{grid-template-columns:1fr;gap:3rem}
+  .hero-logo-col{justify-content:center}
+  .hero-logo-inline{max-width:200px}
+  .info-grid{grid-template-columns:1fr;gap:2rem}
+  .materials-head{align-items:flex-start}
+}
+@media (max-width:680px){
+  nav{height:64px}
+  .nav-links{display:none}
+  .nav-inner{padding:0 1.2rem}
+  .wrap{padding:0 1.2rem}
+  .footer-inner{padding:0 1.2rem;flex-direction:column;text-align:center}
+  #hero{padding:3rem 0 3rem}
+  #info-panel{padding:3rem 0}
+  #materials,#recommended,#picks{padding:4rem 0}
+  .profile-tagline{font-size:1.1rem}
+  .hero-logo-inline{max-width:200px}
+  .hero-avatar{width:56px;height:56px}
+  .hero-identity{gap:1rem}
+  .profile-name{font-size:1.6rem}
+  .cards-grid{grid-template-columns:1fr;gap:1rem}
+  .card{min-height:auto}
+  .rec-item{padding:1rem;gap:1rem}
+  .rec-logo{width:64px;height:64px}
+  .gate-form{flex-direction:column}
+}
+</style>
 </head>
 <body>
 
+<!-- SCROLL PROGRESS -->
+<div id="scroll-progress"></div>
+
 <!-- NAV -->
 <nav>
-  <div class="nav-logo">
-    <span style="font-family: 'Inter', sans-serif; font-size: 1.1rem; font-weight: 800; color: #121117; letter-spacing: -0.02em;">Materiały Roberta</span>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <span class="mark">EWR</span>
+      <span class="nav-logo-sub">English with Robert</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#materials">Karty pracy</a></li>
+      <li><a href="#recommended">Polecane</a></li>
+      <li><a href="#picks">Wybrane</a></li>
+    </ul>
   </div>
-  <a class="nav-link" href="https://preply.com/pl/korepetytor/7205497" target="_blank">
-    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M15.291 4.055 12 2 8.709 4.055l-3.78.874-.874 3.78L2 12l2.055 3.291.874 3.78 3.78.874L12 22l3.291-2.055 3.78-.874.874-3.78L22 12l-2.055-3.291-.874-3.78zM9.793 15.707l.707.707.707-.707 6-6-1.414-1.414-5.293 5.293-2.293-2.293-1.414 1.414z" clip-rule="evenodd"></path></svg>
-    Mój profil na Preply
-  </a>
 </nav>
 
-<!-- HERO / PROFILE -->
-<div class="hero">
-  <div class="profile-header">
-    <div class="photo-wrap">
-      <img src="Obrazki/profilowe.jpg" alt="Robert D.">
-    </div>
-    <div class="profile-info">
-      <h1 class="profile-name">Robert D.</h1>
-      <div class="profile-sub">
-        <span>Lektor angielskiego</span>
-        <span class="dot">·</span>
-        <span>Kraj: Polska</span>
-        <img class="flag-img" src="Obrazki/mini-faga-polski.svg" alt="Polska">
-      </div>
-      <p class="profile-tagline">Różnorodne lekcje angielskiego z humorem i ciekawostkami – certyfikowany lektor C1</p>
-      <div class="badge-row">
-        <span class="badge badge-teal">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M15.291 4.055 12 2 8.709 4.055l-3.78.874-.874 3.78L2 12l2.055 3.291.874 3.78 3.78.874L12 22l3.291-2.055 3.78-.874.874-3.78L22 12l-2.055-3.291-.874-3.78zM9.793 15.707l.707.707.707-.707 6-6-1.414-1.414-5.293 5.293-2.293-2.293-1.414 1.414z" clip-rule="evenodd"></path></svg>
-          Certyfikowany C1
-        </span>
-        <span class="badge badge-blue">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M20 3v18H4V8l5-5zM10 5v4H6v10h12V5z" clip-rule="evenodd"></path><path d="m15.957 10.707-5.207 5.207-2.707-2.707 1.414-1.414 1.293 1.293 3.793-3.793z"></path></svg>
-          Profesjonalny lektor
-        </span>
-      </div>
-    </div>
-  </div>
-  <!-- INFO ROWS -->
-  <div class="badges-section">
-    <div class="section-row">
-      <div class="section-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M20 3v18H4V8l5-5zM10 5v4H6v10h12V5z" clip-rule="evenodd"></path><path d="m15.957 10.707-5.207 5.207-2.707-2.707 1.414-1.414 1.293 1.293 3.793-3.793z"></path></svg>
-      </div>
-      <div class="section-text">
-        <strong>Profesjonalny lektor</strong>
-        <p>Robert D. jest wysoko wykwalifikowanym lektorem z potwierdzonym dyplomem nauczycielskim. <a class="details-link" href="https://help.preply.com/pl/articles/9795272-what-is-a-professional-tutor" target="_blank">Szczegóły</a></p>
-      </div>
-    </div>
-    <div class="section-row">
-      <div class="section-icon section-icon-blue">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="#0450b4"><path d="m12 21-7-3.8v-6L1 9l11-6 11 6v8h-2v-6.9l-2 1.1v6zm0-8.3L18.85 9 12 5.3 5.15 9zm0 6.025 5-2.7V12.25L12 15l-5-2.75v3.775z"></path></svg>
-      </div>
-      <div class="section-text">
-        <strong>Nauczany przedmiot:</strong>
-        <p>Angielski</p>
-      </div>
-    </div>
-  </div>
+<!-- HERO / PROFIL -->
+<section id="hero">
+  <div class="wrap">
+    <div class="hero-inner">
+      <div class="hero-main-grid">
 
-  <a class="btn-pink" href="https://preply.com/pl/korepetytor/7205497" target="_blank">
-    Zobacz mój profil na Preply
-  </a>
-</div>
-
-<!-- DIVIDER -->
-<div style="max-width:900px;margin:20px auto 0;padding:0 24px;">
-  <div class="section-divider" style="margin:0;"></div>
-</div>
-
-<!-- MATERIALS -->
-<section class="materials">
-  <h2 class="materials-title">MATERIAŁY DO NAUKI ANGIELSKIEGO <span class="materials-count" id="materials-count"></span></h2>
-  <p class="materials-sub">Karty pracy i ćwiczenia przygotowane specjalnie dla moich uczniów.</p>
-
-  <div class="gated-wrapper" id="gate-materials">
-    <div class="gate-overlay" id="overlay-materials">
-      <div class="gate-lock">🔒</div>
-      <div class="gate-title">Materiały dla moich uczniów</div>
-      <div class="gate-desc">To ekskluzywne materiały przygotowane specjalnie dla moich uczniów. Wpisz hasło, które otrzymałeś na lekcji.</div>
-      <div class="gate-form">
-        <input class="gate-input" type="password" placeholder="Wpisz hasło..." id="gate-password" autocomplete="off">
-        <button class="gate-submit" id="gate-btn">Odblokuj</button>
-      </div>
-      <p class="gate-cta">Nie masz hasła? <a href="https://preply.com/pl/korepetytor/7205497" target="_blank">Umów się na lekcję</a></p>
-    </div>
-    <div class="gated-content" id="gated-materials">
-      <div class="cards-grid">
-
-        <div class="card">
-          <div class="card-icon-wrap">🛍️</div>
-          <div class="card-title">English in the shop</div>
-          <div class="card-desc">Obsługa klienta · Słownictwo · Dialog · Charakter pieska</div>
-          <a class="card-btn" href="#" data-material="karty-pracy/english-in-the-shop.html">Otwórz materiał →</a>
+        <div class="hero-logo-col reveal">
+          <img class="hero-logo-inline" src="https://bertlingo-learning.github.io/Angielski/Obrazki/loga/ewr-logo.svg" alt="English with Robert">
         </div>
 
-        <div class="card">
-          <div class="card-icon-wrap">🌟</div>
-          <div class="card-title">English is Fun!</div>
-          <div class="card-desc">Wstęp do lekcji angielskiego.</div>
-          <a class="card-btn" href="#" data-material="karty-pracy/english-is-fun.html">Otwórz materiał →</a>
-        </div>
+        <div class="hero-content-col">
+          <div class="eyebrow reveal" data-delay="1">Lektor języka angielskiego</div>
 
-        <div class="card">
-          <div class="card-icon-wrap">🚀</div>
-          <div class="card-title">LEVEL UP YOUR ENGLISH</div>
-          <div class="card-desc">Wstęp do lekcji angielskiego w stylu gier.</div>
-          <a class="card-btn" href="#" data-material="karty-pracy/level-up-your-english.html">Otwórz materiał →</a>
-        </div>
+          <div class="hero-identity reveal" data-delay="1">
+            <div class="hero-avatar">
+              <img src="Obrazki/profilowe.jpg" alt="Robert D.">
+            </div>
+            <div class="hero-identity-text">
+              <h1 class="profile-name">Robert <span class="em">D.</span></h1>
+              <div class="profile-sub-row">
+                <span>Polska</span>
+                <img class="flag-img" src="Obrazki/mini-faga-polski.svg" alt="Polska">
+                <span class="dot">·</span>
+                <span><span class="live-dot"></span> Lekcje online</span>
+              </div>
+            </div>
+          </div>
 
-        <div class="card">
-          <div class="card-icon-wrap">🇵🇱</div>
-          <div class="card-title">Polskie zwroty po angielsku</div>
-          <div class="card-desc">Charakterystyczne polskie zwroty, słowa i wyrażenia, których tłumaczenia najczęściej szukamy. Od klasyków typu "kombinować" i "ogarnąć" po codzienne "nie chce mi się" i "dasz radę".</div>
-          <a class="card-btn" href="#" data-material="karty-pracy/polskie-zwroty-po-angielsku.html">Otwórz materiał →</a>
-        </div>
+          <p class="profile-tagline reveal" data-delay="2">
+            Różnorodne lekcje angielskiego <em>z humorem</em> i ciekawostkami &mdash; certyfikowany lektor C1.
+          </p>
 
-        <div class="card">
-          <div class="card-icon-wrap">👣</div>
-          <div class="card-title">My First Steps</div>
-          <div class="card-desc">Ćwicz angielski od podstaw. Proste zadania, duża satysfakcja!</div>
-          <a class="card-btn" href="#" data-material="karty-pracy/my-first-steps.html">Otwórz materiał →</a>
-        </div>
-
-        <div class="card">
-          <div class="card-icon-wrap">✨</div>
-          <div class="card-title">The Perfect Aspect & Conditionals</div>
-          <div class="card-desc">Perfect jako łącznik między przeszłością a teraz. Conditionals jako rozmowa z alternatywną rzeczywistością. Jedno i drugie w jednym arkuszu.</div>
-          <a class="card-btn" href="#" data-material="karty-pracy/perfect-aspect-conditionals-worksheet.html">Otwórz materiał →</a>
-        </div>
-        
-        <div class="card">
-          <div class="card-icon-wrap">🛍️</div>
-          <div class="card-title">English in the Shop II</div>
-          <div class="card-desc">Część druga!</div>
-          <a class="card-btn" href="#" data-material="karty-pracy/english-in-the-shop-II.html">Otwórz materiał →</a>
-        </div>
-
-        <div class="card">
-          <div class="card-icon-wrap">🗺️</div>
-          <div class="card-title">English Quest</div>
-          <div class="card-desc">Praktyczny angielski przez Twoje zainteresowania</div>
-          <a class="card-btn" href="#" data-material="karty-pracy/english-quest.html">Otwórz materiał →</a>
-        </div>
-
-         <div class="card">
-          <div class="card-icon-wrap">🦁</div>
-          <div class="card-title">12 Prac Heraklesa!</div>
-          <div class="card-desc">Karta pracy inspirowana znanym, greckim mitem.</div>
-          <a class="card-btn" href="#" data-material="karty-pracy/hercules-12-labors.html">Otwórz materiał →</a>
-        </div>
-
-         <div class="card">
-          <div class="card-icon-wrap">🤸</div>
-          <div class="card-title">Sports!</div>
-          <div class="card-desc">Karta pracy o sporcie.</div>
-          <a class="card-btn" href="#" data-material="karty-pracy/worksheet-sport.html">Otwórz materiał →</a>
-        </div>
-
-          <div class="card">
-          <div class="card-icon-wrap">👥</div>
-          <div class="card-title">Conversations with Friends</div>
-          <div class="card-desc">Najbardziej przydatne zwroty na co dzień - od powitania po pożegnanie</div>
-          <a class="card-btn" href="#" data-material="karty-pracy/conversations-with-friends.html">Otwórz materiał →</a>
-        </div>
-
-          <div class="card">
-          <div class="card-icon-wrap">💬</div>
-          <div class="card-title">Conversations with Friends 2</div>
-          <div class="card-desc">Najbardziej przydatne zwroty na co dzień - od powitania po pożegnanie</div>
-          <a class="card-btn" href="#" data-material="karty-pracy/talking-with-friends.html">Otwórz materiał →</a>
-        </div>
-
-          <div class="card">
-          <div class="card-icon-wrap">⭐</div>
-          <div class="card-title">My Favourite Things</div>
-          <div class="card-desc">Karta pracy o Twoich ulubionych rzeczach!</div>
-          <a class="card-btn" href="#" data-material="karty-pracy/my-favourite-things.html">Otwórz materiał →</a>
+          <div class="badge-row reveal" data-delay="3">
+            <span class="badge badge-c1">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M15.291 4.055 12 2 8.709 4.055l-3.78.874-.874 3.78L2 12l2.055 3.291.874 3.78 3.78.874L12 22l3.291-2.055 3.78-.874.874-3.78L22 12l-2.055-3.291-.874-3.78zM9.793 15.707l.707.707.707-.707 6-6-1.414-1.414-5.293 5.293-2.293-2.293-1.414 1.414z" clip-rule="evenodd"/></svg>
+              Certyfikowany C1
+            </span>
+            <span class="badge badge-pro">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M20 3v18H4V8l5-5zM10 5v4H6v10h12V5z" clip-rule="evenodd"/><path d="m15.957 10.707-5.207 5.207-2.707-2.707 1.414-1.414 1.293 1.293 3.793-3.793z"/></svg>
+              Profesjonalny lektor
+            </span>
+          </div>
         </div>
 
       </div>
@@ -926,186 +982,413 @@
   </div>
 </section>
 
-<!-- DIVIDER -->
-<div style="max-width:900px;margin:0 auto;padding:0 24px;">
-  <div class="section-divider" style="margin:0;"></div>
-</div>
+<!-- INFO PANEL -->
+<section id="info-panel">
+  <div class="wrap">
+    <div class="info-grid">
+      <div class="info-card reveal">
+        <div class="info-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M20 3v18H4V8l5-5zM10 5v4H6v10h12V5z" clip-rule="evenodd"/><path d="m15.957 10.707-5.207 5.207-2.707-2.707 1.414-1.414 1.293 1.293 3.793-3.793z"/></svg>
+        </div>
+        <div>
+          <div class="info-title">Profesjonalny lektor</div>
+          <p>Wysoko wykwalifikowany lektor z potwierdzonym dyplomem nauczycielskim.</p>
+        </div>
+      </div>
 
-<!-- POLECANE MATERIAŁY -->
-<section class="recommended">
-  <h2 class="recommended-title">POLECANE MATERIAŁY</h2>
-  <p class="recommended-sub">Strony i narzędzia, które polecam do nauki angielskiego.</p>
-
-  <div class="gated-wrapper" id="gate-recommended">
-    <div class="gate-overlay" id="overlay-recommended">
-      <div class="gate-lock">🔒</div>
-      <div class="gate-title">Polecane tylko dla uczniów</div>
-      <div class="gate-desc">Odblokuj materiały powyżej, aby zobaczyć polecane strony i narzędzia.</div>
-    </div>
-    <div class="gated-content" id="gated-recommended">
-      <div class="rec-list">
-
-        <a class="rec-item" href="https://www.youtube.com/@ArlenaWitt" target="_blank">
-          <img class="rec-logo rec-logo-photo" src="Obrazki/Arlena-Witt.jpeg" alt="Arlena Witt">
-          <div class="rec-content">
-            <div class="rec-name">Arlena Witt</div>
-            <div class="rec-desc">Kanał na YouTube, na którym Arlena prowadzi główną serię "Po Cudzemu". Uczy w niej poprawnej wymowy angielskiej na przykładach z filmów, seriali i piosenek. Profesjonalnie, merytorycznie i z przymrużeniem oka.</div>
-          </div>
-          <svg class="rec-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </a>
-
-        <a class="rec-item" href="https://dictionary.cambridge.org/" target="_blank">
-          <img class="rec-logo rec-logo-dark" src="Obrazki/Cambridge-Dictionary-logo.svg" alt="Cambridge Dictionary">
-          <div class="rec-content">
-            <div class="rec-name">Cambridge Dictionary</div>
-            <div class="rec-desc">Jeden z najlepszych słowników angielskich online - definicje, wymowa i przykłady użycia.</div>
-          </div>
-          <svg class="rec-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </a>
-
-        <a class="rec-item" href="https://www.youtube.com/c/EnglishwithLucy" target="_blank">
-          <img class="rec-logo rec-logo-photo" src="Obrazki/English-with-Lucy-photo.jpg" alt="English with Lucy">
-          <div class="rec-content">
-            <div class="rec-name">English with Lucy</div>
-            <div class="rec-desc">Popularny kanał YouTube do nauki angielskiego - słownictwo, gramatyka i wymowa po angielsku.</div>
-          </div>
-          <svg class="rec-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </a>
-
-        <a class="rec-item" href="https://www.diki.pl/" target="_blank">
-          <img class="rec-logo" src="Obrazki/diki_logo.svg" alt="Diki">
-          <div class="rec-content">
-            <div class="rec-name">Diki.pl</div>
-            <div class="rec-desc">Polsko-angielski słownik online z wymową, przykładami i odmianą wyrazów.</div>
-          </div>
-          <svg class="rec-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </a>
-
-        <a class="rec-item" href="https://www.gamestolearnenglish.com/" target="_blank">
-          <img class="rec-logo" src="Obrazki/games-to-learn-english-logo.png" alt="Games to Learn English">
-          <div class="rec-content">
-            <div class="rec-name">Games to Learn English</div>
-            <div class="rec-desc">Nauka angielskiego przez gry - słownictwo, pisownia i gramatyka w formie zabawy.</div>
-          </div>
-          <svg class="rec-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </a>
-
-        <a class="rec-item" href="https://kwadransnaangielski.pl/" target="_blank">
-          <img class="rec-logo" src="Obrazki/kna-logo.png" alt="Kwadrans na Angielski">
-          <div class="rec-content">
-            <div class="rec-name">Kwadrans na Angielski</div>
-            <div class="rec-desc">Krótkie, przystępne lekcje angielskiego po polsku - idealne na szybką naukę każdego dnia.</div>
-          </div>
-          <svg class="rec-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </a>
-
-        <a class="rec-item" href="https://www.umiemyangielski.pl/" target="_blank">
-          <img class="rec-logo" src="Obrazki/umiemy-to-logo.svg" alt="Umiemy Angielski">
-          <div class="rec-content">
-            <div class="rec-name">Umiemy Angielski</div>
-            <div class="rec-desc">Polska platforma do nauki angielskiego z ćwiczeniami, testami i materiałami na różnych poziomach.</div>
-          </div>
-          <svg class="rec-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </a>
-
-        <a class="rec-item" href="https://babadum.com/" target="_blank">
-          <img class="rec-logo" src="Obrazki/loga/babadum-logo.jpg" alt="BABADUM">
-          <div class="rec-content">
-            <div class="rec-name">BABADUM</div>
-            <div class="rec-desc">Darmowa gra do nauki słownictwa w kilkunastu językach - nauka obrazkowa przez minigry z wymową lektora.</div>
-          </div>
-          <svg class="rec-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </a>
-
-        <a class="rec-item" href="https://www.bbc.co.uk/learningenglish/" target="_blank">
-          <img class="rec-logo" src="Obrazki/loga/bbc-logo.png" alt="BBC Learning English">
-          <div class="rec-content">
-            <div class="rec-name">BBC Learning English</div>
-            <div class="rec-desc">Darmowa platforma BBC do nauki angielskiego - kursy, filmy, podcasty i ćwiczenia na każdym poziomie zaawansowania.</div>
-          </div>
-          <svg class="rec-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </a>
-
-        <a class="rec-item" href="https://www.merriam-webster.com/" target="_blank">
-          <img class="rec-logo" src="Obrazki/loga/merriam-webster-logo.png" alt="Merriam-Webster">
-          <div class="rec-content">
-            <div class="rec-name">Merriam-Webster</div>
-            <div class="rec-desc">Klasyczny słownik amerykańskiego angielskiego - definicje, wymowa, synonimy oraz etymologia słów.</div>
-          </div>
-          <svg class="rec-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </a>
-
-        <a class="rec-item" href="https://pbskids.org/" target="_blank">
-          <img class="rec-logo" src="Obrazki/loga/pbs-kids-logo.svg" alt="PBS KIDS">
-          <div class="rec-content">
-            <div class="rec-name">PBS KIDS</div>
-            <div class="rec-desc">Amerykański serwis dla dzieci z grami, bajkami i animacjami - świetne źródło prostego, naturalnego angielskiego dla początkujących.</div>
-          </div>
-          <svg class="rec-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </a>
-
-        <a class="rec-item" href="https://www.seeingspeech.ac.uk/ipa-charts/" target="_blank">
-          <img class="rec-logo" src="Obrazki/loga/seeing-speech-logo.png" alt="Seeing Speech">
-          <div class="rec-content">
-            <div class="rec-name">Seeing Speech</div>
-            <div class="rec-desc">Interaktywne tablice IPA z nagraniami wideo i USG pokazującymi, jak układać język i usta przy wymowie każdego dźwięku angielskiego.</div>
-          </div>
-          <svg class="rec-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </a>
-
-        <a class="rec-item" href="https://www.youtube.com/@sozox/videos" target="_blank">
-          <img class="rec-logo rec-logo-photo" src="Obrazki/loga/speak-sozo-english-logo.jpg" alt="SOZO-X">
-          <div class="rec-content">
-            <div class="rec-name">SOZO-X</div>
-            <div class="rec-desc">SPEAK ENGLISH WITH SOZO-X is a free YouTube Channel for English learners. Start speaking English in minutes with Audio and Video lessons.</div>
-          </div>
-          <svg class="rec-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </a>
-
-        <a class="rec-item" href="https://www.ted.com/" target="_blank">
-          <img class="rec-logo" src="Obrazki/loga/ted-logo.png" alt="TED">
-          <div class="rec-content">
-            <div class="rec-name">TED</div>
-            <div class="rec-desc">Inspirujące prelekcje ekspertów z całego świata - świetne źródło żywego, naturalnego angielskiego z napisami i transkrypcjami.</div>
-          </div>
-          <svg class="rec-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </a>
-
-        <a class="rec-item" href="https://www.vocabulary.com/" target="_blank">
-          <img class="rec-logo" src="Obrazki/loga/vocabulary-com-logo.png" alt="Vocabulary.com">
-          <div class="rec-content">
-            <div class="rec-name">Vocabulary.com</div>
-            <div class="rec-desc">Inteligentny trener słownictwa - uczy nowych słów w kontekście, dopasowuje pytania do Twojego poziomu i pilnuje, żebyś nie zapomniał.</div>
-          </div>
-          <svg class="rec-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </a>
-
+      <div class="info-card reveal" data-delay="1">
+        <div class="info-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 21-7-3.8v-6L1 9l11-6 11 6v8h-2v-6.9l-2 1.1v6zm0-8.3L18.85 9 12 5.3 5.15 9zm0 6.025 5-2.7V12.25L12 15l-5-2.75v3.775z"/></svg>
+        </div>
+        <div>
+          <div class="info-title">Nauczany przedmiot</div>
+          <p>Język angielski &mdash; od podstaw po poziom zaawansowany (C1).</p>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- DIVIDER -->
-<div style="max-width:900px;margin:0 auto;padding:0 24px;">
-  <div class="section-divider" style="margin:0;"></div>
-</div>
+<!-- MATERIALS / KARTY PRACY -->
+<section id="materials">
+  <div class="wrap">
+    <div class="materials-head">
+      <div>
+        <div class="sec-eyebrow reveal">02 — Karty pracy</div>
+        <h2 class="sec-title reveal" data-delay="1">Materiały do <em>nauki angielskiego</em></h2>
+        <p class="sec-lead reveal" data-delay="2">Karty pracy i ćwiczenia przygotowane specjalnie dla moich uczniów.</p>
+      </div>
+      <div class="materials-count-pill reveal" data-delay="2" id="materials-count"></div>
+    </div>
 
-<!-- WYBRANE MATERIAŁY -->
-<section class="picks">
-  <h2 class="picks-title">WYBRANE MATERIAŁY</h2>
-  <p class="picks-sub">Konkretne filmiki, artykuły i posty, które warto zobaczyć.</p>
+    <div class="gated-wrapper" id="gate-materials">
+      <div class="gate-overlay" id="overlay-materials">
+        <div class="gate-lock-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        </div>
+        <div class="gate-title">Materiały dla moich uczniów</div>
+        <div class="gate-desc">To ekskluzywne materiały przygotowane specjalnie dla moich uczniów. Wpisz hasło, które otrzymałeś na lekcji.</div>
+        <div class="gate-form">
+          <input class="gate-input" type="password" placeholder="Wpisz hasło..." id="gate-password" autocomplete="off">
+          <button class="gate-submit" id="gate-btn">Odblokuj</button>
+        </div>
+        <p class="gate-cta">Nie masz hasła? <a href="#hero">Umów się na lekcję</a></p>
+      </div>
 
-  <div class="picks-list">
-    <div class="coming-soon">
+      <div class="gated-content" id="gated-materials">
+        <div class="cards-grid">
+
+          <div class="card">
+            <div class="card-icon-wrap">🛍️</div>
+            <div class="card-title">English in the shop</div>
+            <div class="card-desc">Obsługa klienta · Słownictwo · Dialog · Charakter pieska</div>
+            <a class="card-btn" href="#" data-material="karty-pracy/english-in-the-shop.html">Otwórz materiał <span class="arrow">→</span></a>
+          </div>
+
+          <div class="card">
+            <div class="card-icon-wrap">🌟</div>
+            <div class="card-title">English is Fun!</div>
+            <div class="card-desc">Wstęp do lekcji angielskiego.</div>
+            <a class="card-btn" href="#" data-material="karty-pracy/english-is-fun.html">Otwórz materiał <span class="arrow">→</span></a>
+          </div>
+
+          <div class="card">
+            <div class="card-icon-wrap">🚀</div>
+            <div class="card-title">LEVEL UP YOUR ENGLISH</div>
+            <div class="card-desc">Wstęp do lekcji angielskiego w stylu gier.</div>
+            <a class="card-btn" href="#" data-material="karty-pracy/level-up-your-english.html">Otwórz materiał <span class="arrow">→</span></a>
+          </div>
+
+          <div class="card">
+            <div class="card-icon-wrap">🇵🇱</div>
+            <div class="card-title">Polskie zwroty po angielsku</div>
+            <div class="card-desc">Charakterystyczne polskie zwroty, słowa i wyrażenia, których tłumaczenia najczęściej szukamy. Od klasyków typu "kombinować" i "ogarnąć" po codzienne "nie chce mi się" i "dasz radę".</div>
+            <a class="card-btn" href="#" data-material="karty-pracy/polskie-zwroty-po-angielsku.html">Otwórz materiał <span class="arrow">→</span></a>
+          </div>
+
+          <div class="card">
+            <div class="card-icon-wrap">👣</div>
+            <div class="card-title">My First Steps</div>
+            <div class="card-desc">Ćwicz angielski od podstaw. Proste zadania, duża satysfakcja!</div>
+            <a class="card-btn" href="#" data-material="karty-pracy/my-first-steps.html">Otwórz materiał <span class="arrow">→</span></a>
+          </div>
+
+          <div class="card">
+            <div class="card-icon-wrap">✨</div>
+            <div class="card-title">The Perfect Aspect & Conditionals</div>
+            <div class="card-desc">Perfect jako łącznik między przeszłością a teraz. Conditionals jako rozmowa z alternatywną rzeczywistością. Jedno i drugie w jednym arkuszu.</div>
+            <a class="card-btn" href="#" data-material="karty-pracy/perfect-aspect-conditionals-worksheet.html">Otwórz materiał <span class="arrow">→</span></a>
+          </div>
+
+          <div class="card">
+            <div class="card-icon-wrap">🛍️</div>
+            <div class="card-title">English in the Shop II</div>
+            <div class="card-desc">Część druga!</div>
+            <a class="card-btn" href="#" data-material="karty-pracy/english-in-the-shop-II.html">Otwórz materiał <span class="arrow">→</span></a>
+          </div>
+
+          <div class="card">
+            <div class="card-icon-wrap">🗺️</div>
+            <div class="card-title">English Quest</div>
+            <div class="card-desc">Praktyczny angielski przez Twoje zainteresowania</div>
+            <a class="card-btn" href="#" data-material="karty-pracy/english-quest.html">Otwórz materiał <span class="arrow">→</span></a>
+          </div>
+
+          <div class="card">
+            <div class="card-icon-wrap">🦁</div>
+            <div class="card-title">12 Prac Heraklesa!</div>
+            <div class="card-desc">Karta pracy inspirowana znanym, greckim mitem.</div>
+            <a class="card-btn" href="#" data-material="karty-pracy/hercules-12-labors.html">Otwórz materiał <span class="arrow">→</span></a>
+          </div>
+
+          <div class="card">
+            <div class="card-icon-wrap">🤸</div>
+            <div class="card-title">Sports!</div>
+            <div class="card-desc">Karta pracy o sporcie.</div>
+            <a class="card-btn" href="#" data-material="karty-pracy/worksheet-sport.html">Otwórz materiał <span class="arrow">→</span></a>
+          </div>
+
+          <div class="card">
+            <div class="card-icon-wrap">👥</div>
+            <div class="card-title">Conversations with Friends</div>
+            <div class="card-desc">Najbardziej przydatne zwroty na co dzień - od powitania po pożegnanie</div>
+            <a class="card-btn" href="#" data-material="karty-pracy/conversations-with-friends.html">Otwórz materiał <span class="arrow">→</span></a>
+          </div>
+
+          <div class="card">
+            <div class="card-icon-wrap">💬</div>
+            <div class="card-title">Conversations with Friends 2</div>
+            <div class="card-desc">Najbardziej przydatne zwroty na co dzień - od powitania po pożegnanie</div>
+            <a class="card-btn" href="#" data-material="karty-pracy/talking-with-friends.html">Otwórz materiał <span class="arrow">→</span></a>
+          </div>
+
+          <div class="card">
+            <div class="card-icon-wrap">⭐</div>
+            <div class="card-title">My Favourite Things</div>
+            <div class="card-desc">Karta pracy o Twoich ulubionych rzeczach!</div>
+            <a class="card-btn" href="#" data-material="karty-pracy/my-favourite-things.html">Otwórz materiał <span class="arrow">→</span></a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RECOMMENDED -->
+<section id="recommended">
+  <div class="wrap">
+    <div class="rec-head">
+      <div class="sec-eyebrow reveal">03 — Polecane materiały</div>
+      <h2 class="sec-title reveal" data-delay="1">Strony i narzędzia, <em>które polecam</em>.</h2>
+      <p class="sec-lead reveal" data-delay="2">Sprawdzone źródła, z których sam korzystam i które polecam moim uczniom do nauki angielskiego.</p>
+    </div>
+
+    <div class="gated-wrapper reveal" data-delay="2" id="gate-recommended">
+      <div class="gate-overlay" id="overlay-recommended">
+        <div class="gate-lock-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        </div>
+        <div class="gate-title">Polecane tylko dla uczniów</div>
+        <div class="gate-desc">Odblokuj materiały powyżej, aby zobaczyć polecane strony i narzędzia.</div>
+      </div>
+
+      <div class="gated-content" id="gated-recommended">
+        <div class="rec-list">
+
+          <a class="rec-item" href="https://www.youtube.com/@ArlenaWitt" target="_blank">
+            <img class="rec-logo rec-logo-photo" src="Obrazki/Arlena-Witt.jpeg" alt="Arlena Witt">
+            <div class="rec-content">
+              <div class="rec-name">Arlena Witt</div>
+              <div class="rec-desc">Kanał na YouTube, na którym Arlena prowadzi główną serię "Po Cudzemu". Uczy w niej poprawnej wymowy angielskiej na przykładach z filmów, seriali i piosenek. Profesjonalnie, merytorycznie i z przymrużeniem oka.</div>
+            </div>
+            <span class="rec-arrow">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </a>
+
+          <a class="rec-item" href="https://dictionary.cambridge.org/" target="_blank">
+            <img class="rec-logo rec-logo-dark" src="Obrazki/Cambridge-Dictionary-logo.svg" alt="Cambridge Dictionary">
+            <div class="rec-content">
+              <div class="rec-name">Cambridge Dictionary</div>
+              <div class="rec-desc">Jeden z najlepszych słowników angielskich online &mdash; definicje, wymowa i przykłady użycia.</div>
+            </div>
+            <span class="rec-arrow">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </a>
+
+          <a class="rec-item" href="https://www.youtube.com/c/EnglishwithLucy" target="_blank">
+            <img class="rec-logo rec-logo-photo" src="Obrazki/English-with-Lucy-photo.jpg" alt="English with Lucy">
+            <div class="rec-content">
+              <div class="rec-name">English with Lucy</div>
+              <div class="rec-desc">Popularny kanał YouTube do nauki angielskiego &mdash; słownictwo, gramatyka i wymowa po angielsku.</div>
+            </div>
+            <span class="rec-arrow">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </a>
+
+          <a class="rec-item" href="https://www.diki.pl/" target="_blank">
+            <img class="rec-logo" src="Obrazki/diki_logo.svg" alt="Diki">
+            <div class="rec-content">
+              <div class="rec-name">Diki.pl</div>
+              <div class="rec-desc">Polsko-angielski słownik online z wymową, przykładami i odmianą wyrazów.</div>
+            </div>
+            <span class="rec-arrow">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </a>
+
+          <a class="rec-item" href="https://www.gamestolearnenglish.com/" target="_blank">
+            <img class="rec-logo" src="Obrazki/games-to-learn-english-logo.png" alt="Games to Learn English">
+            <div class="rec-content">
+              <div class="rec-name">Games to Learn English</div>
+              <div class="rec-desc">Nauka angielskiego przez gry &mdash; słownictwo, pisownia i gramatyka w formie zabawy.</div>
+            </div>
+            <span class="rec-arrow">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </a>
+
+          <a class="rec-item" href="https://kwadransnaangielski.pl/" target="_blank">
+            <img class="rec-logo" src="Obrazki/kna-logo.png" alt="Kwadrans na Angielski">
+            <div class="rec-content">
+              <div class="rec-name">Kwadrans na Angielski</div>
+              <div class="rec-desc">Krótkie, przystępne lekcje angielskiego po polsku &mdash; idealne na szybką naukę każdego dnia.</div>
+            </div>
+            <span class="rec-arrow">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </a>
+
+          <a class="rec-item" href="https://www.umiemyangielski.pl/" target="_blank">
+            <img class="rec-logo" src="Obrazki/umiemy-to-logo.svg" alt="Umiemy Angielski">
+            <div class="rec-content">
+              <div class="rec-name">Umiemy Angielski</div>
+              <div class="rec-desc">Polska platforma do nauki angielskiego z ćwiczeniami, testami i materiałami na różnych poziomach.</div>
+            </div>
+            <span class="rec-arrow">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </a>
+
+          <a class="rec-item" href="https://babadum.com/" target="_blank">
+            <img class="rec-logo" src="Obrazki/loga/babadum-logo.jpg" alt="BABADUM">
+            <div class="rec-content">
+              <div class="rec-name">BABADUM</div>
+              <div class="rec-desc">Darmowa gra do nauki słownictwa w kilkunastu językach &mdash; nauka obrazkowa przez minigry z wymową lektora.</div>
+            </div>
+            <span class="rec-arrow">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </a>
+
+          <a class="rec-item" href="https://www.bbc.co.uk/learningenglish/" target="_blank">
+            <img class="rec-logo" src="Obrazki/loga/bbc-logo.png" alt="BBC Learning English">
+            <div class="rec-content">
+              <div class="rec-name">BBC Learning English</div>
+              <div class="rec-desc">Darmowa platforma BBC do nauki angielskiego &mdash; kursy, filmy, podcasty i ćwiczenia na każdym poziomie zaawansowania.</div>
+            </div>
+            <span class="rec-arrow">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </a>
+
+          <a class="rec-item" href="https://www.merriam-webster.com/" target="_blank">
+            <img class="rec-logo" src="Obrazki/loga/merriam-webster-logo.png" alt="Merriam-Webster">
+            <div class="rec-content">
+              <div class="rec-name">Merriam-Webster</div>
+              <div class="rec-desc">Klasyczny słownik amerykańskiego angielskiego &mdash; definicje, wymowa, synonimy oraz etymologia słów.</div>
+            </div>
+            <span class="rec-arrow">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </a>
+
+          <a class="rec-item" href="https://pbskids.org/" target="_blank">
+            <img class="rec-logo" src="Obrazki/loga/pbs-kids-logo.svg" alt="PBS KIDS">
+            <div class="rec-content">
+              <div class="rec-name">PBS KIDS</div>
+              <div class="rec-desc">Amerykański serwis dla dzieci z grami, bajkami i animacjami &mdash; świetne źródło prostego, naturalnego angielskiego dla początkujących.</div>
+            </div>
+            <span class="rec-arrow">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </a>
+
+          <a class="rec-item" href="https://www.seeingspeech.ac.uk/ipa-charts/" target="_blank">
+            <img class="rec-logo" src="Obrazki/loga/seeing-speech-logo.png" alt="Seeing Speech">
+            <div class="rec-content">
+              <div class="rec-name">Seeing Speech</div>
+              <div class="rec-desc">Interaktywne tablice IPA z nagraniami wideo i USG pokazującymi, jak układać język i usta przy wymowie każdego dźwięku angielskiego.</div>
+            </div>
+            <span class="rec-arrow">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </a>
+
+          <a class="rec-item" href="https://www.youtube.com/@sozox/videos" target="_blank">
+            <img class="rec-logo rec-logo-photo" src="Obrazki/loga/speak-sozo-english-logo.jpg" alt="SOZO-X">
+            <div class="rec-content">
+              <div class="rec-name">SOZO-X</div>
+              <div class="rec-desc">SPEAK ENGLISH WITH SOZO-X is a free YouTube Channel for English learners. Start speaking English in minutes with Audio and Video lessons.</div>
+            </div>
+            <span class="rec-arrow">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </a>
+
+          <a class="rec-item" href="https://www.ted.com/" target="_blank">
+            <img class="rec-logo" src="Obrazki/loga/ted-logo.png" alt="TED">
+            <div class="rec-content">
+              <div class="rec-name">TED</div>
+              <div class="rec-desc">Inspirujące prelekcje ekspertów z całego świata &mdash; świetne źródło żywego, naturalnego angielskiego z napisami i transkrypcjami.</div>
+            </div>
+            <span class="rec-arrow">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </a>
+
+          <a class="rec-item" href="https://www.vocabulary.com/" target="_blank">
+            <img class="rec-logo" src="Obrazki/loga/vocabulary-com-logo.png" alt="Vocabulary.com">
+            <div class="rec-content">
+              <div class="rec-name">Vocabulary.com</div>
+              <div class="rec-desc">Inteligentny trener słownictwa &mdash; uczy nowych słów w kontekście, dopasowuje pytania do Twojego poziomu i pilnuje, żebyś nie zapomniał.</div>
+            </div>
+            <span class="rec-arrow">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </a>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PICKS / WYBRANE -->
+<section id="picks">
+  <div class="wrap">
+    <div class="picks-head">
+      <div class="sec-eyebrow reveal">04 — Wybrane materiały</div>
+      <h2 class="sec-title reveal" data-delay="1">Konkretne filmiki, <em>artykuły i posty</em>.</h2>
+      <p class="sec-lead reveal" data-delay="2">Wybrane perełki z internetu, które warto zobaczyć.</p>
+    </div>
+
+    <div class="coming-soon reveal">
       <div class="coming-soon-icon">🎬</div>
-      <div class="coming-soon-text">Wkrótce!</div>
+      <div class="coming-soon-text"><em>Wkrótce.</em></div>
       <div class="coming-soon-sub">Już niedługo pojawią się tutaj polecane filmiki, artykuły i inne materiały do nauki angielskiego.</div>
     </div>
   </div>
 </section>
 
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="footer-brand-mark">EWR</span>
+      <span class="footer-brand-sub">English with Robert</span>
+    </div>
+    <div class="footer-copy">© 2026 Robert D. <em>Wszystkie prawa zastrzeżone.</em></div>
+  </div>
+</footer>
+
 <script>
 (function() {
+  /* ─── SCROLL PROGRESS ─── */
+  const progress = document.getElementById('scroll-progress');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight);
+    progress.style.width = (scrolled * 100) + '%';
+  }, {passive:true});
+
+  /* ─── SCROLL REVEAL ─── */
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, {threshold:0.1, rootMargin:'0px 0px -8% 0px'});
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  /* ─── MOUSE TRACKING GLOW NA KARTACH ─── */
+  const cards = document.querySelectorAll('.card');
+  cards.forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const r = card.getBoundingClientRect();
+      const x = e.clientX - r.left;
+      const y = e.clientY - r.top;
+      card.style.setProperty('--mx', (x / r.width * 100) + '%');
+      card.style.setProperty('--my', (y / r.height * 100) + '%');
+    });
+  });
+
+  /* ─── GATE (HASŁO + LOCALSTORAGE) ─── */
   var PASSWORD = 'robert2026';
   var STORAGE_KEY = 'robert_materialy_unlocked';
 
@@ -1131,14 +1414,11 @@
     injectLinks();
   }
 
-  // Sprawdzamy czy urządzenie już raz odblokowało hasłem
   try {
     if (localStorage.getItem(STORAGE_KEY) === 'yes') {
       unlock();
     }
-  } catch (e) {
-    // localStorage niedostępny (prywatny tryb itp.) - po prostu pokazujemy blokadę
-  }
+  } catch (e) {}
 
   var btn = document.getElementById('gate-btn');
   var input = document.getElementById('gate-password');
@@ -1147,9 +1427,7 @@
     if (input.value === PASSWORD) {
       try {
         localStorage.setItem(STORAGE_KEY, 'yes');
-      } catch (e) {
-        // nawet jeśli zapis się nie uda, odblokuj na tę sesję
-      }
+      } catch (e) {}
       unlock();
     } else {
       input.classList.add('gate-error');
