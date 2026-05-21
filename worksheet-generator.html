@@ -495,6 +495,53 @@ body::before {
   filter: grayscale(1) opacity(0.7);
 }
 
+/* Input numerka kolejnosci - mala plakietka w lewym gornym rogu karty.
+   Pozwala wpisac pozycje recznie zamiast drag-and-drop. */
+.task-order-num {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  width: 38px;
+  height: 26px;
+  padding: 0 0.25rem;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-align: center;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-dim);
+  border-radius: 6px;
+  cursor: text;
+  transition: all 0.15s;
+  opacity: 0.55;
+  /* Ukryj strzalki w numerze (Chrome/Safari) */
+  -moz-appearance: textfield;
+}
+.task-order-num::-webkit-outer-spin-button,
+.task-order-num::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.task-card:hover .task-order-num,
+.task-card.checked .task-order-num {
+  opacity: 1;
+}
+.task-order-num:hover {
+  border-color: var(--border-bright);
+  color: var(--text);
+}
+.task-order-num:focus {
+  outline: none;
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(196, 245, 58, 0.06);
+}
+.task-card.disabled .task-order-num {
+  opacity: 0.25;
+  pointer-events: none;
+}
+
 .task-suboption {
   display: none;
   margin-top: 0.7rem;
@@ -1156,9 +1203,9 @@ Napisz krótki email do przyjaciela o ostatnim weekendzie.	Use past simple. Incl
       <div class="tts-rate-row">
         <label class="label" for="ttsRate">Prędkość mowy</label>
         <div class="tts-rate-controls">
-          <input type="range" id="ttsRate" min="0.5" max="1.5" step="0.05" value="1.0" class="tts-rate-slider">
-          <span class="tts-rate-value" id="ttsRateValue">1.00x</span>
-          <button type="button" class="tts-rate-reset" id="ttsRateReset" title="Przywróć domyślną prędkość (1.0x)">RESET</button>
+          <input type="range" id="ttsRate" min="0.5" max="1.5" step="0.05" value="0.75" class="tts-rate-slider">
+          <span class="tts-rate-value" id="ttsRateValue">0.75x</span>
+          <button type="button" class="tts-rate-reset" id="ttsRateReset" title="Przywróć domyślną prędkość (0.75x)">RESET</button>
         </div>
       </div>
       <div class="tts-test-row">
@@ -1223,7 +1270,10 @@ const STATE = {
   customAccent: null,
   customBg: null,
   customText: null,
-  tasks: { flashcards: true, matching: true, scramble: true, quiz: false, unscramble: false, cornell: false, gapfill: false, translate: false, writing: false },
+  tasks: { flashcards: false, matching: false, scramble: false, quiz: false, unscramble: false, cornell: false, gapfill: false, translate: false, writing: false },
+  // Czy uzytkownik recznie zmienial wybor zadan? Jesli tak, automatyczne
+  // zaznaczanie wszystkich dostepnych zadan nie nadpisze recznych zmian.
+  userOverrodeTasks: false,
   taskInstructions: { flashcards: true, matching: true, scramble: true, quiz: true, unscramble: true, cornell: true, gapfill: true, translate: true, writing: true },
   taskOrder: ['flashcards', 'matching', 'scramble', 'quiz', 'unscramble', 'cornell', 'gapfill', 'translate', 'writing'],
   // Edytowalne tytuly sekcji w wygenerowanej karcie pracy.
@@ -1247,9 +1297,9 @@ const STATE = {
   ttsEnabled: true,
   ttsLang: 'en-GB',
   ttsVoice: '',
-  // Predkosc mowy TTS (0.5 - 1.5, domyslnie 1.0). Wartosc przekazywana do utterance.rate
+  // Predkosc mowy TTS (0.5 - 1.5, domyslnie 0.75). Wartosc przekazywana do utterance.rate
   // w wygenerowanej karcie + uzywana w teście w generatorze.
-  ttsRate: 1.0,
+  ttsRate: 0.75,
   logoEnabled: true,
   logoUrl: 'https://bertlingo-learning.github.io/Angielski/Obrazki/loga/ewr-logo.svg'
 };
@@ -1259,11 +1309,11 @@ const STATE = {
 const DEFAULT_INSTRUCTIONS = {
   flashcards: 'Kliknij kartę, żeby odsłonić tłumaczenie. Spróbuj najpierw zgadnąć w głowie!',
   matching:   'Kliknij słowo z lewej strony, potem jego tłumaczenie z prawej.',
-  scramble:   'Wpisz angielskie słowo (Enter sprawdza). Kliknij rozsypankę, żeby zobaczyć pomieszane litery. Kliknij "?" żeby wstawić kolejną literę odpowiedzi.',
+  scramble:   'Wpisz angielskie słowo (Enter sprawdza). Kliknij rozsypankę, żeby zobaczyć pomieszane litery. Kliknij 💡, żeby wstawić kolejną literę odpowiedzi, lub ✨, żeby rozwiązać od razu.',
   quiz:       'Wybierz prawidłowe tłumaczenie polskiego słowa. Tylko jedna odpowiedź jest poprawna.',
-  unscramble: 'Kliknij słowa, żeby je wstawić w odpowiedniej kolejności. Możesz też przeciągnąć słowa, żeby je przestawić. Kliknij "?" żeby wstawić kolejne poprawne słowo.',
+  unscramble: 'Kliknij pole "Pokaż słowa", a następnie ułóż je w odpowiedniej kolejności. Możesz też przeciągać słowa. Kliknij 💡, aby wstawić kolejne poprawne słowo, lub ✨, aby rozwiązać od razu.',
   cornell:    'Kliknij pytanie, żeby odsłonić odpowiedź. Spróbuj najpierw odpowiedzieć w głowie!',
-  gapfill:    'Wpisz brakujące słowa w lukach (Enter sprawdza). Po uzupełnieniu wszystkich luk w zdaniu pojawi się polskie tłumaczenie.',
+  gapfill:    'Wpisz brakujące słowa w lukach (Enter sprawdza). Kliknij 👁, żeby zobaczyć polskie tłumaczenie zdania jako wskazówkę, 💡 - kolejna litera, ✨ - rozwiąż całe zdanie.',
   translate:  'Przetłumacz polskie słowo, frazę lub zdanie na angielski (Enter sprawdza). Sprawdzanie pomija wielkość liter i kropkę na końcu.',
   writing:    'Napisz odpowiedź według polecenia. Kliknij "Gotowe", gdy skończysz.'
 };
@@ -1389,6 +1439,7 @@ function updateTSVStatus() {
     status.innerHTML = '<span class="icon">ⓘ</span> Wklej dane, żeby zobaczyć dostępne typy zadań.';
     STATE.rows = [];
     STATE.headers = [];
+    STATE.userOverrodeTasks = false; // reset: nowe dane = znow auto-zaznacz wszystkie
     updateTaskAvailability();
     validateGenerate();
     return;
@@ -1489,6 +1540,14 @@ function updateTaskAvailability() {
       desc.textContent = reason || desc.dataset.original;
     } else {
       card.classList.remove('disabled');
+      // Auto-zaznaczanie wszystkich dostepnych zadan po wklejeniu danych.
+      // Respektuj jednak recznie zmienione wybory: jesli uzytkownik klikal
+      // w karty, nie nadpisuj. Reset flagi nastepuje po wyczyszczeniu textarea.
+      if (!STATE.userOverrodeTasks) {
+        STATE.tasks[task] = true;
+        cb.checked = true;
+        card.classList.add('checked');
+      }
       desc.textContent = desc.dataset.original + ` · ${taskRows.length} wierszy`;
     }
   });
@@ -1638,6 +1697,7 @@ document.getElementById('selectAllBtn').addEventListener('click', () => {
     if (cb) cb.checked = newState;
   });
 
+  STATE.userOverrodeTasks = true;
   updateSelectAllState();
   updateOrphanWarning();
   validateGenerate();
@@ -1645,8 +1705,49 @@ document.getElementById('selectAllBtn').addEventListener('click', () => {
 
 document.querySelectorAll('.task-card').forEach(card => {
   card.setAttribute('draggable', 'true');
-  // Dodaj toggle "pokaż instrukcję w karcie pracy" - per typ zadania
   const task = card.dataset.task;
+
+  // Input pozycji w kolejnosci - w lewym gornym rogu karty.
+  // Wartosc to pozycja w STATE.taskOrder + 1 (1-based dla uzytkownika).
+  const orderInput = document.createElement('input');
+  orderInput.type = 'number';
+  orderInput.className = 'task-order-num';
+  orderInput.min = '1';
+  orderInput.max = String(STATE.taskOrder.length);
+  orderInput.title = 'Wpisz numer pozycji, na ktorej ma byc to zadanie';
+  orderInput.value = String(STATE.taskOrder.indexOf(task) + 1);
+  orderInput.addEventListener('click', e => e.stopPropagation());
+  orderInput.addEventListener('mousedown', e => e.stopPropagation());
+  orderInput.addEventListener('dragstart', e => { e.preventDefault(); e.stopPropagation(); });
+  orderInput.setAttribute('draggable', 'false');
+  orderInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      orderInput.blur();
+    }
+  });
+  orderInput.addEventListener('change', () => {
+    const total = STATE.taskOrder.length;
+    let newPos = parseInt(orderInput.value, 10);
+    if (isNaN(newPos)) { syncOrderInputs(); return; }
+    newPos = Math.max(1, Math.min(total, newPos));
+    const newIdx = newPos - 1;
+    const oldIdx = STATE.taskOrder.indexOf(task);
+    if (oldIdx === newIdx) { syncOrderInputs(); return; }
+    // Przesun w STATE.taskOrder
+    STATE.taskOrder.splice(oldIdx, 1);
+    STATE.taskOrder.splice(newIdx, 0, task);
+    // Zsynchronizuj DOM: ulozyc karty zgodnie z nowa kolejnoscia
+    const grid = document.getElementById('taskGrid');
+    STATE.taskOrder.forEach(t => {
+      const c = grid.querySelector('.task-card[data-task="' + t + '"]');
+      if (c) grid.appendChild(c);
+    });
+    syncOrderInputs();
+  });
+  card.appendChild(orderInput);
+
+  // Dodaj toggle "pokaż instrukcję w karcie pracy" - per typ zadania
   const instrToggle = document.createElement('button');
   instrToggle.type = 'button';
   instrToggle.className = 'task-instr-toggle active';
@@ -1799,10 +1900,12 @@ document.querySelectorAll('.task-card').forEach(card => {
     if (e.target.closest('.suboption-buttons')) return;
     if (e.target.closest('.task-instr-toggle')) return;
     if (e.target.closest('.task-edit-fields')) return;
+    if (e.target.closest('.task-order-num')) return;
     const cb = card.querySelector(':scope > input[type="checkbox"]');
     cb.checked = !cb.checked;
     card.classList.toggle('checked', cb.checked);
     STATE.tasks[card.dataset.task] = cb.checked;
+    STATE.userOverrodeTasks = true;
     updateOrphanWarning();
     validateGenerate();
     updateSelectAllState();
@@ -1852,6 +1955,17 @@ let _draggedTaskCard = null;
 function updateTaskOrder() {
   const cards = document.querySelectorAll('#taskGrid .task-card');
   STATE.taskOrder = Array.from(cards).map(c => c.dataset.task);
+  syncOrderInputs();
+}
+
+// Po kazdej zmianie kolejnosci aktualizuj wartosci wpisane w inputach numerow.
+function syncOrderInputs() {
+  document.querySelectorAll('#taskGrid .task-card').forEach(card => {
+    const inp = card.querySelector('.task-order-num');
+    if (!inp) return;
+    const pos = STATE.taskOrder.indexOf(card.dataset.task) + 1;
+    if (pos > 0) inp.value = String(pos);
+  });
 }
 
 document.getElementById('reorderReset').addEventListener('click', () => {
@@ -1862,6 +1976,7 @@ document.getElementById('reorderReset').addEventListener('click', () => {
     if (card) grid.appendChild(card);
   });
   STATE.taskOrder = defaultOrder.slice();
+  syncOrderInputs();
 });
 
 // Quiz suboption buttons
@@ -1979,7 +2094,22 @@ function populateVoiceSelect() {
     opt.textContent = (isGoogle ? '⭐ ' : '') + v.name + ' (' + v.lang + ')';
     sel.appendChild(opt);
   });
-  if (matching.find(v => v.name === currentValue)) sel.value = currentValue;
+
+  // Domyslny glos: jesli uzytkownik nie wybral jeszcze niczego (STATE.ttsVoice === ''),
+  // a jezyk to en-GB, sprobuj wybrac "Google UK English Male" lub najblizszy odpowiednik.
+  if (!STATE.ttsVoice && lang === 'en-GB') {
+    const ukMale = matching.find(v => /google uk english male/i.test(v.name))
+      || matching.find(v => /google.*uk.*male/i.test(v.name))
+      || matching.find(v => /google.*english.*male/i.test(v.name));
+    if (ukMale) {
+      STATE.ttsVoice = ukMale.name;
+      sel.value = ukMale.name;
+    } else if (matching.find(v => v.name === currentValue)) {
+      sel.value = currentValue;
+    }
+  } else if (matching.find(v => v.name === currentValue)) {
+    sel.value = currentValue;
+  }
 
   // Aktualizuj info status
   const info = document.getElementById('ttsInfo');
@@ -2004,9 +2134,14 @@ function getSelectedVoiceForSpeak() {
   if (STATE.ttsVoice) {
     return _availableVoices.find(v => v.name === STATE.ttsVoice);
   }
-  // auto-wybór: Google głos pasujący do języka
+  // auto-wybór: Google głos pasujący do języka, preferuj Male przy en-GB
   const langPrefix = STATE.ttsLang.split('-')[0];
   const matching = _availableVoices.filter(v => v.lang.toLowerCase().startsWith(langPrefix));
+  if (STATE.ttsLang === 'en-GB') {
+    const ukMale = matching.find(v => /google uk english male/i.test(v.name))
+      || matching.find(v => /google.*uk.*male/i.test(v.name));
+    if (ukMale) return ukMale;
+  }
   const google = matching.find(v => v.name.toLowerCase().includes('google'));
   return google || matching[0];
 }
@@ -2053,8 +2188,8 @@ ttsRateSlider.addEventListener('input', e => {
   updateTtsRateDisplay();
 });
 ttsRateReset.addEventListener('click', () => {
-  STATE.ttsRate = 1.0;
-  ttsRateSlider.value = '1.0';
+  STATE.ttsRate = 0.75;
+  ttsRateSlider.value = '0.75';
   updateTtsRateDisplay();
 });
 updateTtsRateDisplay();
@@ -2130,6 +2265,59 @@ function shiftColor(hex, factor) {
   const apply = c => Math.max(0, Math.min(255, Math.round(c + (f >= 0 ? (255 - c) * f : c * f))));
   const nr = apply(r), ng = apply(g), nb = apply(b);
   return '#' + [nr, ng, nb].map(x => x.toString(16).padStart(2, '0')).join('');
+}
+
+// RGB (0-255) -> HSL (h: 0-360, s/l: 0-1)
+function rgbToHsl(r, g, b) {
+  r /= 255; g /= 255; b /= 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  let h = 0, s = 0;
+  const l = (max + min) / 2;
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r: h = ((g - b) / d + (g < b ? 6 : 0)); break;
+      case g: h = ((b - r) / d + 2); break;
+      case b: h = ((r - g) / d + 4); break;
+    }
+    h *= 60;
+  }
+  return [h, s, l];
+}
+
+// HSL (h: 0-360, s/l: 0-1) -> hex
+function hslToHex(h, s, l) {
+  h = ((h % 360) + 360) % 360;
+  s = Math.max(0, Math.min(1, s));
+  l = Math.max(0, Math.min(1, l));
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+  const m = l - c / 2;
+  let r1, g1, b1;
+  if (h < 60)       { r1 = c; g1 = x; b1 = 0; }
+  else if (h < 120) { r1 = x; g1 = c; b1 = 0; }
+  else if (h < 180) { r1 = 0; g1 = c; b1 = x; }
+  else if (h < 240) { r1 = 0; g1 = x; b1 = c; }
+  else if (h < 300) { r1 = x; g1 = 0; b1 = c; }
+  else              { r1 = c; g1 = 0; b1 = x; }
+  const r = Math.round((r1 + m) * 255);
+  const g = Math.round((g1 + m) * 255);
+  const b = Math.round((b1 + m) * 255);
+  return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
+}
+
+// Wygeneruj harmonijny drugi/trzeci kolor z koloru bazowego.
+// shiftHueDeg: ile stopni obrocic na koole barw (np. +25 = w strone analogicznego cieplejszego)
+// lightnessDelta: zmiana jasnosci (-1..1)
+// satDelta: zmiana nasycenia (-1..1)
+function deriveAccentColor(baseHex, shiftHueDeg, lightnessDelta, satDelta) {
+  const [r, g, b] = hexToRgb(baseHex);
+  let [h, s, l] = rgbToHsl(r, g, b);
+  h = h + (shiftHueDeg || 0);
+  s = Math.max(0, Math.min(1, s + (satDelta || 0)));
+  l = Math.max(0, Math.min(1, l + (lightnessDelta || 0)));
+  return hslToHex(h, s, l);
 }
 
 function rgba(hex, alpha) {
@@ -2220,6 +2408,10 @@ function buildWorksheetHTML() {
     }
   });
 
+  // Czy uzytkownik podal wlasny kolor akcentu? Jesli tak, harmonijny gradient
+  // (accentSecondary/Tertiary) bedzie wygenerowany dynamicznie z accentu.
+  const isCustomAccent = !!STATE.customAccent;
+
   // Build the full HTML based on preset
   return buildWorksheetTemplate({
     title,
@@ -2228,6 +2420,7 @@ function buildWorksheetHTML() {
     accent,
     bg,
     textColor,
+    isCustomAccent,
     sectionCount,
     sectionsHTML: sectionsHTML.join('\n'),
     sectionsJS: sectionsJS.join('\n'),
@@ -2363,7 +2556,11 @@ function buildMatchingSection(num, options = {}) {
   const partNum = options.partNum;
   const totalParts = options.totalParts;
   const pairs = allRows.slice(startIdx, endIdx);
-  const plList = pairs.map((r, i) => `<button class="match-item match-pl" data-idx="${i}" onclick="pickMatch_${num}(this, 'pl')">${escapeHtml(r.pl)}</button>`).join('');
+  const plList = pairs.map((r, i) => `
+    <div class="match-item-wrap">
+      <button class="tts-btn tts-btn-side match-solve-btn" onclick="solveMatchingOne_${num}(${i})" title="Rozwiąż tę parę" aria-label="Rozwiąż">✨</button>
+      <button class="match-item match-pl" data-idx="${i}" onclick="pickMatch_${num}(this, 'pl')">${escapeHtml(r.pl)}</button>
+    </div>`).join('');
   const shuffledEn = shuffle(pairs.map((r, i) => ({ idx: i, en: r.en })));
   const enList = shuffledEn.map(item => `
     <div class="match-item-wrap">
@@ -2519,6 +2716,43 @@ function buildMatchingJS(num, options = {}) {
     showSectionFeedback(${num}, true, '✓ Wszystkie pary pokazane');
     markSectionDone(${num});
   };
+
+  // Rozwiaz pojedyncza pare matching (tylko jedna PL <-> jej EN).
+  window.solveMatchingOne_${num} = function(idx) {
+    if (_matchedPairs_${num}.has(idx)) return;
+    const el = document.querySelector('#sec-${num} .match-pl[data-idx="' + idx + '"]');
+    const enEl = document.querySelector('#sec-${num} .match-en[data-idx="' + idx + '"]');
+    if (!el || !enEl) return;
+    const color = _matchColors_${num}[_matchedPairs_${num}.size % _matchColors_${num}.length];
+    [el, enEl].forEach(e => {
+      e.classList.add('matched');
+      e.style.borderColor = color;
+      e.style.background = color + '1f';
+      e.style.color = color;
+      e.style.setProperty('--pair-color', color);
+      // jesli element byl aktualnie zaznaczony jako selected, wyczysc
+      e.classList.remove('selected');
+    });
+    const badgeNum = _matchedPairs_${num}.size + 1;
+    el.setAttribute('data-pair', badgeNum);
+    enEl.setAttribute('data-pair', badgeNum);
+    [el, enEl].forEach(e => {
+      requestAnimationFrame(() => {
+        const lineHeight = parseFloat(getComputedStyle(e).lineHeight) || 22;
+        const cs = getComputedStyle(e);
+        const padTop = parseFloat(cs.paddingTop);
+        const padBottom = parseFloat(cs.paddingBottom);
+        const contentHeight = e.offsetHeight - padTop - padBottom;
+        if (contentHeight <= lineHeight * 1.5) e.classList.add('single-line');
+      });
+    });
+    _matchedPairs_${num}.add(idx);
+    // jesli wszystko sparowane, zakoncz sekcje
+    if (_matchedPairs_${num}.size === _matchTotal_${num}) {
+      showSectionFeedback(${num}, true, '✓ Wszystkie pary połączone');
+      markSectionDone(${num});
+    }
+  };
 `;
 }
 
@@ -2547,8 +2781,9 @@ function buildScrambleSection(num, options = {}) {
         </div>
         <div class="scramble-input-row">
           <input type="text" class="scramble-input" data-answer="${escapeHtml(r.en.toLowerCase())}" placeholder="Wpisz słowo..." onkeydown="if(event.key==='Enter') checkScramble_${num}(this)">
-          <button class="scramble-check" onclick="checkScramble_${num}(this.previousElementSibling)" title="Sprawdź">✓</button>
-          <button class="scramble-hint-btn" onclick="hintScramble_${num}(${i})" title="Podpowiedź - wstaw kolejną literę">?</button>
+          <button class="scramble-check" onclick="checkScramble_${num}(this.previousElementSibling)" title="Sprawdź" aria-label="Sprawdź">✓</button>
+          <button class="scramble-hint-btn" onclick="hintScramble_${num}(${i})" title="Podpowiedź - wstaw kolejną literę" aria-label="Podpowiedź">💡</button>
+          <button class="scramble-solve-btn" onclick="solveScrambleOne_${num}(${i})" title="Rozwiąż to słowo" aria-label="Rozwiąż">✨</button>
           <button class="scramble-tts-btn tts-btn" onclick="ttsBtnClick(event, ${JSON.stringify(r.en).replace(/"/g, '&quot;')})" title="Posłuchaj" aria-label="Czytaj">🔊</button>
         </div>
       </div>`;
@@ -2562,7 +2797,7 @@ function buildScrambleSection(num, options = {}) {
         <div class="ws-sec-num">0${num}</div>
         <h2 class="ws-sec-title">${sectionTitle('scramble', 'Word Scramble')}</h2>
       </div>
-      ${sectionInstr('scramble', 'Wpisz angielskie słowo (Enter sprawdza). Kliknij rozsypankę, żeby zobaczyć pomieszane litery. Kliknij "?" żeby wstawić kolejną literę odpowiedzi.')}
+      ${sectionInstr('scramble', 'Wpisz angielskie słowo (Enter sprawdza). Kliknij rozsypankę, żeby zobaczyć pomieszane litery. Kliknij 💡, żeby wstawić kolejną literę odpowiedzi, lub ✨, żeby rozwiązać od razu.')}
       <div class="scramble-grid">${items}</div>
       <div class="ws-actions">
         <button class="ws-btn-solve" onclick="solveScramble_${num}()">Pokaż wszystkie odpowiedzi</button>
@@ -2641,6 +2876,16 @@ function buildScrambleJS(num, options = {}) {
     showSectionFeedback(${num}, true, '✓ Wszystkie odpowiedzi pokazane');
     markSectionDone(${num});
   };
+
+  // Rozwiaz pojedyncze slowo - wpisuje odpowiedz w jedna konkretna luke.
+  window.solveScrambleOne_${num} = function(idx) {
+    const card = document.querySelector('#sec-${num} .scramble-card[data-idx="' + idx + '"]');
+    if (!card) return;
+    const inp = card.querySelector('.scramble-input');
+    if (inp.classList.contains('correct')) return;
+    inp.value = inp.dataset.answer;
+    window.checkScramble_${num}(inp);
+  };
 `;
 }
 
@@ -2668,6 +2913,7 @@ function buildQuizSection(num) {
         <div class="quiz-question">
           <span class="quiz-q-num">${i + 1}.</span>
           <span class="quiz-q-text">${escapeHtml(r.pl)}</span>
+          <button class="tts-btn quiz-solve-btn" onclick="solveQuizOne_${num}(${i})" title="Rozwiąż to pytanie" aria-label="Rozwiąż">✨</button>
         </div>
         <div class="quiz-options" data-opts="${numOpts}">${optHTML}</div>
       </div>`;
@@ -2729,6 +2975,20 @@ function buildQuizJS(num) {
     showSectionFeedback(${num}, true, '✓ Wszystkie odpowiedzi pokazane');
     markSectionDone(${num});
   };
+
+  // Rozwiaz jedna konkretna karte quizu (tylko ta).
+  window.solveQuizOne_${num} = function(qIdx) {
+    const card = document.querySelector('#sec-${num} .quiz-card[data-idx="' + qIdx + '"]');
+    if (!card || card.classList.contains('answered')) return;
+    card.querySelectorAll('.quiz-option').forEach(b => {
+      if (b.dataset.correct === '1') b.classList.add('quiz-correct');
+    });
+    card.classList.add('answered');
+    _quizDone_${num}.add(qIdx);
+    if (_quizDone_${num}.size === _quizTotal_${num}) {
+      markSectionDone(${num});
+    }
+  };
 `;
 }
 
@@ -2762,12 +3022,19 @@ function buildUnscrambleSection(num) {
         <div class="unsc-answer-area" data-section="${num}" data-card-idx="${i}">
           <div class="unsc-answer-empty">Kliknij słowa poniżej lub przeciągnij je tutaj</div>
         </div>
-        <div class="unsc-pool" data-section="${num}" data-card-idx="${i}">
-          ${wordTokens}
+        <div class="unsc-pool-wrap">
+          <div class="unsc-pool unsc-pool-hidden" data-section="${num}" data-card-idx="${i}">
+            ${wordTokens}
+          </div>
+          <button type="button" class="unsc-pool-reveal" onclick="revealUnscPool_${num}(${i})">
+            <span class="unsc-pool-reveal-icon">👁</span>
+            <span>Kliknij, aby pokazać słowa do ułożenia</span>
+          </button>
         </div>
         <div class="unsc-controls">
           <button class="unsc-check-btn" onclick="checkUnscramble(${num}, ${i})">Sprawdź</button>
-          <button class="unsc-hint-btn" onclick="hintUnscramble(${num}, ${i})">? Podpowiedź</button>
+          <button class="unsc-hint-btn" onclick="hintUnscramble(${num}, ${i})">💡 Podpowiedź</button>
+          <button class="unsc-solve-btn" onclick="solveUnscrambleOne_${num}(${i})">✨ Rozwiąż</button>
           <button class="unsc-clear-btn" onclick="clearUnscramble(${num}, ${i})">Wyczyść</button>
         </div>
       </div>`;
@@ -2781,7 +3048,7 @@ function buildUnscrambleSection(num) {
         <div class="ws-sec-num">0${num}</div>
         <h2 class="ws-sec-title">${sectionTitle('unscramble', 'Sentence Unscramble')}</h2>
       </div>
-      ${sectionInstr('unscramble', 'Kliknij słowa, żeby je wstawić w odpowiedniej kolejności. Możesz też przeciągnąć słowa, żeby je przestawić. Kliknij "?" żeby wstawić kolejne poprawne słowo.')}
+      ${sectionInstr('unscramble', 'Kliknij pole "Pokaż słowa", a następnie ułóż je w odpowiedniej kolejności. Możesz też przeciągać słowa. Kliknij 💡, aby wstawić kolejne poprawne słowo, lub ✨, aby rozwiązać od razu.')}
       <div class="unsc-grid">${items}</div>
       <div class="ws-actions">
         <button class="ws-btn-solve" onclick="solveUnscramble(${num})">Pokaż wszystkie odpowiedzi</button>
@@ -2950,6 +3217,44 @@ function buildUnscrambleJS(num) {
     });
     showSectionFeedback(${num}, true, '✓ Wszystkie odpowiedzi pokazane');
     markSectionDone(${num});
+  };
+
+  // Rozwiaz jedna karte unscramble (tylko ta).
+  window.solveUnscrambleOne_${num} = function(cardIdx) {
+    const card = document.querySelector('#sec-${num} .unsc-card[data-idx="' + cardIdx + '"]');
+    if (!card || card.classList.contains('done')) return;
+    const correct = JSON.parse(card.getAttribute('data-correct'));
+    const answerArea = card.querySelector('.unsc-answer-area');
+    const pool = card.querySelector('.unsc-pool');
+    // pokaz pule slow (jesli ukryta)
+    pool.classList.remove('unsc-pool-hidden');
+    const reveal = card.querySelector('.unsc-pool-reveal');
+    if (reveal) reveal.style.display = 'none';
+    // wszystkie slowa do poola
+    Array.from(card.querySelectorAll('.unsc-word')).forEach(w => pool.appendChild(w));
+    answerArea.innerHTML = '';
+    correct.forEach(targetWord => {
+      const token = pool.querySelector('.unsc-word[data-word="' + cssEscape(targetWord) + '"]:not(.used)');
+      if (token) {
+        token.classList.add('used', 'correct-pos');
+        answerArea.appendChild(token);
+      }
+    });
+    card.classList.add('done');
+    _unscDone_${num}.add(cardIdx);
+    if (_unscDone_${num}.size === _unscTotal_${num}) {
+      markSectionDone(${num});
+    }
+  };
+
+  // Odsloniecie puli slow - klikniecie zaslony pokazuje slowa do ulozenia.
+  window.revealUnscPool_${num} = function(cardIdx) {
+    const card = document.querySelector('#sec-${num} .unsc-card[data-idx="' + cardIdx + '"]');
+    if (!card) return;
+    const pool = card.querySelector('.unsc-pool');
+    const reveal = card.querySelector('.unsc-pool-reveal');
+    if (pool) pool.classList.remove('unsc-pool-hidden');
+    if (reveal) reveal.style.display = 'none';
   };
 
   // Kliknięcie słowa w pool przenosi do answer-area; w answer-area zwraca do pool
@@ -3160,7 +3465,12 @@ function buildGapfillSection(num) {
     return `
       <div class="gap-card" data-idx="${i}" data-total-gaps="${totalGaps}">
         <div class="gap-sentence">${sentenceHTML}
-          <button class="tts-btn tts-btn-gap" onclick="ttsBtnClick(event, ${JSON.stringify(enClean).replace(/"/g, '&quot;')})" title="Posłuchaj całego zdania" aria-label="Czytaj">🔊</button>
+          <span class="gap-actions">
+            <button class="tts-btn tts-btn-gap gap-helper-btn" onclick="hintGap_${num}(${i})" title="Podpowiedź - kolejna litera w pierwszej pustej luce" aria-label="Podpowiedź">💡</button>
+            <button class="tts-btn tts-btn-gap gap-translate-btn" onclick="revealGapTranslation_${num}(${i})" title="Pokaż polskie tłumaczenie" aria-label="Pokaż tłumaczenie">👁</button>
+            <button class="tts-btn tts-btn-gap gap-solve-btn" onclick="solveGapOne_${num}(${i})" title="Rozwiąż całe zdanie" aria-label="Rozwiąż">✨</button>
+            <button class="tts-btn tts-btn-gap" onclick="ttsBtnClick(event, ${JSON.stringify(enClean).replace(/"/g, '&quot;')})" title="Posłuchaj całego zdania" aria-label="Czytaj">🔊</button>
+          </span>
         </div>
         <div class="gap-translation" id="gap-tr-${num}-${i}">
           <span class="gap-translation-label">${FLAG_PL_SVG}</span> <span class="gap-translation-text">${escapeHtml(r.pl)}</span>
@@ -3176,7 +3486,7 @@ function buildGapfillSection(num) {
         <div class="ws-sec-num">0${num}</div>
         <h2 class="ws-sec-title">${sectionTitle('gapfill', 'Gap Fill')}</h2>
       </div>
-      ${sectionInstr('gapfill', 'Wpisz brakujące słowa w lukach (Enter sprawdza). Po uzupełnieniu wszystkich luk w zdaniu pojawi się polskie tłumaczenie.')}
+      ${sectionInstr('gapfill', 'Wpisz brakujące słowa w lukach (Enter sprawdza). Kliknij 👁, żeby zobaczyć polskie tłumaczenie zdania jako wskazówkę, 💡 - kolejna litera, ✨ - rozwiąż całe zdanie.')}
       <div class="gap-grid">${items}</div>
       <div class="ws-actions">
         <button class="ws-btn-solve" onclick="solveGap_${num}()">Pokaż wszystkie odpowiedzi</button>
@@ -3216,6 +3526,73 @@ function buildGapfillJS(num) {
       input.classList.add('gap-wrong');
       setTimeout(() => input.classList.remove('gap-wrong'), 500);
     }
+  };
+
+  // Podpowiedz: doklada kolejna litere odpowiedzi do pierwszej pustej
+  // (niewypelnionej i nieaktywnej jako correct) luki w karcie.
+  window.hintGap_${num} = function(cardIdx) {
+    const card = document.querySelector('#sec-${num} .gap-card[data-idx="' + cardIdx + '"]');
+    if (!card) return;
+    // Najpierw szukamy pierwszej luki, ktora nie jest jeszcze "correct".
+    const inputs = card.querySelectorAll('.gap-input');
+    let target = null;
+    for (const inp of inputs) {
+      if (inp.disabled || inp.classList.contains('gap-correct')) continue;
+      target = inp;
+      break;
+    }
+    if (!target) return;
+    const ans = target.dataset.answer;
+    const cur = target.value.toLowerCase();
+    let matchLen = 0;
+    for (let i = 0; i < Math.min(cur.length, ans.length); i++) {
+      if (cur[i] === ans[i]) matchLen++;
+      else break;
+    }
+    const newLen = Math.min(matchLen + 1, ans.length);
+    target.value = ans.slice(0, newLen);
+    target.classList.remove('gap-wrong');
+    target.focus();
+    if (newLen === ans.length) {
+      window.checkGap_${num}(target);
+    }
+  };
+
+  // Rozwiaz cale zdanie - wstawia poprawne odpowiedzi we wszystkie luki w karcie.
+  window.solveGapOne_${num} = function(cardIdx) {
+    const card = document.querySelector('#sec-${num} .gap-card[data-idx="' + cardIdx + '"]');
+    if (!card) return;
+    card.querySelectorAll('.gap-input').forEach(inp => {
+      if (inp.classList.contains('gap-correct')) return;
+      inp.value = inp.dataset.answer;
+      inp.classList.add('gap-correct');
+      inp.disabled = true;
+    });
+    card.classList.add('done');
+    const tr = card.querySelector('.gap-translation');
+    if (tr) tr.classList.add('show');
+    _gapDone_${num}.add(parseInt(card.dataset.idx));
+    if (_gapDone_${num}.size === _gapTotal_${num}) {
+      showSectionFeedback(${num}, true, '✓ Wszystkie luki uzupełnione');
+      markSectionDone(${num});
+    }
+  };
+
+  // Pokaz/ukryj polskie tlumaczenie zdania (wskazowka przed rozwiazaniem luki).
+  // Toggle - klikniecie ponownie chowa. Po rozwiazaniu zostaje na stale i tak.
+  window.revealGapTranslation_${num} = function(cardIdx) {
+    const card = document.querySelector('#sec-${num} .gap-card[data-idx="' + cardIdx + '"]');
+    if (!card) return;
+    const tr = card.querySelector('.gap-translation');
+    const btn = card.querySelector('.gap-translate-btn');
+    if (!tr) return;
+    // Jesli karta jest juz rozwiazana, tlumaczenie zostaje pokazane (nie pozwalamy schowac).
+    if (card.classList.contains('done')) {
+      tr.classList.add('show');
+      return;
+    }
+    tr.classList.toggle('show');
+    if (btn) btn.classList.toggle('active', tr.classList.contains('show'));
   };
 
   function _gapCheckCardComplete_${num}(card) {
@@ -3273,8 +3650,9 @@ function buildTranslateSection(num) {
         <div class="trans-input-row">
           <input type="text" class="trans-input" data-answer="${escapeHtml(r.en)}" placeholder="Wpisz tłumaczenie po angielsku..." onkeydown="if(event.key==='Enter'){event.preventDefault();checkTranslate_${num}(this);}">
           <div class="trans-input-actions">
-            <button class="trans-check" onclick="checkTranslate_${num}(this.closest('.trans-card').querySelector('.trans-input'))" title="Sprawdź">✓</button>
-            <button class="trans-hint-btn" onclick="hintTranslate_${num}(${i})" title="Podpowiedź - kolejna litera">?</button>
+            <button class="trans-check" onclick="checkTranslate_${num}(this.closest('.trans-card').querySelector('.trans-input'))" title="Sprawdź" aria-label="Sprawdź">✓</button>
+            <button class="trans-hint-btn" onclick="hintTranslate_${num}(${i})" title="Podpowiedź - kolejna litera" aria-label="Podpowiedź">💡</button>
+            <button class="trans-solve-btn" onclick="solveTranslateOne_${num}(${i})" title="Rozwiąż to zdanie" aria-label="Rozwiąż">✨</button>
             <button class="tts-btn tts-btn-trans" onclick="ttsBtnClick(event, ${JSON.stringify(r.en).replace(/"/g, '&quot;')})" title="Posłuchaj poprawnego tłumaczenia" aria-label="Czytaj">🔊</button>
           </div>
         </div>
@@ -3383,6 +3761,16 @@ function buildTranslateJS(num) {
     showSectionFeedback(${num}, true, '✓ Wszystkie odpowiedzi pokazane');
     markSectionDone(${num});
   };
+
+  // Rozwiaz jedna konkretna karte translate.
+  window.solveTranslateOne_${num} = function(idx) {
+    const card = document.querySelector('#sec-${num} .trans-card[data-idx="' + idx + '"]');
+    if (!card) return;
+    const ta = card.querySelector('.trans-input');
+    if (ta.classList.contains('trans-correct')) return;
+    ta.value = ta.dataset.answer;
+    window.checkTranslate_${num}(ta);
+  };
 `;
 }
 
@@ -3460,8 +3848,8 @@ function buildWritingJS(num) {
 // ============================================================
 // MAIN TEMPLATE - the worksheet HTML
 // ============================================================
-function buildWorksheetTemplate({ title, subtitle, preset, accent, bg, textColor, sectionCount, sectionsHTML, sectionsJS, rowsJSON, ttsConfig, logoConfig }) {
-  const presetTheme = getPresetTheme(preset, accent, bg, textColor);
+function buildWorksheetTemplate({ title, subtitle, preset, accent, bg, textColor, isCustomAccent, sectionCount, sectionsHTML, sectionsJS, rowsJSON, ttsConfig, logoConfig }) {
+  const presetTheme = getPresetTheme(preset, accent, bg, textColor, isCustomAccent);
   const fontImports = presetTheme.fontImports;
   const css = buildWorksheetCSS(presetTheme);
   const bgEffectHTML = presetTheme.bgEffect;
@@ -4082,27 +4470,42 @@ window.addEventListener('load', loadProgress);
 // ============================================================
 // PRESET THEMES
 // ============================================================
-function getPresetTheme(preset, accent, bg, textColor) {
-  if (preset === 'vintage') return getVintageTheme(accent, bg, textColor);
-  if (preset === 'pastel') return getPastelTheme(accent, bg, textColor);
-  return getVintageTheme(accent, bg, textColor);
+function getPresetTheme(preset, accent, bg, textColor, isCustomAccent) {
+  if (preset === 'vintage') return getVintageTheme(accent, bg, textColor, isCustomAccent);
+  if (preset === 'pastel') return getPastelTheme(accent, bg, textColor, isCustomAccent);
+  return getVintageTheme(accent, bg, textColor, isCustomAccent);
 }
 
-function getVintageTheme(accent, bg, textColor) {
+function getVintageTheme(accent, bg, textColor, isCustomAccent) {
   const text = textColor || '#1f1a14';
+  // Jesli uzytkownik wybral wlasny kolor akcentu, generujemy harmonijny drugi/trzeci
+  // kolor automatycznie (analogia kolorystyczna na kole barw). Inaczej uzywamy
+  // recznie dobranych kolorow vintage - czerwony + pomaranczowy + bordo.
+  const accent2 = isCustomAccent
+    ? deriveAccentColor(accent, 28, 0.05, -0.05)
+    : '#d97a3c';
+  const accent3 = isCustomAccent
+    ? deriveAccentColor(accent, -28, -0.08, 0)
+    : '#8b2c4f';
+  const accentV = isCustomAccent
+    ? deriveAccentColor(accent, 50, 0.15, -0.1)
+    : '#e8b54a';
+  const progressEnd = isCustomAccent
+    ? deriveAccentColor(accent, -20, -0.12, 0.05)
+    : '#a83255';
   return {
     name: 'vintage',
     accent,
-    accentSecondary: '#d97a3c',      // ciepły pomarańcz
-    accentTertiary: '#8b2c4f',       // bordo-różowy
-    accentVibrant: '#e8b54a',        // ciepły bursztyn (dekoracje)
+    accentSecondary: accent2,
+    accentTertiary: accent3,
+    accentVibrant: accentV,
     bg,
     text,
     textDim: '#6b5d44',
     surface: '#fbf8f0',
     border: 'rgba(31, 26, 20, 0.22)',
     borderStrong: 'rgba(31, 26, 20, 0.42)',
-    confettiColors: [accent, '#d97a3c', '#8b2c4f', '#e8b54a', '#1a6b6b', '#1f1a14'],
+    confettiColors: [accent, accent2, accent3, accentV, '#1a6b6b', '#1f1a14'],
     fontImports: '<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Merriweather+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">',
     displayFont: "'Fraunces', serif",
     bodyFont: "'Merriweather Sans', sans-serif",
@@ -4115,7 +4518,7 @@ function getVintageTheme(accent, bg, textColor) {
     repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(31,26,20,0.06) 28px, rgba(31,26,20,0.06) 29px),
     repeating-linear-gradient(90deg, transparent, transparent 28px, rgba(31,26,20,0.04) 28px, rgba(31,26,20,0.04) 29px),
     radial-gradient(ellipse 80% 60% at 50% 0%, ${rgba(accent, 0.06)}, transparent 60%),
-    radial-gradient(ellipse 60% 50% at 100% 100%, rgba(217, 122, 60, 0.05), transparent 60%);
+    radial-gradient(ellipse 60% 50% at 100% 100%, ${rgba(accent2, 0.05)}, transparent 60%);
 }`,
     cardBg: '#fbf8f0',
     cardShadow: '0 1px 3px rgba(31,26,20,0.08), 0 8px 24px rgba(31,26,20,0.05)',
@@ -4126,25 +4529,36 @@ function getVintageTheme(accent, bg, textColor) {
     // Możesz go zmienić tutaj, żeby zmienić tło wszystkich sekcji w motywie Vintage.
     boxBg: '#fff4e5',           // jasny kremowo-piaskowy
     // Pasek postępu - bez jaskrawego pomarańczu w środku, łagodne przejście czerwone→bordo
-    progressGradient: `linear-gradient(90deg, ${accent} 0%, #a83255 100%)`
+    progressGradient: `linear-gradient(90deg, ${accent} 0%, ${progressEnd} 100%)`
   };
 }
 
-function getPastelTheme(accent, bg, textColor) {
+function getPastelTheme(accent, bg, textColor, isCustomAccent) {
   const text = textColor || '#3a2c33';
+  // Pastel: harmonia triadyczna pastelowa - drugi/trzeci kolor odsuniety w hue
+  // o spore katy, lekko zjasniony, lekko mniej nasycony - typowa estetyka pastelu.
+  const accent2 = isCustomAccent
+    ? deriveAccentColor(accent, 60, 0.05, -0.08)
+    : '#a87bc8';
+  const accent3 = isCustomAccent
+    ? deriveAccentColor(accent, -50, 0.08, -0.05)
+    : '#7eb5d4';
+  const accentV = isCustomAccent
+    ? deriveAccentColor(accent, 120, 0.1, -0.1)
+    : '#f4a8a8';
   return {
     name: 'pastel',
     accent,
-    accentSecondary: '#a87bc8',      // lawendowy fiolet
-    accentTertiary: '#7eb5d4',       // pudrowy błękit
-    accentVibrant: '#f4a8a8',        // koral
+    accentSecondary: accent2,
+    accentTertiary: accent3,
+    accentVibrant: accentV,
     bg,
     text,
     textDim: '#7a6a72',
     surface: '#ffffff',
     border: 'rgba(58, 44, 51, 0.18)',
     borderStrong: 'rgba(58, 44, 51, 0.36)',
-    confettiColors: [accent, '#a87bc8', '#7eb5d4', '#f4a8a8', '#7bc89d', '#e8c4a4'],
+    confettiColors: [accent, accent2, accent3, accentV, '#7bc89d', '#e8c4a4'],
     fontImports: '<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Montserrat:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">',
     displayFont: "'Bricolage Grotesque', sans-serif",
     bodyFont: "'Montserrat', sans-serif",
@@ -4155,9 +4569,9 @@ function getPastelTheme(accent, bg, textColor) {
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
   background:
     radial-gradient(ellipse 55% 45% at 8% 18%, ${rgba(accent, 0.22)}, transparent 55%),
-    radial-gradient(ellipse 45% 35% at 92% 78%, rgba(168, 123, 200, 0.20), transparent 55%),
-    radial-gradient(ellipse 35% 30% at 80% 15%, rgba(126, 181, 212, 0.22), transparent 55%),
-    radial-gradient(ellipse 40% 35% at 15% 85%, rgba(244, 168, 168, 0.18), transparent 55%);
+    radial-gradient(ellipse 45% 35% at 92% 78%, ${rgba(accent2, 0.20)}, transparent 55%),
+    radial-gradient(ellipse 35% 30% at 80% 15%, ${rgba(accent3, 0.22)}, transparent 55%),
+    radial-gradient(ellipse 40% 35% at 15% 85%, ${rgba(accentV, 0.18)}, transparent 55%);
 }`,
     cardBg: '#ffffff',
     cardShadow: '0 2px 6px rgba(58, 44, 51, 0.05), 0 12px 32px rgba(58, 44, 51, 0.07)',
@@ -4274,11 +4688,7 @@ ${t.extraBgCSS}
   font-size: clamp(2.1rem, 5.5vw, 3.2rem);
   font-weight: 700;
   line-height: 1.1; letter-spacing: -0.02em;
-  background: var(--ws-accent-gradient-3);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
+  color: var(--ws-accent);
 }
 .ws-subtitle {
   color: var(--ws-text-dim);
@@ -4327,11 +4737,7 @@ ${t.extraBgCSS}
 }
 .ws-progress-score {
   font-family: var(--ws-display); font-weight: 700; font-size: 1rem;
-  background: var(--ws-accent-gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
+  color: var(--ws-accent);
 }
 
 /* SECTIONS */
@@ -4443,21 +4849,19 @@ ${t.extraBgCSS}
   font-size: 0.95rem; font-weight: 700;
   width: 48px; height: 48px;
   border-radius: 12px;
-  background: var(--ws-accent-gradient);
+  background: var(--ws-accent);
   color: #fff;
   display: grid; place-items: center;
   letter-spacing: -0.03em;
   flex-shrink: 0;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
 }
 .ws-sec-title {
   font-family: var(--ws-display); font-weight: 700;
   font-size: clamp(1.5rem, 2.8vw, 1.85rem);
   letter-spacing: -0.02em;
-  background: var(--ws-accent-gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
+  color: var(--ws-accent);
 }
 .ws-sec-desc {
   color: var(--ws-text-dim);
@@ -4880,7 +5284,7 @@ ${t.extraBgCSS}
   border-color: var(--ws-no); color: var(--ws-no);
   animation: wsBuzz 0.5s, wsFlashWrong 0.6s ease-out;
 }
-.scramble-check, .scramble-hint-btn {
+.scramble-check, .scramble-hint-btn, .scramble-solve-btn {
   font-family: var(--ws-body); font-weight: 600;
   border: 1.5px solid var(--ws-border-strong);
   background: var(--ws-bg);
@@ -4893,6 +5297,13 @@ ${t.extraBgCSS}
 }
 .scramble-check:hover { border-color: var(--ws-accent); color: var(--ws-accent); }
 .scramble-hint-btn:hover { border-color: var(--ws-accent); color: var(--ws-accent); }
+.scramble-solve-btn:hover { border-color: var(--ws-accent); color: var(--ws-accent); }
+.scramble-solve-btn:disabled,
+.scramble-hint-btn:disabled,
+.scramble-check:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
 .scramble-hint-text {
   font-family: var(--ws-mono);
   font-size: 0.85rem;
@@ -4940,11 +5351,7 @@ ${t.extraBgCSS}
 .ws-finale-title {
   font-family: var(--ws-display);
   font-weight: 700; font-size: 1.95rem;
-  background: var(--ws-accent-gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
+  color: var(--ws-accent);
   margin-bottom: 0.45rem;
   letter-spacing: -0.01em;
 }
@@ -5064,6 +5471,11 @@ ${t.extraBgCSS}
   height: auto;
   min-height: 40px;
 }
+/* Po sparowaniu (matched) ukryj przycisk Rozwiaz - nie ma juz czego rozwiazywac. */
+.match-item-wrap:has(.match-pl.matched) .match-solve-btn {
+  opacity: 0.35;
+  pointer-events: none;
+}
 
 /* Scramble - dodatkowy przycisk w rzędzie */
 .scramble-tts-btn {
@@ -5162,9 +5574,47 @@ ${t.extraBgCSS}
   border-radius: 10px;
   min-height: 56px;
   margin-bottom: 0.85rem;
-  transition: border-color 0.2s, background 0.2s;
+  transition: border-color 0.2s, background 0.2s, filter 0.3s;
   align-items: center;
   justify-content: center;
+}
+/* Wrapper na pulę i przycisk odkrywający (overlay). */
+.unsc-pool-wrap {
+  position: relative;
+}
+/* Pula slow ukryta na starcie - mocno rozmyta zeby nie dalo sie odczytac.
+   pointer-events: none zapobiega drag/click przed kliknieciem zaslony. */
+.unsc-pool.unsc-pool-hidden {
+  filter: blur(10px);
+  user-select: none;
+  pointer-events: none;
+}
+.unsc-pool-reveal {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  background: var(--ws-card);
+  border: 1.5px dashed var(--ws-accent);
+  color: var(--ws-accent);
+  font-family: var(--ws-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-bottom: 0.85rem; /* dopasuj do unsc-pool */
+  transition: all 0.18s;
+  z-index: 2;
+}
+.unsc-pool-reveal:hover {
+  background: var(--ws-accent-soft);
+  transform: translateY(-1px);
+}
+.unsc-pool-reveal-icon {
+  font-size: 1.2rem;
+  line-height: 1;
 }
 .unsc-pool.drag-over {
   border-color: var(--ws-accent);
@@ -5226,6 +5676,7 @@ ${t.extraBgCSS}
 }
 .unsc-check-btn,
 .unsc-hint-btn,
+.unsc-solve-btn,
 .unsc-clear-btn {
   font-family: var(--ws-body);
   font-size: 0.92rem;
@@ -5245,7 +5696,7 @@ ${t.extraBgCSS}
   font-weight: 600;
 }
 .unsc-check-btn:hover { opacity: 0.85; }
-.unsc-hint-btn:hover, .unsc-clear-btn:hover {
+.unsc-hint-btn:hover, .unsc-solve-btn:hover, .unsc-clear-btn:hover {
   border-color: var(--ws-accent);
   color: var(--ws-accent);
 }
@@ -5413,7 +5864,7 @@ ${t.extraBgCSS}
   border-color: var(--ws-accent);
 }
 .quiz-question {
-  display: flex; gap: 0.8rem; align-items: baseline;
+  display: flex; gap: 0.8rem; align-items: center;
   margin-bottom: 1rem;
 }
 .quiz-q-num {
@@ -5428,6 +5879,15 @@ ${t.extraBgCSS}
   font-size: 1.25rem;
   color: var(--ws-text);
   line-height: 1.3;
+  flex: 1;
+  min-width: 0;
+}
+.quiz-solve-btn {
+  flex-shrink: 0;
+}
+.quiz-card.answered .quiz-solve-btn {
+  opacity: 0.35;
+  pointer-events: none;
 }
 .quiz-options {
   display: grid;
@@ -5586,6 +6046,31 @@ ${t.extraBgCSS}
 .gap-sentence .tts-btn-gap {
   margin-left: 0.4rem;
 }
+/* Wrapper na 3 przyciski akcji po prawej stronie zdania:
+   Podpowiedz, Rozwiaz, Posluchaj - wszystkie w stylu tts-btn,
+   dzieki czemu siedza obok siebie w tej samej linii. */
+.gap-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: auto;
+  white-space: nowrap;
+}
+.gap-actions .tts-btn-gap {
+  margin-left: 0;
+}
+.gap-helper-btn:hover,
+.gap-solve-btn:hover,
+.gap-translate-btn:hover {
+  border-color: var(--ws-accent);
+  color: var(--ws-accent);
+  background: var(--ws-accent-soft);
+}
+.gap-translate-btn.active {
+  background: var(--ws-accent);
+  color: #fff;
+  border-color: var(--ws-accent);
+}
 .gap-input {
   display: inline-block;
   font-family: var(--ws-mono);
@@ -5740,7 +6225,7 @@ ${t.extraBgCSS}
   gap: 0.4rem;
   flex-shrink: 0;
 }
-.trans-check, .trans-hint-btn, .tts-btn-trans {
+.trans-check, .trans-hint-btn, .trans-solve-btn, .tts-btn-trans {
   width: 2.4rem; height: 2.4rem;
   border-radius: 8px;
   border: 1.5px solid var(--ws-border-strong);
@@ -5756,6 +6241,13 @@ ${t.extraBgCSS}
 .trans-check:hover { background: var(--ws-ok-bg); transform: scale(1.05); }
 .trans-hint-btn { color: var(--ws-accent); border-color: var(--ws-accent); }
 .trans-hint-btn:hover { background: var(--ws-accent-soft); transform: scale(1.05); }
+.trans-solve-btn { color: var(--ws-accent); border-color: var(--ws-accent); }
+.trans-solve-btn:hover { background: var(--ws-accent-soft); transform: scale(1.05); }
+.trans-solve-btn:disabled, .trans-hint-btn:disabled, .trans-check:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  transform: none;
+}
 .trans-correct {
   margin-top: 1rem;
   padding-top: 0.85rem;
@@ -5908,6 +6400,35 @@ ${t.extraBgCSS}
 
 /* DRUK / PDF - tylko niezbędne poprawki, bez ruszania marginesów strony */
 @media print {
+  /* Naprawa pionowych linii/cieni przy nagłówkach w PDF: wyłącz wszystkie
+     box-shadow w sekcjach i wokół nagłówków. Przeglądarki czasem renderują
+     box-shadow jako wąską pionową linię obok elementu (zwłaszcza Chrome
+     przy zapisie do PDF). */
+  .ws-section,
+  .ws-section.ws-done,
+  .ws-sec-head,
+  .ws-sec-num,
+  .ws-part-badge,
+  .ws-progress-fill,
+  .flashcard-back,
+  .gap-card,
+  .quiz-card,
+  .scramble-card,
+  .unsc-card,
+  .trans-card,
+  .write-card,
+  .match-item,
+  .cornell-card {
+    box-shadow: none !important;
+    filter: none !important;
+  }
+  /* Subtelne tło dekoracyjne (Vintage kratka, Pastel blobs) maskujemy w druku.
+     Bywa, że konwersja PDF zostawia po nim widoczne smugi. */
+  .ws-bg-pattern,
+  .ws-bg-blobs {
+    display: none !important;
+  }
+
   /* Fiszki: tylko tył (zawiera PL i EN) */
   .flashcard {
     aspect-ratio: auto;
@@ -5935,6 +6456,16 @@ ${t.extraBgCSS}
   }
   /* Ukryj przyciski TTS przy druku */
   .tts-btn { display: none !important; }
+  /* Ukryj wszystkie przyciski podpowiedzi i rozwiązań pojedynczych segmentów */
+  .scramble-hint-btn, .scramble-solve-btn,
+  .unsc-hint-btn, .unsc-solve-btn,
+  .trans-hint-btn, .trans-solve-btn,
+  .quiz-solve-btn,
+  .match-solve-btn,
+  .gap-helper-btn,
+  .gap-solve-btn {
+    display: none !important;
+  }
   /* Ukryj progress bar i przyciski akcji */
   .ws-progress-wrap { display: none !important; }
   .ws-actions { display: none !important; }
