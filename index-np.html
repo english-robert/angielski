@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Materiały Roberta — Nauka Angielskiego</title>
+<title>Materiały Roberta – Nauka Angielskiego</title>
 
 <!-- Font: Montserrat -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -352,28 +352,9 @@ section{position:relative;z-index:2}
   border-radius:999px;
   letter-spacing:0.04em;
   border:1px solid;
-  transition:transform 0.25s cubic-bezier(.16,1,.3,1), box-shadow 0.25s;
   cursor:default;
-  position:relative;
-  overflow:hidden;
 }
-.badge::before{
-  content:'';
-  position:absolute;
-  inset:0;
-  background:linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.5) 50%, transparent 70%);
-  transform:translateX(-100%);
-  transition:transform 0.6s cubic-bezier(.16,1,.3,1);
-  pointer-events:none;
-}
-.badge:hover{
-  transform:scale(1.05);
-  box-shadow:0 4px 12px rgba(15,17,21,0.08);
-}
-.badge:hover::before{
-  transform:translateX(100%);
-}
-.badge svg{width:14px;height:14px;fill:currentColor;position:relative;z-index:1}
+.badge svg{width:14px;height:14px;fill:currentColor}
 .badge-c1{
   background:var(--tag-green-bg);
   color:var(--tag-green);
@@ -389,12 +370,13 @@ section{position:relative;z-index:2}
    INFO PANEL (Profesjonalny lektor / Nauczany przedmiot)
 ═════════════════════════════════════════ */
 #info-panel{
-  padding:4rem 0;
+  padding:5rem 0;
   position:relative;
 }
+.info-head{margin-bottom:3rem}
 .info-grid{
   display:grid;
-  grid-template-columns:1fr 1fr;
+  grid-template-columns:repeat(2, 1fr);
   gap:1.5rem;
   position:relative;
   z-index:2;
@@ -602,38 +584,29 @@ section{position:relative;z-index:2}
 .about-toggle.open .toggle-icon{transform:rotate(180deg)}
 .about-toggle .toggle-icon svg{width:100%;height:100%;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
 
-/* FAQ section */
-.faq-section{
-  margin-top:3rem;
-  padding-top:2.5rem;
-  border-top:1px solid rgba(30,42,94,0.1);
+/* FAQ section (samodzielna) */
+#faq{
+  padding:5rem 0;
 }
-.faq-heading{
-  font-family:var(--display);
-  font-weight:700;
-  font-size:1.5rem;
-  letter-spacing:-0.025em;
-  color:var(--ink);
-  margin-bottom:1.5rem;
-}
+.faq-head{margin-bottom:2.5rem}
 .faq-list{
   display:flex;
   flex-direction:column;
-  gap:0.7rem;
+  gap:0.8rem;
 }
 .faq-item{
-  background:rgba(255,255,255,0.4);
-  border:1px solid rgba(255,255,255,0.7);
+  background:var(--paper);
+  border:1px solid var(--line);
   border-radius:12px;
   overflow:hidden;
-  transition:background 0.2s, border-color 0.2s;
+  transition:background 0.2s, border-color 0.2s, box-shadow 0.2s;
+  box-shadow:var(--shadow-soft);
 }
 .faq-item:hover{
-  background:rgba(255,255,255,0.55);
+  border-color:var(--line-strong);
 }
 .faq-item.open{
-  background:rgba(255,255,255,0.65);
-  border-color:rgba(30,42,94,0.15);
+  border-color:rgba(30,42,94,0.25);
 }
 .faq-question{
   width:100%;
@@ -702,41 +675,25 @@ section{position:relative;z-index:2}
   margin-bottom:3rem;
 }
 .booking-wrapper{
-  background:rgba(255,255,255,0.55);
-  backdrop-filter:blur(20px) saturate(180%);
-  -webkit-backdrop-filter:blur(20px) saturate(180%);
-  border:1px solid rgba(255,255,255,0.9);
-  border-radius:20px;
-  padding:1.5rem;
-  box-shadow:
-    0 1px 0 rgba(255,255,255,0.9) inset,
-    0 -1px 0 rgba(255,255,255,0.4) inset,
-    0 20px 50px -15px rgba(15,17,21,0.15),
-    0 8px 20px -8px rgba(30,42,94,0.1);
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:0.75rem;
   position:relative;
-  overflow:hidden;
-}
-.booking-wrapper::before{
-  content:'';
-  position:absolute;
-  inset:0;
-  border-radius:20px;
-  background:linear-gradient(135deg, rgba(255,255,255,0.4) 0%, transparent 50%, rgba(255,255,255,0.1) 100%);
-  pointer-events:none;
-  z-index:0;
+  box-shadow:var(--shadow-soft);
 }
 #my-cal-inline-angielski{
   width:100%;
   min-height:680px;
   position:relative;
   z-index:1;
-  border-radius:14px;
+  border-radius:12px;
   overflow:hidden;
   background:var(--paper);
 }
 
 /* ═════════════════════════════════════════
-   MATERIALS — KARTY PRACY
+   MATERIALS – KARTY PRACY
 ═════════════════════════════════════════ */
 #materials{
   padding:7rem 0 5rem;
@@ -876,7 +833,7 @@ section{position:relative;z-index:2}
 }
 .gate-cta a:hover{opacity:0.75}
 
-/* CARDS GRID — czyste karty z hover scale */
+/* CARDS GRID – czyste karty z hover scale */
 .cards-grid{
   display:grid;
   grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
@@ -1143,6 +1100,13 @@ footer{
   .rec-item{padding:1rem;gap:1rem}
   .rec-logo{width:64px;height:64px}
   .gate-form{flex-direction:column}
+  /* Cal.com na mobile: usuwamy wewnętrzną pułapkę przewijania */
+  .booking-wrapper{padding:0.5rem;overflow:visible}
+  #my-cal-inline-angielski{
+    overflow:visible;
+    min-height:auto;
+    touch-action:auto;
+  }
 }
 </style>
 </head>
@@ -1160,6 +1124,7 @@ footer{
     </a>
     <ul class="nav-links">
       <li><a href="#about">O mnie</a></li>
+      <li><a href="#faq">FAQ</a></li>
       <li><a href="#booking">Umów lekcję</a></li>
       <li><a href="#materials">Karty pracy</a></li>
       <li><a href="#recommended">Polecane</a></li>
@@ -1196,7 +1161,7 @@ footer{
           </div>
 
           <p class="profile-tagline reveal" data-delay="2">
-            Różnorodne lekcje angielskiego <em>z humorem</em> i ciekawostkami &mdash; certyfikowany lektor C1.
+            Różnorodne lekcje angielskiego <em>z humorem</em> i ciekawostkami – certyfikowany lektor C1.
           </p>
 
           <div class="badge-row reveal" data-delay="3">
@@ -1219,24 +1184,49 @@ footer{
 <!-- INFO PANEL -->
 <section id="info-panel">
   <div class="wrap">
+    <div class="info-head">
+      <div class="sec-eyebrow reveal">01 – Atuty</div>
+      <h2 class="sec-title reveal" data-delay="1">Dlaczego <em>warto</em></h2>
+      <p class="sec-lead reveal" data-delay="2">Kilka rzeczy, które wyróżniają moje lekcje i pomagają uczniom robić realne postępy.</p>
+    </div>
     <div class="info-grid">
       <div class="info-card reveal">
         <div class="info-icon">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M20 3v18H4V8l5-5zM10 5v4H6v10h12V5z" clip-rule="evenodd"/><path d="m15.957 10.707-5.207 5.207-2.707-2.707 1.414-1.414 1.293 1.293 3.793-3.793z"/></svg>
         </div>
         <div>
-          <div class="info-title">Profesjonalny lektor</div>
-          <p>Wysoko wykwalifikowany lektor z potwierdzonym dyplomem nauczycielskim.</p>
+          <div class="info-title">Certyfikowany lektor</div>
+          <p>Wykwalifikowany nauczyciel z certyfikatem EF SET C1 i doświadczeniem w korepetycjach od 2023 roku.</p>
         </div>
       </div>
 
       <div class="info-card reveal" data-delay="1">
         <div class="info-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 21-7-3.8v-6L1 9l11-6 11 6v8h-2v-6.9l-2 1.1v6zm0-8.3L18.85 9 12 5.3 5.15 9zm0 6.025 5-2.7V12.25L12 15l-5-2.75v3.775z"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.35 10.55 20C5.4 15.36 2 12.27 2 8.5 2 5.41 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.08C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.41 22 8.5c0 3.77-3.4 6.86-8.55 11.5z"/></svg>
         </div>
         <div>
-          <div class="info-title">Nauczany przedmiot</div>
-          <p>Język angielski &mdash; od podstaw po poziom zaawansowany (C1).</p>
+          <div class="info-title">Lekcje szyte na miarę</div>
+          <p>Buduję zajęcia wokół Twoich zainteresowań: gier, filmów, muzyki czy hobby. Nauka staje się wtedy naturalna i wciągająca.</p>
+        </div>
+      </div>
+
+      <div class="info-card reveal" data-delay="1">
+        <div class="info-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 5a2 2 0 0 1 2-2h6v16H5a2 2 0 0 0-2 2zm10-2h6a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2h-6z"/></svg>
+        </div>
+        <div>
+          <div class="info-title">Skuteczne metody</div>
+          <p>Notatki w systemie Cornell połączone z mnemotechnikami i humorem. Sprawdzone techniki, które naprawdę pomagają zapamiętać.</p>
+        </div>
+      </div>
+
+      <div class="info-card reveal" data-delay="2">
+        <div class="info-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 1 5 5c0 1.9-1.06 3.55-2.62 4.4A7.5 7.5 0 0 1 19.5 18.5V22h-15v-3.5a7.5 7.5 0 0 1 5.12-7.1A5 5 0 0 1 7 7a5 5 0 0 1 5-5"/></svg>
+        </div>
+        <div>
+          <div class="info-title">Wsparcie i motywacja</div>
+          <p>Pomagam budować pewność siebie i przełamywać lęk przed mówieniem po angielsku. Liczy się też dobra atmosfera.</p>
         </div>
       </div>
     </div>
@@ -1247,9 +1237,9 @@ footer{
 <section id="about">
   <div class="wrap">
     <div class="about-head">
-      <div class="sec-eyebrow reveal">02 — O mnie</div>
+      <div class="sec-eyebrow reveal">02 – O mnie</div>
       <h2 class="sec-title reveal" data-delay="1">Poznaj <em>kim jestem</em></h2>
-      <p class="sec-lead reveal" data-delay="2">Różnorodne lekcje angielskiego z humorem i ciekawostkami dla osób w każdym wieku &mdash; certyfikowany lektor C1.</p>
+      <p class="sec-lead reveal" data-delay="2">Kilka słów o mnie, o moim podejściu do nauczania i o tym, czego możesz spodziewać się na lekcjach.</p>
     </div>
 
     <div class="about-wrapper reveal" data-delay="2">
@@ -1280,7 +1270,7 @@ footer{
             <div class="about-expand-content">
 
               <h3>Doświadczenie w nauczaniu</h3>
-              <p>Udzielam korepetycji z angielskiego od 2023 roku. Posiadam certyfikat <strong>EF SET C1</strong>. Moje podejście opiera się na dostosowywaniu lekcji do zainteresowań i potrzeb ucznia.</p>
+              <p>Udzielam korepetycji z angielskiego od 2023 roku. Posiadam certyfikat <strong>EF SET C1</strong>. Uczę od podstaw (A1) po poziom średniozaawansowany (B2), a moje podejście opiera się na dostosowywaniu lekcji do zainteresowań i potrzeb ucznia.</p>
 
               <p>Starannie tworzę oraz wyszukuję materiały w oparciu o to, co lubi uczeń. Jeśli ktoś interesuje się grami, filmami lub konkretnym hobby, chętnie buduję lekcje wokół tych treści. Nauka staje się wtedy bardziej naturalna i przyjemna.</p>
 
@@ -1300,49 +1290,6 @@ footer{
               <h3>Płatność</h3>
               <p>Płatność przyjmuję z góry, po wspólnym ustaleniu wszystkich szczegółów lekcji (BLIK, PayPal, przelew itp.).</p>
 
-              <!-- FAQ -->
-              <div class="faq-section">
-                <h3 class="faq-heading">Najczęstsze pytania</h3>
-
-                <div class="faq-list">
-
-                  <div class="faq-item">
-                    <button class="faq-question">
-                      <span>Obawiasz się o płatność?</span>
-                      <span class="faq-icon">
-                        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-                      </span>
-                    </button>
-                    <div class="faq-answer">
-                      <div class="faq-answer-inner">
-                        <div class="faq-answer-content">
-                          <p>Płatność przyjmuję przed lekcją po realizacji wszelkich niezbędnych ustaleń z uczniem. Po ustaleniu terminu i przyjęciu zapłaty (BLIK, PayPal, przelew itp.) powstaje między nami zobowiązanie do wykonania usługi zgodnie z przepisami Kodeksu cywilnego dotyczącymi zobowiązań i świadczenia usług (m.in. art. 353, 354 i 750 KC).</p>
-                          <p>W przypadku niewykonania usługi z mojej winy wpłacona kwota podlega zwrotowi, a w określonych sytuacjach może również powstać odpowiedzialność odszkodowawcza (m.in. art. 405, 410 i 471 KC). Jestem zatem <strong>prawnie zobowiązany</strong> do tego by zrealizować usługę.</p>
-                          <p>Proszę tylko pamiętać, że dopiero <strong>po uzgodnieniu terminu</strong> oczekuję realizacji płatności. Proszę nie robić tego natychmiastowo bez żadnych potwierdzeń z mojej strony.</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="faq-item">
-                    <button class="faq-question">
-                      <span>Jak wygląda pierwsza lekcja próbna?</span>
-                      <span class="faq-icon">
-                        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-                      </span>
-                    </button>
-                    <div class="faq-answer">
-                      <div class="faq-answer-inner">
-                        <div class="faq-answer-content">
-                          <p><em>(treść do uzupełnienia)</em></p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-
             </div>
           </div>
         </div>
@@ -1352,11 +1299,95 @@ footer{
   </div>
 </section>
 
+<!-- FAQ -->
+<section id="faq">
+  <div class="wrap">
+    <div class="faq-head">
+      <div class="sec-eyebrow reveal">03 – FAQ</div>
+      <h2 class="sec-title reveal" data-delay="1">Najczęstsze <em>pytania</em></h2>
+      <p class="sec-lead reveal" data-delay="2">Odpowiedzi na pytania, które uczniowie zadają najczęściej przed pierwszą lekcją.</p>
+    </div>
+
+    <div class="faq-list reveal" data-delay="2">
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>Obawiasz się o płatność?</span>
+          <span class="faq-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          </span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <div class="faq-answer-content">
+              <p>Płatność przyjmuję przed lekcją po realizacji wszelkich niezbędnych ustaleń z uczniem. Po ustaleniu terminu i przyjęciu zapłaty (BLIK, PayPal, przelew itp.) powstaje między nami zobowiązanie do wykonania usługi zgodnie z przepisami Kodeksu cywilnego dotyczącymi zobowiązań i świadczenia usług (m.in. art. 353, 354 i 750 KC).</p>
+              <p>W przypadku niewykonania usługi z mojej winy wpłacona kwota podlega zwrotowi, a w określonych sytuacjach może również powstać odpowiedzialność odszkodowawcza (m.in. art. 405, 410 i 471 KC). Jestem zatem <strong>prawnie zobowiązany</strong> do tego by zrealizować usługę.</p>
+              <p>Proszę tylko pamiętać, że dopiero <strong>po uzgodnieniu terminu</strong> oczekuję realizacji płatności. Proszę nie robić tego natychmiastowo bez żadnych potwierdzeń z mojej strony.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>Jak wygląda pierwsza lekcja próbna?</span>
+          <span class="faq-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          </span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <div class="faq-answer-content">
+              <p>Pierwsza lekcja zaczyna się od krótkiej ankiety po angielsku, dzięki której poznaję Twoje możliwości, preferencje i cele. Już na tym etapie ćwiczymy język, a jeśli jesteś osobą początkującą, wszystko spokojnie tłumaczę po polsku.</p>
+              <p>Później przechodzimy do przykładowych ćwiczeń dobranych pod to, co Cię interesuje. Na tej podstawie wspólnie ustalamy, jak będą wyglądać kolejne zajęcia.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>Uczysz dzieci czy tylko dorosłych?</span>
+          <span class="faq-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          </span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <div class="faq-answer-content">
+              <p>Uczę zarówno dzieci, jak i dorosłych. Mam doświadczenie w pracy z młodszymi uczniami i wiem, jak ważne jest, by ich zaangażować i podejść do nich z empatią oraz cierpliwością.</p>
+              <p>Niezależnie od wieku staram się dopasować tempo i styl lekcji do konkretnej osoby, tak aby nauka była przyjemna i skuteczna.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>Czy dostanę notatki po lekcji?</span>
+          <span class="faq-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          </span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <div class="faq-answer-content">
+              <p>Tak. Po każdej lekcji przesyłam notatki, które wspólnie tworzymy w systemie Cornell, często połączone z humorystycznymi mnemotechnikami ułatwiającymi zapamiętywanie.</p>
+              <p>Zawsze sprawdzam je starannie przed wysłaniem, żebyś miał do dyspozycji rzetelny materiał do powtórek.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 <!-- BOOKING / CAL.COM -->
 <section id="booking">
   <div class="wrap">
     <div class="booking-head">
-      <div class="sec-eyebrow reveal">03 — Umów lekcję</div>
+      <div class="sec-eyebrow reveal">04 – Umów lekcję</div>
       <h2 class="sec-title reveal" data-delay="1">Wybierz <em>dogodny termin</em></h2>
       <p class="sec-lead reveal" data-delay="2">Wybierz dzień i godzinę, która pasuje Ci najbardziej. Po rezerwacji otrzymasz wiadomość z potwierdzeniem oraz linkiem do lekcji.</p>
     </div>
@@ -1372,7 +1403,7 @@ footer{
   <div class="wrap">
     <div class="materials-head">
       <div>
-        <div class="sec-eyebrow reveal">04 — Karty pracy</div>
+        <div class="sec-eyebrow reveal">05 – Karty pracy</div>
         <h2 class="sec-title reveal" data-delay="1">Materiały do <em>nauki angielskiego</em></h2>
         <p class="sec-lead reveal" data-delay="2">Karty pracy i ćwiczenia przygotowane specjalnie dla moich uczniów.</p>
       </div>
@@ -1497,7 +1528,7 @@ footer{
 <section id="recommended">
   <div class="wrap">
     <div class="rec-head">
-      <div class="sec-eyebrow reveal">05 — Polecane materiały</div>
+      <div class="sec-eyebrow reveal">06 – Polecane materiały</div>
       <h2 class="sec-title reveal" data-delay="1">Strony i narzędzia, <em>które polecam</em>.</h2>
       <p class="sec-lead reveal" data-delay="2">Sprawdzone źródła, z których sam korzystam i które polecam moim uczniom do nauki angielskiego.</p>
     </div>
@@ -1529,7 +1560,7 @@ footer{
             <img class="rec-logo rec-logo-dark" src="Obrazki/Cambridge-Dictionary-logo.svg" alt="Cambridge Dictionary">
             <div class="rec-content">
               <div class="rec-name">Cambridge Dictionary</div>
-              <div class="rec-desc">Jeden z najlepszych słowników angielskich online &mdash; definicje, wymowa i przykłady użycia.</div>
+              <div class="rec-desc">Jeden z najlepszych słowników angielskich online – definicje, wymowa i przykłady użycia.</div>
             </div>
             <span class="rec-arrow">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -1540,7 +1571,7 @@ footer{
             <img class="rec-logo rec-logo-photo" src="Obrazki/English-with-Lucy-photo.jpg" alt="English with Lucy">
             <div class="rec-content">
               <div class="rec-name">English with Lucy</div>
-              <div class="rec-desc">Popularny kanał YouTube do nauki angielskiego &mdash; słownictwo, gramatyka i wymowa po angielsku.</div>
+              <div class="rec-desc">Popularny kanał YouTube do nauki angielskiego – słownictwo, gramatyka i wymowa po angielsku.</div>
             </div>
             <span class="rec-arrow">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -1562,7 +1593,7 @@ footer{
             <img class="rec-logo" src="Obrazki/games-to-learn-english-logo.png" alt="Games to Learn English">
             <div class="rec-content">
               <div class="rec-name">Games to Learn English</div>
-              <div class="rec-desc">Nauka angielskiego przez gry &mdash; słownictwo, pisownia i gramatyka w formie zabawy.</div>
+              <div class="rec-desc">Nauka angielskiego przez gry – słownictwo, pisownia i gramatyka w formie zabawy.</div>
             </div>
             <span class="rec-arrow">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -1573,7 +1604,7 @@ footer{
             <img class="rec-logo" src="Obrazki/kna-logo.png" alt="Kwadrans na Angielski">
             <div class="rec-content">
               <div class="rec-name">Kwadrans na Angielski</div>
-              <div class="rec-desc">Krótkie, przystępne lekcje angielskiego po polsku &mdash; idealne na szybką naukę każdego dnia.</div>
+              <div class="rec-desc">Krótkie, przystępne lekcje angielskiego po polsku – idealne na szybką naukę każdego dnia.</div>
             </div>
             <span class="rec-arrow">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -1595,7 +1626,7 @@ footer{
             <img class="rec-logo" src="Obrazki/loga/babadum-logo.jpg" alt="BABADUM">
             <div class="rec-content">
               <div class="rec-name">BABADUM</div>
-              <div class="rec-desc">Darmowa gra do nauki słownictwa w kilkunastu językach &mdash; nauka obrazkowa przez minigry z wymową lektora.</div>
+              <div class="rec-desc">Darmowa gra do nauki słownictwa w kilkunastu językach – nauka obrazkowa przez minigry z wymową lektora.</div>
             </div>
             <span class="rec-arrow">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -1606,7 +1637,7 @@ footer{
             <img class="rec-logo" src="Obrazki/loga/bbc-logo.png" alt="BBC Learning English">
             <div class="rec-content">
               <div class="rec-name">BBC Learning English</div>
-              <div class="rec-desc">Darmowa platforma BBC do nauki angielskiego &mdash; kursy, filmy, podcasty i ćwiczenia na każdym poziomie zaawansowania.</div>
+              <div class="rec-desc">Darmowa platforma BBC do nauki angielskiego – kursy, filmy, podcasty i ćwiczenia na każdym poziomie zaawansowania.</div>
             </div>
             <span class="rec-arrow">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -1617,7 +1648,7 @@ footer{
             <img class="rec-logo" src="Obrazki/loga/merriam-webster-logo.png" alt="Merriam-Webster">
             <div class="rec-content">
               <div class="rec-name">Merriam-Webster</div>
-              <div class="rec-desc">Klasyczny słownik amerykańskiego angielskiego &mdash; definicje, wymowa, synonimy oraz etymologia słów.</div>
+              <div class="rec-desc">Klasyczny słownik amerykańskiego angielskiego – definicje, wymowa, synonimy oraz etymologia słów.</div>
             </div>
             <span class="rec-arrow">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -1628,7 +1659,7 @@ footer{
             <img class="rec-logo" src="Obrazki/loga/pbs-kids-logo.svg" alt="PBS KIDS">
             <div class="rec-content">
               <div class="rec-name">PBS KIDS</div>
-              <div class="rec-desc">Amerykański serwis dla dzieci z grami, bajkami i animacjami &mdash; świetne źródło prostego, naturalnego angielskiego dla początkujących.</div>
+              <div class="rec-desc">Amerykański serwis dla dzieci z grami, bajkami i animacjami – świetne źródło prostego, naturalnego angielskiego dla początkujących.</div>
             </div>
             <span class="rec-arrow">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -1661,7 +1692,7 @@ footer{
             <img class="rec-logo" src="Obrazki/loga/ted-logo.png" alt="TED">
             <div class="rec-content">
               <div class="rec-name">TED</div>
-              <div class="rec-desc">Inspirujące prelekcje ekspertów z całego świata &mdash; świetne źródło żywego, naturalnego angielskiego z napisami i transkrypcjami.</div>
+              <div class="rec-desc">Inspirujące prelekcje ekspertów z całego świata – świetne źródło żywego, naturalnego angielskiego z napisami i transkrypcjami.</div>
             </div>
             <span class="rec-arrow">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -1672,7 +1703,31 @@ footer{
             <img class="rec-logo" src="Obrazki/loga/vocabulary-com-logo.png" alt="Vocabulary.com">
             <div class="rec-content">
               <div class="rec-name">Vocabulary.com</div>
-              <div class="rec-desc">Inteligentny trener słownictwa &mdash; uczy nowych słów w kontekście, dopasowuje pytania do Twojego poziomu i pilnuje, żebyś nie zapomniał.</div>
+              <div class="rec-desc">Inteligentny trener słownictwa – uczy nowych słów w kontekście, dopasowuje pytania do Twojego poziomu i pilnuje, żebyś nie zapomniał.</div>
+            </div>
+            <span class="rec-arrow">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </a>
+
+          <a class="rec-item" href="https://www.clozemaster.com/" target="_blank">
+            <!-- TODO: wklej link do logo Clozemaster w src poniżej -->
+            <img class="rec-logo" src="https://placehold.co/88x88?text=Clozemaster" alt="Clozemaster">
+            <div class="rec-content">
+              <div class="rec-name">Clozemaster</div>
+              <div class="rec-desc">Prosta aplikacja do nauki języków przez uzupełnianie luk w zdaniach. Czysty, skuteczny sposób na osłuchanie się ze słownictwem w naturalnym kontekście.</div>
+            </div>
+            <span class="rec-arrow">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </a>
+
+          <a class="rec-item" href="https://apps.ankiweb.net/" target="_blank">
+            <!-- TODO: wklej link do logo Anki w src poniżej -->
+            <img class="rec-logo" src="https://placehold.co/88x88?text=Anki" alt="Anki Flashcards">
+            <div class="rec-content">
+              <div class="rec-name">Anki Flashcards</div>
+              <div class="rec-desc">Potężny program do fiszek z systemem powtórek rozłożonych w czasie. Idealny do zapamiętywania słówek i utrwalania ich na długo.</div>
             </div>
             <span class="rec-arrow">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -1689,7 +1744,7 @@ footer{
 <section id="picks">
   <div class="wrap">
     <div class="picks-head">
-      <div class="sec-eyebrow reveal">06 — Wybrane materiały</div>
+      <div class="sec-eyebrow reveal">07 – Wybrane materiały</div>
       <h2 class="sec-title reveal" data-delay="1">Konkretne filmiki, <em>artykuły i posty</em>.</h2>
       <p class="sec-lead reveal" data-delay="2">Wybrane perełki z internetu, które warto zobaczyć.</p>
     </div>
@@ -1751,7 +1806,8 @@ footer{
     var question = item.querySelector('.faq-question');
     if (question) {
       question.addEventListener('click', function() {
-        item.classList.toggle('open');
+        var isOpen = item.classList.toggle('open');
+        question.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
       });
     }
   });
