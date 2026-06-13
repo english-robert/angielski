@@ -1114,7 +1114,7 @@ pies	dog
       <div class="tsv-example-wrap" id="tsvExampleBox">
         <div class="tsv-example-head">
           <div class="tsv-example-info">
-            <strong>Przykładowe dane TSV</strong> dopasowane do wszystkich typów zadań. Kolumna <code>tasks</code> (opcjonalna) ogranicza wiersz do konkretnych typów. Puste = wiersz idzie do wszystkich zaznaczonych typów. Skróty: <code>f</code>=flashcards, <code>m</code>=matching, <code>s</code>=scramble, <code>q</code>=quiz, <code>u</code>=unscramble, <code>c</code>=cornell, <code>g</code>=gapfill, <code>t</code>=translate, <code>w</code>=writing.
+            <strong>Przykładowe dane TSV</strong> dopasowane do wszystkich typów zadań. Kolumna <code>tasks</code> (opcjonalna) ogranicza wiersz do konkretnych typów. Puste = wiersz idzie do wszystkich zaznaczonych typów. Skróty: <code>f</code>=flashcards, <code>m</code>=matching, <code>s</code>=scramble, <code>q</code>=quiz, <code>u</code>=unscramble, <code>c</code>=cornell, <code>g</code>=gapfill, <code>t</code>=translate, <code>w</code>=writing. Quiz z własnymi odpowiedziami: w kolumnie <code>en</code> oddziel opcje kreską, np. <code>cat|cut|cot|cap</code> - pierwsza jest poprawna, pytanie używa dokładnie tych opcji (globalna liczba opcji go nie dotyczy), a w pozostałych zadaniach wiersz działa jak samo <code>cat</code>.
           </div>
           <button type="button" class="tsv-example-use" id="tsvExampleUse" title="Wklej te dane do pola">📋 Użyj tych danych</button>
         </div>
@@ -1131,6 +1131,7 @@ słońce	sun	f,m,s,q
 księżyc	moon	f,m,s,q
 gwiazda	star	f,m,s,q
 chmura	cloud	f,m,s,q
+statek	ship|sheep|shop|chip	q
 Lubię uczyć się angielskiego.	I like learning English.	u,t
 Gdzie jest najbliższa stacja?	Where is the nearest station?	u,t
 Mój brat mieszka w Krakowie.	My brother lives in Krakow.	u,t
@@ -1403,6 +1404,33 @@ Napisz krótki email do przyjaciela o ostatnim weekendzie.	Use past simple. Incl
     </div>
   </div>
 
+  <!-- SECTION 6: ŚLEDZENIE TRUDNOŚCI -->
+  <div class="section">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-title">Śledzenie trudności</div>
+    </div>
+
+    <div class="field">
+      <label class="checkbox-row">
+        <input type="checkbox" id="difficultyEnabled" checked>
+        <span class="checkbox-mark"></span>
+        <span class="checkbox-label">Dodaj przyciski oceny trudności (1-4, jak w Anki) do każdego słówka / podzadania</span>
+      </label>
+    </div>
+
+    <div class="field" id="difficultyConfig">
+      <div class="tts-info">
+        ⓘ Przy każdym elemencie karty pojawią się cztery małe przyciski:
+        <strong style="color:#dc2626">1 · nie umiem</strong>,
+        <strong style="color:#d97706">2 · trudne</strong>,
+        <strong style="color:#16a34a">3 · dobre</strong>,
+        <strong style="color:#2563eb">4 · łatwe</strong>.
+        W zadaniu Matching oceniasz parę zaraz po jej poprawnym połączeniu (nakładka na kafelku), a potem możesz zmienić ocenę klikając plakietkę obok kafelka. Oceny zapisują się automatycznie razem z postępem, a po kliknięciu „⤓ TSV" trafiają do pliku jako kolumna <strong>difficulty</strong> (wiersze bez oceny zostają puste). Ponowne kliknięcie wybranej oceny usuwa ją.
+      </div>
+    </div>
+  </div>
+
   <div class="generate-area">
     <div class="generate-btns">
       <button type="button" id="btnPreview" class="btn-preview" disabled>
@@ -1468,7 +1496,9 @@ const STATE = {
   // w wygenerowanej karcie + uzywana w teście w generatorze.
   ttsRate: 0.75,
   logoEnabled: true,
-  logoUrl: 'https://bertlingo-learning.github.io/Angielski/Obrazki/loga/ewr-logo.svg'
+  logoUrl: 'https://bertlingo-learning.github.io/Angielski/Obrazki/loga/ewr-logo.svg',
+  // Sledzenie trudnosci (Anki-style 1-4). Domyslnie WLACZONE.
+  difficultyEnabled: true
 };
 
 // Domyslne instrukcje per zadanie - uzywane jako placeholder w generatorze
@@ -1515,6 +1545,23 @@ function parseTSV(text) {
     if (cells.length < 2) continue;
     const obj = {};
     headers.forEach((h, idx) => { obj[h] = cells[idx] || ''; });
+    // Własne odpowiedzi quizu: EN może zawierać "poprawna|dystraktor|dystraktor".
+    // Pierwszy segment to właściwe słowo (używane we WSZYSTKICH zadaniach:
+    // fiszki, scramble, matching itd.), reszta trafia WYŁĄCZNIE do quizu jako
+    // ręcznie dobrane dystraktory. Spacje wokół kresek są przycinane, puste
+    // segmenty ignorowane, duplikaty (też względem poprawnej) usuwane.
+    obj._quizOpts = [];
+    if (obj.en && obj.en.includes('|')) {
+      const parts = obj.en.split('|').map(p => p.trim()).filter(Boolean);
+      obj.en = parts[0] || '';
+      const seen = new Set(obj.en ? [obj.en.toLowerCase()] : []);
+      obj._quizOpts = parts.slice(1).filter(p => {
+        const k = p.toLowerCase();
+        if (seen.has(k)) return false;
+        seen.add(k);
+        return true;
+      });
+    }
     if (obj.pl && obj.en) {
       // Parse tasks column if present (skróty f/m/s/q lub pełne nazwy, comma-separated)
       obj._tasks = parseTaskTags(obj.tasks || '');
@@ -1777,9 +1824,17 @@ function updateTaskAvailability() {
       ok = false;
       reason = `Potrzeba min. 3 wiersze (jest ${taskRows.length})`;
     }
-    if (taskBase === 'quiz' && taskRows.length < STATE.quizOptions) {
-      ok = false;
-      reason = `Potrzeba min. ${STATE.quizOptions} wiersze dla quizu (jest ${taskRows.length})`;
+    if (taskBase === 'quiz') {
+      // Wiersze z własnymi odpowiedziami (EN z kreskami) nie potrzebują innych
+      // wierszy do losowania dystraktorów. Minimum dotyczy tylko zwykłych wierszy.
+      const normalRows = taskRows.filter(r => !(r._quizOpts && r._quizOpts.length > 0));
+      const ownOptRows = taskRows.length - normalRows.length;
+      if (normalRows.length > 0 && taskRows.length < STATE.quizOptions) {
+        ok = false;
+        reason = `Potrzeba min. ${STATE.quizOptions} wiersze dla quizu (jest ${taskRows.length})`;
+      } else if (normalRows.length === 0 && ownOptRows === 0) {
+        ok = false;
+      }
     }
     // unscramble - bez minimum, ale wiersz musi mieć przynajmniej 2 słowa w en
     if (taskBase === 'unscramble' && taskRows.length === 0) {
@@ -2707,6 +2762,14 @@ document.getElementById('logoUrl').addEventListener('input', e => {
   STATE.logoUrl = e.target.value.trim();
 });
 
+// ============================================================
+// ŚLEDZENIE TRUDNOŚCI
+// ============================================================
+document.getElementById('difficultyEnabled').addEventListener('change', e => {
+  STATE.difficultyEnabled = e.target.checked;
+  document.getElementById('difficultyConfig').style.display = e.target.checked ? '' : 'none';
+});
+
 // Initialize
 updateTSVStatus();
 updateSelectAllState();
@@ -2925,7 +2988,8 @@ function buildWorksheetHTML() {
     logoConfig: {
       show: STATE.logoEnabled,
       url: STATE.logoUrl
-    }
+    },
+    difficulty: STATE.difficultyEnabled
   });
 }
 
@@ -2962,6 +3026,35 @@ function sectionImage(taskName) {
   return `<div class="ws-sec-image"><img src="${escapeHtml(url)}" alt="" loading="lazy" style="height:${h}px" onerror="this.parentElement.style.display='none'"></div>`;
 }
 
+// ============================================================
+// ŚLEDZENIE TRUDNOŚCI - helpery budujące widgety w karcie
+// ============================================================
+// Tytuly poziomow (Anki: again / hard / good / easy).
+const DIFF_TITLES = { 1: 'Nie umiem', 2: 'Trudne', 3: 'Dobre', 4: 'Łatwe' };
+
+// Zwraca globalny indeks wiersza w STATE.rows (potrzebny, bo buildery pracuja
+// na PRZEFILTROWANYCH tablicach rowsForTask, a oceny zapisujemy per wiersz danych).
+function diffRowIdx(r) {
+  return STATE.rows.indexOf(r);
+}
+
+// Kompaktowy rzad 4 przyciskow oceny. opts.label = maly napis "trudność" z przodu,
+// opts.cls = dodatkowa klasa CSS. Zwraca '' gdy funkcja wylaczona.
+function diffWidget(gi, opts = {}) {
+  if (!STATE.difficultyEnabled || gi < 0) return '';
+  const btns = [1, 2, 3, 4].map(l =>
+    `<button type="button" class="ws-diff-btn ws-diff-${l}" data-level="${l}" onclick="wsSetDiff(event, ${gi}, ${l})" title="${DIFF_TITLES[l]}" aria-label="Trudność: ${DIFF_TITLES[l]}"><span class="ws-diff-num">${l}</span></button>`
+  ).join('');
+  const lab = opts.label ? '<span class="ws-diff-lab">trudność</span>' : '';
+  return `<div class="ws-diff${opts.cls ? ' ' + opts.cls : ''}" data-row="${gi}" role="group" aria-label="Oceń trudność">${lab}${btns}</div>`;
+}
+
+// Widget w osobnym, wyrownanym do prawej rzedzie (quiz, gap fill, translate, Q&A).
+function diffRow(gi) {
+  const w = diffWidget(gi, { label: true });
+  return w ? `<div class="ws-diff-row">${w}</div>` : '';
+}
+
 function buildFlashcardsSection(num, options = {}) {
   const taskKey = options.taskKey || 'flashcards';
   const rows = rowsForTask(taskKey);
@@ -2985,7 +3078,7 @@ function buildFlashcardsSection(num, options = {}) {
     // Aspect ratio fiszki - bierzemy najmniejszy z dwóch (czyli najszerszą fiszkę dla bezpieczeństwa)
     const sizeOrder = { 'fc-size-l': 0, 'fc-size-m': 1, 'fc-size-s': 2, 'fc-size-xs': 3 };
     const cardSize = sizeOrder[frontSize] > sizeOrder[backSize] ? frontSize : backSize;
-    return `
+    const cardHTML = `
         <div class="flashcard ${cardSize}" data-idx="${i}" onclick="flipCard(this)">
           <div class="flashcard-inner">
             <div class="flashcard-face flashcard-front ${frontSize}">
@@ -2998,6 +3091,17 @@ function buildFlashcardsSection(num, options = {}) {
             </div>
           </div>
         </div>`;
+    // Przy wlaczonym sledzeniu trudnosci: przyciski oceny NAD fiszka (poza jej
+    // obszarem, zeby nie zabieraly miejsca na karcie).
+    if (STATE.difficultyEnabled) {
+      const gi = diffRowIdx(r);
+      return `
+        <div class="flashcard-cell">
+          ${diffWidget(gi)}
+          ${cardHTML}
+        </div>`;
+    }
+    return cardHTML;
   }).join('');
 
   return `
@@ -3077,12 +3181,30 @@ function buildMatchingSection(num, options = {}) {
       <button class="tts-btn tts-btn-side match-solve-btn" onclick="solveMatchingOne_${num}(${i})" title="Rozwiąż tę parę" aria-label="Rozwiąż">✨</button>
       <button class="match-item match-pl" data-idx="${i}" onclick="pickMatch_${num}(this, 'pl')">${escapeHtml(r.pl)}</button>
     </div>`).join('');
-  const shuffledEn = shuffle(pairs.map((r, i) => ({ idx: i, en: r.en })));
-  const enList = shuffledEn.map(item => `
+  const shuffledEn = shuffle(pairs.map((r, i) => ({ idx: i, en: r.en, gi: diffRowIdx(r) })));
+  const enList = shuffledEn.map(item => {
+    const ttsBtn = `<button class="tts-btn tts-btn-side" onclick="ttsBtnClick(event, ${JSON.stringify(item.en).replace(/"/g, '&quot;')})" title="Czytaj" aria-label="Czytaj">🔊</button>`;
+    const enBtn = `<button class="match-item match-en" data-idx="${item.idx}" onclick="pickMatch_${num}(this, 'en')">${escapeHtml(item.en)}</button>`;
+    // Z trudnoscia: kafelek owijamy .match-en-box (kotwica dla nakladki ktora
+    // lezy TYLKO na kafelku), obok kwadratowa plakietka oceny i przycisk czytaj.
+    if (STATE.difficultyEnabled && item.gi >= 0) {
+      return `
     <div class="match-item-wrap">
-      <button class="match-item match-en" data-idx="${item.idx}" onclick="pickMatch_${num}(this, 'en')">${escapeHtml(item.en)}</button>
-      <button class="tts-btn tts-btn-side" onclick="ttsBtnClick(event, ${JSON.stringify(item.en).replace(/"/g, '&quot;')})" title="Czytaj" aria-label="Czytaj">🔊</button>
-    </div>`).join('');
+      <div class="match-en-box">
+        ${enBtn}
+        <div class="ws-diff-overlay">${diffWidget(item.gi)}</div>
+      </div>
+      <button type="button" class="ws-diff-badge" data-row="${item.gi}" onclick="wsBadgeClick(event, this)" title="Oceń trudność" aria-label="Oceń trudność">?</button>
+      ${ttsBtn}
+    </div>`;
+    }
+    // Bez trudnosci: oryginalna struktura (kafelek + czytaj).
+    return `
+    <div class="match-item-wrap">
+      ${enBtn}
+      ${ttsBtn}
+    </div>`;
+  }).join('');
 
   const partBadge = totalParts > 1 ? `<span class="ws-part-badge">Część ${partNum}/${totalParts}</span>` : '';
 
@@ -3177,6 +3299,12 @@ function buildMatchingJS(num, options = {}) {
           });
         });
         _matchedPairs_${num}.add(plIdx);
+        // Sledzenie trudnosci: nakladke z ocenami pokazujemy DOPIERO po animacji
+        // podskoku pary (wsBounce trwa 0.5s), zeby nie nakladala sie na ruch kafelka.
+        if (typeof WS_DIFF_ENABLED !== 'undefined' && WS_DIFF_ENABLED) {
+          const _diffWrap = _matchSelEN_${num}.closest('.match-item-wrap');
+          setTimeout(() => wsShowDiffOverlay(_diffWrap), 520);
+        }
         _matchSelPL_${num} = null;
         _matchSelEN_${num} = null;
         if (_matchedPairs_${num}.size === _matchTotal_${num}) {
@@ -3292,6 +3420,7 @@ function buildScrambleSection(num, options = {}) {
       <div class="scramble-card" data-idx="${i}">
         <div class="scramble-prompt">
           <span class="scramble-pl">${escapeHtml(r.pl)}</span>
+          ${diffWidget(diffRowIdx(r), { label: true })}
         </div>
         <div class="scramble-letters">
           ${scrambled.toLowerCase().split('').map(ch => ch === ' '
@@ -3416,12 +3545,32 @@ function buildQuizSection(num, options = {}) {
   const taskKey = options.taskKey || 'quiz';
   const rows = rowsForTask(taskKey);
   const numOpts = STATE.quizOptions;
-  // Generate questions: each row's EN as correct, others as distractors
+  // Generate questions: each row's EN as correct answer.
+  // Wiersz z własnymi odpowiedziami (EN z kreskami "cat|cut|cot") używa
+  // DOKŁADNIE podanych opcji - globalna "Liczba opcji" go nie dotyczy.
+  // Zwykłe wiersze losują dystraktory z puli poprawnych słów innych wierszy
+  // (nigdy z czyichś dystraktorów), bez duplikatów i bez słów identycznych
+  // z poprawną odpowiedzią.
   const items = rows.map((r, i) => {
-    const distractors = shuffle(rows.filter((_, j) => j !== i)).slice(0, numOpts - 1).map(d => d.en);
-    const options = shuffle([r.en, ...distractors]);
-    const correctIdx = options.indexOf(r.en);
-    const optHTML = options.map((opt, oi) => `
+    let opts;
+    if (r._quizOpts && r._quizOpts.length > 0) {
+      opts = shuffle([r.en, ...r._quizOpts]);
+    } else {
+      const seen = new Set([r.en.toLowerCase()]);
+      const pool = rows
+        .filter((_, j) => j !== i)
+        .map(d => d.en)
+        .filter(v => {
+          const k = v.toLowerCase();
+          if (seen.has(k)) return false;
+          seen.add(k);
+          return true;
+        });
+      const distractors = shuffle(pool).slice(0, numOpts - 1);
+      opts = shuffle([r.en, ...distractors]);
+    }
+    const correctIdx = opts.indexOf(r.en);
+    const optHTML = opts.map((opt, oi) => `
       <div class="quiz-opt-wrap">
         <button class="quiz-option" data-correct="${oi === correctIdx ? '1' : '0'}" onclick="pickQuiz_${num}(this, ${i})">
           <span class="quiz-opt-letter">${String.fromCharCode(65 + oi)}</span>
@@ -3436,7 +3585,8 @@ function buildQuizSection(num, options = {}) {
           <span class="quiz-q-text">${escapeHtml(r.pl)}</span>
           <button class="tts-btn quiz-solve-btn" onclick="solveQuizOne_${num}(${i})" title="Rozwiąż to pytanie" aria-label="Rozwiąż">✨</button>
         </div>
-        <div class="quiz-options" data-opts="${numOpts}">${optHTML}</div>
+        <div class="quiz-options" data-opts="${opts.length}">${optHTML}</div>
+        ${diffRow(diffRowIdx(r))}
       </div>`;
   }).join('');
 
@@ -3561,6 +3711,7 @@ function buildUnscrambleSection(num, options = {}) {
           <button class="unsc-hint-btn" onclick="hintUnscramble_${num}(${i})">💡 Podpowiedź</button>
           <button class="unsc-solve-btn" onclick="solveUnscrambleOne_${num}(${i})">✨ Rozwiąż</button>
           <button class="unsc-clear-btn" onclick="clearUnscramble_${num}(${i})">Wyczyść</button>
+          ${diffWidget(diffRowIdx(r), { label: true, cls: 'ws-diff-push' })}
         </div>
       </div>`;
   }).filter(s => s.length > 0).join('');
@@ -3890,6 +4041,7 @@ function buildCornellSection(num, options = {}) {
       </div>
       <div class="cornell-a" id="cornell-a-${num}-${i}">
         <div class="cornell-a-inner">${escapeHtml(r.en)}</div>
+        ${STATE.difficultyEnabled ? `<div class="ws-diff-row ws-diff-row-cornell">${diffWidget(diffRowIdx(r), { label: true })}</div>` : ''}
       </div>
     </div>`).join('');
 
@@ -4007,6 +4159,7 @@ function buildGapfillSection(num, options = {}) {
         <div class="gap-translation" id="gap-tr-${num}-${i}">
           <span class="gap-translation-label">${FLAG_PL_SVG}</span> <span class="gap-translation-text">${escapeHtml(r.pl)}</span>
         </div>
+        ${diffRow(diffRowIdx(r))}
       </div>`;
   }).join('');
 
@@ -4192,6 +4345,7 @@ function buildTranslateSection(num, options = {}) {
         <div class="trans-correct" id="trans-c-${num}-${i}">
           <span class="trans-correct-label">Wzór:</span> <span class="trans-correct-text">${escapeHtml(r.en)}</span>
         </div>
+        ${diffRow(diffRowIdx(r))}
       </div>`;
   }).join('');
 
@@ -4330,6 +4484,7 @@ function buildWritingSection(num, options = {}) {
         <div class="write-print-note" aria-hidden="true"></div>
         <div class="write-footer">
           <span class="write-counter"><span class="write-counter-num">0</span> słów</span>
+          ${diffWidget(diffRowIdx(r), { label: true })}
           <button class="write-save" onclick="saveWrite_${num}(this)">✅ Gotowe</button>
         </div>
       </div>`;
@@ -4383,7 +4538,7 @@ function buildWritingJS(num, options = {}) {
 // ============================================================
 // MAIN TEMPLATE - the worksheet HTML
 // ============================================================
-function buildWorksheetTemplate({ title, subtitle, preset, accent, bg, textColor, isCustomAccent, sectionCount, sectionsHTML, sectionsJS, rowsJSON, ttsConfig, logoConfig }) {
+function buildWorksheetTemplate({ title, subtitle, preset, accent, bg, textColor, isCustomAccent, sectionCount, sectionsHTML, sectionsJS, rowsJSON, ttsConfig, logoConfig, difficulty }) {
   const presetTheme = getPresetTheme(preset, accent, bg, textColor, isCustomAccent);
   const fontImports = presetTheme.fontImports;
   const css = buildWorksheetCSS(presetTheme);
@@ -4421,6 +4576,15 @@ ${bgEffectHTML}
     </div>
     <div class="ws-progress-track"><div class="ws-progress-fill" id="wsProgressFill"></div></div>
   </div>
+
+  ${difficulty ? `<div class="ws-diff-legend" aria-hidden="false">
+    <span class="ws-diff-legend-title">Oceń trudność:</span>
+    <span class="ws-diff-key"><span class="ws-diff-dot" style="background:#dc2626"></span>1 nie umiem</span>
+    <span class="ws-diff-key"><span class="ws-diff-dot" style="background:#d97706"></span>2 trudne</span>
+    <span class="ws-diff-key"><span class="ws-diff-dot" style="background:#16a34a"></span>3 dobre</span>
+    <span class="ws-diff-key"><span class="ws-diff-dot" style="background:#2563eb"></span>4 łatwe</span>
+    <span class="ws-diff-legend-hint">oceny zapisują się i trafiają do pliku TSV</span>
+  </div>` : ''}
 
   ${sectionsHTML}
 
@@ -4460,6 +4624,94 @@ function _wsHash(s) {
 }
 const WS_STORAGE_KEY = 'ws-progress-' + _wsHash(${JSON.stringify(title)} + '|' + ${JSON.stringify(sectionCount)} + '|' + JSON.stringify(WS_DATA));
 const WS_TTS = ${JSON.stringify(ttsConfig)};
+// ── ŚLEDZENIE TRUDNOŚCI (przyciski 1-4 jak w Anki) ─────
+const WS_DIFF_ENABLED = ${difficulty ? 'true' : 'false'};
+const WS_DIFF_LABELS = { 1: 'nie umiem', 2: 'trudne', 3: 'dobre', 4: 'łatwe' };
+const WS_DIFF_COLORS = { 1: '#dc2626', 2: '#d97706', 3: '#16a34a', 4: '#2563eb' };
+
+// Jesli zaimportowany TSV mial juz kolumne "difficulty" (np. "2 - trudne" albo
+// samo "3"), wczytaj te oceny jako stan poczatkowy - dziala round-trip.
+if (WS_DIFF_ENABLED) {
+  WS_DATA.forEach(r => {
+    const m = /^\\s*([1-4])/.exec(r.difficulty || '');
+    if (m) r._diff = parseInt(m[1], 10);
+  });
+}
+
+// Ustawia (lub zdejmuje - klik w te sama ocene) trudnosc wiersza danych.
+// rowIdx to indeks w WS_DATA, wspolny dla wszystkich sekcji uzywajacych
+// tego samego slowka - ocena synchronizuje sie wszedzie.
+function wsSetDiff(event, rowIdx, level) {
+  if (event) { event.stopPropagation(); event.preventDefault(); }
+  const row = WS_DATA[rowIdx];
+  if (!row) return;
+  row._diff = (row._diff === level) ? 0 : level;
+  wsPaintDiff(rowIdx);
+  wsHideDiffOverlays();
+  if (typeof wsScheduleSave === 'function') wsScheduleSave();
+}
+
+// Odswieza wyglad wszystkich widgetow i plakietek danego wiersza.
+function wsPaintDiff(rowIdx) {
+  const lvl = (WS_DATA[rowIdx] && WS_DATA[rowIdx]._diff) || 0;
+  document.querySelectorAll('.ws-diff[data-row="' + rowIdx + '"]').forEach(w => {
+    w.querySelectorAll('.ws-diff-btn').forEach(b => {
+      b.classList.toggle('sel', parseInt(b.dataset.level, 10) === lvl);
+    });
+    if (lvl) w.setAttribute('data-sel', lvl); else w.removeAttribute('data-sel');
+  });
+  document.querySelectorAll('.ws-diff-badge[data-row="' + rowIdx + '"]').forEach(b => {
+    if (lvl) {
+      b.textContent = lvl;
+      b.classList.add('rated');
+      b.style.background = WS_DIFF_COLORS[lvl];
+      b.style.borderColor = WS_DIFF_COLORS[lvl];
+      b.style.color = '#fff';
+      b.title = 'Trudność: ' + lvl + ' (' + WS_DIFF_LABELS[lvl] + '). Kliknij, żeby zmienić.';
+    } else {
+      b.textContent = '?';
+      b.classList.remove('rated');
+      b.style.background = '';
+      b.style.borderColor = '';
+      b.style.color = '';
+      b.title = 'Oceń trudność';
+    }
+  });
+}
+
+function wsPaintAllDiff() {
+  if (!WS_DIFF_ENABLED) return;
+  WS_DATA.forEach((r, i) => { if (r._diff) wsPaintDiff(i); });
+}
+
+// Matching: nakladka z ocenami na kafelku EN. Pokazuje sie po poprawnym
+// polaczeniu pary i pozostaje widoczna BEZ LIMITU CZASU - znika dopiero
+// po wybraniu oceny albo po kliknieciu gdziekolwiek poza nakladka/plakietka.
+function wsShowDiffOverlay(wrap) {
+  if (!WS_DIFF_ENABLED || !wrap) return;
+  wsHideDiffOverlays();
+  const ov = wrap.querySelector('.ws-diff-overlay');
+  if (!ov) return;
+  ov.classList.add('show');
+}
+function wsHideDiffOverlays() {
+  document.querySelectorAll('.ws-diff-overlay.show').forEach(o => o.classList.remove('show'));
+}
+// Plakietka obok kafelka EN - otwiera nakladke ponownie, zeby zmienic ocene.
+function wsBadgeClick(event, badge) {
+  event.stopPropagation();
+  event.preventDefault();
+  const wrap = badge.closest('.match-item-wrap');
+  const ov = wrap && wrap.querySelector('.ws-diff-overlay');
+  if (!ov) return;
+  if (ov.classList.contains('show')) wsHideDiffOverlays();
+  else wsShowDiffOverlay(wrap);
+}
+// Klik gdziekolwiek poza nakladka/plakietka chowa otwarte nakladki.
+document.addEventListener('click', e => {
+  if (!e.target.closest('.ws-diff-overlay') && !e.target.closest('.ws-diff-badge')) wsHideDiffOverlays();
+}, true);
+
 let _wsDone = new Set();
 let _wsVoices = [];
 
@@ -4779,6 +5031,8 @@ function saveProgress() {
     const state = {
       v: 2,                                    // wersja schematu (1 = stara, 2 = nowa)
       done: Array.from(_wsDone),
+      // Oceny trudnosci per wiersz WS_DATA (0 = brak oceny).
+      diff: WS_DIFF_ENABLED ? WS_DATA.map(r => r._diff || 0) : undefined,
       flashFlipped: Array.from(document.querySelectorAll('.flashcard.flipped')).map(c => c.dataset.idx),
       matching: _wsCollectMatching(),
       scramble: _wsCollectScramble(),
@@ -5005,6 +5259,13 @@ function loadProgress() {
     if (!raw) return;
     const state = JSON.parse(raw);
 
+    // Oceny trudnosci - przed restore sekcji, bo to czysty stan danych.
+    if (WS_DIFF_ENABLED && Array.isArray(state.diff)) {
+      state.diff.forEach((lvl, i) => {
+        if (WS_DATA[i]) WS_DATA[i]._diff = lvl || 0;
+      });
+    }
+
     // Flashcards - odwróć karty
     if (state.flashFlipped) {
       state.flashFlipped.forEach(idx => {
@@ -5053,9 +5314,19 @@ function downloadTSV() {
     showToast('Brak danych do pobrania', true);
     return;
   }
-  const lines = [WS_HEADERS.join('\\t')];
+  // Sledzenie trudnosci: dolacz kolumne "difficulty" (jesli oryginalny TSV
+  // jej nie mial). Wiersze bez oceny zostaja puste; przy ocenie zapisujemy
+  // czytelna wartosc typu "2 - trudne", ktora przy ponownym imporcie
+  // zostanie rozpoznana po cyfrze na poczatku.
+  const headers = WS_HEADERS.slice();
+  if (WS_DIFF_ENABLED && !headers.includes('difficulty')) headers.push('difficulty');
+  const lines = [headers.join('\\t')];
   WS_DATA.forEach(row => {
-    const cols = WS_HEADERS.map(h => {
+    const cols = headers.map(h => {
+      if (h === 'difficulty' && WS_DIFF_ENABLED) {
+        if (row._diff) return row._diff + ' - ' + WS_DIFF_LABELS[row._diff];
+        return row.difficulty || '';
+      }
       const v = row[h];
       if (v == null) return '';
       // Tabulator w wartosci -> spacja (TSV nie obsluguje escapowania)
@@ -5117,7 +5388,10 @@ if (window.matchMedia) {
 ${sectionsJS}
 
 // Load saved progress
-window.addEventListener('load', loadProgress);
+window.addEventListener('load', () => {
+  loadProgress();
+  wsPaintAllDiff();
+});
 <\/script>
 </body>
 </html>`;
@@ -7438,6 +7712,163 @@ ${t.extraBgCSS}
    Na ekranie zawsze ukryte - na ekranie działa zwykłe pole textarea. */
 .cornell-print-note, .write-print-note { display: none; }
 
+/* ========== ŚLEDZENIE TRUDNOŚCI (Anki: 1 nie umiem / 2 trudne / 3 dobre / 4 łatwe) ========== */
+.ws-diff {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32rem;
+}
+.ws-diff-lab {
+  font-family: var(--ws-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ws-text-dim);
+  opacity: 0.7;
+  margin-right: 0.2rem;
+}
+.ws-diff-btn {
+  /* Caly przycisk (ramka + cyfra) skaluje sie na hover. Zeby cyfra nie skakala
+     o piksel przy przeskalowaniu (sub-pikselowe zaokraglanie tekstu na malym
+     elemencie), wymuszamy warstwe kompozycji GPU JUZ W STANIE SPOCZYNKU przez
+     translateZ(0) + backface-visibility:hidden. Wtedy hover tylko mnozy istniejaca
+     teksture warstwy zamiast rasteryzowac tekst na nowo - calosc powieksza sie
+     jak jeden obraz, plynnie i bez drgania. */
+  width: 1.85rem; height: 1.85rem;
+  flex: 0 0 1.85rem;
+  padding: 0;
+  border-radius: 7px;
+  border: 2px solid;
+  background: var(--ws-card);
+  font-family: var(--ws-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transform: translateZ(0) scale(1);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: transform;
+  transition: transform 0.15s, background 0.15s, color 0.15s, border-color 0.15s, opacity 0.15s;
+}
+.ws-diff-num {
+  display: block;
+  line-height: 1;
+}
+.ws-diff-btn:hover { transform: translateZ(0) scale(1.14); }
+.ws-diff-btn:active { transform: translateZ(0) scale(0.92); }
+.ws-diff-1 { color: #dc2626; border-color: #dc2626; }
+.ws-diff-2 { color: #d97706; border-color: #d97706; }
+.ws-diff-3 { color: #16a34a; border-color: #16a34a; }
+.ws-diff-4 { color: #2563eb; border-color: #2563eb; }
+.ws-diff-1.sel { background: #dc2626; color: #fff; }
+.ws-diff-2.sel { background: #d97706; color: #fff; }
+.ws-diff-3.sel { background: #16a34a; color: #fff; }
+.ws-diff-4.sel { background: #2563eb; color: #fff; }
+/* Po dokonaniu wyboru pozostale przyciski przygasaja - widac wybor na pierwszy rzut oka. */
+.ws-diff[data-sel] .ws-diff-btn:not(.sel) { opacity: 0.38; }
+.ws-diff[data-sel] .ws-diff-btn:not(.sel):hover { opacity: 1; }
+
+/* Wariant: osobny rzad wyrownany do prawej (quiz, gap fill, translate, Q&A). */
+.ws-diff-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.55rem;
+}
+.ws-diff-row-cornell {
+  margin-top: 0;
+  padding: 0 1.1rem 1rem;
+}
+/* Wariant: dosuniecie do prawego konca istniejacego rzedu przyciskow. */
+.ws-diff-push { margin-left: auto; align-self: center; }
+
+/* Legenda pod paskiem postepu. */
+.ws-diff-legend {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: 0.4rem 1rem;
+  margin: 0.9rem 0 1.6rem;
+  font-size: 0.85rem;
+  color: var(--ws-text-dim);
+}
+.ws-diff-legend-title { font-weight: 700; color: var(--ws-text); }
+.ws-diff-key { display: inline-flex; align-items: center; gap: 0.32rem; white-space: nowrap; }
+.ws-diff-dot { width: 0.8rem; height: 0.8rem; border-radius: 50%; display: inline-block; }
+.ws-diff-legend-hint { width: 100%; text-align: center; font-size: 0.74rem; opacity: 0.75; }
+
+/* Fiszki: przyciski NAD karta, poza jej obszarem. */
+.flashcard-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+}
+.flashcard-cell .flashcard { width: 100%; }
+
+/* Matching: nakladka z ocenami LEZY TYLKO na kafelku EN (nie zaslania
+   przycisku czytaj ani plakietki). Kafelek nie zmienia szerokosci - .match-en-box
+   przejmuje flex:1 od kafelka, ktory wypelnia go w 100%. */
+.match-item-wrap { position: relative; }
+.match-en-box {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+}
+.match-en-box .match-item { flex: 1; }
+.ws-diff-overlay {
+  /* Wysuwamy nakladke o 1px poza obrys kafelka i dajemy 1px ramke w kolorze
+     tla nakladki. Dzieki temu krawedz (zwlaszcza zaokraglone rogi) kafelka
+     pod spodem jest w pelni przykryta i nie przeswituje. Ramka pelne #fff
+     (nie polprzezroczyste), zeby skutecznie zaslonila linie kafelka. */
+  position: absolute; inset: -1px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid #fff;
+  backdrop-filter: blur(2px);
+  border-radius: 12px;
+  z-index: 6;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s;
+}
+.ws-diff-overlay.show { opacity: 1; pointer-events: auto; }
+.ws-diff-overlay .ws-diff { gap: 0.5rem; }
+/* Kwadratowa plakietka oceny - taki sam format i wysokosc jak przycisk czytaj,
+   stoi obok niego. Tekst kafelka zawija sie w samym kafelku, plakietka go nie
+   sciska bo ma staly udzial flex (flex:0 0). */
+.ws-diff-badge {
+  align-self: stretch;
+  width: 32px;
+  flex: 0 0 32px;
+  padding: 0;
+  border-radius: 7px;
+  border: 1.5px solid var(--ws-border-strong);
+  background: var(--ws-card);
+  color: var(--ws-text-dim);
+  font-family: var(--ws-mono);
+  font-size: 0.95rem; font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  display: none;
+  align-items: center; justify-content: center;
+  cursor: pointer;
+  /* Bez transform:scale na hover - plakietka jest trwalym przyciskiem, wiec
+     zamiast powiekszania (ktore ruszaloby cyfra) dajemy sygnal kolorem.
+     Dzieki temu liczba w plakietce nie drga ani o piksel. */
+  transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
+}
+.ws-diff-badge:hover {
+  border-color: var(--ws-accent);
+  box-shadow: inset 0 0 0 1px var(--ws-accent);
+}
+.ws-diff-badge:active { background: var(--ws-accent-soft); }
+/* Plakietka pojawia sie dopiero, gdy para zostala polaczona. */
+.match-item-wrap:has(.match-en.matched) .ws-diff-badge { display: inline-flex; }
+
 @media print {
   .ws-logo-bottom { display: none; }
   .ws-logo-top img { height: 90px; }
@@ -7501,6 +7932,11 @@ ${t.extraBgCSS}
   }
   /* Ukryj przyciski TTS przy druku */
   .tts-btn { display: none !important; }
+  /* Śledzenie trudności to narzędzie do pracy na ekranie - w druku/PDF
+     przyciski, plakietki, nakładki i legenda znikają w całości. */
+  .ws-diff, .ws-diff-row, .ws-diff-overlay, .ws-diff-badge, .ws-diff-legend {
+    display: none !important;
+  }
   /* Ukryj wszystkie przyciski podpowiedzi i rozwiązań pojedynczych segmentów */
   .scramble-hint-btn, .scramble-solve-btn,
   .unsc-hint-btn, .unsc-solve-btn,
