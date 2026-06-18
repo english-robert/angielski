@@ -1119,10 +1119,10 @@ pies	dog
           <button type="button" class="tsv-example-use" id="tsvExampleUse" title="Wklej te dane do pola">📋 Użyj tych danych</button>
         </div>
         <div class="tsv-example-box" id="tsvExampleData">pl	en	tasks	distractors
-kot	cat	m	kitten|cats
+kot	cat	m	
 pies	dog	m	
 ptak	bird	m	
-ryba	fish	m	fishing
+ryba	fish	m	fish and chips|fishing|finish
 słońce	sun	f	
 księżyc	moon	f	
 gwiazda	star	f	
@@ -1695,6 +1695,20 @@ function rowsForTask(taskKey) {
     // Brak tagow = wiersz idzie do KAZDEJ instancji 1 (kompatybilnosc wsteczna).
     if (r._tasks.length === 0) return num === 1;
     return r._tasks.includes(origKey);
+  });
+}
+
+// Wiersze dla matchingu z gwarancja: wiersze MAJACE atrapy (distractors) laduja
+// na KONCU, zachowujac wzgledna kolejnosc. Dzieki temu slowo, do ktorego dodano
+// atrapy, jest ostatnim elementem swojej sekcji - a jego atrapy trafiaja do tej
+// samej puli, tworzac celowane utrudnienie przy elemencie, ktory zwykle zostaje
+// "sam" i jest za latwy. Sort jest stabilny (Array.prototype.sort w ES2019+).
+function rowsForMatching(taskKey) {
+  const rows = rowsForTask(taskKey);
+  return rows.slice().sort((a, b) => {
+    const ad = (a._distractors && a._distractors.length) ? 1 : 0;
+    const bd = (b._distractors && b._distractors.length) ? 1 : 0;
+    return ad - bd; // 0 (bez atrap) przed 1 (z atrapami)
   });
 }
 
@@ -2969,7 +2983,7 @@ function buildWorksheetHTML() {
     if (!builders[taskName]) return;
     // Matching dzielimy na sekcje po max 8 par. Word Scramble idzie w jednej sekcji bez limitu.
     if (taskName === 'matching') {
-      const allRows = rowsForTask(taskKey);
+      const allRows = rowsForMatching(taskKey);
       const totalParts = Math.max(1, Math.ceil(allRows.length / 8));
       for (let part = 0; part < totalParts; part++) {
         sectionCount++;
@@ -3031,9 +3045,33 @@ function sectionInstr(taskName, defaultText) {
 }
 
 // Zwraca tytul sekcji - z STATE.taskTitles jesli ustawiony, inaczej fallback
+// Emotki zadan - te same co w generatorze (panel "Typy zadań").
+// Trafiaja na poczatek naglowka sekcji na karcie. Owijane wrapEmoji, zeby
+// nigdy nie zlapaly gradientu (tytul sekcji ma zwykly kolor, ale to zabezpieczenie
+// na wypadek motywow z gradientowym naglowkiem).
+const TASK_EMOJI = {
+  flashcards: '🃏', matching: '🔗', scramble: '🔤', quiz: '✅',
+  unscramble: '📝', cornell: '📖', gapfill: '🧩', translate: '🌐', writing: '✍️'
+};
+// Domyslne tytuly zadan - sluza do wykrycia, czy uzytkownik wpisal WLASNY tytul.
+// taskTitles zawsze ma wartosc (domyslna), wiec rozpoznajemy "wlasny" przez
+// porownanie z domyslna. Przy domyslnym tytule dodajemy emotke; przy wlasnym nie
+// (uzytkownik moze dodac swoja, zeby nie bylo dublowania).
+const DEFAULT_TASK_TITLES = {
+  flashcards: 'Flashcards', matching: 'Matching', scramble: 'Word Scramble',
+  quiz: 'Quiz', unscramble: 'Sentence Unscramble', cornell: 'Pytania & odpowiedzi',
+  gapfill: 'Gap Fill', translate: 'Translate', writing: 'Writing'
+};
 function sectionTitle(taskName, fallback) {
   const t = (STATE.taskTitles[taskName] || '').trim();
-  return escapeHtml(t || fallback);
+  const base = taskKeyBase(taskName);
+  const emoji = TASK_EMOJI[base] || '';
+  // Czy tytul jest domyslny? Dla instancji 2+ (np. "Matching 2") tez uznajemy
+  // za domyslny, jesli zaczyna sie od domyslnej nazwy bazowej.
+  const def = DEFAULT_TASK_TITLES[base] || '';
+  const isDefault = !t || t === def || (def && t.startsWith(def + ' '));
+  const label = escapeHtml(t || fallback);
+  return (emoji && isDefault) ? `<span class="ws-sec-emoji">${emoji}</span> ${label}` : label;
 }
 
 // Zwraca <div class="ws-sec-image"><img></div> jesli URL ustawiony, inaczej pusty string.
@@ -3164,6 +3202,7 @@ function buildFlashcardsJS(num, options = {}) {
   // flipCard musi byc globalna (jest na onclick wielu kart), wiec robimy
   // jedna globalna ktora po DOM dispatchuje do per-num implementacji.
   window._flipCardImpl_${num} = function(el) {
+    wsSound('tap');
     el.classList.toggle('flipped');
     const idx = parseInt(el.dataset.idx);
     if (!_flashFlipped_${num}.has(idx)) {
@@ -3201,7 +3240,7 @@ function buildFlashcardsJS(num, options = {}) {
 
 function buildMatchingSection(num, options = {}) {
   const taskKey = options.taskKey || 'matching';
-  const allRows = rowsForTask(taskKey);
+  const allRows = rowsForMatching(taskKey);
   const startIdx = options.startIdx || 0;
   const endIdx = Math.min(startIdx + 8, allRows.length);
   const partNum = options.partNum;
@@ -3331,6 +3370,12 @@ function buildMatchingJS(num, options = {}) {
   window.pickMatch_${num} = function(el, side) {
     if (el.classList.contains('matched')) return;
 
+    // Dzwiek 'tap' przy zaznaczaniu kafelka. Gdy zaraz potem rozstrzygnie sie
+    // para (oba wybrane), nizej zagra 'correct'/'wrong' - tap gra tylko, gdy to
+    // dopiero pierwszy wybor (brak drugiej strony).
+    const _willResolve = (side === 'pl') ? !!_matchSelEN_${num} : !!_matchSelPL_${num};
+    if (!_willResolve) wsSound('tap');
+
     if (side === 'pl') {
       if (_matchSelPL_${num}) _matchSelPL_${num}.classList.remove('selected');
       el.classList.add('selected');
@@ -3345,6 +3390,7 @@ function buildMatchingJS(num, options = {}) {
       const plIdx = parseInt(_matchSelPL_${num}.dataset.idx);
       const enIdx = parseInt(_matchSelEN_${num}.dataset.idx);
       if (plIdx === enIdx) {
+        wsSound('correct');
         const color = _matchColors_${num}[_matchedPairs_${num}.size % _matchColors_${num}.length];
         _matchSelPL_${num}.classList.remove('selected');
         _matchSelEN_${num}.classList.remove('selected');
@@ -3389,6 +3435,7 @@ function buildMatchingJS(num, options = {}) {
           wsBurstDistractors('sec-${num}');
         }
       } else {
+        wsSound('wrong');
         _matchSelPL_${num}.classList.add('wrong');
         _matchSelEN_${num}.classList.add('wrong');
         const a = _matchSelPL_${num}, b = _matchSelEN_${num};
@@ -3404,6 +3451,7 @@ function buildMatchingJS(num, options = {}) {
 
   // Solver per-section
   window.solveMatching_${num} = function() {
+    wsSound('correct');
     document.querySelectorAll('#sec-${num} .match-pl').forEach(el => {
       const idx = parseInt(el.dataset.idx);
       if (_matchedPairs_${num}.has(idx)) return;
@@ -3434,7 +3482,7 @@ function buildMatchingJS(num, options = {}) {
       });
       _matchedPairs_${num}.add(idx);
     });
-    // Atrapy (bez pary): efektowny rozpad na cząsteczki - znikają z karty i z wydruku.
+    // Atrapy (bez pary): znikaja z efektem puff - znikaja z karty i z wydruku.
     wsBurstDistractors('sec-${num}');
     showSectionFeedback(${num}, true, '✓ Wszystkie pary pokazane');
     markSectionDone(${num});
@@ -3446,6 +3494,7 @@ function buildMatchingJS(num, options = {}) {
     const el = document.querySelector('#sec-${num} .match-pl[data-idx="' + idx + '"]');
     const enEl = document.querySelector('#sec-${num} .match-en[data-idx="' + idx + '"]');
     if (!el || !enEl) return;
+    wsSound('correct');
     const color = _matchColors_${num}[_matchedPairs_${num}.size % _matchColors_${num}.length];
     [el, enEl].forEach(e => {
       e.classList.add('matched');
@@ -3548,6 +3597,7 @@ function buildScrambleJS(num, options = {}) {
     const ans = input.dataset.answer;
     const val = input.value.trim().toLowerCase();
     if (val === ans) {
+      wsSound('correct');
       input.classList.remove('wrong');
       input.classList.add('correct');
       input.disabled = true;
@@ -3562,6 +3612,7 @@ function buildScrambleJS(num, options = {}) {
         confettiFire();
       }
     } else {
+      wsSound('wrong');
       input.classList.remove('correct');
       input.classList.add('wrong');
       setTimeout(() => input.classList.remove('wrong'), 500);
@@ -3573,6 +3624,7 @@ function buildScrambleJS(num, options = {}) {
     if (!card) return;
     const input = card.querySelector('.scramble-input');
     if (input.disabled) return;
+    wsSound('tap');
     const ans = input.dataset.answer;
     const cur = input.value.toLowerCase();
     let matchLen = 0;
@@ -3591,6 +3643,7 @@ function buildScrambleJS(num, options = {}) {
   };
 
   window.solveScramble_${num} = function() {
+    wsSound('correct');
     document.querySelectorAll('#sec-${num} .scramble-input').forEach(inp => {
       if (inp.classList.contains('correct')) return;
       inp.value = inp.dataset.answer;
@@ -3699,6 +3752,7 @@ function buildQuizJS(num, options = {}) {
     const card = btn.closest('.quiz-card');
     if (card.classList.contains('answered')) return;
     const correct = btn.dataset.correct === '1';
+    wsSound(correct ? 'correct' : 'wrong');
     btn.classList.add(correct ? 'quiz-correct' : 'quiz-wrong');
     if (!correct) {
       // also highlight correct one
@@ -3717,6 +3771,7 @@ function buildQuizJS(num, options = {}) {
 
   // Per-section function name (zob. komentarz przy solveFlashcards_).
   window.solveQuiz_${num} = function() {
+    wsSound('correct');
     document.querySelectorAll('#sec-${num} .quiz-card').forEach((card, qIdx) => {
       if (card.classList.contains('answered')) return;
       card.querySelectorAll('.quiz-option').forEach(b => {
@@ -3733,6 +3788,7 @@ function buildQuizJS(num, options = {}) {
   window.solveQuizOne_${num} = function(qIdx) {
     const card = document.querySelector('#sec-${num} .quiz-card[data-idx="' + qIdx + '"]');
     if (!card || card.classList.contains('answered')) return;
+    wsSound('correct');
     card.querySelectorAll('.quiz-option').forEach(b => {
       if (b.dataset.correct === '1') b.classList.add('quiz-correct');
     });
@@ -3825,6 +3881,7 @@ function buildUnscrambleJS(num, options = {}) {
   function _unscMoveToAnswer(wordEl) {
     const card = wordEl.closest('.unsc-card');
     if (card.classList.contains('done')) return;
+    wsSound('tap');
     const answerArea = card.querySelector('.unsc-answer-area');
     const pool = card.querySelector('.unsc-pool');
     const empty = answerArea.querySelector('.unsc-answer-empty');
@@ -3837,6 +3894,7 @@ function buildUnscrambleJS(num, options = {}) {
   function _unscMoveToPool(wordEl) {
     const card = wordEl.closest('.unsc-card');
     if (card.classList.contains('done')) return;
+    wsSound('tap');
     const pool = card.querySelector('.unsc-pool');
     const poolEmpty = pool.querySelector('.unsc-pool-empty');
     if (poolEmpty) poolEmpty.remove();
@@ -3884,6 +3942,7 @@ function buildUnscrambleJS(num, options = {}) {
       }
     });
     if (allOk) {
+      wsSound('correct');
       card.classList.add('done');
       // wszystkie słowa staja sie disabled
       card.querySelectorAll('.unsc-word').forEach(w => w.setAttribute('draggable', 'false'));
@@ -3893,6 +3952,8 @@ function buildUnscrambleJS(num, options = {}) {
         markSectionDone(${num});
         confettiFire();
       }
+    } else {
+      wsSound('wrong');
     }
   };
 
@@ -3951,6 +4012,7 @@ function buildUnscrambleJS(num, options = {}) {
   };
 
   window.solveUnscramble_${num} = function() {
+    wsSound('correct');
     document.querySelectorAll('#sec-${num} .unsc-card').forEach(card => {
       if (card.classList.contains('done')) return;
       const cardIdx = parseInt(card.dataset.idx);
@@ -3980,6 +4042,7 @@ function buildUnscrambleJS(num, options = {}) {
   window.solveUnscrambleOne_${num} = function(cardIdx) {
     const card = document.querySelector('#sec-${num} .unsc-card[data-idx="' + cardIdx + '"]');
     if (!card || card.classList.contains('done')) return;
+    wsSound('correct');
     const correct = JSON.parse(card.getAttribute('data-correct'));
     const answerArea = card.querySelector('.unsc-answer-area');
     const pool = card.querySelector('.unsc-pool');
@@ -4153,6 +4216,7 @@ function buildCornellJS(num, options = {}) {
   window.toggleCornell_${num} = function(idx) {
     const card = document.querySelector('#sec-${num} .cornell-card[data-idx="' + idx + '"]');
     if (!card) return;
+    wsSound('tap');
     const btn = card.querySelector('.cornell-q');
     const expanded = card.classList.toggle('open');
     btn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
@@ -4269,6 +4333,7 @@ function buildGapfillJS(num, options = {}) {
     const ans = input.dataset.answer;
     const val = input.value.trim().toLowerCase();
     if (val === ans) {
+      wsSound('correct');
       input.classList.remove('gap-wrong');
       input.classList.add('gap-correct');
       input.disabled = true;
@@ -4286,6 +4351,7 @@ function buildGapfillJS(num, options = {}) {
         }
       }
     } else {
+      wsSound('wrong');
       input.classList.remove('gap-correct');
       input.classList.add('gap-wrong');
       setTimeout(() => input.classList.remove('gap-wrong'), 500);
@@ -4306,6 +4372,7 @@ function buildGapfillJS(num, options = {}) {
       break;
     }
     if (!target) return;
+    wsSound('tap');
     const ans = target.dataset.answer;
     const cur = target.value.toLowerCase();
     let matchLen = 0;
@@ -4326,6 +4393,7 @@ function buildGapfillJS(num, options = {}) {
   window.solveGapOne_${num} = function(cardIdx) {
     const card = document.querySelector('#sec-${num} .gap-card[data-idx="' + cardIdx + '"]');
     if (!card) return;
+    wsSound('correct');
     card.querySelectorAll('.gap-input').forEach(inp => {
       if (inp.classList.contains('gap-correct')) return;
       inp.value = inp.dataset.answer;
@@ -4378,6 +4446,7 @@ function buildGapfillJS(num, options = {}) {
   }
 
   window.solveGap_${num} = function() {
+    wsSound('correct');
     document.querySelectorAll('#sec-${num} .gap-card').forEach(card => {
       card.querySelectorAll('.gap-input').forEach(inp => {
         if (inp.classList.contains('gap-correct')) return;
@@ -4462,6 +4531,7 @@ function buildTranslateJS(num, options = {}) {
     const ans = textarea.dataset.answer;
     const val = textarea.value;
     if (_transNormalize_${num}(val) === _transNormalize_${num}(ans)) {
+      wsSound('correct');
       textarea.classList.remove('trans-wrong');
       textarea.classList.add('trans-correct');
       textarea.disabled = true;
@@ -4478,6 +4548,7 @@ function buildTranslateJS(num, options = {}) {
         confettiFire();
       }
     } else {
+      wsSound('wrong');
       textarea.classList.remove('trans-correct');
       textarea.classList.add('trans-wrong');
       setTimeout(() => textarea.classList.remove('trans-wrong'), 500);
@@ -4490,6 +4561,7 @@ function buildTranslateJS(num, options = {}) {
     if (!card) return;
     const ta = card.querySelector('.trans-input');
     if (ta.disabled) return;
+    wsSound('tap');
     const ans = ta.dataset.answer;
     const userVal = ta.value;
     // znajdz najdluzszy prefiks ans (case-insensitive) ktory pasuje do tego co user wpisal
@@ -4513,6 +4585,7 @@ function buildTranslateJS(num, options = {}) {
   };
 
   window.solveTranslate_${num} = function() {
+    wsSound('correct');
     document.querySelectorAll('#sec-${num} .trans-card').forEach(card => {
       const ta = card.querySelector('.trans-input');
       if (ta.classList.contains('trans-correct')) return;
@@ -4584,9 +4657,12 @@ function buildWritingSection(num, options = {}) {
 }
 
 function buildWritingJS(num, options = {}) {
+  const taskKey = options.taskKey || 'writing';
+  const total = rowsForTask(taskKey).length;
   return `
   // ── WRITING (section ${num}) ──
   let _writeSaved_${num} = new Set();
+  const _writeTotal_${num} = ${total};
 
   function _writeWordCount(text) {
     const t = text.trim();
@@ -4603,13 +4679,21 @@ function buildWritingJS(num, options = {}) {
 
   window.saveWrite_${num} = function(btn) {
     const card = btn.closest('.write-card');
+    if (card.classList.contains('done')) return;
     card.classList.add('done');
     btn.disabled = true;
     btn.textContent = '✅ Zapisane';
     _writeSaved_${num}.add(parseInt(card.dataset.idx));
-    showSectionFeedback(${num}, true, '✍️ Świetnie, tekst zapisany!');
-    markSectionDone(${num});
-    confettiFire();
+    // Pojedyncze "Gotowe" = correct. Sekcja konczy sie dopiero, gdy WSZYSTKIE
+    // podzadania writing zostaly zapisane.
+    if (_writeSaved_${num}.size === _writeTotal_${num}) {
+      showSectionFeedback(${num}, true, '✍️ Świetnie, wszystko zapisane!');
+      markSectionDone(${num}); // gra 'taskdone'
+      confettiFire();
+    } else {
+      wsSound('correct');
+    }
+    if (typeof wsScheduleSave === 'function') wsScheduleSave();
   };
 `;
 }
@@ -4651,7 +4735,10 @@ ${bgEffectHTML}
   <div class="ws-progress-wrap">
     <div class="ws-progress-top">
       <span class="ws-progress-label">Postęp</span>
-      <span class="ws-progress-score" id="wsProgressScore">0 / ${sectionCount}</span>
+      <span class="ws-progress-top-right">
+        <span class="ws-progress-score" id="wsProgressScore">0 / ${sectionCount}</span>
+        <button class="ws-sound-toggle" onclick="wsToggleSound()" title="Włącz/wyłącz dźwięki" aria-pressed="true" aria-label="Włącz lub wyłącz dźwięki">🔊</button>
+      </span>
     </div>
     <div class="ws-progress-track"><div class="ws-progress-fill" id="wsProgressFill"></div></div>
   </div>
@@ -4732,6 +4819,7 @@ function wsSetDiff(event, rowIdx, level) {
   if (event) { event.stopPropagation(); event.preventDefault(); }
   const row = WS_DATA[rowIdx];
   if (!row) return;
+  wsSound('tap');
   // Cyfry przychodza jako stringi ('1'..'4') - normalizujemy do liczb; 'new' zostaje.
   const lvl = (level === 'new') ? 'new' : parseInt(level, 10);
   row._diff = (row._diff === lvl) ? 0 : lvl;
@@ -4867,6 +4955,7 @@ function wsScrambleTile(btn) {
   const input = card.querySelector('.scramble-input');
   if (!input || input.disabled) return;
   if (btn.classList.contains('used')) return;
+  wsSound('tap');
   input.value += btn.dataset.letter;
   input.classList.remove('wrong');
   wsSyncScrambleTiles(input);
@@ -4878,6 +4967,7 @@ function wsScrambleBackspace(btn) {
   if (!card) return;
   const input = card.querySelector('.scramble-input');
   if (!input || input.disabled || !input.value) return;
+  wsSound('tap');
   input.value = input.value.slice(0, -1);
   input.classList.remove('wrong');
   wsSyncScrambleTiles(input);
@@ -4910,6 +5000,12 @@ function markSectionDone(num) {
   const sec = document.querySelector('[data-section="' + num + '"]');
   if (sec) sec.classList.add('ws-done');
   updateProgress();
+  // Sekcja ukonczona: gra 'taskdone', a 'correct' z tej samej (ostatniej) odpowiedzi
+  // ma sie NIE odezwac. Ustawiamy flage synchronicznie - odlozony o tick 'correct'
+  // (patrz wsSound) zobaczy ja i sie wycofa. Flage zdejmujemy po krotkim oknie.
+  _wsTaskJustDone = true;
+  wsSound('taskdone');
+  setTimeout(() => { _wsTaskJustDone = false; }, 400);
   // Zapamiętaj, że sekcja została zaliczona (na wypadek, gdyby event nie został złapany)
   if (typeof wsScheduleSave === 'function') wsScheduleSave();
 }
@@ -4932,6 +5028,77 @@ function showSectionFeedback(num, ok, msg) {
   fb.className = 'ws-feedback show ' + (ok ? 'fb-ok' : 'fb-no');
   fb.textContent = msg;
 }
+
+// ── EFEKTY DŹWIĘKOWE ────────────────────────────────────
+// Cztery krotkie probki z repozytorium. Kazdy dzwiek ma maly "pool" instancji
+// Audio, dzieki czemu szybkie klikniecia (np. literki w scramble) moga sie
+// nakladac, zamiast czekac na zakonczenie poprzedniego odtworzenia.
+// Stan wlaczenia trzymany w localStorage, przelacznik w stopce karty.
+const WS_SFX_BASE = 'https://english-robert.github.io/angielski/audio/sfx/';
+const WS_SFX_FILES = { tap: 'tap.mp3', correct: 'correct.mp3', wrong: 'wrong.mp3', taskdone: 'correct-task.mp3' };
+const WS_SFX_VOL = { tap: 0.45, correct: 0.6, wrong: 0.55, taskdone: 0.7 };
+const WS_SFX_KEY = 'ws-sfx-enabled';
+// Bezpieczny odczyt/zapis localStorage. W trybie PODGLADU karta zyje pod adresem
+// blob:, gdzie origin jest "opaque" i dostep do localStorage rzuca SecurityError.
+// Bez tego opakowania wyjatek na poziomie modulu zatrzymalby CALY skrypt karty,
+// przez co zadne przyciski by nie dzialaly (dokladnie objaw "martwego podgladu").
+function wsLSget(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
+function wsLSset(key, val) { try { localStorage.setItem(key, val); } catch (e) {} }
+function wsLSremove(key) { try { localStorage.removeItem(key); } catch (e) {} }
+let WS_SFX_ON = (wsLSget(WS_SFX_KEY) !== '0'); // domyslnie wlaczone
+const _wsSfxPool = {};
+const _WS_SFX_POOL_SIZE = 4;
+
+function _wsSfxInit() {
+  Object.keys(WS_SFX_FILES).forEach(name => {
+    _wsSfxPool[name] = [];
+    for (let i = 0; i < _WS_SFX_POOL_SIZE; i++) {
+      const a = new Audio(WS_SFX_BASE + WS_SFX_FILES[name]);
+      a.preload = 'auto';
+      a.volume = WS_SFX_VOL[name] || 0.5;
+      _wsSfxPool[name].push(a);
+    }
+  });
+}
+// Odtwarza dzwiek o danej nazwie ('tap'|'correct'|'wrong'|'taskdone').
+// Bezpieczne: gdy dzwieki wylaczone albo plik sie nie zaladuje, nic sie nie dzieje.
+function _wsPlay(name) {
+  if (!WS_SFX_ON) return;
+  const pool = _wsSfxPool[name];
+  if (!pool) return;
+  // Znajdz wolna instancje (zakonczona lub niezaczeta); jak brak, uzyj pierwszej.
+  let a = pool.find(x => x.paused || x.ended || x.currentTime === 0);
+  if (!a) a = pool[0];
+  try { a.currentTime = 0; const p = a.play(); if (p && p.catch) p.catch(() => {}); } catch (e) {}
+}
+// Flaga: gdy ostatnia poprawna odpowiedz konczy sekcje, gra 'taskdone' - a wtedy
+// 'correct' z tej samej akcji NIE ma sie odezwac (zeby sie nie nakladaly).
+// Dlatego 'correct' gramy po mikro-opoznieniu (0 ms): jesli w tym samym ticku
+// markSectionDone ustawi _wsTaskJustDone, correct sie wycofuje.
+let _wsTaskJustDone = false;
+function wsSound(name) {
+  if (name === 'correct') {
+    // odlozenie o tick - markSectionDone (jesli sekcja sie skonczy) zdazy ustawic flage
+    setTimeout(() => {
+      if (_wsTaskJustDone) return; // zaraz zagra/gra 'taskdone' - pomijamy correct
+      _wsPlay('correct');
+    }, 0);
+    return;
+  }
+  _wsPlay(name);
+}
+function wsToggleSound() {
+  WS_SFX_ON = !WS_SFX_ON;
+  wsLSset(WS_SFX_KEY, WS_SFX_ON ? '1' : '0');
+  document.querySelectorAll('.ws-sound-toggle').forEach(btn => {
+    btn.textContent = WS_SFX_ON ? '🔊' : '🔇';
+    btn.classList.toggle('sfx-off', !WS_SFX_ON);
+    btn.setAttribute('aria-pressed', WS_SFX_ON ? 'true' : 'false');
+    btn.setAttribute('title', WS_SFX_ON ? 'Wyłącz dźwięki' : 'Włącz dźwięki');
+  });
+  if (WS_SFX_ON) wsSound('tap'); // krotki feedback, ze wlaczono
+}
+_wsSfxInit();
 
 const WS_CONFETTI_COLORS = ${JSON.stringify(presetTheme.confettiColors)};
 function confettiFire() {
@@ -4979,7 +5146,9 @@ function wsBurstDistractors(sectionId) {
 // Zapis jest automatyczny (debounced 300ms) po wywołaniu wsScheduleSave().
 
 let _wsSaveTimer = null;
+let _wsResetting = false; // gdy true, blokujemy zapisy (chroni reset przed nadpisaniem)
 function wsScheduleSave() {
+  if (_wsResetting) return;
   if (_wsSaveTimer) clearTimeout(_wsSaveTimer);
   _wsSaveTimer = setTimeout(saveProgress, 300);
 }
@@ -5139,6 +5308,7 @@ function _wsCollectWriting() {
 }
 
 function saveProgress() {
+  if (_wsResetting) return; // nie zapisuj w trakcie resetu - inaczej nadpisalibysmy czysty stan
   try {
     const state = {
       v: 2,                                    // wersja schematu (1 = stara, 2 = nowa)
@@ -5155,7 +5325,7 @@ function saveProgress() {
       translate: _wsCollectTranslate(),
       writing: _wsCollectWriting()
     };
-    localStorage.setItem(WS_STORAGE_KEY, JSON.stringify(state));
+    wsLSset(WS_STORAGE_KEY, JSON.stringify(state));
   } catch (e) { /* localStorage może być pełny lub niedostępny */ }
 }
 
@@ -5418,7 +5588,13 @@ document.addEventListener('change', () => wsScheduleSave(), true);
 
 function resetWorksheet() {
   if (!confirm('Wyczyścić wszystkie odpowiedzi?')) return;
-  try { localStorage.removeItem(WS_STORAGE_KEY); } catch (e) {}
+  // KOLEJNOSC MA ZNACZENIE: najpierw blokujemy i anulujemy zaplanowany zapis,
+  // inaczej debounce (wsScheduleSave, 300ms) moglby wykonac saveProgress PO
+  // usunieciu klucza a przed faktycznym przeladowaniem, zapisujac stary stan
+  // z powrotem - to byla przyczyna "reset nie dziala".
+  _wsResetting = true;
+  if (_wsSaveTimer) { clearTimeout(_wsSaveTimer); _wsSaveTimer = null; }
+  wsLSremove(WS_STORAGE_KEY);
   // W trybie podgladu strona zyje pod adresem blob:, ktory generator po chwili
   // uniewaznia (revokeObjectURL). location.reload() wtedy cicho zawodzi.
   // Dlatego odtwarzamy strone z migawki czystego HTML zapisanej przy starcie.
@@ -5514,6 +5690,13 @@ ${sectionsJS}
 window.addEventListener('load', () => {
   loadProgress();
   wsPaintAllDiff();
+  // Ustaw poczatkowy wyglad przelacznika dzwiekow wg zapisanego stanu.
+  document.querySelectorAll('.ws-sound-toggle').forEach(btn => {
+    btn.textContent = WS_SFX_ON ? '🔊' : '🔇';
+    btn.classList.toggle('sfx-off', !WS_SFX_ON);
+    btn.setAttribute('aria-pressed', WS_SFX_ON ? 'true' : 'false');
+    btn.setAttribute('title', WS_SFX_ON ? 'Wyłącz dźwięki' : 'Włącz dźwięki');
+  });
 });
 <\/script>
 </body>
@@ -6085,8 +6268,11 @@ ${t.extraBgCSS}
   box-shadow: var(--ws-shadow);
 }
 .ws-progress-top {
-  display: flex; justify-content: space-between; align-items: baseline;
+  display: flex; justify-content: space-between; align-items: center;
   margin-bottom: 0.4rem;
+}
+.ws-progress-top-right {
+  display: inline-flex; align-items: center; gap: 0.6rem;
 }
 .ws-progress-label {
   font-family: var(--ws-mono); font-size: 0.65rem; letter-spacing: 0.2em;
@@ -6108,6 +6294,21 @@ ${t.extraBgCSS}
   font-family: var(--ws-display); font-weight: 700; font-size: 1rem;
   color: var(--ws-accent);
 }
+/* Przelacznik dzwiekow w pasku postepu - kompaktowa ikona (🔊/🔇). */
+.ws-sound-toggle {
+  font-size: 1rem;
+  line-height: 1;
+  width: 2rem; height: 2rem;
+  padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent;
+  border: 1px solid var(--ws-border-strong);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s, opacity 0.15s, background 0.15s;
+}
+.ws-sound-toggle:hover { border-color: var(--ws-accent); background: var(--ws-accent-soft); }
+.ws-sound-toggle.sfx-off { opacity: 0.55; }
 
 /* SECTIONS */
 .ws-section {
@@ -6251,6 +6452,17 @@ ${t.extraBgCSS}
   font-size: clamp(1.5rem, 2.8vw, 1.85rem);
   letter-spacing: -0.02em;
   color: var(--ws-accent);
+}
+/* Emotka zadania w naglowku - zawsze w swoich kolorach (reset ewentualnego
+   gradientu/clipu), lekko mniejsza niz tekst tytulu. */
+.ws-sec-emoji {
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  -webkit-text-fill-color: initial !important;
+  color: initial !important;
+  font-size: 0.9em;
+  display: inline-block;
 }
 .ws-sec-desc {
   color: var(--ws-text-dim);
