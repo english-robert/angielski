@@ -1421,7 +1421,7 @@ Napisz krótki email do przyjaciela o weekendzie.	Use past simple. Include at le
       <div class="tts-info">
         ⓘ Przy każdym elemencie karty pojawi się pięć małych przycisków z symbolami (bez cyfr):
         <strong style="color:#6b7280">✦ · nowe słowo</strong>,
-        <strong style="color:#dc2626">✕ · nie umiem</strong>,
+        <strong style="color:#dc2626">✕ · nie umiem / nie pamiętam</strong>,
         <strong style="color:#d97706">▲ · trudne</strong>,
         <strong style="color:#16a34a">⬤ · dobre</strong>,
         <strong style="color:#2563eb">✓ · łatwe</strong>.
@@ -4746,7 +4746,7 @@ ${bgEffectHTML}
   ${difficulty ? `<div class="ws-diff-legend" aria-hidden="false">
     <span class="ws-diff-legend-title">Oznacz trudność:</span>
     <span class="ws-diff-key"><span class="ws-diff-chip" style="background:#9ca3af">✦</span>nowe słowo</span>
-    <span class="ws-diff-key"><span class="ws-diff-chip" style="background:#dc2626">✕</span>nie umiem</span>
+    <span class="ws-diff-key"><span class="ws-diff-chip" style="background:#dc2626">✕</span>nie umiem / nie pamiętam</span>
     <span class="ws-diff-key"><span class="ws-diff-chip" style="background:#d97706">▲</span>trudne</span>
     <span class="ws-diff-key"><span class="ws-diff-chip" style="background:#16a34a">⬤</span>dobre</span>
     <span class="ws-diff-key"><span class="ws-diff-chip" style="background:#2563eb">✓</span>łatwe</span>
@@ -4754,6 +4754,41 @@ ${bgEffectHTML}
   </div>` : ''}
 
   ${sectionsHTML}
+
+  ${difficulty ? `<div class="ws-review" id="wsReview">
+    <div class="ws-review-card">
+      <button type="button" class="ws-review-toggle" id="wsReviewToggle" onclick="wsToggleReview()" aria-expanded="false">
+        <span class="ws-review-toggle-left">
+          <span class="ws-review-icon">🔁</span>
+          <span class="ws-review-toggle-titles">
+            <span class="ws-review-title">Szybka powtórka</span>
+            <span class="ws-review-toggle-sub" id="wsReviewCount">Oceń słowa, żeby zebrać je tutaj do powtórki</span>
+          </span>
+        </span>
+        <span class="ws-review-toggle-arrow">▾</span>
+      </button>
+
+      <div class="ws-review-body" id="wsReviewBody" hidden>
+        <p class="ws-review-text">Wybierz, które poziomy chcesz powtórzyć. Odpowiedzi są zasłonięte - kliknij, żeby odsłonić, albo użyj „Pokaż wszystkie".</p>
+        <div class="ws-review-levels">
+          <label class="ws-review-lvl"><input type="checkbox" value="new" checked onchange="wsBuildReview()"><span class="ws-review-chip" style="background:#9ca3af">✦</span> nowe słowo</label>
+          <label class="ws-review-lvl"><input type="checkbox" value="1" checked onchange="wsBuildReview()"><span class="ws-review-chip" style="background:#dc2626">✕</span> nie umiem / nie pamiętam</label>
+          <label class="ws-review-lvl"><input type="checkbox" value="2" checked onchange="wsBuildReview()"><span class="ws-review-chip" style="background:#d97706">▲</span> trudne</label>
+          <label class="ws-review-lvl"><input type="checkbox" value="3" onchange="wsBuildReview()"><span class="ws-review-chip" style="background:#16a34a">⬤</span> dobre</label>
+          <label class="ws-review-lvl"><input type="checkbox" value="4" onchange="wsBuildReview()"><span class="ws-review-chip" style="background:#2563eb">✓</span> łatwe</label>
+        </div>
+        <div class="ws-review-toolbar">
+          <div class="ws-review-sort">
+            <span class="ws-review-sort-label">Sortuj:</span>
+            <button type="button" class="ws-review-sort-btn sel" data-sort="level" onclick="wsSetReviewSort('level')">wg poziomu</button>
+            <button type="button" class="ws-review-sort-btn" data-sort="hist" onclick="wsSetReviewSort('hist')">historycznie</button>
+          </div>
+          <button type="button" class="ws-review-reveal-all" id="wsReviewRevealAll" onclick="wsRevealAllReview()">👁 Pokaż wszystkie</button>
+        </div>
+        <div class="ws-review-result" id="wsReviewResult"></div>
+      </div>
+    </div>
+  </div>` : ''}
 
   <div class="ws-finale" id="wsFinale">
     <div class="ws-finale-icon">🏆</div>
@@ -4793,22 +4828,32 @@ const WS_STORAGE_KEY = 'ws-progress-' + _wsHash(${JSON.stringify(title)} + '|' +
 const WS_TTS = ${JSON.stringify(ttsConfig)};
 // ── ŚLEDZENIE TRUDNOŚCI (nowe + 4 oceny jak w Anki) ─────
 const WS_DIFF_ENABLED = ${difficulty ? 'true' : 'false'};
-const WS_DIFF_LABELS = { 'new': 'nowe słowo', 1: 'nie umiem', 2: 'trudne', 3: 'dobre', 4: 'łatwe' };
+const WS_DIFF_LABELS = { 'new': 'nowe słowo', 1: 'nie umiem / nie pamiętam', 2: 'trudne', 3: 'dobre', 4: 'łatwe' };
 const WS_DIFF_COLORS = { 'new': '#9ca3af', 1: '#dc2626', 2: '#d97706', 3: '#16a34a', 4: '#2563eb' };
 // Symbole pokazywane na przyciskach i plakietkach (NIE cyfry, NIE emoji).
 const WS_DIFF_SYMBOLS = { 'new': '✦', 1: '✕', 2: '▲', 3: '⬤', 4: '✓' };
 // Wartosc zapisywana do kolumny TSV "difficulty" (czytelna i odwracalna przy imporcie).
-const WS_DIFF_TSV = { 'new': 'nowe', 1: '1 - nie umiem', 2: '2 - trudne', 3: '3 - dobre', 4: '4 - łatwe' };
+const WS_DIFF_TSV = { 'new': 'nowe słowo', 1: 'nie umiem / nie pamiętam', 2: 'trudne', 3: 'dobre', 4: 'łatwe' };
 
 // Jesli zaimportowany TSV mial juz kolumne "difficulty" (np. "2 - trudne",
 // samo "3", albo "nowe"), wczytaj te oceny jako stan poczatkowy - dziala round-trip.
+// Jesli zaimportowany TSV mial juz kolumne "difficulty", wczytaj oceny jako stan
+// poczatkowy (round-trip). Rozpoznajemy NOWE etykiety slowne ('nowe słowo',
+// 'nie umiem / nie pamiętam', 'trudne', 'dobre', 'łatwe') ORAZ stare formaty
+// (cyfra na poczatku, '2 - trudne', samo 'nowe') dla kompatybilnosci wstecznej.
 if (WS_DIFF_ENABLED) {
   WS_DATA.forEach(r => {
     const raw = (r.difficulty || '').trim().toLowerCase();
     if (!raw) return;
     if (raw.startsWith('nowe') || raw === 'new') { r._diff = 'new'; return; }
+    // Stare pliki: cyfra na poczatku (np. "2 - trudne" albo samo "3").
     const m = /^\\s*([1-4])/.exec(raw);
-    if (m) r._diff = parseInt(m[1], 10);
+    if (m) { r._diff = parseInt(m[1], 10); return; }
+    // Nowe etykiety slowne.
+    if (raw.indexOf('nie umiem') !== -1 || raw.indexOf('nie pami') !== -1) { r._diff = 1; return; }
+    if (raw.indexOf('trudne') !== -1) { r._diff = 2; return; }
+    if (raw.indexOf('dobre') !== -1) { r._diff = 3; return; }
+    if (raw.indexOf('łatwe') !== -1 || raw.indexOf('latwe') !== -1) { r._diff = 4; return; }
   });
 }
 
@@ -4825,6 +4870,7 @@ function wsSetDiff(event, rowIdx, level) {
   row._diff = (row._diff === lvl) ? 0 : lvl;
   wsPaintDiff(rowIdx);
   wsHideDiffOverlays();
+  if (typeof wsUpdateReviewCount === 'function') wsUpdateReviewCount();
   if (typeof wsScheduleSave === 'function') wsScheduleSave();
 }
 
@@ -4896,6 +4942,7 @@ document.addEventListener('click', e => {
 }, true);
 
 let _wsDone = new Set();
+let _wsAllDoneShown = false; // czy juz pokazano powtorke/final po ukonczeniu wszystkiego
 let _wsVoices = [];
 
 // ── TTS ────────────────────────────────────────────────
@@ -4956,6 +5003,14 @@ function wsScrambleTile(btn) {
   if (!input || input.disabled) return;
   if (btn.classList.contains('used')) return;
   wsSound('tap');
+  // Zapamietujemy DOKLADNIE klikniety kafelek (jego indeks w kolejnosci DOM),
+  // zeby przy powtorzonych literach (np. dwa "e" w "sheep") zaznaczyl sie ten,
+  // ktory klikniety, a nie pierwszy pasujacy. Kolejnosc trzymamy w data-tile-order.
+  const tiles = Array.from(card.querySelectorAll('.scramble-letter'));
+  const myIdx = tiles.indexOf(btn);
+  const order = _wsTileOrder(input);
+  order.push(myIdx);
+  input.dataset.tileOrder = order.join(',');
   input.value += btn.dataset.letter;
   input.classList.remove('wrong');
   wsSyncScrambleTiles(input);
@@ -4969,22 +5024,53 @@ function wsScrambleBackspace(btn) {
   if (!input || input.disabled || !input.value) return;
   wsSound('tap');
   input.value = input.value.slice(0, -1);
+  // Zdejmij ostatni zapamietany kafelek z kolejnosci klikania.
+  const order = _wsTileOrder(input);
+  order.pop();
+  input.dataset.tileOrder = order.join(',');
   input.classList.remove('wrong');
   wsSyncScrambleTiles(input);
   wsScheduleSave();
 }
 
-// Zaznacza jako "zużyte" te kafelki, których litery są już w polu.
-// Dopasowanie zachłanne, bez rozróżniania wielkości liter.
+// Odczytuje liste indeksow kliknietych kafelkow z data-tile-order (CSV liczb).
+function _wsTileOrder(input) {
+  const raw = input.dataset.tileOrder || '';
+  if (!raw) return [];
+  return raw.split(',').filter(s => s !== '').map(Number);
+}
+
+// Zaznacza jako "zużyte" kafelki, których litery są już w polu.
+// Najpierw probuje uzyc DOKLADNEJ kolejnosci kliknietych kafelkow (data-tile-order)
+// - dzieki temu przy powtorzonych literach podswietla sie wlasciwy klikniety kafelek.
+// Gdy uzytkownik wpisuje z klawiatury (kolejnosc sie nie zgadza z wartoscia), wraca
+// do dopasowania zachlannego od poczatku.
 function wsSyncScrambleTiles(input) {
   const card = input.closest('.scramble-card');
   if (!card) return;
   const tiles = Array.from(card.querySelectorAll('.scramble-letter'));
+  const val = input.value.toLowerCase();
   const taken = new Set();
-  for (const ch of input.value.toLowerCase()) {
-    for (let i = 0; i < tiles.length; i++) {
-      if (!taken.has(i) && tiles[i].dataset.letter === ch) { taken.add(i); break; }
+  const order = _wsTileOrder(input);
+  // Czy zapisana kolejnosc klikania pasuje do aktualnej wartosci pola?
+  let useOrder = order.length === val.length;
+  if (useOrder) {
+    for (let k = 0; k < order.length; k++) {
+      const ti = order[k];
+      if (!tiles[ti] || tiles[ti].dataset.letter !== val[k]) { useOrder = false; break; }
     }
+  }
+  if (useOrder) {
+    order.forEach(ti => taken.add(ti));
+  } else {
+    // Fallback zachlanny (np. po recznym wpisaniu) - i synchronizujemy data-tile-order.
+    const rebuilt = [];
+    for (const ch of val) {
+      for (let i = 0; i < tiles.length; i++) {
+        if (!taken.has(i) && tiles[i].dataset.letter === ch) { taken.add(i); rebuilt.push(i); break; }
+      }
+    }
+    input.dataset.tileOrder = rebuilt.join(',');
   }
   tiles.forEach((t, i) => t.classList.toggle('used', taken.has(i)));
   // Słowo zaliczone - wyłącz kafelki i kasowanie
@@ -5014,12 +5100,252 @@ function updateProgress() {
   const n = _wsDone.size;
   document.getElementById('wsProgressScore').textContent = n + ' / ' + WS_SECTION_COUNT;
   document.getElementById('wsProgressFill').style.width = (n / WS_SECTION_COUNT * 100) + '%';
-  if (n === WS_SECTION_COUNT) {
-    document.getElementById('wsFinale').classList.add('show');
-    setTimeout(() => {
-      document.getElementById('wsFinale').scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 300);
+  if (n === WS_SECTION_COUNT && !_wsAllDoneShown) {
+    _wsAllDoneShown = true;
+    // Wszystko ukonczone -> od razu finale (Celebrate). Panel powtorki jest
+    // widoczny przez caly czas osobno, wiec nie blokuje juz swietowania.
+    wsShowFinale();
   }
+}
+
+// Pokazuje finalowa sekcje Celebrate i gra fanfary przy zjezdzie do niej.
+let _wsFinaleShown = false;
+function wsShowFinale() {
+  if (_wsFinaleShown) return;
+  _wsFinaleShown = true;
+  const finale = document.getElementById('wsFinale');
+  if (!finale) return;
+  finale.classList.add('show');
+  setTimeout(() => {
+    finale.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    wsSound('fanfare'); // dzwiek fanfar przy dotarciu do sekcji Celebrate
+  }, 300);
+}
+
+// ── PANEL POWTORKI (zawsze widoczny, zwijany) ─────────────────────────────
+// Tryb sortowania listy: 'level' (wg poziomu trudnosci) albo 'hist' (kolejnosc
+// historyczna = kolejnosc wierszy w WS_DATA, czyli tak jak w TSV).
+let _wsReviewSort = 'level';
+// Kolejnosc poziomow przy sortowaniu 'level': najpierw to, co najpilniejsze.
+const _WS_LEVEL_ORDER = { 'new': 0, 1: 1, 2: 2, 3: 3, 4: 4 };
+
+// Zwraca indeksy wierszy WS_DATA, ktore maja jakakolwiek ocene (sa "do powtorki").
+function _wsRatedIdx() {
+  const out = [];
+  WS_DATA.forEach((r, i) => { if (r._diff) out.push(i); });
+  return out;
+}
+
+// Aktualizuje podtytul w naglowku panelu (licznik slow do powtorki).
+// Wolane na biezaco po kazdej zmianie oceny.
+function wsUpdateReviewCount() {
+  const el = document.getElementById('wsReviewCount');
+  if (!el) return;
+  const n = _wsRatedIdx().length;
+  if (n === 0) {
+    el.textContent = 'Oceń słowa, żeby zebrać je tutaj do powtórki';
+  } else {
+    const word = (n === 1) ? 'słowo' : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) ? 'słowa' : 'słów';
+    el.textContent = n + ' ' + word + ' do powtórki';
+  }
+  // Jesli panel jest otwarty, odswiez tez liste.
+  const body = document.getElementById('wsReviewBody');
+  if (body && !body.hidden) wsBuildReview();
+}
+
+// Rozwija / zwija panel powtorki.
+function wsToggleReview() {
+  const body = document.getElementById('wsReviewBody');
+  const toggle = document.getElementById('wsReviewToggle');
+  if (!body || !toggle) return;
+  const open = body.hidden;
+  body.hidden = !open;
+  toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  toggle.classList.toggle('open', open);
+  if (open) {
+    wsBuildReview();
+    wsSound('tap');
+  }
+}
+
+// Przelacza tryb sortowania i przerysowuje liste.
+function wsSetReviewSort(mode) {
+  _wsReviewSort = mode;
+  document.querySelectorAll('.ws-review-sort-btn').forEach(b => {
+    b.classList.toggle('sel', b.dataset.sort === mode);
+  });
+  wsBuildReview();
+}
+
+// Odslania wszystkie zaslony naraz.
+function wsRevealAllReview() {
+  const result = document.getElementById('wsReviewResult');
+  if (!result) return;
+  // Czy cokolwiek jest jeszcze zaslonięte? Jesli tak - odslaniamy wszystko;
+  // jesli nic - zaslaniamy z powrotem (przycisk dziala jak przelacznik).
+  const anyCovered = result.querySelector('.ws-review-item-answer:not(.revealed) .ws-review-cover, .ws-review-gap.covered');
+  const reveal = !!anyCovered;
+  result.querySelectorAll('.ws-review-item-answer').forEach(a => {
+    if (a.querySelector('.ws-review-cover')) a.classList.toggle('revealed', reveal);
+  });
+  result.querySelectorAll('.ws-review-gap').forEach(g => {
+    g.classList.toggle('covered', !reveal);
+  });
+  const btn = document.getElementById('wsReviewRevealAll');
+  if (btn) btn.textContent = reveal ? '🙈 Zasłoń wszystkie' : '👁 Pokaż wszystkie';
+  wsSound('tap');
+}
+
+// Czy wiersz to gap-fill (ma tag 'gapfill' i klamry w en).
+function _wsIsGap(r) {
+  const tasks = r._tasks || [];
+  return tasks.indexOf('gapfill') !== -1 && /\{[^}]+\}/.test(r.en || '');
+}
+
+// Tekst do TTS - dla gap-fill czytamy pelne zdanie bez klamr.
+function _wsTtsText(r) {
+  if (_wsIsGap(r)) return r.en.replace(/\{([^}]+)\}/g, '$1');
+  return r.en;
+}
+
+// Buduje liste slow do powtorki z wybranych poziomow. Odpowiedzi (EN) zaslo-
+// niete - klik odslania pojedyncza, "Pokaz wszystkie" odslania wszystkie.
+// Po odslonieciu pojawia sie rzad mini-ocen (nadpisuje ocene, slowo zostaje).
+function wsBuildReview() {
+  const result = document.getElementById('wsReviewResult');
+  if (!result) return;
+  const checked = Array.from(document.querySelectorAll('.ws-review-lvl input:checked')).map(c => c.value);
+  if (!checked.length) {
+    result.innerHTML = '<p class="ws-review-empty">Zaznacz przynajmniej jeden poziom, żeby zobaczyć powtórkę.</p>';
+    return;
+  }
+  const want = new Set(checked.map(v => v === 'new' ? 'new' : parseInt(v, 10)));
+  // Zbieramy indeksy (potrzebne do mini-oceny), zachowujac dostep do wiersza.
+  let items = [];
+  WS_DATA.forEach((r, i) => { if (want.has(r._diff)) items.push({ r: r, i: i }); });
+  if (!items.length) {
+    result.innerHTML = '<p class="ws-review-empty">Brak słów na wybranych poziomach. Oceń słowa w zadaniach albo zaznacz inne poziomy.</p>';
+    return;
+  }
+  // Sortowanie.
+  if (_wsReviewSort === 'level') {
+    items.sort((a, b) => {
+      const oa = _WS_LEVEL_ORDER[a.r._diff] ?? 99;
+      const ob = _WS_LEVEL_ORDER[b.r._diff] ?? 99;
+      if (oa !== ob) return oa - ob;
+      return a.i - b.i; // remis -> kolejnosc historyczna
+    });
+  }
+  // 'hist' = naturalna kolejnosc WS_DATA, czyli juz posortowane po i.
+
+  const rows = items.map(({ r, i }) => {
+    const lvl = r._diff;
+    const ttsText = JSON.stringify(_wsTtsText(r)).replace(/"/g, '&quot;');
+    const isGap = _wsIsGap(r);
+    const gapCls = isGap ? ' ws-review-item-gap' : '';
+    // Rzad ocen - te same przyciski co w zadaniach (.ws-diff-btn), wiec wygladaja
+    // i zachowuja sie identycznie (bez skakania, wycentrowane).
+    const rateBtns = ['new', 1, 2, 3, 4].map(L => {
+      const sel = (lvl === L) ? ' sel' : '';
+      const lvlArg = (L === 'new') ? "&#39;new&#39;" : L;
+      return '<button type="button" class="ws-diff-btn ws-diff-' + L + sel + '" '
+        + 'data-level="' + L + '" '
+        + 'title="' + _wsEsc(WS_DIFF_LABELS[L]) + '" '
+        + 'aria-label="Trudność: ' + _wsEsc(WS_DIFF_LABELS[L]) + '" '
+        + 'onclick="wsReviewRate(event,' + i + ',' + lvlArg + ')">'
+        + '<span class="ws-diff-num">' + WS_DIFF_SYMBOLS[L] + '</span></button>';
+    }).join('');
+    const selAttr = lvl ? (' data-sel="' + String(lvl) + '"') : '';
+
+    // Strona odpowiedzi. Dla gap-fill: pelne zdanie widoczne, ale luki zaslo-
+    // niete osobnymi nakladkami. Dla reszty: cala odpowiedz pod jedna nakladka.
+    let answerInner;
+    if (isGap) {
+      answerInner = '<span class="ws-review-ans-text">' + _wsRenderGapCovered(r) + '</span>';
+    } else {
+      answerInner = '<span class="ws-review-ans-text">' + _wsEsc(r.en) + '</span>'
+        + '<button type="button" class="ws-review-cover" onclick="wsToggleCover(this)" aria-label="Odsłoń lub zasłoń odpowiedź"></button>';
+    }
+
+    return '<div class="ws-review-item' + gapCls + '" data-row="' + i + '">'
+      + '<div class="ws-review-row-main">'
+      +   '<span class="ws-review-item-pl">' + _wsEsc(r.pl) + '</span>'
+      +   '<span class="ws-review-item-arrow">→</span>'
+      +   '<span class="ws-review-item-answer">' + answerInner + '</span>'
+      + '</div>'
+      + '<div class="ws-review-row-foot">'
+      +   '<span class="ws-diff' + '" data-row="' + i + '"' + selAttr + ' aria-label="Zmień ocenę">' + rateBtns + '</span>'
+      +   '<button type="button" class="ws-review-item-tts" onclick="ttsBtnClick(event, ' + ttsText + ')" title="Posłuchaj" aria-label="Czytaj">🔊</button>'
+      + '</div>'
+      + '</div>';
+  }).join('');
+
+  result.innerHTML = '<div class="ws-review-list-head">Do powtórki (' + items.length + '):</div>'
+    + '<div class="ws-review-list">' + rows + '</div>';
+}
+
+// Buduje strone EN gap-fill: pelne zdanie, ale kazde slowo-luka {x} owiniete
+// w nakladke-zaslone (klik zdejmuje/przywraca pojedyncza luke).
+function _wsRenderGapCovered(r) {
+  let html = '';
+  let last = 0;
+  const re = /\{([^}]+)\}/g;
+  let m;
+  while ((m = re.exec(r.en)) !== null) {
+    if (m.index > last) html += _wsEsc(r.en.slice(last, m.index));
+    html += '<span class="ws-review-gap covered">'
+      + '<strong class="ws-review-gap-word">' + _wsEsc(m[1]) + '</strong>'
+      + '<button type="button" class="ws-review-gap-cover" onclick="wsToggleGapCover(this)" aria-label="Odsłoń lub zasłoń słowo"></button>'
+      + '</span>';
+    last = m.index + m[0].length;
+  }
+  if (last < r.en.length) html += _wsEsc(r.en.slice(last));
+  return html;
+}
+
+// Zasłona całej odpowiedzi (typy inne niż gap-fill). Nakładka leży NA widocznej
+// pod spodem odpowiedzi; klik ją zdejmuje, kolejny klik przywraca (toggle).
+function wsToggleCover(btn) {
+  const ans = btn.parentNode; // .ws-review-item-answer
+  if (!ans) return;
+  ans.classList.toggle('revealed');
+  wsSound('tap');
+}
+
+// Zasłona pojedynczej luki w gap-fill (toggle).
+function wsToggleGapCover(btn) {
+  const gap = btn.parentNode; // .ws-review-gap
+  if (!gap) return;
+  gap.classList.toggle('covered');
+  wsSound('tap');
+}
+
+// Ocena z poziomu listy powtorki. Nadpisuje ocene wiersza i odswieza widget
+// trudnosci wszedzie (w zadaniach i tutaj - wsPaintDiff celuje we wszystkie
+// .ws-diff[data-row]). NIE usuwa pozycji z listy - slowo zostaje (decyzja UX).
+function wsReviewRate(event, rowIdx, level) {
+  if (event) { event.stopPropagation(); }
+  const row = WS_DATA[rowIdx];
+  if (!row) return;
+  const lvl = (level === 'new') ? 'new' : parseInt(level, 10);
+  // Klik w aktualna ocene NIE zdejmuje jej (inaczej slowo zniknie z listy) -
+  // w powtorce ocena tylko sie zmienia, nigdy nie zeruje.
+  row._diff = lvl;
+  wsPaintDiff(rowIdx);            // odswiez widgety oceny w zadaniach i w liscie
+  if (typeof wsScheduleSave === 'function') wsScheduleSave();
+  wsSound('tap');
+  // Odswiez licznik w naglowku.
+  const el = document.getElementById('wsReviewCount');
+  if (el) {
+    const n = _wsRatedIdx().length;
+    const word = (n === 1) ? 'słowo' : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) ? 'słowa' : 'słów';
+    el.textContent = n ? (n + ' ' + word + ' do powtórki') : 'Oceń słowa, żeby zebrać je tutaj do powtórki';
+  }
+}
+
+// Lokalny escape (karta nie ma globalnego escapeHtml w runtime).
+function _wsEsc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 function showSectionFeedback(num, ok, msg) {
@@ -5035,8 +5361,8 @@ function showSectionFeedback(num, ok, msg) {
 // nakladac, zamiast czekac na zakonczenie poprzedniego odtworzenia.
 // Stan wlaczenia trzymany w localStorage, przelacznik w stopce karty.
 const WS_SFX_BASE = 'https://english-robert.github.io/angielski/audio/sfx/';
-const WS_SFX_FILES = { tap: 'tap.mp3', correct: 'correct.mp3', wrong: 'wrong.mp3', taskdone: 'correct-task.mp3' };
-const WS_SFX_VOL = { tap: 0.45, correct: 0.6, wrong: 0.55, taskdone: 0.7 };
+const WS_SFX_FILES = { tap: 'tap.mp3', correct: 'correct.mp3', wrong: 'wrong.mp3', taskdone: 'correct-task.mp3', confetti: 'confetti.mp3', fanfare: 'fanfare.mp3' };
+const WS_SFX_VOL = { tap: 0.45, correct: 0.6, wrong: 0.55, taskdone: 0.7, confetti: 0.7, fanfare: 0.75 };
 const WS_SFX_KEY = 'ws-sfx-enabled';
 // Bezpieczny odczyt/zapis localStorage. W trybie PODGLADU karta zyje pod adresem
 // blob:, gdzie origin jest "opaque" i dostep do localStorage rzuca SecurityError.
@@ -5112,6 +5438,7 @@ function confettiFire() {
 }
 
 function bigCelebrate() {
+  wsSound('confetti'); // dzwiek konfetti przy klikieciu Celebrate
   if (typeof confetti !== 'function') return;
   const end = Date.now() + 3000;
   (function frame() {
@@ -5690,6 +6017,7 @@ ${sectionsJS}
 window.addEventListener('load', () => {
   loadProgress();
   wsPaintAllDiff();
+  if (typeof wsUpdateReviewCount === 'function') wsUpdateReviewCount();
   // Ustaw poczatkowy wyglad przelacznika dzwiekow wg zapisanego stanu.
   document.querySelectorAll('.ws-sound-toggle').forEach(btn => {
     btn.textContent = WS_SFX_ON ? '🔊' : '🔇';
@@ -6965,6 +7293,209 @@ ${t.extraBgCSS}
 .scramble-hint-text.show { display: block; }
 
 /* ========== FINALE ========== */
+/* ========== SZYBKA POWTÓRKA (zawsze widoczny, zwijany panel) ========== */
+.ws-review {
+  display: block;
+  margin: 2rem 0;
+}
+.ws-review-card {
+  background: var(--ws-card);
+  border: 1px solid var(--ws-border);
+  border-radius: 18px;
+  box-shadow: var(--ws-shadow);
+  padding: 0.5rem;
+  text-align: center;
+}
+/* Naglowek-przycisk: rozwija/zwija panel. */
+.ws-review-toggle {
+  width: 100%;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: 1.2rem 1.4rem;
+  background: transparent; border: none; cursor: pointer;
+  border-radius: 16px;
+  text-align: left;
+  transition: background 0.15s;
+}
+.ws-review-toggle:hover { background: var(--ws-box-bg); }
+.ws-review-toggle-left { display: flex; align-items: center; gap: 1rem; min-width: 0; }
+.ws-review-icon { font-size: 2.1rem; line-height: 1; flex-shrink: 0; }
+.ws-review-toggle-titles { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+.ws-review-title {
+  font-family: var(--ws-display); font-weight: 700; font-size: 1.35rem;
+  color: var(--ws-accent); line-height: 1.1;
+}
+.ws-review-toggle-sub { font-size: 0.85rem; color: var(--ws-text-dim); }
+.ws-review-toggle-arrow {
+  font-size: 1.2rem; color: var(--ws-text-dim); flex-shrink: 0;
+  transition: transform 0.2s;
+}
+.ws-review-toggle.open .ws-review-toggle-arrow { transform: rotate(180deg); }
+
+.ws-review-body {
+  padding: 0.5rem 1.4rem 1.4rem;
+  animation: wsFinaleIn 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.ws-review-text { color: var(--ws-text-dim); margin: 0 0 1.2rem; font-size: 0.92rem; text-align: left; }
+.ws-review-levels {
+  display: flex; flex-wrap: wrap; justify-content: flex-start;
+  gap: 0.5rem 1rem; margin-bottom: 1.1rem;
+}
+.ws-review-lvl {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  font-size: 0.9rem; color: var(--ws-text);
+  cursor: pointer; user-select: none;
+  padding: 0.3rem 0.45rem; border-radius: 8px;
+}
+.ws-review-lvl:hover { background: var(--ws-box-bg); }
+.ws-review-lvl input { width: 1.05rem; height: 1.05rem; cursor: pointer; accent-color: var(--ws-accent); }
+.ws-review-chip {
+  width: 1.4rem; height: 1.4rem; border-radius: 5px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 0.8rem; font-weight: 700; line-height: 1;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+
+/* Pasek narzedzi: sortowanie + pokaz wszystkie. */
+.ws-review-toolbar {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 0.7rem; margin-bottom: 1.2rem;
+  padding-bottom: 1rem; border-bottom: 1px solid var(--ws-border);
+}
+.ws-review-sort { display: inline-flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+.ws-review-sort-label {
+  font-family: var(--ws-mono); font-size: 0.7rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ws-text-dim); margin-right: 0.2rem;
+}
+.ws-review-sort-btn {
+  font-family: var(--ws-body); font-size: 0.82rem; font-weight: 500;
+  padding: 0.35rem 0.75rem; border-radius: 999px;
+  background: transparent; color: var(--ws-text-dim);
+  border: 1px solid var(--ws-border-strong); cursor: pointer;
+  transition: all 0.15s;
+}
+.ws-review-sort-btn:hover { border-color: var(--ws-accent); color: var(--ws-accent); }
+.ws-review-sort-btn.sel {
+  background: var(--ws-accent); color: #fff; border-color: var(--ws-accent);
+}
+.ws-review-reveal-all {
+  font-family: var(--ws-body); font-size: 0.85rem; font-weight: 600;
+  padding: 0.4rem 0.9rem; border-radius: 999px;
+  background: var(--ws-accent-soft); color: var(--ws-accent);
+  border: 1px solid var(--ws-border-strong); cursor: pointer;
+  transition: all 0.15s;
+}
+.ws-review-reveal-all:hover { border-color: var(--ws-accent); filter: brightness(0.97); }
+
+.ws-review-result { margin-top: 0; }
+.ws-review-empty { color: var(--ws-text-dim); font-size: 0.95rem; text-align: left; }
+.ws-review-list-head {
+  font-family: var(--ws-mono); font-size: 0.7rem; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--ws-text-dim);
+  margin-bottom: 0.8rem; text-align: left;
+}
+.ws-review-list { display: flex; flex-direction: column; gap: 0.55rem; }
+/* Pozycja = dwa rzedy: glowny (PL | strzalka | odpowiedz) i stopka (oceny + TTS).
+   Glowny rzad to grid o stalych kolumnach, zeby strzalki i odpowiedzi tworzyly
+   rowne kolumny niezaleznie od dlugosci hasel (koniec z poszarpaniem). */
+.ws-review-item {
+  background: var(--ws-box-bg);
+  border: 1px solid var(--ws-border);
+  border-radius: 10px;
+  padding: 0.7rem 0.9rem;
+  text-align: left;
+}
+.ws-review-row-main {
+  display: grid;
+  grid-template-columns: minmax(9rem, 15rem) 1.2rem 1fr;
+  align-items: start;
+  gap: 0.7rem;
+}
+.ws-review-item-pl { font-weight: 600; color: var(--ws-text); }
+.ws-review-item-arrow { color: var(--ws-text-dim); text-align: center; }
+/* Strefa odpowiedzi: odpowiedz JEST w DOM pod spodem, nakladka lezy na niej. */
+/* Nakladka na CALA odpowiedz (typy inne niz gap-fill). Lezy NAD tekstem
+   (z-index) z kryjacym tlem, wiec tekst pod spodem jest niewidoczny. Klik
+   ja zdejmuje (.revealed). Po zdjeciu w rogu zostaje maly uchwyt do przywrocenia. */
+.ws-review-ans-text { color: var(--ws-text); display: block; word-break: break-word; }
+.ws-review-gap-word {
+  font-weight: 800; color: var(--ws-accent);
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+.ws-review-item-answer { position: relative; min-width: 0; }
+.ws-review-item:not(.ws-review-item-gap) .ws-review-item-answer { padding-right: 1.5rem; }
+.ws-review-cover {
+  position: absolute; inset: -0.15rem -0.3rem; z-index: 2;
+  background:
+    repeating-linear-gradient(45deg,
+      rgba(0,0,0,0.04) 0, rgba(0,0,0,0.04) 6px,
+      rgba(0,0,0,0.10) 6px, rgba(0,0,0,0.10) 12px),
+    var(--ws-text-dim);
+  border: 1px solid var(--ws-border-strong); border-radius: 6px;
+  cursor: pointer; transition: filter 0.15s;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+.ws-review-cover::after {
+  content: '👁  odsłoń'; position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--ws-mono); font-size: 0.7rem; letter-spacing: 0.08em;
+  color: var(--ws-card); opacity: 0.92;
+}
+.ws-review-cover:hover { filter: brightness(1.08); }
+/* Po odsloniu: nakladka znika, ale maly uchwyt "zaslon" zostaje klikalny po prawej. */
+.ws-review-item-answer.revealed .ws-review-cover {
+  inset: -0.15rem -0.3rem -0.15rem auto; width: 1.5rem;
+  background: var(--ws-box-bg); border-style: dashed;
+}
+.ws-review-item-answer.revealed .ws-review-cover::after {
+  content: '🙈'; color: var(--ws-text-dim); font-size: 0.8rem;
+}
+/* Gap-fill: zaslona TYLKO na slowach-lukach. Slowo jest pod spodem, nakladka NAD nim. */
+.ws-review-gap { position: relative; display: inline-block; }
+.ws-review-gap-cover {
+  position: absolute; inset: -0.05rem -0.15rem; z-index: 2;
+  background:
+    repeating-linear-gradient(45deg,
+      rgba(0,0,0,0.04) 0, rgba(0,0,0,0.04) 5px,
+      rgba(0,0,0,0.10) 5px, rgba(0,0,0,0.10) 10px),
+    var(--ws-text-dim);
+  border: 1px solid var(--ws-border-strong); border-radius: 4px;
+  cursor: pointer; padding: 0; transition: filter 0.15s;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+.ws-review-gap-cover:hover { filter: brightness(1.08); }
+/* Po odsloniu luki: nakladka staje sie przezroczysta, ale nadal klikalna na
+   calym slowie (klik zaslania ponownie). Subtelne podkreslenie = wskazowka. */
+.ws-review-gap:not(.covered) .ws-review-gap-cover {
+  background: transparent; border: none; border-radius: 0;
+  border-bottom: 2px solid var(--ws-accent);
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+.ws-review-gap:not(.covered) .ws-review-gap-cover:hover {
+  background: var(--ws-accent-soft);
+}
+
+/* Stopka pozycji: oceny po lewej, TTS po prawej - w osobnym rzedzie, wiec
+   nie sciskaja tresci odpowiedzi. */
+.ws-review-row-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 0.7rem; margin-top: 0.6rem;
+  padding-top: 0.55rem; border-top: 1px dashed var(--ws-border);
+}
+/* Oceny uzywaja tej samej klasy .ws-diff/.ws-diff-btn co zadania - identyczny
+   wyglad i zero skakania (triki translateZ/backface sa w .ws-diff-btn). */
+.ws-review-row-foot .ws-diff { display: inline-flex; align-items: center; gap: 0.3rem; flex-wrap: wrap; }
+.ws-review-item-tts {
+  flex-shrink: 0; width: 1.95rem; height: 1.95rem;
+  border: 2px solid var(--ws-border-strong); border-radius: 7px;
+  background: var(--ws-card); cursor: pointer; font-size: 0.9rem;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.ws-review-item-tts:hover { border-color: var(--ws-accent); background: var(--ws-accent-soft); }
+@media (max-width: 560px) {
+  .ws-review-row-main { grid-template-columns: 1fr 1rem 1fr; }
+}
+
 .ws-finale {
   display: none;
   text-align: center;
@@ -7840,8 +8371,20 @@ ${t.extraBgCSS}
   transition: border-color 0.25s, background 0.25s;
 }
 .trans-card.done {
-  border-color: var(--ws-accent);
-  background: var(--ws-accent-soft);
+  border-color: var(--ws-ok);
+  background: var(--ws-ok-bg);
+}
+/* Ujednolicenie wygladu rozwiazanego podzadania w Word Scramble i Translate:
+   zielone tlo karty i pola, niezaleznie od presetu (editorial/vintage nadpisuja
+   tla pol na transparent, dlatego tu wymuszamy !important). */
+.scramble-card.done, .trans-card.done {
+  background: var(--ws-ok-bg) !important;
+  border-color: var(--ws-ok) !important;
+}
+.scramble-input.correct, .trans-input.trans-correct {
+  background: var(--ws-ok-bg) !important;
+  border-color: var(--ws-ok) !important;
+  color: var(--ws-ok) !important;
 }
 .trans-pl {
   display: flex;
@@ -8358,6 +8901,8 @@ ${t.extraBgCSS}
   }
   /* Ukryj progress bar i przyciski akcji */
   .ws-progress-wrap { display: none !important; }
+  .ws-review { display: none !important; }
+  .ws-finale { display: none !important; }
   .ws-actions { display: none !important; }
   /* Stopka (zapis automatyczny / Reset / TSV) niepotrzebna na druku. */
   .ws-footer { display: none !important; }
@@ -8373,6 +8918,17 @@ ${t.extraBgCSS}
   .cornell-write-area::placeholder {
     color: transparent !important;
     opacity: 0 !important;
+  }
+
+  /* Poprawne odpowiedzi na wydruku: POGRUBIONE i w mocnym kolorze tekstu.
+     Na papierze samo zielone tlo slabo widac, wiec pogrubienie wyraznie
+     wyroznia ulozone slowo / wpisane tlumaczenie / uzupelnione luki. */
+  .scramble-input.correct,
+  .trans-input.trans-correct,
+  .gap-input.gap-correct {
+    font-weight: 700 !important;
+    color: var(--ws-text) !important;
+    -webkit-text-fill-color: var(--ws-text) !important;
   }
 
   /* ── Każdy box podzadania w całości na jednej stronie (nie łamie się w pół,
@@ -8477,6 +9033,24 @@ ${t.extraBgCSS}
 
   /* Sekcje płyną normalnie między stronami - mogą się łamać.
      (page-break-inside: avoid celowo NIE jest tu ustawione na .ws-section) */
+}
+
+/* === OSTATECZNY OVERRIDE: zielone rozwiazane podzadanie (Scramble + Translate) ===
+   Umieszczone na samym koncu arkusza i z wysoka specyficznoscia, zeby wygralo z
+   regulami presetow (editorial/vintage), ktore wczesniej ustawialy tla na inne.
+   Uzywamy pelnego (nieprzezroczystego) jasnozielonego, bo polprzezroczyste
+   var(--ws-ok-bg) na natywnym tle <input> potrafi sie nie renderowac. */
+.ws-section .scramble-card.done,
+.ws-section .trans-card.done {
+  background: #e8f6ec !important;
+  border-color: var(--ws-ok) !important;
+}
+.ws-section .scramble-card.done .scramble-input.correct,
+.ws-section .trans-card.done .trans-input.trans-correct {
+  background: #e8f6ec !important;
+  border-color: var(--ws-ok) !important;
+  color: var(--ws-ok) !important;
+  -webkit-text-fill-color: var(--ws-ok) !important;
 }
 `;
 }
