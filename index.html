@@ -3,18 +3,56 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Robert D. – Korepetycje z języka angielskiego online</title>
-<meta name="description" content="Korepetycje z angielskiego online z certyfikowanym lektorem (C1). Lekcje dopasowane do Twoich zainteresowań, autorskie materiały i notatki. Lekcja próbna 40 zł.">
-<link rel="canonical" href="https://english-robert.github.io/angielski/index-np.html">
+<title>English with Robert – Korepetycje z angielskiego online | Robert D.</title>
+<meta name="description" content="English with Robert – korepetycje z angielskiego online z certyfikowanym lektorem (C1). Lekcje dopasowane do Twoich zainteresowań, autorskie interaktywne karty pracy HTML z instant feedbackiem i notatki. Lekcja próbna 40 zł.">
+<meta name="keywords" content="English with Robert, korepetycje angielski online, lektor angielskiego, angielski C1, lekcje angielskiego, karty pracy angielski, Robert korepetycje, nauka angielskiego online">
+<meta name="author" content="Robert D. – English with Robert">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="google" content="notranslate">
+<link rel="canonical" href="https://english-robert.github.io/angielski/index.html">
 
 <!-- Open Graph (podgląd przy udostępnianiu linku) -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="Robert D. – Korepetycje z języka angielskiego online">
-<meta property="og:description" content="Lekcje angielskiego online z certyfikowanym lektorem C1, dopasowane do Twoich zainteresowań. Lekcja próbna 40 zł.">
-<meta property="og:url" content="https://english-robert.github.io/angielski/index-np.html">
+<meta property="og:site_name" content="English with Robert">
+<meta property="og:title" content="English with Robert – Korepetycje z angielskiego online">
+<meta property="og:description" content="Lekcje angielskiego online z certyfikowanym lektorem C1, dopasowane do Twoich zainteresowań. Autorskie, interaktywne karty pracy HTML. Lekcja próbna 40 zł.">
+<meta property="og:url" content="https://english-robert.github.io/angielski/index.html">
 <meta property="og:image" content="https://english-robert.github.io/angielski/img/loga/ewr-logo.svg">
 <meta property="og:locale" content="pl_PL">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="English with Robert – Korepetycje z angielskiego online">
+<meta name="twitter:description" content="Lekcje angielskiego online z certyfikowanym lektorem C1. Autorskie, interaktywne karty pracy HTML. Lekcja próbna 40 zł.">
+<meta name="twitter:image" content="https://english-robert.github.io/angielski/img/loga/ewr-logo.svg">
+
+<!-- Dane strukturalne (Schema.org) – pomagają Google zrozumieć i wyświetlić stronę -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "English with Robert",
+  "alternateName": "Korepetycje z angielskiego online – Robert D.",
+  "description": "Korepetycje z języka angielskiego online z certyfikowanym lektorem C1. Lekcje dopasowane do zainteresowań ucznia, autorskie interaktywne karty pracy HTML oraz notatki w systemie Cornell.",
+  "url": "https://english-robert.github.io/angielski/index.html",
+  "image": "https://english-robert.github.io/angielski/img/loga/ewr-logo.svg",
+  "areaServed": "PL",
+  "availableLanguage": ["pl", "en"],
+  "priceRange": "40–80 zł",
+  "founder": {
+    "@type": "Person",
+    "name": "Robert D.",
+    "jobTitle": "Lektor języka angielskiego"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "5.0",
+    "reviewCount": "3",
+    "bestRating": "5"
+  },
+  "sameAs": [
+    "https://www.instagram.com/englishwithroberto/"
+  ]
+}
+</script>
 
 <!-- Font: Montserrat -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -593,41 +631,48 @@ section{position:relative;z-index:2}
   position:relative;
 }
 .about-head{
-  margin-bottom:3rem;
+  margin-bottom:2.5rem;
 }
+/* Biały kontener w stylu zbliżonym do sekcji „Polecane” */
 .about-wrapper{
+  position:relative;
   background:var(--paper);
   border:1px solid var(--line);
-  border-radius:20px;
-  padding:3rem;
+  border-radius:12px;
   box-shadow:var(--shadow-soft);
-  position:relative;
 }
 .about-content{
   position:relative;
   z-index:1;
+  padding:3rem;
 }
 
 .about-intro{
-  font-size:1.15rem;
-  line-height:1.65;
+  font-size:1.3rem;
+  line-height:1.55;
   color:var(--ink);
-  margin-bottom:1.2rem;
-  font-weight:500;
-  letter-spacing:-0.01em;
+  margin-bottom:1.3rem;
+  font-weight:600;
+  letter-spacing:-0.018em;
+}
+.about-intro strong{
+  background:linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
 }
 .about-intro .flag{
   display:inline-block;
-  width:20px;
+  width:22px;
   vertical-align:middle;
-  margin-left:0.3rem;
+  margin-left:0.35rem;
 }
 
 .about-teaser{
-  font-size:0.98rem;
+  font-size:1.02rem;
   color:var(--ink-soft);
-  line-height:1.7;
-  margin-bottom:1.5rem;
+  line-height:1.78;
+  margin-bottom:1.4rem;
 }
 
 .about-expand-wrap{
@@ -644,36 +689,51 @@ section{position:relative;z-index:2}
   overflow:hidden;
 }
 .about-expand-content{
-  padding-top:0.5rem;
+  padding-top:1rem;
 }
 .about-expand-content h3{
   font-family:var(--display);
   font-weight:700;
-  font-size:1.3rem;
+  font-size:1.35rem;
   letter-spacing:-0.025em;
   color:var(--ink);
   margin-top:2.5rem;
-  margin-bottom:1rem;
+  margin-bottom:0.9rem;
+  display:flex;
+  align-items:center;
+  gap:0.7rem;
 }
-.about-expand-content h3:first-child{margin-top:1.5rem}
+/* punktor: jednolity kolor (solid), nie gradient */
+.about-expand-content h3::before{
+  content:'';
+  width:9px;height:9px;
+  border-radius:50%;
+  flex-shrink:0;
+  background:var(--accent);
+}
+.about-expand-content h3:first-child{margin-top:1rem}
 .about-expand-content p{
-  font-size:0.98rem;
+  font-size:1rem;
   color:var(--ink-soft);
-  line-height:1.7;
+  line-height:1.78;
   margin-bottom:1.2rem;
 }
 .about-expand-content p:last-child{margin-bottom:0}
+/* Podsumowanie metody – jasny, delikatny panel (bez ciemnego tła) */
 .about-expand-content .summary-box{
-  background:rgba(30,42,94,0.05);
-  border-left:3px solid var(--accent);
-  padding:1.5rem 1.8rem;
-  border-radius:8px;
-  margin:2rem 0;
+  position:relative;
+  background:linear-gradient(135deg, var(--accent-soft) 0%, rgba(231,233,242,0.5) 100%);
+  padding:1.7rem 2rem;
+  border-radius:16px;
+  margin:2.2rem 0;
 }
 .about-expand-content .summary-box p{
   margin-bottom:0;
   font-weight:500;
   color:var(--ink);
+  position:relative;
+  z-index:1;
+  line-height:1.75;
 }
 
 /* Expand toggle button */
@@ -682,9 +742,9 @@ section{position:relative;z-index:2}
   align-items:center;
   gap:0.6rem;
   margin-top:0.5rem;
-  padding:0.85rem 1.6rem;
-  background:var(--accent);
-  color:var(--bg);
+  padding:0.9rem 1.8rem;
+  background:linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
+  color:#fff;
   font-family:var(--sans);
   font-size:0.78rem;
   font-weight:600;
@@ -692,10 +752,11 @@ section{position:relative;z-index:2}
   letter-spacing:0.14em;
   border-radius:999px;
   cursor:pointer;
-  transition:background 0.2s, transform 0.25s cubic-bezier(.16,1,.3,1);
+  box-shadow:0 12px 26px -16px rgba(30,42,94,0.6);
+  transition:filter 0.2s, transform 0.25s cubic-bezier(.16,1,.3,1);
 }
 .about-toggle:hover{
-  background:var(--accent-deep);
+  filter:brightness(1.08);
   transform:scale(1.03);
 }
 .about-toggle .toggle-icon{
@@ -780,8 +841,8 @@ section{position:relative;z-index:2}
 .faq-answer-content strong{color:var(--ink);font-weight:600}
 
 @media (max-width:680px){
-  .about-wrapper{padding:2rem 1.5rem}
-  .about-intro{font-size:1.05rem}
+  .about-content{padding:2rem 1.5rem}
+  .about-intro{font-size:1.15rem}
   .faq-question{font-size:0.95rem;padding:1rem 1.2rem}
   .faq-answer-content{padding:0 1.2rem 1.2rem;font-size:0.88rem}
 }
@@ -873,6 +934,92 @@ section{position:relative;z-index:2}
   text-transform:uppercase;
   border:1px solid rgba(30,42,94,0.15);
   white-space:nowrap;
+}
+
+/* ── WYRÓŻNIENIE: INTERAKTYWNE KARTY PRACY Z INSTANT FEEDBACKIEM ── */
+.feature-usp{
+  position:relative;
+  margin-top:2.5rem;
+  padding:2rem 2.2rem;
+  border-radius:20px;
+  color:#fff;
+  overflow:hidden;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 42%),
+    linear-gradient(150deg, var(--accent) 0%, var(--accent-deep) 100%);
+  box-shadow:0 18px 40px -22px rgba(30,42,94,0.55);
+}
+.feature-usp::after{
+  content:'';
+  position:absolute;
+  top:0;left:-60%;
+  width:45%;height:100%;
+  background:linear-gradient(100deg, transparent, rgba(255,255,255,0.22), transparent);
+  transform:skewX(-18deg);
+  pointer-events:none;
+}
+@keyframes feature-usp-shine{
+  from{left:-60%}
+  to{left:130%}
+}
+.feature-usp:hover::after{
+  animation:feature-usp-shine 0.8s cubic-bezier(.16,1,.3,1) forwards;
+}
+.feature-usp-inner{
+  position:relative;
+  z-index:1;
+  display:flex;
+  align-items:flex-start;
+  gap:1.4rem;
+}
+.feature-usp-icon{
+  flex-shrink:0;
+  width:56px;height:56px;
+  border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.30), rgba(255,255,255,0.05));
+  box-shadow:inset 0 1px 1px rgba(255,255,255,0.4);
+}
+.feature-usp-icon svg{width:28px;height:28px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.feature-usp-text h3{
+  font-family:var(--display);
+  font-weight:700;
+  font-size:1.25rem;
+  letter-spacing:-0.02em;
+  margin-bottom:0.5rem;
+  line-height:1.2;
+}
+.feature-usp-text p{
+  font-size:0.96rem;
+  line-height:1.65;
+  color:rgba(255,255,255,0.9);
+}
+.feature-usp-text p strong{color:#fff;font-weight:600}
+.feature-usp-tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:0.5rem;
+  margin-top:1rem;
+}
+.feature-usp-tag{
+  display:inline-flex;
+  align-items:center;
+  gap:0.4rem;
+  font-size:0.74rem;
+  font-weight:600;
+  letter-spacing:0.02em;
+  padding:0.35rem 0.8rem;
+  border-radius:999px;
+  background:rgba(255,255,255,0.14);
+  color:#fff;
+}
+.feature-usp-tag svg{width:13px;height:13px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+@media (max-width:680px){
+  .feature-usp{padding:1.6rem 1.4rem}
+  .feature-usp-inner{gap:1rem}
+  .feature-usp-icon{width:48px;height:48px}
+  .feature-usp-text h3{font-size:1.12rem}
 }
 
 /* GATE OVERLAY */
@@ -1297,7 +1444,10 @@ footer{
   .rec-item{padding:1rem;gap:1rem}
   .rec-logo{width:64px;height:64px}
   .gate-form{flex-direction:column}
-  /* Cal.com na mobile: usuwamy wewnętrzną pułapkę przewijania */
+  /* Cal.com na mobile: usuwamy wewnętrzną pułapkę przewijania.
+     Nie zmieniamy zawartości embeda – tylko pozwalamy kontenerowi
+     i iframe'owi przyjąć naturalną wysokość zgłaszaną przez Cal,
+     żeby nie tworzył się wewnętrzny pasek przewijania łapiący gest. */
   .booking-wrapper{padding:0.5rem;overflow:visible}
   #my-cal-inline-angielski{
     overflow:visible;
@@ -1455,6 +1605,34 @@ footer{
         </div>
       </div>
     </div>
+
+    <div class="feature-usp reveal" data-delay="2">
+      <div class="feature-usp-inner">
+        <div class="feature-usp-icon">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="m9 15 2 2 4-4"/></svg>
+        </div>
+        <div class="feature-usp-text">
+          <h3>Interaktywne karty pracy z natychmiastową informacją zwrotną</h3>
+          <p>
+            Materiały, które przygotowuję na lekcje, to nie zwykłe ćwiczenia. Są <strong>interaktywne</strong> i dają <strong>natychmiastową informację zwrotną</strong>: w trakcie pracy na bieżąco oznaczasz trudność pojawiających się słów i wyrażeń, a na końcu od razu dostajesz przejrzyste podsumowanie tego, co było trudne, co nowe, a co już znasz. Dzięki temu od razu wiadomo, nad czym konkretnie warto popracować i co utrwalić.
+          </p>
+          <div class="feature-usp-tags">
+            <span class="feature-usp-tag">
+              <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+              Instant feedback
+            </span>
+            <span class="feature-usp-tag">
+              <svg viewBox="0 0 24 24"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
+              Interaktywne
+            </span>
+            <span class="feature-usp-tag">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              Pokazują, co powtórzyć
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1476,11 +1654,11 @@ footer{
         </p>
 
         <p class="about-teaser">
-          Nauczanie to moja wielka pasja. Uwielbiam pomagać innym w rozwoju i testować różne metody nauczania, aby maksymalizować efektywność nauki. Zależy mi na tym, aby każda lekcja była dostosowana do potrzeb ucznia i przynosiła realne rezultaty. ✨
+          Nauczanie to moja wielka pasja. Uwielbiam pomagać innym w rozwoju i testować różne metody nauczania, aby maksymalizować efektywność nauki. Zależy mi na tym, aby każda lekcja była dostosowana do potrzeb ucznia i przynosiła realne rezultaty.
         </p>
 
         <p class="about-teaser">
-          Interesuję się językoznawstwem, logiką, psychologią, filozofią, sztuką i rozwojem osobistym. Sam aktywnie uczę się języków obcych, więc rozumiem, jak wygląda nauka od środka. 🪷
+          Interesuję się językoznawstwem, logiką, psychologią, filozofią, sztuką i rozwojem osobistym. Sam aktywnie uczę się języków obcych, więc rozumiem, jak wygląda nauka od środka.
         </p>
 
         <button class="about-toggle" id="about-toggle" aria-expanded="false">
@@ -1509,7 +1687,7 @@ footer{
               <p>Używam humoru, memów i ciekawych obrazów, jeśli uczeń jest otwarty na taki styl. Chętnie dzielę się językowymi i kulturowymi ciekawostkami, które pomagają lepiej zrozumieć kontekst i zastosowanie materiału.</p>
 
               <div class="summary-box">
-                <p>Moja metoda to połączenie efektywności i zabawy. Uczmy się angielskiego przez rzeczy, które naprawdę Cię interesują. Gry, filmy, muzyka, cokolwiek innego, wykorzystamy to na lekcjach. Angielski może być przyjemny i praktyczny, a nie tylko kolejnym obowiązkiem. 😊</p>
+                <p>Moja metoda to połączenie efektywności i zabawy. Uczmy się angielskiego przez rzeczy, które naprawdę Cię interesują. Gry, filmy, muzyka, cokolwiek innego, wykorzystamy to na lekcjach. Angielski może być przyjemny i praktyczny, a nie tylko kolejnym obowiązkiem.</p>
               </div>
 
               <h3>Płatność</h3>
@@ -1641,6 +1819,23 @@ footer{
 
       <div class="faq-item">
         <button class="faq-question" aria-expanded="false">
+          <span>Czy lekcje muszą zawsze odbywać się z kamerką?</span>
+          <span class="faq-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          </span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <div class="faq-answer-content">
+              <p>Nie, kamerka nie jest obowiązkowa. Jest jednak <strong>wskazana</strong>, bo wtedy lepiej widzę, czy wszystko jest jasne i czy materiał został zrozumiany, a sam kontakt po prostu staje się łatwiejszy i bardziej naturalny.</p>
+              <p>Jeśli z jakiegoś powodu wolisz lekcje bez kamerki, to oczywiście nie ma problemu. To zalecenie, a nie wymóg, więc spokojnie dostosujemy się do tego, jak czujesz się najlepiej.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
           <span>Uczysz też dzieci, czy tylko dorosłych?</span>
           <span class="faq-icon">
             <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
@@ -1713,7 +1908,7 @@ footer{
     </p>
     <div class="booking-alt-links reveal" data-delay="2">
       <!-- TODO: wpisz swój adres e-mail w miejsce twoj@email.pl -->
-      <a class="booking-alt-link" href="robert.rd777@gmail.com">
+      <a class="booking-alt-link" href="mailto:robert.rd777@gmail.com">
         <svg viewBox="0 0 24 24"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4-8 5-8-5V6l8 5 8-5z"/></svg>
         E-mail
       </a>
