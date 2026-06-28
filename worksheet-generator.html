@@ -758,6 +758,14 @@ body::before {
 
 /* Font custom fields */
 .font-custom-wrap { display: grid; gap: 0.5rem; margin-top: 0.6rem; }
+.font-custom-selects { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+@media (max-width: 560px) { .font-custom-selects { grid-template-columns: 1fr; } }
+.font-custom-sel-label {
+  display: grid; gap: 0.25rem;
+  font-size: 0.74rem; font-weight: 600; letter-spacing: 0.02em;
+  color: var(--text-dim); text-transform: uppercase;
+}
+.font-custom-sel-label .select { text-transform: none; font-weight: 400; letter-spacing: 0; }
 .font-custom-hint { font-size: 0.78rem; color: var(--text-dim); line-height: 1.5; margin: 0.1rem 0 0; }
 .font-custom-hint code { background: var(--surface-2); padding: 0.05rem 0.3rem; border-radius: 4px; font-size: 0.92em; }
 .font-custom-steps { margin: 0.35rem 0 0; padding-left: 1.1rem; display: grid; gap: 0.2rem; }
@@ -1127,7 +1135,7 @@ body::before {
 <div class="app">
   <header class="header">
     <div class="header-left">
-      <div class="eyebrow">Worksheet Generator · v2.4</div>
+      <div class="eyebrow" id="genVersionEyebrow">Worksheet Generator · v2.5</div>
       <h1>Karta <em>pracy</em><br>w 30 sekund</h1>
       <p>Wklej dane, wybierz styl i typy zadań, pobierz gotowy plik HTML. Działa offline, możesz wysłać uczniowi mailem albo wydrukować.</p>
     </div>
@@ -1346,16 +1354,21 @@ Napisz krótki email do przyjaciela o weekendzie.	Use past simple. Include at le
         <option value="custom">Własna (wklej link Google Fonts)</option>
       </select>
       <div id="fontCustomWrap" class="font-custom-wrap" style="display:none;">
-        <input type="text" id="fontCustomUrl" class="input" placeholder="1. Link z Google Fonts (jeden, może zawierać kilka rodzin)">
-        <input type="text" id="fontCustomFamily" class="input" placeholder="2. Nazwa rodziny do tekstu, np. Lora">
-        <input type="text" id="fontCustomDisplay" class="input" placeholder="3. (opcjonalnie) inna rodzina do nagłówków, np. Playfair Display">
+        <input type="text" id="fontCustomUrl" class="input" placeholder="Link z Google Fonts (jeden, może zawierać kilka rodzin)">
+        <div class="font-custom-selects">
+          <label class="font-custom-sel-label">Czcionka tekstu
+            <select id="fontCustomFamily" class="select"></select>
+          </label>
+          <label class="font-custom-sel-label">Czcionka nagłówków
+            <select id="fontCustomDisplay" class="select"></select>
+          </label>
+        </div>
         <div class="font-custom-hint">
-          <strong>Jak to działa:</strong> wklejasz <em>jeden</em> link, nie dwa.
+          <strong>Jak to działa:</strong> wklej <em>jeden</em> link z Google Fonts - rodziny z linku pojawią się w listach poniżej, wystarczy wybrać.
           <ol class="font-custom-steps">
-            <li>Na <code>fonts.google.com</code> dodaj czcionkę (a jeśli chcesz osobną do nagłówków - dodaj też drugą).</li>
-            <li>Otwórz panel "Get embed code" i skopiuj sam adres z <code>&lt;link href="..."&gt;</code> - jeśli wybrałeś dwie rodziny, ten jeden link zawiera obie. Wklej go w pole 1.</li>
-            <li>W pole 2 wpisz nazwę rodziny do tekstu (to ta z <code>font-family</code>, np. <code>Lora</code>).</li>
-            <li>Pole 3 zostaw puste, żeby nagłówki też używały tej czcionki - albo wpisz drugą rodzinę, np. <code>Playfair Display</code>.</li>
+            <li>Na <code>fonts.google.com</code> dodaj czcionki (każdą, której chcesz móc użyć).</li>
+            <li>Otwórz "Get embed code" i skopiuj sam adres z <code>&lt;link href="..."&gt;</code> - ten jeden link zawiera wszystkie wybrane rodziny. Wklej go wyżej.</li>
+            <li>Wybierz czcionkę tekstu i (opcjonalnie) osobną do nagłówków z list. „Nagłówki: jak tekst" = ta sama co tekst.</li>
           </ol>
         </div>
       </div>
@@ -1524,6 +1537,16 @@ Napisz krótki email do przyjaciela o weekendzie.	Use past simple. Include at le
         Symbole są rozróżnialne także bez koloru (przyjazne dla daltonizmu). W zadaniu Matching oceniasz parę zaraz po jej poprawnym połączeniu (nakładka na kafelku), a potem możesz zmienić ocenę klikając plakietkę obok kafelka. Oznaczenia zapisują się automatycznie razem z postępem, a po kliknięciu „⤓ TSV" trafiają do pliku jako kolumna <strong>difficulty</strong> (wiersze bez oznaczenia zostają puste). Ponowne kliknięcie wybranego symbolu usuwa go.
       </div>
     </div>
+
+    <!-- Podsekcja: Tryb tylko powtórka -->
+    <div class="subsec-title subsec-title-spaced">Tryb „tylko powtórka"</div>
+    <div class="field">
+      <label class="checkbox-row">
+        <input type="checkbox" id="reviewOnlyMode">
+        <span class="checkbox-mark"></span>
+        <span class="checkbox-label">Pomiń zadania - zrób kartę będącą samą szybką powtórką. Wystarczą kolumny <code>pl</code> i <code>en</code> (tagi nie są potrzebne). Wszystkie słówka od razu trafiają do powtórki, możesz je oceniać i pobrać TSV z ocenami.</span>
+      </label>
+    </div>
   </div>
 
   <div class="generate-area">
@@ -1544,6 +1567,42 @@ Napisz krótki email do przyjaciela o weekendzie.	Use past simple. Include at le
 </div>
 
 <script>
+// ============================================================
+// WERSJA GENERATORA
+// ============================================================
+// Jedno zrodlo prawdy o numerze wersji. Uzywane w naglowku generatora
+// ORAZ w badge "Worksheet vX.Y" na samej karcie pracy - dzieki temu
+// wiadomo, w jakiej wersji generatora powstala dana karta.
+const WS_GEN_VERSION = '2.5';
+
+// Domyslny zestaw czcionek uzytkownika (ten sam link, ktory siedzi w <head>).
+// Z niego budujemy listy rozwijane w trybie "Własna czcionka", zeby nie trzeba
+// bylo wpisywac nazw recznie. Aby zmienic zestaw - podmien ten link (i ten w <head>).
+const WS_DEFAULT_FONT_LINK = 'https://fonts.googleapis.com/css2?family=Amaranth:ital,wght@0,400;0,700;1,400;1,700&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Joan&family=Katibeh&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&family=Lora:ital,wght@0,400..700;1,400..700&family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Onest:wght@100..900&family=Paprika&family=Philosopher:ital,wght@0,400;0,700;1,400;1,700&family=Quicksand:wght@300..700&family=Signika:wght@300..700&display=swap';
+
+// Wyciaga nazwy rodzin z linku Google Fonts (css2 ?family=...). Dekoduje '+' na
+// spacje, odcina osie/wagi po ':', usuwa duplikaty. Zwraca tablice nazw.
+function parseGoogleFontFamilies(url) {
+  if (!url) return [];
+  const out = []; const seen = new Set();
+  const re = /[?&]family=([^&]+)/g; let m;
+  while ((m = re.exec(url)) !== null) {
+    let raw;
+    try { raw = decodeURIComponent(m[1]); } catch (e) { raw = m[1]; }
+    raw = raw.split(':')[0];
+    const name = raw.replace(/\+/g, ' ').trim();
+    const k = name.toLowerCase();
+    if (name && !seen.has(k)) { seen.add(k); out.push(name); }
+  }
+  return out;
+}
+
+// Naglowek generatora trzyma sie tej samej stalej (bez recznej edycji w HTML).
+(function(){
+  const _gv = document.getElementById('genVersionEyebrow');
+  if (_gv) _gv.textContent = 'Worksheet Generator · v' + WS_GEN_VERSION;
+})();
+
 // ============================================================
 // STATE
 // ============================================================
@@ -1603,7 +1662,8 @@ const STATE = {
   logoEnabled: true,
   logoUrl: 'https://english-robert.github.io/angielski/img/loga/ewr-logo.svg',
   // Sledzenie trudnosci (Anki-style 1-4). Domyslnie WLACZONE.
-  difficultyEnabled: true
+  difficultyEnabled: true,
+  reviewOnly: false
 };
 
 // Domyslne instrukcje per zadanie - uzywane jako placeholder w generatorze
@@ -1631,8 +1691,22 @@ const PRESET_DEFAULTS = { custom: APPEARANCE_DEFAULTS };
 // TSV PARSING
 // ============================================================
 function parseTSV(text) {
-  const lines = text.trim().split(/\r?\n/).filter(l => l.trim().length > 0);
-  if (lines.length < 2) return { headers: [], rows: [], error: 'Potrzebny jest nagłówek + co najmniej 1 wiersz danych.' };
+  const allLines = text.trim().split(/\r?\n/).filter(l => l.trim().length > 0);
+  // Linia metadanych kolejnosci zadan: "#order<TAB>flashcards,gapfill,quiz,...".
+  // Zapisywana na koncu pobieranego TSV, pozwala odtworzyc ulozenie zadan bez
+  // recznego przestawiania. Wyciagamy ja i NIE traktujemy jako wiersz danych.
+  let parsedOrder = null;
+  const lines = allLines.filter(l => {
+    const lower = l.trim().toLowerCase();
+    if (lower.indexOf('#order') === 0) {
+      // wszystko po pierwszym separatorze (tab/;/,) lub spacji to lista kluczy
+      const rest = l.trim().replace(/^#order/i, '').replace(/^[\t;,\s]+/, '');
+      parsedOrder = rest.split(/[,;]/).map(s => s.trim().toLowerCase()).filter(Boolean);
+      return false; // usun z wierszy danych
+    }
+    return true;
+  });
+  if (lines.length < 2) return { headers: [], rows: [], error: 'Potrzebny jest nagłówek + co najmniej 1 wiersz danych.', parsedOrder };
 
   const firstLine = lines[0];
   let sep = '\t';
@@ -1685,8 +1759,8 @@ function parseTSV(text) {
     }
   }
 
-  if (rows.length === 0) return { headers, rows: [], error: 'Nie wykryto wierszy z danymi PL/EN. Czy nagłówki to "pl" i "en"?' };
-  return { headers, rows, error: null };
+  if (rows.length === 0) return { headers, rows: [], error: 'Nie wykryto wierszy z danymi PL/EN. Czy nagłówki to "pl" i "en"?', parsedOrder };
+  return { headers, rows, error: null, parsedOrder };
 }
 
 // Parse "f,m" -> ['flashcards','matching']. Empty -> [] (means: include in all selected types).
@@ -1906,6 +1980,20 @@ function updateTSVStatus() {
   STATE.rows = result.rows;
   STATE.headers = result.headers;
 
+  // Jesli TSV zawieral linie "#order ...", odtwarzamy ulozenie zadan. Klucze
+  // nierozpoznane pomijamy; brakujace (nieobecne w metadanych) dokladamy na koniec
+  // w domyslnej kolejnosci - dzieki temu nowe typy zadan nie znikaja.
+  if (result.parsedOrder && result.parsedOrder.length) {
+    const valid = new Set(STATE.taskOrder);
+    const seen = new Set();
+    const merged = [];
+    result.parsedOrder.forEach(k => {
+      if (valid.has(k) && !seen.has(k)) { seen.add(k); merged.push(k); }
+    });
+    STATE.taskOrder.forEach(k => { if (!seen.has(k)) { seen.add(k); merged.push(k); } });
+    if (merged.length === STATE.taskOrder.length) STATE.taskOrder = merged;
+  }
+
   // Wykryj instancje 2+ z tagow i zsynchronizuj UI generatora (dodaj/usun karty).
   // To musi sie wydarzyc PRZED updateTaskAvailability, zeby nowe karty istnialy
   // i mialy szanse byc zaznaczone.
@@ -2029,6 +2117,13 @@ function validateGenerate() {
     btn.disabled = true;
     previewBtn.disabled = true;
     hint.textContent = 'Wklej dane, żeby aktywować przycisk';
+    return;
+  }
+  // Tryb "tylko powtorka": nie wymagamy zadnego typu zadania.
+  if (STATE.reviewOnly) {
+    btn.disabled = false;
+    previewBtn.disabled = false;
+    hint.textContent = `Tryb tylko powtórka · ${STATE.rows.length} słów`;
     return;
   }
   if (!anyTask) {
@@ -2730,9 +2825,59 @@ if (fontSelect) {
 const fontCustomUrl = document.getElementById('fontCustomUrl');
 const fontCustomFamily = document.getElementById('fontCustomFamily');
 const fontCustomDisplay = document.getElementById('fontCustomDisplay');
-if (fontCustomUrl) fontCustomUrl.addEventListener('input', e => { STATE.fontCustom.url = e.target.value.trim(); });
-if (fontCustomFamily) fontCustomFamily.addEventListener('input', e => { STATE.fontCustom.family = e.target.value.trim(); });
-if (fontCustomDisplay) fontCustomDisplay.addEventListener('input', e => { STATE.fontCustom.displayFamily = e.target.value.trim(); });
+
+// Wypelnia obie listy rodzinami z linku. Stara sie zachowac dotychczasowy wybor.
+function refreshFontFamilyDropdowns() {
+  const fams = parseGoogleFontFamilies(STATE.fontCustom.url || '');
+  const prevBody = STATE.fontCustom.family || '';
+  const prevHead = STATE.fontCustom.displayFamily || '';
+  if (fontCustomFamily) {
+    fontCustomFamily.innerHTML = '';
+    if (!fams.length) {
+      const o = document.createElement('option');
+      o.value = ''; o.textContent = '(wklej link, żeby wybrać czcionkę)';
+      fontCustomFamily.appendChild(o);
+    } else {
+      fams.forEach(f => {
+        const o = document.createElement('option');
+        o.value = f; o.textContent = f;
+        fontCustomFamily.appendChild(o);
+      });
+      // Zachowaj poprzedni wybor jesli wciaz dostepny, inaczej pierwsza rodzina.
+      fontCustomFamily.value = fams.includes(prevBody) ? prevBody : fams[0];
+      STATE.fontCustom.family = fontCustomFamily.value;
+    }
+  }
+  if (fontCustomDisplay) {
+    fontCustomDisplay.innerHTML = '';
+    const same = document.createElement('option');
+    same.value = ''; same.textContent = 'Nagłówki: jak tekst';
+    fontCustomDisplay.appendChild(same);
+    fams.forEach(f => {
+      const o = document.createElement('option');
+      o.value = f; o.textContent = f;
+      fontCustomDisplay.appendChild(o);
+    });
+    fontCustomDisplay.value = fams.includes(prevHead) ? prevHead : '';
+    STATE.fontCustom.displayFamily = fontCustomDisplay.value;
+  }
+}
+
+if (fontCustomUrl) {
+  fontCustomUrl.addEventListener('input', e => {
+    STATE.fontCustom.url = e.target.value.trim();
+    refreshFontFamilyDropdowns();
+  });
+}
+if (fontCustomFamily) fontCustomFamily.addEventListener('change', e => { STATE.fontCustom.family = e.target.value; });
+if (fontCustomDisplay) fontCustomDisplay.addEventListener('change', e => { STATE.fontCustom.displayFamily = e.target.value; });
+
+// Prefill: domyslny link uzytkownika juz w polu, listy gotowe od razu.
+if (fontCustomUrl && !STATE.fontCustom.url) {
+  STATE.fontCustom.url = WS_DEFAULT_FONT_LINK;
+  fontCustomUrl.value = WS_DEFAULT_FONT_LINK;
+}
+refreshFontFamilyDropdowns();
 
 // Rogi: ostre / zaokrąglone (przełącznik).
 document.querySelectorAll('.corner-btn').forEach(btn => {
@@ -2966,6 +3111,26 @@ document.getElementById('difficultyEnabled').addEventListener('change', e => {
   document.getElementById('difficultyConfig').style.display = e.target.checked ? '' : 'none';
 });
 
+// Tryb "tylko powtorka": karta bez zadan, sama szybka powtorka. Wystarczy PL/EN.
+// W tym trybie wymuszamy wlaczone sledzenie trudnosci (bez niego powtorka nie ma
+// sensu) i wyszarzamy wybor typow zadan, bo i tak nie sa uzywane.
+const _reviewOnlyChk = document.getElementById('reviewOnlyMode');
+if (_reviewOnlyChk) {
+  _reviewOnlyChk.addEventListener('change', e => {
+    STATE.reviewOnly = e.target.checked;
+    if (e.target.checked) {
+      // wymus trudnosc ON
+      const diffChk = document.getElementById('difficultyEnabled');
+      if (diffChk && !diffChk.checked) { diffChk.checked = true; diffChk.dispatchEvent(new Event('change')); }
+    }
+    // wyszarz/odszarz panel typow zadan
+    const taskPanel = document.getElementById('tasksPanel') || document.querySelector('.task-grid');
+    if (taskPanel) taskPanel.style.opacity = e.target.checked ? '0.4' : '';
+    if (taskPanel) taskPanel.style.pointerEvents = e.target.checked ? 'none' : '';
+    if (typeof validateGenerate === 'function') validateGenerate();
+  });
+}
+
 // Initialize
 updateTSVStatus();
 updateSelectAllState();
@@ -3147,6 +3312,7 @@ function buildWorksheetHTML() {
   };
 
   STATE.taskOrder.forEach(taskKey => {
+    if (STATE.reviewOnly) return; // tryb tylko powtorka - brak sekcji zadan
     if (!STATE.tasks[taskKey]) return;
     const taskName = taskKeyBase(taskKey);
     if (!builders[taskName]) return;
@@ -3168,6 +3334,17 @@ function buildWorksheetHTML() {
     }
   });
 
+  // Kolejnosc aktywnych zadan (klucze) - przekazujemy do karty, zeby downloadTSV
+  // mogl ja dopisac jako "#order ...". taskKeyBase normalizuje instancje (np.
+  // 'gapfill:2' -> 'gapfill'), a duplikaty pomijamy.
+  const activeOrder = [];
+  const _aoSeen = new Set();
+  if (!STATE.reviewOnly) STATE.taskOrder.forEach(taskKey => {
+    if (!STATE.tasks[taskKey]) return;
+    const base = taskKeyBase(taskKey);
+    if (builders[base] && !_aoSeen.has(base)) { _aoSeen.add(base); activeOrder.push(base); }
+  });
+
   // Czy uzytkownik podal wlasny kolor akcentu? Jesli tak, harmonijny gradient
   // (accentSecondary/Tertiary) bedzie wygenerowany dynamicznie z accentu.
   const isCustomAccent = !!STATE.customAccent;
@@ -3182,6 +3359,7 @@ function buildWorksheetHTML() {
     textColor,
     isCustomAccent,
     sectionCount,
+    taskOrder: activeOrder,
     sectionsHTML: sectionsHTML.join('\n'),
     sectionsJS: sectionsJS.join('\n'),
     rowsJSON: JSON.stringify(STATE.rows),
@@ -3195,7 +3373,8 @@ function buildWorksheetHTML() {
       show: STATE.logoEnabled,
       url: STATE.logoUrl
     },
-    difficulty: STATE.difficultyEnabled
+    difficulty: STATE.difficultyEnabled || STATE.reviewOnly,
+    reviewOnly: STATE.reviewOnly
   });
 }
 
@@ -3404,6 +3583,8 @@ function buildFlashcardsJS(num, options = {}) {
     showSectionFeedback(${num}, true, '✓ Wszystkie odsłonięte');
     markSectionDone(${num});
   };
+
+  WS_SECTION_RESET[${num}] = function() { _flashFlipped_${num} = new Set(); };
 `;
 }
 
@@ -3695,6 +3876,31 @@ function buildMatchingJS(num, options = {}) {
       wsBurstDistractors('sec-${num}');
     }
   };
+
+  // Reset sekcji matching - wolany przez generyczne wsClearSection. Rozlacza pary,
+  // czysci zaznaczenia/kolory i PRZYWRACA atrapy (byly tylko ukryte klasami,
+  // nie usuniete z DOM), zeby po wyczyszczeniu sekcja byla jak na starcie.
+  WS_SECTION_RESET[${num}] = function() {
+    _matchedPairs_${num} = new Set();
+    _matchSelPL_${num} = null;
+    _matchSelEN_${num} = null;
+    const sec = document.getElementById('sec-${num}');
+    if (!sec) return;
+    sec.querySelectorAll('.match-item').forEach(el => {
+      el.classList.remove('matched', 'selected', 'wrong', 'single-line');
+      el.style.borderColor = '';
+      el.style.background = '';
+      el.style.color = '';
+      el.style.removeProperty('--pair-color');
+      el.removeAttribute('data-pair');
+    });
+    // Przywroc atrapy ukryte po ukonczeniu.
+    sec.querySelectorAll('.distractor-bursting, .distractor-gone').forEach(el => {
+      el.classList.remove('distractor-bursting', 'distractor-gone');
+    });
+    // Schowaj ewentualne nakladki ocen otwarte przy parach.
+    if (typeof wsHideDiffOverlays === 'function') { try { wsHideDiffOverlays(); } catch (e) {} }
+  };
 `;
 }
 
@@ -3836,6 +4042,8 @@ function buildScrambleJS(num, options = {}) {
     inp.value = inp.dataset.answer;
     window.checkScramble_${num}(inp);
   };
+
+  WS_SECTION_RESET[${num}] = function() { _scrambleDone_${num} = new Set(); };
 `;
 }
 
@@ -3967,6 +4175,8 @@ function buildQuizJS(num, options = {}) {
       markSectionDone(${num});
     }
   };
+
+  WS_SECTION_RESET[${num}] = function() { _quizDone_${num} = new Set(); };
 `;
 }
 
@@ -4179,9 +4389,26 @@ function buildUnscrambleJS(num, options = {}) {
 
   window.clearUnscramble_${num} = function(cardIdx) {
     const card = document.querySelector('#sec-${num} .unsc-card[data-idx="' + cardIdx + '"]');
-    if (card.classList.contains('done')) return;
+    if (!card) return;
+    // Dziala TAKZE na rozwiazanej karcie - cofa rozwiazanie. Wczesniej guard
+    // "if done return" blokowal czyszczenie po przypadkowym rozwiazaniu.
+    const wasDone = card.classList.contains('done');
+    card.classList.remove('done');
+    // Odblokuj slowa (po rozwiazaniu byly draggable=false / .used).
+    card.querySelectorAll('.unsc-word').forEach(w => {
+      w.setAttribute('draggable', 'true');
+      w.classList.remove('used', 'correct-pos', 'wrong-pos');
+    });
     const answerWords = Array.from(card.querySelectorAll('.unsc-answer-area .unsc-word'));
     answerWords.forEach(w => _unscMoveToPool(w));
+    if (wasDone) {
+      _unscDone_${num}.delete(cardIdx);
+      // Cala sekcja przestaje byc ukonczona, gdy cofniemy rozwiazana karte.
+      if (typeof wsUnmarkSection === 'function') wsUnmarkSection(${num});
+      if (typeof wsScheduleSave === 'function') wsScheduleSave();
+    } else {
+      wsSound('tap');
+    }
   };
 
   window.solveUnscramble_${num} = function() {
@@ -4330,6 +4557,9 @@ function buildUnscrambleJS(num, options = {}) {
     }
     targetZone.classList.remove('drag-over');
   });
+
+  // Reset wewnetrznego licznika tej sekcji - wolany przez generyczne wsClearSection.
+  WS_SECTION_RESET[${num}] = function() { _unscDone_${num} = new Set(); };
 `;
 }
 
@@ -4637,6 +4867,8 @@ function buildGapfillJS(num, options = {}) {
     showSectionFeedback(${num}, true, '✓ Wszystkie odpowiedzi pokazane');
     markSectionDone(${num});
   };
+
+  WS_SECTION_RESET[${num}] = function() { _gapDone_${num} = new Set(); };
 `;
 }
 
@@ -4785,6 +5017,8 @@ function buildTranslateJS(num, options = {}) {
     ta.value = ta.dataset.answer;
     window.checkTranslate_${num}(ta);
   };
+
+  WS_SECTION_RESET[${num}] = function() { _transDone_${num} = new Set(); };
 `;
 }
 
@@ -4870,13 +5104,15 @@ function buildWritingJS(num, options = {}) {
     }
     if (typeof wsScheduleSave === 'function') wsScheduleSave();
   };
+
+  WS_SECTION_RESET[${num}] = function() { _writeSaved_${num} = new Set(); };
 `;
 }
 
 // ============================================================
 // MAIN TEMPLATE - the worksheet HTML
 // ============================================================
-function buildWorksheetTemplate({ title, subtitle, preset, accent, bg, textColor, isCustomAccent, sectionCount, sectionsHTML, sectionsJS, rowsJSON, ttsConfig, logoConfig, difficulty }) {
+function buildWorksheetTemplate({ title, subtitle, preset, accent, bg, textColor, isCustomAccent, sectionCount, taskOrder, sectionsHTML, sectionsJS, rowsJSON, ttsConfig, logoConfig, difficulty, reviewOnly }) {
   const presetTheme = getPresetTheme(preset, accent, bg, textColor, isCustomAccent);
   const fontImports = presetTheme.fontImports;
   const css = buildWorksheetCSS(presetTheme);
@@ -4894,13 +5130,13 @@ ${fontImports}
 ${css}
 </style>
 </head>
-<body>
+<body class="${reviewOnly ? 'ws-review-only-mode' : ''}">
 ${bgEffectHTML}
 <div class="ws-app">
   <header class="ws-header ${logoConfig.show ? 'ws-header-with-logo' : ''}">
     ${logoConfig.show ? `<div class="ws-logo ws-logo-top"><img src="${logoConfig.url}" alt="Logo" loading="lazy" /></div>` : ''}
     <div class="ws-header-text">
-      <div class="ws-eyebrow">Worksheet</div>
+      <div class="ws-eyebrow">Worksheet v${WS_GEN_VERSION}</div>
       <h1 class="ws-title">${wrapEmoji(escapeHtml(title))}</h1>
       ${subtitle ? `<p class="ws-subtitle">${escapeHtml(subtitle)}</p>` : ''}
       <div class="ws-line"></div>
@@ -4931,6 +5167,13 @@ ${bgEffectHTML}
   ${sectionsHTML}
 
   ${difficulty ? `<div class="ws-review" id="wsReview">
+    <div class="ws-review-endprompt" id="wsReviewEndPrompt" hidden>
+      <span class="ws-review-endprompt-text">🎯 Wszystkie zadania zrobione! Chcesz jeszcze szybką powtórkę przed świętowaniem?</span>
+      <span class="ws-review-endprompt-actions">
+        <button type="button" class="ws-review-endprompt-yes" onclick="wsEndFlowReview()">Tak, powtórzmy</button>
+        <button type="button" class="ws-review-endprompt-no" onclick="wsEndFlowSkip()">Nie, świętujmy 🎉</button>
+      </span>
+    </div>
     <div class="ws-review-card">
       <button type="button" class="ws-review-toggle" id="wsReviewToggle" onclick="wsToggleReview()" aria-expanded="false">
         <span class="ws-review-toggle-left">
@@ -4946,6 +5189,7 @@ ${bgEffectHTML}
       <div class="ws-review-body" id="wsReviewBody" hidden>
         <p class="ws-review-text">Wybierz, które poziomy chcesz powtórzyć. Odpowiedzi są zasłonięte - kliknij, żeby odsłonić, albo użyj „Pokaż wszystkie".</p>
         <div class="ws-review-levels">
+          <label class="ws-review-lvl"${reviewOnly ? '' : ' style="display:none"'}><input type="checkbox" value="none" checked onchange="wsBuildReview()"><span class="ws-review-chip" style="background:#cbd5e1;color:#475569">○</span> nieocenione</label>
           <label class="ws-review-lvl"><input type="checkbox" value="new" checked onchange="wsBuildReview()"><span class="ws-review-chip" style="background:#9ca3af">✦</span> nowe słowo</label>
           <label class="ws-review-lvl"><input type="checkbox" value="1" checked onchange="wsBuildReview()"><span class="ws-review-chip" style="background:#dc2626">✕</span> nie umiem / nie pamiętam</label>
           <label class="ws-review-lvl"><input type="checkbox" value="2" checked onchange="wsBuildReview()"><span class="ws-review-chip" style="background:#d97706">▲</span> trudne</label>
@@ -4972,6 +5216,9 @@ ${bgEffectHTML}
           </div>
         </div>
         <div class="ws-review-result" id="wsReviewResult"></div>
+        <div class="ws-review-finish-wrap" id="wsReviewFinishWrap" hidden>
+          <button type="button" class="ws-review-finish-btn" onclick="wsEndFlowFinishReview()">Gotowe! 🎉</button>
+        </div>
       </div>
     </div>
   </div>` : ''}
@@ -4986,6 +5233,7 @@ ${bgEffectHTML}
 
   <footer class="ws-footer">
     <span class="ws-save-indicator">💾 Postęp zapisywany automatycznie</span>
+    <button class="ws-btn-finish-early" onclick="wsFinishEarly()" title="Zakończ teraz i świętuj, nawet jeśli nie wszystko zrobione">🎉 Zakończ wcześniej</button>
     <button class="ws-btn-reset-foot" onclick="resetWorksheet()">Reset</button>
     <button class="ws-btn-download-tsv" onclick="downloadTSV()" title="Pobierz dane jako plik TSV">⤓ TSV</button>
   </footer>
@@ -4999,6 +5247,12 @@ ${bgEffectHTML}
 const WS_INITIAL_HTML = '<!DOCTYPE html>\\n' + document.documentElement.outerHTML;
 const WS_DATA = ${rowsJSON};
 const WS_HEADERS = ${JSON.stringify(STATE.headers)};
+// Kolejnosc typow zadan na tej karcie - dopisywana do pobieranego TSV jako
+// "#order ...", zeby przy ponownym wczytaniu odtworzyc ulozenie bez recznego
+// przestawiania.
+const WS_TASK_ORDER = ${JSON.stringify(taskOrder || [])};
+// Tryb "tylko powtorka": karta bez zadan, sama powtorka ze WSZYSTKIMI slowami.
+const WS_REVIEW_ONLY = ${reviewOnly ? 'true' : 'false'};
 const WS_TITLE = ${JSON.stringify(title)};
 const WS_SECTION_COUNT = ${sectionCount};
 // Klucz w localStorage zawiera hash z danych - dzięki temu różne worksheety
@@ -5322,20 +5576,143 @@ function markSectionDone(num) {
   if (typeof wsScheduleSave === 'function') wsScheduleSave();
 }
 
+// Cofa stan "ukonczona" dla sekcji (czesc wspolna dla wszystkich typow zadan).
+function wsUnmarkSection(num) {
+  _wsDone.delete(num);
+  const sec = document.querySelector('[data-section="' + num + '"]');
+  if (sec) sec.classList.remove('ws-done');
+  // Skoro cofnelismy ukonczenie, finalowy przeplyw moze sie odpalic ponownie.
+  _wsAllDoneShown = false;
+  _wsFinaleShown = false;
+  _wsEndFlowShown = false;
+  const finale = document.getElementById('wsFinale');
+  if (finale) finale.classList.remove('show');
+  updateProgress();
+  wsSound('tap');
+  if (typeof wsScheduleSave === 'function') wsScheduleSave();
+}
+
+// Rejestr per-sekcyjnych resetow. Kazdy builder zadania rejestruje tu funkcje,
+// ktora zeruje SWOJ wewnetrzny licznik (_xDone_N) - dzieki temu po
+// wyczyszczeniu sekcja nie raportuje fałszywie "ukonczone".
+const WS_SECTION_RESET = {};
+
+// Generyczne czyszczenie sekcji: przywraca interaktywne pola do stanu poczatkowego
+// (stan trzymany jest w DOM), zeruje wewnetrzny licznik sekcji i cofa "ukonczono".
+// NIE rusza ocen trudnosci (te sa swiadome i zostaja).
+function wsClearSection(num) {
+  const sec = document.querySelector('[data-section="' + num + '"]');
+  if (!sec) return;
+
+  // ── MATCHING ── pelny reset (pary, kolory, atrapy) wykonuje zarejestrowany
+  //    WS_SECTION_RESET[num] nizej; tutaj nic, bo wymaga wewnetrznego stanu sekcji.
+
+  // ── FLASHCARDS ── odwroc wszystkie fiszki z powrotem na awers.
+  sec.querySelectorAll('.flashcard').forEach(c => c.classList.remove('flipped'));
+
+  // ── SCRAMBLE ── wyczysc pola, zdejmij correct/disabled, odswiez kafelki.
+  sec.querySelectorAll('.scramble-card').forEach(card => card.classList.remove('done'));
+  sec.querySelectorAll('.scramble-input').forEach(inp => {
+    inp.value = '';
+    inp.classList.remove('correct', 'wrong');
+    inp.disabled = false;
+    if (typeof wsSyncScrambleTiles === 'function') { try { wsSyncScrambleTiles(inp); } catch (e) {} }
+  });
+
+  // ── QUIZ ── odznacz wybory, odblokuj opcje.
+  sec.querySelectorAll('.quiz-card').forEach(card => card.classList.remove('answered'));
+  sec.querySelectorAll('.quiz-option').forEach(opt => {
+    opt.classList.remove('quiz-correct', 'quiz-wrong', 'selected');
+    opt.disabled = false;
+  });
+
+  // ── UNSCRAMBLE ── przenies slowa z pola odpowiedzi z powrotem do puli,
+  //    odblokuj je i przywroc placeholdery.
+  sec.querySelectorAll('.unsc-card').forEach(card => {
+    card.classList.remove('done');
+    const pool = card.querySelector('.unsc-pool');
+    const answerArea = card.querySelector('.unsc-answer-area');
+    if (pool && answerArea) {
+      // Wszystkie slowa (z odpowiedzi i puli) wracaja do puli, odblokowane.
+      card.querySelectorAll('.unsc-word').forEach(w => {
+        w.classList.remove('in-answer', 'used', 'correct-pos', 'wrong-pos', 'dragging');
+        w.setAttribute('draggable', 'true');
+        pool.appendChild(w);
+      });
+      // Usun placeholder "(wszystkie slowa uzyte)" z puli, jesli byl.
+      const poolEmpty = pool.querySelector('.unsc-pool-empty');
+      if (poolEmpty) poolEmpty.remove();
+      // Wyczysc pole odpowiedzi i przywroc jego placeholder.
+      answerArea.innerHTML = '';
+      const empty = document.createElement('div');
+      empty.className = 'unsc-answer-empty';
+      empty.textContent = 'Kliknij słowa poniżej lub przeciągnij je tutaj';
+      answerArea.appendChild(empty);
+    }
+  });
+
+  // ── CORNELL ── zwin i wyczysc notatki.
+  sec.querySelectorAll('.cornell-card').forEach(card => card.classList.remove('open'));
+  sec.querySelectorAll('.cornell-write-area').forEach(ta => { ta.value = ''; });
+
+  // ── GAP-FILL ── wyczysc luki, schowaj tlumaczenie i zresetuj przycisk tlumaczenia.
+  sec.querySelectorAll('.gap-card').forEach(card => card.classList.remove('done'));
+  sec.querySelectorAll('.gap-input').forEach(inp => {
+    inp.value = '';
+    inp.classList.remove('gap-correct', 'gap-wrong');
+    inp.disabled = false;
+  });
+  sec.querySelectorAll('.gap-translation').forEach(tr => tr.classList.remove('show'));
+  sec.querySelectorAll('.gap-translate-btn').forEach(b => b.classList.remove('active'));
+
+  // ── TRANSLATE ── wyczysc pola i schowaj odsloniety wzor odpowiedzi.
+  sec.querySelectorAll('.trans-card').forEach(card => card.classList.remove('done'));
+  sec.querySelectorAll('.trans-input').forEach(inp => {
+    inp.value = '';
+    inp.classList.remove('trans-correct', 'trans-wrong');
+    inp.disabled = false;
+  });
+  // Element ".trans-correct" wystepuje TAKZE jako odslaniany wzor (div .show) -
+  // chowamy go. Nie myli sie z inputem, bo input zostal juz wyczyszczony powyzej.
+  sec.querySelectorAll('div.trans-correct.show').forEach(d => d.classList.remove('show'));
+
+  // ── WRITING ── wyczysc pola, odblokuj przycisk "Gotowe" i wyzeruj licznik slow.
+  sec.querySelectorAll('.write-card').forEach(card => card.classList.remove('done'));
+  sec.querySelectorAll('.write-area').forEach(ta => { ta.value = ''; });
+  sec.querySelectorAll('.write-save').forEach(b => { b.disabled = false; b.textContent = '✅ Gotowe'; });
+  sec.querySelectorAll('.write-counter-num').forEach(c => { c.textContent = '0'; });
+
+  // Wyczysc komunikat feedbacku sekcji.
+  const fb = sec.querySelector('.ws-feedback');
+  if (fb) { fb.textContent = ''; fb.className = 'ws-feedback'; }
+
+  // Wyzeruj wewnetrzny licznik sekcji (jesli zarejestrowany).
+  if (typeof WS_SECTION_RESET[num] === 'function') { try { WS_SECTION_RESET[num](); } catch (e) {} }
+
+  // Cofnij "ukonczono" + zsynchronizuj pasek postepu i zapis.
+  wsUnmarkSection(num);
+}
+
+
 function updateProgress() {
+  // Tryb "tylko powtorka": nie ma zadan ani postepu - nic nie liczymy, zeby
+  // dzielenie przez zero nie odpalilo falszywie finalu.
+  if (typeof WS_REVIEW_ONLY !== 'undefined' && WS_REVIEW_ONLY) return;
   const n = _wsDone.size;
   document.getElementById('wsProgressScore').textContent = n + ' / ' + WS_SECTION_COUNT;
   document.getElementById('wsProgressFill').style.width = (n / WS_SECTION_COUNT * 100) + '%';
   if (n === WS_SECTION_COUNT && !_wsAllDoneShown) {
     _wsAllDoneShown = true;
-    // Wszystko ukonczone -> od razu finale (Celebrate). Panel powtorki jest
-    // widoczny przez caly czas osobno, wiec nie blokuje juz swietowania.
-    wsShowFinale();
+    // Wszystko ukonczone -> przeplyw koncowy: najpierw pytamy o szybka powtorke,
+    // a dopiero potem (albo po pominieciu) pokazujemy finale (Celebrate).
+    wsStartEndFlow();
   }
 }
 
 // Pokazuje finalowa sekcje Celebrate i gra fanfary przy zjezdzie do niej.
 let _wsFinaleShown = false;
+// Czy uruchomiono juz przeplyw koncowy (pytanie o powtorke po ukonczeniu wszystkiego).
+let _wsEndFlowShown = false;
 function wsShowFinale() {
   if (_wsFinaleShown) return;
   _wsFinaleShown = true;
@@ -5348,12 +5725,73 @@ function wsShowFinale() {
   }, 300);
 }
 
+// ── PRZEPLYW KONCOWY ──────────────────────────────────────────────────────
+// Po ukonczeniu WSZYSTKICH zadan nie skaczemy od razu do finale. Najpierw,
+// jesli sa jakies ocenione slowa, pokazujemy baner pytania NAD (jeszcze
+// zwinieta) powtorka i przewijamy do niego. Klik "Tak" -> baner znika, powtorka
+// sie rozwija. Klik "Nie" -> baner znika, scroll do finale. Gdy nie ma czego
+// powtarzac (brak ocen / wylaczona trudnosc) - od razu finale.
+function wsStartEndFlow() {
+  if (_wsEndFlowShown) return;
+  _wsEndFlowShown = true;
+  const reviewPanel = document.getElementById('wsReview');
+  const prompt = document.getElementById('wsReviewEndPrompt');
+  const hasReview = reviewPanel && prompt
+    && typeof _wsRatedIdx === 'function' && _wsRatedIdx().length > 0;
+  if (!hasReview) { wsShowFinale(); return; }
+  // Pokaz baner NAD zwinieta powtorka (panelu nie rozwijamy).
+  prompt.hidden = false;
+  setTimeout(() => {
+    prompt.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    wsSound('tap');
+  }, 200);
+}
+
+// "Tak, powtorzmy" - baner znika, powtorka sie rozwija (i buduje liste), na dole
+// pojawia sie przycisk "Gotowe!" konczacy powtorke fanfarami.
+function wsEndFlowReview() {
+  const prompt = document.getElementById('wsReviewEndPrompt');
+  const body = document.getElementById('wsReviewBody');
+  const finishWrap = document.getElementById('wsReviewFinishWrap');
+  if (prompt) prompt.hidden = true;
+  if (body && body.hidden && typeof wsToggleReview === 'function') wsToggleReview();
+  else if (typeof wsBuildReview === 'function') wsBuildReview();
+  if (finishWrap) finishWrap.hidden = false;
+  const reviewPanel = document.getElementById('wsReview');
+  if (reviewPanel) setTimeout(() => { reviewPanel.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 150);
+}
+
+// "Nie, swietujmy" - baner znika, przewijamy do finale (Celebrate + fanfary).
+function wsEndFlowSkip() {
+  const prompt = document.getElementById('wsReviewEndPrompt');
+  if (prompt) prompt.hidden = true;
+  wsShowFinale();
+}
+
+// "Gotowe!" pod lista powtorki - konczy powtorke i pokazuje finale.
+function wsEndFlowFinishReview() {
+  const finishWrap = document.getElementById('wsReviewFinishWrap');
+  if (finishWrap) finishWrap.hidden = true;
+  wsShowFinale();
+}
+
+// Przycisk w stopce: "Zakoncz wczesniej". Odpala finale + fanfary niezaleznie
+// od tego, ile zadan zrobiono. Chowa ewentualny baner/przepływ powtorki.
+function wsFinishEarly() {
+  _wsEndFlowShown = true; // zeby pozniejsze ukonczenie nie pokazalo pytania ponownie
+  const prompt = document.getElementById('wsReviewEndPrompt');
+  const finishWrap = document.getElementById('wsReviewFinishWrap');
+  if (prompt) prompt.hidden = true;
+  if (finishWrap) finishWrap.hidden = true;
+  wsShowFinale();
+}
+
 // ── PANEL POWTORKI (zawsze widoczny, zwijany) ─────────────────────────────
 // Tryb sortowania listy: 'level' (wg poziomu trudnosci) albo 'hist' (kolejnosc
 // historyczna = kolejnosc wierszy w WS_DATA, czyli tak jak w TSV).
 let _wsReviewSort = 'level';
 // Kolejnosc poziomow przy sortowaniu 'level': najpierw to, co najpilniejsze.
-const _WS_LEVEL_ORDER = { 'new': 0, 1: 1, 2: 2, 3: 3, 4: 4 };
+const _WS_LEVEL_ORDER = { 'none': -1, 'new': 0, 1: 1, 2: 2, 3: 3, 4: 4 };
 
 // Zwraca indeksy wierszy WS_DATA, ktore maja jakakolwiek ocene (sa "do powtorki").
 // Identyczne dane liczymy raz (klucz tresci), zeby licznik zgadzal sie z lista.
@@ -5375,12 +5813,24 @@ function _wsRatedIdx() {
 function wsUpdateReviewCount() {
   const el = document.getElementById('wsReviewCount');
   if (!el) return;
-  const n = _wsRatedIdx().length;
+  const reviewOnly = (typeof WS_REVIEW_ONLY !== 'undefined' && WS_REVIEW_ONLY);
+  // W trybie tylko powtorka liczymy WSZYSTKIE unikalne slowa (nie tylko ocenione).
+  let n;
+  if (reviewOnly) {
+    const seen = new Set();
+    WS_DATA.forEach((r, i) => {
+      const key = (WS_DIFF_ENABLED && r._diffKey) ? r._diffKey : ('idx' + i);
+      seen.add(key);
+    });
+    n = seen.size;
+  } else {
+    n = _wsRatedIdx().length;
+  }
   if (n === 0) {
-    el.textContent = 'Oceń słowa, żeby zebrać je tutaj do powtórki';
+    el.textContent = reviewOnly ? 'Brak słów' : 'Oceń słowa, żeby zebrać je tutaj do powtórki';
   } else {
     const word = (n === 1) ? 'słowo' : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) ? 'słowa' : 'słów';
-    el.textContent = n + ' ' + word + ' do powtórki';
+    el.textContent = n + ' ' + word + (reviewOnly ? '' : ' do powtórki');
   }
   // Jesli panel jest otwarty, odswiez tez liste.
   const body = document.getElementById('wsReviewBody');
@@ -5450,10 +5900,15 @@ function wsPrintReview() {
   setTimeout(() => window.print(), 60);
 }
 
-// Czy wiersz to gap-fill (ma tag 'gapfill' i klamry w en).
+// Czy wiersz to gap-fill (ma tag 'gapfill' LUB instancje 'gapfill:2', 'gapfill:3'
+// itd. - tagi g2/g3/g4) oraz klamry {...} w en. Wczesniej sprawdzane bylo tylko
+// dokladne 'gapfill', przez co wiersze z drugiej/trzeciej instancji gap-fill
+// (G2, G3, G4) nie byly rozpoznawane i w powtorce zaslaniala sie cala odpowiedz
+// zamiast pojedynczych luk.
 function _wsIsGap(r) {
   const tasks = r._tasks || [];
-  return tasks.indexOf('gapfill') !== -1 && /\{[^}]+\}/.test(r.en || '');
+  const hasGap = tasks.some(t => t === 'gapfill' || t.indexOf('gapfill:') === 0);
+  return hasGap && /\{[^}]+\}/.test(r.en || '');
 }
 
 // Tekst do TTS - dla gap-fill czytamy pelne zdanie bez klamr.
@@ -5473,7 +5928,7 @@ function wsBuildReview() {
     result.innerHTML = '<p class="ws-review-empty">Zaznacz przynajmniej jeden poziom, żeby zobaczyć powtórkę.</p>';
     return;
   }
-  const want = new Set(checked.map(v => v === 'new' ? 'new' : parseInt(v, 10)));
+  const want = new Set(checked.map(v => v === 'new' ? 'new' : (v === 'none' ? 'none' : parseInt(v, 10))));
   // Zbieramy indeksy (potrzebne do mini-oceny), zachowujac dostep do wiersza.
   // Identyczne dane (ten sam klucz tresci) pokazujemy TYLKO raz - reprezentantem
   // jest pierwszy napotkany wiersz. Dzieki temu slowo z tagami np. F i M nie
@@ -5481,7 +5936,9 @@ function wsBuildReview() {
   let items = [];
   const seenKeys = new Set();
   WS_DATA.forEach((r, i) => {
-    if (!want.has(r._diff)) return;
+    // Nieocenione: w trybie tylko powtorka maja wlasny poziom 'none'.
+    const lvlKey = (r._diff == null) ? 'none' : r._diff;
+    if (!want.has(lvlKey)) return;
     const key = (WS_DIFF_ENABLED && r._diffKey) ? r._diffKey : ('idx' + i);
     if (seenKeys.has(key)) return;
     seenKeys.add(key);
@@ -5604,13 +6061,18 @@ function _wsShatter(host) {
   if (!host) return;
   const parent = host.parentNode;
   if (!parent) return;
-  // Rzadki zestaw odlamkow - 5 wielokatow pokrywajacych prostokat zaslony.
+  // Umiarkowanie gestszy zestaw odlamkow - 9 wielokatow rozchodzacych sie od
+  // srodka tafli. Wciaz lekki dla przegladarki, ale rozbicie wyglada ladniej.
   const shards = [
-    'polygon(0% 0%, 52% 0%, 38% 46%, 0% 60%)',
-    'polygon(52% 0%, 100% 0%, 100% 38%, 38% 46%)',
-    'polygon(0% 60%, 38% 46%, 46% 100%, 0% 100%)',
-    'polygon(38% 46%, 100% 38%, 100% 72%, 46% 100%)',
-    'polygon(100% 38%, 100% 100%, 46% 100%, 100% 72%)'
+    'polygon(0% 0%, 34% 0%, 46% 48%, 0% 38%)',
+    'polygon(34% 0%, 68% 0%, 46% 48%)',
+    'polygon(68% 0%, 100% 0%, 100% 36%, 46% 48%)',
+    'polygon(100% 36%, 100% 66%, 46% 48%)',
+    'polygon(100% 66%, 100% 100%, 64% 100%, 46% 48%)',
+    'polygon(64% 100%, 32% 100%, 46% 48%)',
+    'polygon(32% 100%, 0% 100%, 0% 70%, 46% 48%)',
+    'polygon(0% 70%, 0% 38%, 46% 48%)',
+    'polygon(0% 38%, 46% 48%, 34% 0%)'
   ];
   const wrap = document.createElement('span');
   wrap.className = 'ws-review-shatter';
@@ -6295,6 +6757,14 @@ function downloadTSV() {
         if (row._diff) return WS_DIFF_TSV[row._diff] || '';
         return row.difficulty || '';
       }
+      // Quiz z wlasnymi opcjami: przy parsowaniu "cat|cut|cot|cap" zostalo
+      // rozbite na row.en = "cat" + row._quizOpts = ["cut","cot","cap"], przez
+      // co dystraktory ginely przy pobieraniu. Tutaj sklejamy je z powrotem,
+      // zeby kolumna "en" zachowala pelny zestaw opcji (round-trip).
+      if (h === 'en' && row._quizOpts && row._quizOpts.length) {
+        const full = [row.en, ...row._quizOpts].join('|');
+        return full.replace(/\\t/g, ' ').replace(/\\r?\\n/g, ' ');
+      }
       const v = row[h];
       if (v == null) return '';
       // Tabulator w wartosci -> spacja (TSV nie obsluguje escapowania)
@@ -6302,6 +6772,11 @@ function downloadTSV() {
     });
     lines.push(cols.join('\\t'));
   });
+  // Metadane kolejnosci zadan na koncu (poza wierszami danych). Przy ponownym
+  // wczytaniu generator odtworzy ulozenie. Pomijamy, gdy nieznane.
+  if (Array.isArray(WS_TASK_ORDER) && WS_TASK_ORDER.length) {
+    lines.push('#order\\t' + WS_TASK_ORDER.join(','));
+  }
   const tsv = lines.join('\\n');
   // Nazwa pliku z tytulu karty (sanityzacja)
   const safeName = (WS_TITLE || 'karta-pracy')
@@ -6360,6 +6835,29 @@ window.addEventListener('load', () => {
   loadProgress();
   wsPaintAllDiff();
   if (typeof wsUpdateReviewCount === 'function') wsUpdateReviewCount();
+  // Do kazdej sekcji dokladamy przycisk "Wyczyść sekcję" (czysci interaktywne pola
+  // i cofa "ukonczono", nie ruszajac ocen trudnosci). Robimy to tu, zeby nie
+  // edytowac 9 builderow osobno. Sekcje z .ws-actions dostaja przycisk obok
+  // "Pokaż odpowiedzi"; pozostale (flashcards, cornell, writing) - wlasny pasek.
+  document.querySelectorAll('.ws-section').forEach(sec => {
+    const num = parseInt(sec.dataset.section);
+    if (isNaN(num)) return;
+    if (sec.querySelector('.ws-btn-clear-sec')) return; // idempotentnie
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'ws-btn-clear-sec';
+    btn.textContent = '↺ Wyczyść sekcję';
+    btn.title = 'Wyczyść odpowiedzi w tej sekcji (oceny trudności zostają)';
+    btn.addEventListener('click', () => wsClearSection(num));
+    let actions = sec.querySelector('.ws-actions');
+    if (!actions) {
+      actions = document.createElement('div');
+      actions.className = 'ws-actions ws-actions-auto';
+      const fb = sec.querySelector('.ws-feedback');
+      if (fb) sec.insertBefore(actions, fb); else sec.appendChild(actions);
+    }
+    actions.appendChild(btn);
+  });
   // Ustaw poczatkowy wyglad przelacznika dzwiekow wg zapisanego stanu.
   document.querySelectorAll('.ws-sound-toggle').forEach(btn => {
     btn.textContent = WS_SFX_ON ? '🔊' : '🔇';
@@ -6367,6 +6865,12 @@ window.addEventListener('load', () => {
     btn.setAttribute('aria-pressed', WS_SFX_ON ? 'true' : 'false');
     btn.setAttribute('title', WS_SFX_ON ? 'Wyłącz dźwięki' : 'Włącz dźwięki');
   });
+  // Tryb "tylko powtorka": od razu rozwin panel i pokaz wszystkie slowa.
+  if (typeof WS_REVIEW_ONLY !== 'undefined' && WS_REVIEW_ONLY) {
+    const body = document.getElementById('wsReviewBody');
+    if (body && body.hidden && typeof wsToggleReview === 'function') wsToggleReview();
+    else if (typeof wsBuildReview === 'function') wsBuildReview();
+  }
 });
 <\/script>
 </body>
@@ -6992,6 +7496,29 @@ ${t.sharp ? `
   color: var(--ws-accent);
   background: var(--ws-accent-soft);
 }
+/* "Wyczyść sekcję" - akcja porzadkowa, wiec stonowana (lekko przygaszona),
+   z delikatnym hover bez ruchu (tylko zmiana koloru / lekkie skalowanie). */
+.ws-btn-clear-sec {
+  font-family: var(--ws-body);
+  font-size: 0.86rem; font-weight: 500;
+  padding: 0.55rem 1.05rem;
+  background: transparent;
+  border: 1px dashed var(--ws-border-strong);
+  color: var(--ws-text-dim);
+  border-radius: 10px;
+  cursor: pointer;
+  opacity: 0.78;
+  margin-left: auto; /* odsuwa przycisk na prawy kraniec paska akcji */
+  transition: opacity 0.18s, color 0.18s, border-color 0.18s, transform 0.18s;
+}
+.ws-btn-clear-sec:hover {
+  opacity: 1;
+  color: var(--ws-no);
+  border-color: var(--ws-no);
+  transform: scale(1.03);
+}
+/* Pasek akcji tworzony automatycznie (sekcje bez wlasnego .ws-actions). */
+.ws-actions-auto { justify-content: flex-end; }
 
 /* ========== FLASHCARDS ========== */
 .flashcards-grid {
@@ -7800,7 +8327,7 @@ ${t.sharp ? `
   pointer-events: none;
 }
 .ws-btn-celebrate:hover::after {
-  animation: wsShineSweep 0.7s ease-out;
+  animation: wsShineSweep 0.3s ease-out;
 }
 @keyframes wsShineSweep {
   from { left: -80%; }
@@ -7861,6 +8388,80 @@ ${t.sharp ? `
   border-color: var(--ws-accent);
   color: var(--ws-accent);
 }
+
+/* Stopkowy "Zakoncz wczesniej" - delikatny akcent, ale wyrazniejszy niz Reset,
+   bo to swiadoma akcja swietowania. */
+.ws-btn-finish-early {
+  font-family: var(--ws-body); font-size: 0.82rem; font-weight: 600;
+  padding: 0.55rem 1.05rem;
+  background: var(--ws-accent-soft);
+  border: none;
+  color: color-mix(in srgb, var(--ws-accent) 82%, #000000);
+  border-radius: 9px;
+  cursor: pointer;
+  transition: filter 0.18s, transform 0.18s;
+}
+.ws-btn-finish-early:hover { filter: brightness(0.97); transform: scale(1.03); }
+
+/* ── PRZEPLYW KONCOWY: baner pytania o powtorke ── */
+.ws-review-endprompt {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 0.8rem 1.2rem;
+  margin: 0 0 1.1rem;
+  padding: 0.95rem 1.15rem;
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--ws-accent) 14%, #ffffff) 0%,
+    color-mix(in srgb, var(--ws-accent) 22%, #ffffff) 100%);
+  border-radius: 14px;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+/* WAZNE: atrybut [hidden] musi wygrac z display:flex powyzej, inaczej baner
+   bylby widoczny CALY CZAS. Pokazuje sie dopiero po ukonczeniu wszystkich zadan
+   (JS zdejmuje hidden), a po kliknieciu Tak/Nie znika (JS przywraca hidden). */
+.ws-review-endprompt[hidden] { display: none !important; }
+.ws-review-endprompt-text {
+  font-family: var(--ws-display); font-weight: 700; font-size: 1.02rem;
+  color: color-mix(in srgb, var(--ws-accent) 80%, #000000);
+  letter-spacing: -0.01em;
+}
+.ws-review-endprompt-actions { display: inline-flex; gap: 0.6rem; flex-wrap: wrap; }
+.ws-review-endprompt-yes, .ws-review-endprompt-no {
+  font-family: var(--ws-body); font-weight: 600; font-size: 0.9rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px; cursor: pointer;
+  transition: filter 0.18s, transform 0.18s;
+  border: none;
+}
+.ws-review-endprompt-yes {
+  background: var(--ws-accent); color: #fff;
+}
+.ws-review-endprompt-no {
+  background: var(--ws-card);
+  color: color-mix(in srgb, var(--ws-accent) 78%, #000000);
+  border: 1.5px solid var(--ws-border-strong);
+}
+.ws-review-endprompt-yes:hover, .ws-review-endprompt-no:hover {
+  filter: brightness(0.96); transform: scale(1.03);
+}
+
+/* ── PRZEPLYW KONCOWY: przycisk "Gotowe!" pod lista powtorki (zwykly styl) ── */
+.ws-review-finish-wrap { text-align: center; margin-top: 1.4rem; }
+.ws-review-finish-btn {
+  font-family: var(--ws-body); font-weight: 600; font-size: 0.95rem;
+  padding: 0.7rem 1.6rem;
+  background: var(--ws-accent); color: #fff;
+  border: none; border-radius: 11px; cursor: pointer;
+  transition: filter 0.18s, transform 0.18s;
+}
+.ws-review-finish-btn:hover { filter: brightness(0.96); transform: scale(1.03); }
+
+/* ── TRYB "TYLKO POWTORKA" ──
+   Karta jest sama powtorka: chowamy pasek postepu, finale i "Zakoncz wczesniej"
+   (nie ma czego konczyc). Panel powtorki dostaje troche wiecej oddechu u gory. */
+body.ws-review-only-mode .ws-progress-wrap,
+body.ws-review-only-mode .ws-finale,
+body.ws-review-only-mode .ws-btn-finish-early { display: none !important; }
+body.ws-review-only-mode .ws-review { margin-top: 0.5rem; }
 
 /* ========== TTS BUTTONS ========== */
 .tts-btn {
@@ -8714,6 +9315,28 @@ ${t.sharp ? `
   opacity: 0.35;
   cursor: not-allowed;
   transform: none;
+}
+
+/* ── WĄSKI EKRAN: przyciski akcji schodzą POD pole wpisywania ──
+   Przy ciasnym interfejsie (telefon, waska karta) przyciski obok pola bardzo
+   sciskaly samo pole. Tutaj pole bierze pelna szerokosc (wlasny "akapit"),
+   a przyciski zawijaja sie do osobnego rzedu pod spodem. */
+@media (max-width: 560px) {
+  .trans-input-row { flex-wrap: wrap; align-items: stretch; }
+  .trans-input { flex: 1 1 100%; width: 100%; }
+  .trans-input-actions { width: 100%; justify-content: flex-end; }
+  .trans-check, .trans-hint-btn, .trans-solve-btn, .tts-btn-trans { width: 2.7rem; height: 2.7rem; }
+
+  .scramble-input-row { flex-wrap: wrap; align-items: stretch; }
+  .scramble-input { flex: 1 1 100%; width: 100%; }
+  /* Przyciski scramble (sprawdz / hint / solve / tts / backspace) razem w rzedzie
+     pod polem - rozciagamy je rownomiernie, zeby ladnie wypelnily szerokosc. */
+  .scramble-input-row > .scramble-check,
+  .scramble-input-row > .scramble-hint-btn,
+  .scramble-input-row > .scramble-solve-btn,
+  .scramble-input-row > .scramble-tts-btn {
+    flex: 1 1 auto;
+  }
 }
 .trans-correct {
   margin-top: 1rem;
