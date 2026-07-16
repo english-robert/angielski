@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Generator Kart Pracy</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400&family=JetBrains+Mono:wght@400;500;700&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&display=swap" rel="stylesheet">
 <!-- ╔═══════════════════════════════════════════════════════════════════════╗
      ║  DOMYŚLNY ZESTAW CZCIONEK UŻYTKOWNIKA                                  ║
      ║  Aby go podmienić, zastąp poniższy <link> (ten z "family=Amaranth...") ║
@@ -32,9 +31,10 @@
   --error: #dc2626;
   --ok: #1d8348;
   --highlight: #fef3c7;
-  --display: 'Fraunces', serif;
-  --body: 'Bricolage Grotesque', sans-serif;
-  --mono: 'JetBrains Mono', monospace;
+  /* Jedna czcionka w calym generatorze: Montserrat (ladowana z linku w <head>). */
+  --display: 'Montserrat', sans-serif;
+  --body: 'Montserrat', sans-serif;
+  --mono: 'Montserrat', sans-serif;
 }
 
 html { scroll-behavior: smooth; }
@@ -47,48 +47,23 @@ body {
   overflow-x: hidden;
 }
 
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 50% 40% at 90% 0%, rgba(46, 204, 113, 0.18), transparent 65%),
-    radial-gradient(ellipse 60% 45% at 5% 100%, rgba(29, 131, 72, 0.12), transparent 60%),
-    radial-gradient(ellipse 30% 25% at 50% 50%, rgba(254, 243, 199, 0.4), transparent 70%);
-  pointer-events: none;
-  z-index: 0;
-}
+.app { max-width: 1100px; margin: 0 auto; padding: 2.5rem 2rem 6rem; position: relative; z-index: 1; }
 
-.app { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem 6rem; position: relative; z-index: 1; }
-
-/* HEADER */
-.header { margin-bottom: 3rem; display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
-.header-left { flex: 1; min-width: 300px; }
+/* HEADER - minimalistyczny (panel widzi tylko autor) */
+.header { margin-bottom: 2rem; }
+/* Numer wersji jako badge (pigulka z obwodka - jak dawny version-tag) */
 .eyebrow {
-  font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.25em;
-  text-transform: uppercase; color: var(--accent-bright); margin-bottom: 0.6rem;
+  display: inline-block;
+  font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.45rem;
   font-weight: 600;
+  border: 1px solid var(--border);
+  padding: 0.3rem 0.7rem 0.3rem 0.85rem;
+  border-radius: 999px;
 }
 .header h1 {
-  font-family: var(--display); font-weight: 900; font-size: clamp(2.2rem, 4.5vw, 3.4rem);
-  line-height: 1.05; letter-spacing: -0.02em; color: var(--text);
-}
-.header h1 em {
-  font-style: italic; font-weight: 700;
-  background: linear-gradient(135deg, #1d8348 0%, #2ecc71 50%, #f59e0b 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  padding: 0.05em 0.08em 0.15em;
-  letter-spacing: 0;
-  display: inline-block;
-  line-height: 1.15;
-  vertical-align: baseline;
-}
-.header p { color: var(--text-dim); margin-top: 0.6rem; max-width: 540px; font-size: 0.95rem; }
-.version-tag {
-  font-family: var(--mono); font-size: 0.7rem; color: var(--text-muted);
-  border: 1px solid var(--border); padding: 0.35rem 0.7rem; border-radius: 999px;
+  font-family: var(--display); font-weight: 700; font-size: clamp(1.7rem, 3vw, 2.3rem);
+  line-height: 1.1; letter-spacing: -0.015em; color: var(--text);
 }
 
 /* SECTIONS */
@@ -103,10 +78,9 @@ body::before {
 .sec-num {
   font-family: var(--mono); font-size: 0.75rem; font-weight: 700;
   width: 32px; height: 32px; border-radius: 8px;
-  background: linear-gradient(135deg, #1d8348 0%, #2ecc71 100%);
+  background: var(--accent);
   color: #fff;
   display: grid; place-items: center;
-  box-shadow: 0 2px 8px rgba(29, 131, 72, 0.3);
 }
 .sec-title { font-family: var(--display); font-weight: 700; font-size: 1.4rem; letter-spacing: -0.015em; }
 .sec-desc { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 1.2rem; margin-top: -0.6rem; padding-left: 2.65rem; }
@@ -173,12 +147,14 @@ body::before {
 }
 .select { cursor: pointer; }
 .textarea {
-  font-family: var(--mono);
-  font-size: 0.85rem;
+  font-family: var(--body);
+  font-size: 1rem;
   min-height: 180px;
   resize: vertical;
-  line-height: 1.55;
+  line-height: 1.6;
+  tab-size: 10;
 }
+
 .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 @media (max-width: 600px) { .row { grid-template-columns: 1fr; } }
 
@@ -217,7 +193,7 @@ body::before {
 .tsv-status.orphan-warn strong { color: #7a3f08; }
 
 /* CHECKBOX TASK TYPES */
-.task-grid { display: grid; grid-template-columns: 1fr; gap: 0.7rem; }
+.task-grid { display: grid; grid-template-columns: 1fr; gap: 0.7rem; overflow-anchor: none; }
 .task-card {
   display: flex;
   /* Pol-na-pol: lewa kolumna = checkbox + opis (w task-card-main), prawa = pola edycji */
@@ -228,10 +204,19 @@ body::before {
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: 11px;
-  cursor: grab;
-  transition: border-color 0.18s, background 0.18s, opacity 0.18s, box-shadow 0.18s;
+  transition: border-color 0.18s, background 0.18s;
   position: relative;
 }
+/* Komunikat gdy nie ma zadnych dostepnych typow (brak danych) */
+.task-grid-empty {
+  display: none;
+  padding: 1rem 1.2rem;
+  border: 1.5px dashed var(--border-bright);
+  border-radius: 11px;
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}
+.task-grid-empty.show { display: block; margin-bottom: 1.1rem; }
 /* Wrapper na lewa strone (dodawany przez JS przy inicjalizacji kafelka).
    Lewa strona to flex w pionie: gora = checkbox+info, dol = suboption (opcjonalne). */
 .task-card-main {
@@ -270,18 +255,10 @@ body::before {
     border-top: 1px solid var(--border);
   }
 }
-.task-card:active { cursor: grabbing; }
-.task-card.dragging {
-  opacity: 0.45;
-  box-shadow: 0 8px 22px rgba(29, 131, 72, 0.18);
-}
-.task-card.drag-over {
-  border-color: var(--accent);
-  background: rgba(45, 204, 113, 0.08);
-}
 .task-card:hover:not(.disabled) { border-color: var(--border-bright); }
 .task-card.checked { border-color: var(--accent); background: rgba(196, 245, 58, 0.04); }
-.task-card.disabled { opacity: 0.4; cursor: not-allowed; }
+/* Typy zadan bez pasujacych wierszy w danych sa CALKOWICIE ukryte (zero "duchow") */
+.task-card.disabled { display: none; }
 
 .reorder-reset {
   margin-top: 1rem;
@@ -416,8 +393,10 @@ body::before {
 .task-edit-image-preview img {
   display: block;
   width: 100%;
-  /* Wysokosc i object-fit ustawiane inline z JS (wierny podglad kadru). */
-  height: 150px;
+  /* Proporcje kadru (aspect-ratio) i object-fit ustawiane inline z JS -
+     dokladnie te same wartosci co na karcie pracy (wierny podglad). */
+  height: auto;
+  aspect-ratio: 916 / 150;
   object-fit: cover;
 }
 .task-edit-image-preview.error img {
@@ -627,27 +606,28 @@ body::before {
   filter: grayscale(1) opacity(0.7);
 }
 
-/* Input numerka kolejnosci - mala plakietka w lewym gornym rogu karty.
-   Pozwala wpisac pozycje recznie zamiast drag-and-drop. */
-.task-order-num {
+/* Kolejnosc zadan: edytowalny numer pozycji + strzalki gora/dol.
+   Zastapily drag-and-drop (przesuwanie tak duzych kafelkow bylo niewygodne). */
+.task-move {
   position: absolute;
   top: 0.5rem;
   left: 0.5rem;
-  width: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.task-order-num {
+  width: 44px;
   height: 26px;
   padding: 0 0.25rem;
   font-family: var(--mono);
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 700;
   text-align: center;
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text-dim);
   border-radius: 6px;
-  cursor: text;
-  transition: all 0.15s;
-  opacity: 0.55;
-  /* Ukryj strzalki w numerze (Chrome/Safari) */
   -moz-appearance: textfield;
 }
 .task-order-num::-webkit-outer-spin-button,
@@ -655,30 +635,48 @@ body::before {
   -webkit-appearance: none;
   margin: 0;
 }
-/* Zadanie odznaczone: nie liczy sie do kolejnosci - puste, zablokowane pole */
-.task-order-num.order-inactive {
-  opacity: 0.25;
-  cursor: default;
-  border-style: dashed;
-}
-.task-order-num.order-inactive::after { content: ''; }
-.task-card:hover .task-order-num,
-.task-card.checked .task-order-num {
-  opacity: 1;
-}
-.task-order-num:hover {
-  border-color: var(--border-bright);
-  color: var(--text);
-}
 .task-order-num:focus {
   outline: none;
   border-color: var(--accent);
   color: var(--accent);
-  background: rgba(196, 245, 58, 0.06);
 }
-.task-card.disabled .task-order-num {
-  opacity: 0.25;
-  pointer-events: none;
+.task-move-btn {
+  width: 28px;
+  height: 26px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-dim);
+  border-radius: 6px;
+  font-size: 0.72rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.task-move-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(29, 131, 72, 0.06);
+}
+.task-move-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.task-move.order-inactive { opacity: 0.35; }
+
+/* Skrot tagu TSV przed nazwa zadania (np. f, m2) */
+.task-tag {
+  display: inline-block;
+  min-width: 1.5rem;
+  padding: 0.05rem 0.35rem;
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--accent);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 5px;
 }
 
 .task-suboption {
@@ -730,7 +728,7 @@ body::before {
 .bg-style-btn.selected { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(196, 245, 58, 0.15); }
 .bg-style-thumb {
   display: block; width: 100%; aspect-ratio: 16/10;
-  border-radius: 7px; overflow: hidden; background: #fffaff;
+  border-radius: 7px; overflow: hidden; background: #fbfcff;
   border: 1px solid var(--border);
 }
 .bg-style-name { font-size: 0.8rem; font-weight: 600; color: var(--text-dim); }
@@ -738,23 +736,55 @@ body::before {
 /* Miniaturki teł - uproszczone podglądy. Akcent demonstracyjny: różowy pastel. */
 .thumb-blobs {
   background:
-    radial-gradient(ellipse 70% 60% at 0% 0%, rgba(214,90,138,0.55), transparent 62%),
+    radial-gradient(ellipse 70% 60% at 0% 0%, rgba(37,99,235,0.5), transparent 62%),
     radial-gradient(ellipse 60% 52% at 100% 100%, rgba(168,123,200,0.5), transparent 62%),
     radial-gradient(ellipse 55% 48% at 95% 5%, rgba(126,181,212,0.52), transparent 62%),
-    radial-gradient(ellipse 55% 50% at 5% 100%, rgba(244,168,168,0.42), transparent 62%), #fffaff;
+    radial-gradient(ellipse 55% 50% at 5% 100%, rgba(96,165,250,0.4), transparent 62%), #fbfcff;
   filter: blur(3px);
 }
 .thumb-dots {
-  background-image: radial-gradient(rgba(214,90,138,0.7) 1.5px, transparent 1.6px);
-  background-size: 10px 10px; background-color: #fffaff;
+  background-image: radial-gradient(rgba(37,99,235,0.65) 1.5px, transparent 1.6px);
+  background-size: 10px 10px; background-color: #fbfcff;
 }
 .thumb-grid {
   background-image:
-    linear-gradient(rgba(214,90,138,0.28) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(214,90,138,0.28) 1px, transparent 1px);
-  background-size: 16px 16px; background-color: #fffaff;
+    linear-gradient(rgba(37,99,235,0.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37,99,235,0.3) 1px, transparent 1px);
+  background-size: 16px 16px; background-color: #fbfcff;
 }
-.thumb-none { background: #fffaff; }
+.thumb-none { background: #fbfcff; }
+/* Miniatura "Własne SVG" - po wklejeniu kodu pokazuje prawdziwy wzorek */
+.thumb-svg {
+  background-color: #fbfcff;
+  background-image:
+    linear-gradient(45deg, rgba(37,99,235,0.18) 25%, transparent 25%, transparent 75%, rgba(37,99,235,0.18) 75%),
+    linear-gradient(45deg, rgba(37,99,235,0.18) 25%, transparent 25%, transparent 75%, rgba(37,99,235,0.18) 75%);
+  background-size: 14px 14px;
+  background-position: 0 0, 7px 7px;
+}
+
+/* Panel wlasnego tla SVG */
+.svg-bg-wrap { display: grid; gap: 0.6rem; margin-top: 0.7rem; }
+.svg-bg-textarea { min-height: 110px; font-family: var(--mono); font-size: 0.82rem; }
+.svg-bg-controls { display: grid; grid-template-columns: 180px 1fr; gap: 0.8rem; align-items: end; }
+@media (max-width: 600px) { .svg-bg-controls { grid-template-columns: 1fr; } }
+.svg-bg-ctl { display: grid; gap: 0.35rem; }
+.svg-bg-op-row { display: flex; align-items: center; gap: 0.6rem; }
+.svg-bg-op-row input[type="range"] { flex: 1; accent-color: var(--accent); }
+#svgBgOpacityVal { font-family: var(--mono); font-size: 0.8rem; color: var(--text-dim); min-width: 3ch; }
+
+/* Podglad wybranej czcionki (naglowek + tekst) - laduje font na zywo */
+.font-preview {
+  display: grid;
+  gap: 0.15rem;
+  margin-top: 0.6rem;
+  padding: 0.75rem 1rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+}
+.font-preview-display { font-size: 1.35rem; font-weight: 700; line-height: 1.25; }
+.font-preview-body { font-size: 0.98rem; color: var(--text-dim); }
 
 /* Font custom fields */
 .font-custom-wrap { display: grid; gap: 0.5rem; margin-top: 0.6rem; }
@@ -778,6 +808,12 @@ body::before {
   padding: 0.7rem 0.9rem; background: var(--surface-2);
   border: 1.5px solid var(--border); border-radius: 10px;
   transition: all 0.18s; font: inherit; color: var(--text-dim); font-weight: 600;
+  min-width: 0;
+}
+.corner-btn span:last-child { overflow-wrap: anywhere; }
+/* Telefon: wezsze paddingi i mniejszy tekst, zeby napisy nie wyjezdzaly z przyciskow */
+@media (max-width: 480px) {
+  .corner-btn { padding: 0.65rem 0.5rem; gap: 0.45rem; font-size: 0.82rem; }
 }
 .corner-btn:hover { border-color: var(--border-bright); }
 .corner-btn.selected { border-color: var(--accent); color: var(--text); box-shadow: 0 0 0 3px rgba(196, 245, 58, 0.15); }
@@ -811,43 +847,6 @@ body::before {
 }
 .color-reset:hover { color: var(--accent); border-color: var(--accent); }
 /* Toggle: kolorystyka karty wyprowadzana z koloru akcentu */
-.accent-derive-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.7rem;
-  margin-top: 0.9rem;
-  padding: 0.85rem 1rem;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
-}
-.accent-derive-row:hover { border-color: var(--border-bright); }
-.accent-derive-row input[type="checkbox"] { display: none; }
-.accent-derive-box {
-  flex-shrink: 0;
-  width: 20px; height: 20px;
-  margin-top: 0.1rem;
-  border: 2px solid var(--border-bright);
-  border-radius: 5px;
-  display: grid; place-items: center;
-  transition: all 0.15s;
-}
-.accent-derive-row input:checked + .accent-derive-box {
-  background: var(--accent);
-  border-color: var(--accent);
-}
-.accent-derive-row input:checked + .accent-derive-box::after {
-  content: '✓';
-  color: #0d0d0d;
-  font-size: 0.8rem;
-  font-weight: 800;
-  line-height: 1;
-}
-.accent-derive-text { display: flex; flex-direction: column; gap: 0.2rem; }
-.accent-derive-text strong { font-size: 0.92rem; }
-.accent-derive-hint { font-size: 0.8rem; color: var(--text-dim); line-height: 1.45; }
 @media (max-width: 700px) { .color-row { grid-template-columns: 1fr; } }
 
 /* TTS SECTION */
@@ -1061,15 +1060,15 @@ body::before {
   display: none;
 }
 .tsv-example-wrap.show { display: block; }
+/* Kolumna: przycisk "Uzyj tych danych" NAD opisem, dosuniety do prawej.
+   Wczesniej staly obok siebie i przycisk wpychal tekst (zwlaszcza na telefonie). */
 .tsv-example-head {
   display: flex;
-  gap: 1rem;
-  align-items: flex-start;
+  flex-direction: column;
+  gap: 0.7rem;
   margin-bottom: 0.6rem;
-  flex-wrap: wrap;
 }
 .tsv-example-info {
-  flex: 1;
   min-width: 0;
   font-size: 0.78rem;
   color: var(--text-dim);
@@ -1087,7 +1086,8 @@ body::before {
   color: var(--text);
 }
 .tsv-example-use {
-  flex-shrink: 0;
+  align-self: flex-end;
+  order: -1;
   font-family: var(--body);
   font-size: 0.85rem;
   font-weight: 600;
@@ -1135,11 +1135,9 @@ body::before {
 <div class="app">
   <header class="header">
     <div class="header-left">
-      <div class="eyebrow" id="genVersionEyebrow">Worksheet Generator · v2.5</div>
-      <h1>Karta <em>pracy</em><br>w 30 sekund</h1>
-      <p>Wklej dane, wybierz styl i typy zadań, pobierz gotowy plik HTML. Działa offline, możesz wysłać uczniowi mailem albo wydrukować.</p>
+      <div class="eyebrow" id="genVersionEyebrow">v2.5</div>
+      <h1>Worksheet Generator</h1>
     </div>
-    <span class="version-tag">FAZA 1 · 3 typy zadań</span>
   </header>
 
   <!-- SECTION 1: DATA -->
@@ -1214,7 +1212,8 @@ Napisz krótki email do przyjaciela o weekendzie.	Use past simple. Include at le
       <div class="sec-num">02</div>
       <div class="sec-title">Typy zadań</div>
     </div>
-    <div class="sec-desc">Wybierz, które sekcje mają znaleźć się na karcie pracy. <strong>Przeciągnij kafelki</strong>, żeby zmienić kolejność na karcie. Każda sekcja używa tych samych słówek.</div>
+    <div class="sec-desc">Widoczne są tylko typy zadań wykryte w danych. Strzałkami zmieniasz ich kolejność na karcie.</div>
+    <div class="task-grid-empty" id="taskGridEmpty">Wklej dane w sekcji 01, żeby zobaczyć dostępne typy zadań.</div>
 
     <div class="instr-master">
       <button type="button" class="instr-master-btn" id="selectAllBtn">
@@ -1341,6 +1340,27 @@ Napisz krótki email do przyjaciela o weekendzie.	Use past simple. Include at le
           <span class="bg-style-thumb thumb-none"></span>
           <span class="bg-style-name">Brak</span>
         </button>
+        <button type="button" class="bg-style-btn" data-bg="svg">
+          <span class="bg-style-thumb thumb-svg" id="svgThumb"></span>
+          <span class="bg-style-name">Własne SVG</span>
+        </button>
+      </div>
+      <div class="svg-bg-wrap" id="svgBgWrap" style="display:none;">
+        <label class="label" for="svgBgCode">Wzorek SVG - wklej kod &lt;svg&gt;, cały blok CSS z background-image albo sam data:image/svg+xml (np. z heropatterns.com)</label>
+        <textarea id="svgBgCode" class="textarea svg-bg-textarea" spellcheck="false" placeholder='<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" ...>...</svg>'></textarea>
+        <div class="svg-bg-controls">
+          <label class="svg-bg-ctl">
+            <span class="task-edit-label">Rozmiar kafelka (px)</span>
+            <input type="number" id="svgBgSize" class="input" min="20" max="800" step="10" placeholder="auto">
+          </label>
+          <label class="svg-bg-ctl">
+            <span class="task-edit-label">Widoczność</span>
+            <span class="svg-bg-op-row">
+              <input type="range" id="svgBgOpacity" min="0.05" max="1" step="0.05" value="1">
+              <span id="svgBgOpacityVal">100%</span>
+            </span>
+          </label>
+        </div>
       </div>
     </div>
 
@@ -1353,6 +1373,10 @@ Napisz krótki email do przyjaciela o weekendzie.	Use past simple. Include at le
         <option value="system">Systemowa (najszybsza, bez pobierania)</option>
         <option value="custom">Własna (wklej link Google Fonts)</option>
       </select>
+      <div class="font-preview" id="fontPreview">
+        <span class="font-preview-display" id="fontPreviewDisplay">Nagłówek Aa Ąę</span>
+        <span class="font-preview-body" id="fontPreviewBody">Tekst karty: Zażółć gęślą jaźń · the quick brown fox 0123</span>
+      </div>
       <div id="fontCustomWrap" class="font-custom-wrap" style="display:none;">
         <input type="text" id="fontCustomUrl" class="input" placeholder="Link z Google Fonts (jeden, może zawierać kilka rodzin)">
         <div class="font-custom-selects">
@@ -1400,18 +1424,18 @@ Napisz krótki email do przyjaciela o weekendzie.	Use past simple. Include at le
       <label class="label">Kolory (opcjonalnie - nadpisz domyślne)</label>
       <div class="color-row">
         <div class="color-field">
-          <input type="color" id="colorAccent" value="#d65a8a">
+          <input type="color" id="colorAccent" value="#2563eb">
           <div class="color-field-info">
             <div class="color-field-label">Akcent</div>
-            <div class="color-field-hex" id="colorAccentHex">#d65a8a</div>
+            <div class="color-field-hex" id="colorAccentHex">#2563eb</div>
           </div>
           <button type="button" class="color-reset" data-target="accent">RESET</button>
         </div>
         <div class="color-field">
-          <input type="color" id="colorBg" value="#fffaff">
+          <input type="color" id="colorBg" value="#fbfcff">
           <div class="color-field-info">
             <div class="color-field-label">Tło karty</div>
-            <div class="color-field-hex" id="colorBgHex">#fffaff</div>
+            <div class="color-field-hex" id="colorBgHex">#fbfcff</div>
           </div>
           <button type="button" class="color-reset" data-target="bg">RESET</button>
         </div>
@@ -1424,14 +1448,9 @@ Napisz krótki email do przyjaciela o weekendzie.	Use past simple. Include at le
           <button type="button" class="color-reset" data-target="text">RESET</button>
         </div>
       </div>
-      <label class="accent-derive-row" for="accentDeriveChk" title="Tła sekcji, boxów zadań, fiszek i ramki przyjmują mocno rozjaśnione odcienie koloru akcentu">
-        <input type="checkbox" id="accentDeriveChk">
-        <span class="accent-derive-box" aria-hidden="true"></span>
-        <span class="accent-derive-text">
-          <strong>🎨 Kolorystyka z koloru akcentu</strong>
-          <span class="accent-derive-hint">Tła sekcji, boxów zadań i fiszek staną się mocno rozjaśnionymi odcieniami akcentu - spójna paleta z jednego koloru. Tło karty i kolor tekstu zostają bez zmian.</span>
-        </span>
-      </label>
+      <div class="tts-info" style="margin-top:0.6rem;">
+        ⓘ Kolorystyka karty (tła sekcji, boxów zadań, fiszek, ramki) jest zawsze wyprowadzana z koloru akcentu - spójna paleta z jednego koloru.
+      </div>
     </div>
   </div>
 
@@ -1496,28 +1515,10 @@ Napisz krótki email do przyjaciela o weekendzie.	Use past simple. Include at le
       <div class="sec-num">05</div>
       <div class="sec-title">Opcje dodatkowe</div>
     </div>
-    <div class="sec-desc">Logo na karcie oraz przyciski oznaczania trudności (jak w Anki).</div>
-
-    <!-- Podsekcja: Logo -->
-    <div class="subsec-title">Logo na karcie</div>
-    <div class="field">
-      <label class="checkbox-row">
-        <input type="checkbox" id="logoEnabled" checked>
-        <span class="checkbox-mark"></span>
-        <span class="checkbox-label">Pokaż logo na górze i dole karty</span>
-      </label>
-    </div>
-
-    <div class="field" id="logoConfig">
-      <label class="label" for="logoUrl">URL pliku SVG logo</label>
-      <input type="text" id="logoUrl" class="input" value="https://english-robert.github.io/angielski/img/loga/ewr-logo.svg" placeholder="https://...">
-      <div class="tts-info">
-        ⓘ Logo ładuje się z podanego URL. Wymaga że URL jest publicznie dostępny i przeglądarka ma internet przy otwieraniu karty (po pierwszym otwarciu jest cache'owane). Domyślny URL wskazuje na twoje GitHub Pages.
-      </div>
-    </div>
+    <div class="sec-desc">Przyciski oznaczania trudności (jak w Anki) oraz tryb samej powtórki.</div>
 
     <!-- Podsekcja: Śledzenie trudności -->
-    <div class="subsec-title subsec-title-spaced">Śledzenie trudności</div>
+    <div class="subsec-title">Śledzenie trudności</div>
     <div class="field">
       <label class="checkbox-row">
         <input type="checkbox" id="difficultyEnabled" checked>
@@ -1573,7 +1574,18 @@ Napisz krótki email do przyjaciela o weekendzie.	Use past simple. Include at le
 // Jedno zrodlo prawdy o numerze wersji. Uzywane w naglowku generatora
 // ORAZ w badge "Worksheet vX.Y" na samej karcie pracy - dzieki temu
 // wiadomo, w jakiej wersji generatora powstala dana karta.
-const WS_GEN_VERSION = '2.5';
+const WS_GEN_VERSION = '2.6';
+
+// LOGO KARTY PRACY - jeden staly URL, zawsze widoczne na gorze i dole karty.
+// Chcesz inne logo? Podmien ponizszy adres (jedyne miejsce w kodzie).
+const WS_LOGO_URL = 'https://english-robert.github.io/angielski/img/loga/ewr-logo.svg';
+
+// REFERENCYJNA szerokosc tresci karty pracy (max-width 980px minus boczne
+// paddingi 2x32px). Kadr obrazka sekcji definiujemy PROPORCJA (aspect-ratio =
+// WS_IMG_REF_W / wysokosc z suwaka), a nie sztywna wysokoscia w px - dzieki
+// temu wycinek obrazu jest IDENTYCZNY w podgladzie generatora i na karcie,
+// na kazdej szerokosci ekranu i wydruku (skaluje sie caly kadr, nie kadrowanie).
+const WS_IMG_REF_W = 916;
 
 // Domyslny zestaw czcionek uzytkownika (ten sam link, ktory siedzi w <head>).
 // Z niego budujemy listy rozwijane w trybie "Własna czcionka", zeby nie trzeba
@@ -1600,7 +1612,7 @@ function parseGoogleFontFamilies(url) {
 // Naglowek generatora trzyma sie tej samej stalej (bez recznej edycji w HTML).
 (function(){
   const _gv = document.getElementById('genVersionEyebrow');
-  if (_gv) _gv.textContent = 'Worksheet Generator · v' + WS_GEN_VERSION;
+  if (_gv) _gv.textContent = 'v' + WS_GEN_VERSION;
 })();
 
 // ============================================================
@@ -1610,8 +1622,12 @@ const STATE = {
   rows: [],
   headers: [],
   // --- WYGLĄD (edytor zamiast presetów) ---
-  // Styl tła: 'blobs' (miękkie plamy), 'dots' (kropki), 'grid' (siatka), 'none'.
+  // Styl tła: 'blobs' (miękkie plamy), 'dots' (kropki), 'grid' (siatka), 'none', 'svg' (własny wzorek).
   bgStyle: 'blobs',
+  // Własne tło SVG: wklejony kod <svg>, rozmiar kafelka w px (null = auto) i widoczność 0-1.
+  bgSvgCode: '',
+  bgSvgSize: null,
+  bgSvgOpacity: 1,
   // Zestaw czcionek: 'grotesque' | 'serif' | 'geometric' | 'system' | 'custom'.
   fontKey: 'grotesque',
   // Własna czcionka (gdy fontKey === 'custom'): { url, family, displayFamily }.
@@ -1620,8 +1636,9 @@ const STATE = {
   sharpCorners: false,
   // Gradient w tytule karty: true = kolorowy sweep, false = płaski akcent.
   headerGradient: true,
-  // Tryb kolorystyczny: tla sekcji/boxow/fiszek wyprowadzane z koloru akcentu
-  accentDerived: false,
+  // Kolorystyka karty ZAWSZE wyprowadzana z koloru akcentu (opcja usunieta z UI,
+  // bo i tak zawsze byla zaznaczana - bez niej karta wygladala zle).
+  accentDerived: true,
   customAccent: null,
   customBg: null,
   customText: null,
@@ -1652,6 +1669,8 @@ const STATE = {
   taskImageFit: { flashcards: 'cover', matching: 'cover', scramble: 'cover', quiz: 'cover', unscramble: 'cover', cornell: 'cover', gapfill: 'cover', translate: 'cover', writing: 'cover' },
   // Wysokosc kadru w px (tryb 'cover'). Domyslnie 150.
   taskImageHeight: { flashcards: 150, matching: 150, scramble: 150, quiz: 150, unscramble: 150, cornell: 150, gapfill: 150, translate: 150, writing: 150 },
+  // Kadrowanie pionowe obrazka w % (tryb 'cover'): 0 = gora, 50 = srodek, 100 = dol.
+  taskImagePosY: { flashcards: 50, matching: 50, scramble: 50, quiz: 50, unscramble: 50, cornell: 50, gapfill: 50, translate: 50, writing: 50 },
   quizOptions: 4,
   ttsEnabled: true,
   ttsLang: 'en-GB',
@@ -1659,8 +1678,6 @@ const STATE = {
   // Predkosc mowy TTS (0.5 - 1.5, domyslnie 0.75). Wartosc przekazywana do utterance.rate
   // w wygenerowanej karcie + uzywana w teście w generatorze.
   ttsRate: 0.75,
-  logoEnabled: true,
-  logoUrl: 'https://english-robert.github.io/angielski/img/loga/ewr-logo.svg',
   // Sledzenie trudnosci (Anki-style 1-4). Domyslnie WLACZONE.
   difficultyEnabled: true,
   reviewOnly: false
@@ -1680,9 +1697,9 @@ const DEFAULT_INSTRUCTIONS = {
   writing:    'Napisz odpowiedź według polecenia. Kliknij "Gotowe", gdy skończysz.'
 };
 
-// Domyślne kolory wyglądu (startowo jak dawny pastel: jasne tło, ciemny tekst).
+// Domyślne kolory wyglądu: nasycony niebieski akcent + chłodna, prawie biała karta.
 // cardBg, border, textDim itp. wyliczane są w getPresetTheme / accentDerived.
-const APPEARANCE_DEFAULTS = { accent: '#d65a8a', bg: '#fffaff', text: '#1a1414' };
+const APPEARANCE_DEFAULTS = { accent: '#2563eb', bg: '#fbfcff', text: '#1a1414' };
 // Zachowane pod starą nazwą dla zgodności ze starszym kodem, który mógł
 // odwoływać się do PRESET_DEFAULTS[STATE.preset].
 const PRESET_DEFAULTS = { custom: APPEARANCE_DEFAULTS };
@@ -1692,19 +1709,34 @@ const PRESET_DEFAULTS = { custom: APPEARANCE_DEFAULTS };
 // ============================================================
 function parseTSV(text) {
   const allLines = text.trim().split(/\r?\n/).filter(l => l.trim().length > 0);
-  // Linia metadanych kolejnosci zadan: "#order<TAB>flashcards,gapfill,quiz,...".
-  // Zapisywana na koncu pobieranego TSV, pozwala odtworzyc ulozenie zadan bez
-  // recznego przestawiania. Wyciagamy ja i NIE traktujemy jako wiersz danych.
+  // Metadane kolejnosci zadan. Dwa formaty:
+  //   1) w jednej linii:   "#order<TAB>flashcards,gapfill,quiz"
+  //   2) w kolumnie (od v2.6): linia "#order", a POD nia kolejne linie z jednym
+  //      tagiem/nazwa kazda (f, g2, matching, ...) - jak komorki jednej kolumny.
+  // Wpisy normalizujemy pozniej przez parseTaskTags, wiec dzialaja tez skroty
+  // i numery instancji (g2 -> gapfill:2). Linie te NIE sa wierszami danych.
   let parsedOrder = null;
-  const lines = allLines.filter(l => {
-    const lower = l.trim().toLowerCase();
-    if (lower.indexOf('#order') === 0) {
-      // wszystko po pierwszym separatorze (tab/;/,) lub spacji to lista kluczy
-      const rest = l.trim().replace(/^#order/i, '').replace(/^[\t;,\s]+/, '');
-      parsedOrder = rest.split(/[,;]/).map(s => s.trim().toLowerCase()).filter(Boolean);
-      return false; // usun z wierszy danych
+  let orderMode = false;
+  const lines = [];
+  allLines.forEach(l => {
+    const t = l.trim();
+    if (t.toLowerCase().indexOf('#order') === 0) {
+      orderMode = true;
+      parsedOrder = parsedOrder || [];
+      const rest = t.replace(/^#order/i, '').replace(/^[\t;,\s]+/, '');
+      if (rest) rest.split(/[,;\t]/).forEach(x => {
+        const v = x.trim().toLowerCase();
+        if (v) parsedOrder.push(v);
+      });
+      return;
     }
-    return true;
+    // Tryb kolumnowy: pojedynczy tag w linii (bez tabulatora) nalezy do #order.
+    if (orderMode && !t.includes('\t') && /^[a-z]+[0-9]*$/i.test(t)) {
+      parsedOrder.push(t.toLowerCase());
+      return;
+    }
+    orderMode = false;
+    lines.push(l);
   });
   if (lines.length < 2) return { headers: [], rows: [], error: 'Potrzebny jest nagłówek + co najmniej 1 wiersz danych.', parsedOrder };
 
@@ -1980,24 +2012,28 @@ function updateTSVStatus() {
   STATE.rows = result.rows;
   STATE.headers = result.headers;
 
-  // Jesli TSV zawieral linie "#order ...", odtwarzamy ulozenie zadan. Klucze
-  // nierozpoznane pomijamy; brakujace (nieobecne w metadanych) dokladamy na koniec
-  // w domyslnej kolejnosci - dzieki temu nowe typy zadan nie znikaja.
+  // Wykryj instancje 2+ z tagow i zsynchronizuj UI generatora (dodaj/usun karty).
+  // To musi sie wydarzyc PRZED scaleniem #order, zeby klucze instancji (np.
+  // 'gapfill:2') juz istnialy w STATE.taskOrder i dawaly sie ustawiac.
+  if (typeof syncTaskInstancesUI === 'function') syncTaskInstancesUI();
+
+  // Jesli TSV zawieral "#order", odtwarzamy ulozenie zadan. Wpisy normalizujemy
+  // przez parseTaskTags (skroty f/m/g2..., pelne nazwy, tez zapis 'gapfill:2').
+  // Rozpoznane klucze ida na poczatek w podanej kolejnosci, reszta (w tym
+  // nierozpoznane nowe typy) doklejana jest na koncu w dotychczasowym ukladzie.
   if (result.parsedOrder && result.parsedOrder.length) {
+    const wanted = parseTaskTags(result.parsedOrder.join(',').replace(/:/g, ''));
     const valid = new Set(STATE.taskOrder);
     const seen = new Set();
     const merged = [];
-    result.parsedOrder.forEach(k => {
+    wanted.forEach(k => {
       if (valid.has(k) && !seen.has(k)) { seen.add(k); merged.push(k); }
     });
     STATE.taskOrder.forEach(k => { if (!seen.has(k)) { seen.add(k); merged.push(k); } });
-    if (merged.length === STATE.taskOrder.length) STATE.taskOrder = merged;
+    STATE.taskOrder = merged;
+    reorderGridDom();
+    syncOrderInputs();
   }
-
-  // Wykryj instancje 2+ z tagow i zsynchronizuj UI generatora (dodaj/usun karty).
-  // To musi sie wydarzyc PRZED updateTaskAvailability, zeby nowe karty istnialy
-  // i mialy szanse byc zaznaczone.
-  if (typeof syncTaskInstancesUI === 'function') syncTaskInstancesUI();
 
   // Stats per task type
   const counts = {
@@ -2077,7 +2113,12 @@ function updateTaskAvailability() {
     if (!desc.dataset.original) desc.dataset.original = desc.textContent;
 
     if (STATE.rows.length === 0) {
-      card.classList.remove('disabled');
+      // Brak danych = brak dostepnych typow. Karty sa ukryte (zadnych "duchow"),
+      // widoczny jest tylko komunikat #taskGridEmpty.
+      card.classList.add('disabled');
+      cb.checked = false;
+      card.classList.remove('checked');
+      STATE.tasks[task] = false;
       desc.textContent = desc.dataset.original;
       return;
     }
@@ -2101,6 +2142,12 @@ function updateTaskAvailability() {
       desc.textContent = desc.dataset.original + ` · ${taskRows.length} wierszy`;
     }
   });
+  // Komunikat "wklej dane" gdy zadna karta nie jest widoczna.
+  const emptyMsg = document.getElementById('taskGridEmpty');
+  if (emptyMsg) {
+    const anyVisible = Array.from(cards).some(c => !c.classList.contains('disabled'));
+    emptyMsg.classList.toggle('show', !anyVisible);
+  }
   // Po kazdej zmianie dostepnosci odswiez stan przycisku "Zaznacz wszystkie"
   if (typeof updateSelectAllState === 'function') updateSelectAllState();
   // ...i numeracje (zadania automatycznie od/zaznaczone zmieniaja kolejnosc)
@@ -2305,6 +2352,12 @@ document.getElementById('selectAllBtn').addEventListener('click', () => {
   validateGenerate();
 });
 
+// Skroty tagow TSV per typ zadania (te same, ktore rozumie kolumna "tasks").
+const TASK_TAG = {
+  flashcards: 'f', matching: 'm', scramble: 's', quiz: 'q',
+  unscramble: 'u', cornell: 'c', gapfill: 'g', translate: 't', writing: 'w'
+};
+
 document.querySelectorAll('.task-card').forEach(card => {
   initTaskCard(card);
 });
@@ -2315,56 +2368,51 @@ syncOrderInputs();
 // zeby mozna ja bylo wywolac rowniez dla dynamicznie wstrzykiwanych kart
 // instancji 2+ (np. Flashcards 2, Matching 3, ...).
 function initTaskCard(card) {
-  card.setAttribute('draggable', 'true');
   const task = card.dataset.task;
 
-  // Input pozycji w kolejnosci - w lewym gornym rogu karty.
-  // Wartosc to pozycja w STATE.taskOrder + 1 (1-based dla uzytkownika).
+  // Skrot tagu TSV przed nazwa zadania (np. "f", "m2") - zeby od razu bylo
+  // widac, ktory skrot z kolumny tasks odpowiada ktoremu kafelkowi.
+  const nameEl = card.querySelector('.task-info-name');
+  if (nameEl) {
+    const tagTxt = (TASK_TAG[taskKeyBase(task)] || '?') + (taskKeyNum(task) > 1 ? taskKeyNum(task) : '');
+    let tagEl = nameEl.querySelector('.task-tag');
+    if (!tagEl) {
+      nameEl.insertAdjacentHTML('afterbegin', '<span class="task-tag"></span> ');
+      tagEl = nameEl.querySelector('.task-tag');
+    }
+    tagEl.textContent = tagTxt;
+  }
+
+  // Kolejnosc: edytowalny numer pozycji + strzalki gora/dol w lewym gornym rogu.
+  // Numer mozna wpisac recznie (Enter zatwierdza), strzalki przesuwaja o 1.
+  // Kolejnosc zmienia sie tylko w obrebie AKTYWNYCH (zaznaczonych) zadan.
+  const moveWrap = document.createElement('div');
+  moveWrap.className = 'task-move';
+  moveWrap.innerHTML =
+    '<button type="button" class="task-move-btn" data-dir="-1" title="Przesuń wyżej">▲</button>' +
+    '<button type="button" class="task-move-btn" data-dir="1" title="Przesuń niżej">▼</button>';
   const orderInput = document.createElement('input');
   orderInput.type = 'number';
   orderInput.className = 'task-order-num';
   orderInput.min = '1';
-  orderInput.max = String(STATE.taskOrder.length);
-  orderInput.title = 'Wpisz numer pozycji, na ktorej ma byc to zadanie';
-  // Wartosc nadaje syncOrderInputs() - numerowane sa tylko zadania aktywne.
+  orderInput.title = 'Wpisz numer pozycji, na której ma być to zadanie (Enter zatwierdza)';
   orderInput.addEventListener('click', e => e.stopPropagation());
-  orderInput.addEventListener('mousedown', e => e.stopPropagation());
-  orderInput.addEventListener('dragstart', e => { e.preventDefault(); e.stopPropagation(); });
-  orderInput.setAttribute('draggable', 'false');
   orderInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      orderInput.blur();
-    }
+    if (e.key === 'Enter') { e.preventDefault(); orderInput.blur(); }
   });
   orderInput.addEventListener('change', () => {
-    // Przestawiamy zadanie WYLACZNIE w obrebie aktywnych zadan.
-    // Karty odznaczone zostaja w swoich miejscach w gridzie i nie licza sie
-    // do numeracji - aktywne zadania wymieniaja sie miedzy "aktywnymi slotami".
-    const active = activeTaskOrder();
-    const total = active.length;
-    let newPos = parseInt(orderInput.value, 10);
-    if (isNaN(newPos) || total === 0) { syncOrderInputs(); return; }
-    newPos = Math.max(1, Math.min(total, newPos));
-    const newIdx = newPos - 1;
-    const oldIdx = active.indexOf(task);
-    if (oldIdx === -1 || oldIdx === newIdx) { syncOrderInputs(); return; }
-    // Przestaw w liscie aktywnych
-    active.splice(oldIdx, 1);
-    active.splice(newIdx, 0, task);
-    // Wstaw aktywne z powrotem w sloty, ktore zajmowaly w pelnym taskOrder
-    const activeSlots = [];
-    STATE.taskOrder.forEach((t, i) => { if (STATE.tasks[t]) activeSlots.push(i); });
-    activeSlots.forEach((slot, k) => { STATE.taskOrder[slot] = active[k]; });
-    // Zsynchronizuj DOM: ulozyc karty zgodnie z nowa kolejnoscia
-    const grid = document.getElementById('taskGrid');
-    STATE.taskOrder.forEach(t => {
-      const c = grid.querySelector('.task-card[data-task="' + t + '"]');
-      if (c) grid.appendChild(c);
-    });
-    syncOrderInputs();
+    const newPos = parseInt(orderInput.value, 10);
+    if (isNaN(newPos)) { syncOrderInputs(); return; }
+    setTaskPosition(task, newPos);
   });
-  card.appendChild(orderInput);
+  moveWrap.insertBefore(orderInput, moveWrap.firstChild);
+  moveWrap.addEventListener('click', e => {
+    e.stopPropagation();
+    const btn = e.target.closest('.task-move-btn');
+    if (!btn || btn.disabled) return;
+    moveTask(task, parseInt(btn.dataset.dir, 10));
+  });
+  card.appendChild(moveWrap);
 
   // Dodaj toggle "pokaż instrukcję w karcie pracy" - per typ zadania
   const instrToggle = document.createElement('button');
@@ -2431,6 +2479,13 @@ function initTaskCard(card) {
           <span class="task-edit-imgheight-val">150&nbsp;px</span>
         </div>
       </div>
+      <div class="task-edit-imgsize-height task-edit-imgpos-wrap">
+        <span class="task-edit-label">Kadr góra/dół</span>
+        <div class="task-edit-imgsize-row">
+          <input type="range" class="task-edit-imgpos" min="0" max="100" step="1" value="50">
+          <span class="task-edit-imgpos-val">50%</span>
+        </div>
+      </div>
     </div>
     <div class="task-edit-image-preview" hidden>
       <img alt="Podgląd obrazka">
@@ -2447,26 +2502,38 @@ function initTaskCard(card) {
   const imgModeBtns = editFields.querySelectorAll('.task-edit-imgmode');
   const imgHeightSlider = editFields.querySelector('.task-edit-imgheight');
   const imgHeightVal = editFields.querySelector('.task-edit-imgheight-val');
-  const imgHeightWrap = editFields.querySelector('.task-edit-imgsize-height');
+  const imgHeightWrap = editFields.querySelector('.task-edit-imgsize-height:not(.task-edit-imgpos-wrap)');
+  const imgPosSlider = editFields.querySelector('.task-edit-imgpos');
+  const imgPosVal = editFields.querySelector('.task-edit-imgpos-val');
+  const imgPosWrap = editFields.querySelector('.task-edit-imgpos-wrap');
 
-  // Odswieza podglad i panel rozmiaru wg STATE (fit + wysokosc).
+  // Odswieza podglad i panel rozmiaru wg STATE (fit + wysokosc + kadr pionowy).
   function refreshImgSize() {
     const fit = STATE.taskImageFit[task] || 'cover';
     const h = STATE.taskImageHeight[task] || 150;
+    const posY = (STATE.taskImagePosY[task] != null) ? STATE.taskImagePosY[task] : 50;
     imgModeBtns.forEach(b => b.classList.toggle('active', b.dataset.fit === fit));
     imgHeightSlider.value = h;
     imgHeightVal.innerHTML = h + '&nbsp;px';
-    // Suwak wysokosci ma sens tylko w trybie "Kadr".
+    imgPosSlider.value = posY;
+    imgPosVal.textContent = posY + '%';
+    // Suwaki wysokosci i kadru maja sens tylko w trybie "Kadr".
     imgHeightWrap.style.display = (fit === 'full') ? 'none' : '';
-    // Podglad
+    imgPosWrap.style.display = (fit === 'full') ? 'none' : '';
+    // Podglad - te same proporcje co na karcie (aspect-ratio), wiec kadr
+    // wyglada IDENTYCZNIE, tylko przeskalowany do szerokosci kafelka.
     if (fit === 'full') {
       imagePreviewImg.style.height = 'auto';
+      imagePreviewImg.style.aspectRatio = '';
       imagePreviewImg.style.maxHeight = '240px';
       imagePreviewImg.style.objectFit = 'contain';
+      imagePreviewImg.style.objectPosition = '';
     } else {
-      imagePreviewImg.style.height = h + 'px';
+      imagePreviewImg.style.height = 'auto';
+      imagePreviewImg.style.aspectRatio = WS_IMG_REF_W + ' / ' + h;
       imagePreviewImg.style.maxHeight = '';
       imagePreviewImg.style.objectFit = 'cover';
+      imagePreviewImg.style.objectPosition = '50% ' + posY + '%';
     }
   }
 
@@ -2517,6 +2584,10 @@ function initTaskCard(card) {
     STATE.taskImageHeight[task] = parseInt(e.target.value, 10) || 150;
     refreshImgSize();
   });
+  imgPosSlider.addEventListener('input', e => {
+    STATE.taskImagePosY[task] = parseInt(e.target.value, 10);
+    refreshImgSize();
+  });
   imagePreviewImg.addEventListener('error', () => { imagePreview.classList.add('error'); });
   imagePreviewImg.addEventListener('load', () => { imagePreview.classList.remove('error'); });
 
@@ -2540,39 +2611,13 @@ function initTaskCard(card) {
   });
 
   editFields.addEventListener('click', e => e.stopPropagation());
-  editFields.addEventListener('mousedown', e => {
-    if (e.target.matches('input, textarea, button')) {
-      e.stopPropagation();
-    }
-  });
-  [titleInput, instrInput, imageInput, imgHeightSlider].forEach(el => {
-    el.addEventListener('dragstart', e => e.preventDefault());
-    el.setAttribute('draggable', 'false');
-  });
-
-  // KLUCZOWE: dragstart odpala się na KARCIE (to ona ma draggable=true), więc
-  // nie da się w nim rozpoznać, że gest zaczął się na suwaku - e.target to karta.
-  // Dlatego na czas interakcji z polami edycji (np. ciągnięcie suwaka wysokości
-  // obrazka) wyłączamy draggable karty, a po puszczeniu przycisku przywracamy.
-  // Dzięki temu suwak działa normalnie i nie chwyta całej sekcji do zmiany kolejności.
-  editFields.addEventListener('pointerdown', () => {
-    card.setAttribute('draggable', 'false');
-    const restore = () => {
-      card.setAttribute('draggable', 'true');
-      document.removeEventListener('pointerup', restore);
-      document.removeEventListener('pointercancel', restore);
-    };
-    document.addEventListener('pointerup', restore);
-    document.addEventListener('pointercancel', restore);
-  });
 
   card.addEventListener('click', e => {
-    if (_draggedTaskCard) return;
     if (card.classList.contains('disabled')) return;
     if (e.target.closest('.suboption-buttons')) return;
     if (e.target.closest('.task-instr-toggle')) return;
     if (e.target.closest('.task-edit-fields')) return;
-    if (e.target.closest('.task-order-num')) return;
+    if (e.target.closest('.task-move')) return;
     const cb = card.querySelector(':scope > input[type="checkbox"]');
     cb.checked = !cb.checked;
     card.classList.toggle('checked', cb.checked);
@@ -2584,52 +2629,49 @@ function initTaskCard(card) {
     updateSelectAllState();
   });
   if (card.querySelector(':scope > input[type="checkbox"]').checked) card.classList.add('checked');
-
-  // Drag-and-drop reorder
-  card.addEventListener('dragstart', e => {
-    // Zabezpieczenie dodatkowe: jeśli z jakiegoś powodu draggable nie zostało
-    // wyłączone (patrz toggle pointerdown wyżej), a gest faktycznie startuje na
-    // elemencie pola edycji, przerwij. Główny fix to jednak toggle draggable.
-    if (e.target.closest && e.target.closest('.task-edit-fields')) {
-      e.preventDefault();
-      return;
-    }
-    _draggedTaskCard = card;
-    card.classList.add('dragging');
-    e.dataTransfer.effectAllowed = 'move';
-    try { e.dataTransfer.setData('text/plain', card.dataset.task); } catch (err) {}
-  });
-  card.addEventListener('dragend', () => {
-    card.classList.remove('dragging');
-    document.querySelectorAll('.task-card.drag-over').forEach(c => c.classList.remove('drag-over'));
-    setTimeout(() => { _draggedTaskCard = null; }, 50);
-  });
-  card.addEventListener('dragover', e => {
-    if (!_draggedTaskCard || _draggedTaskCard === card) return;
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    card.classList.add('drag-over');
-  });
-  card.addEventListener('dragleave', () => {
-    card.classList.remove('drag-over');
-  });
-  card.addEventListener('drop', e => {
-    e.preventDefault();
-    card.classList.remove('drag-over');
-    if (!_draggedTaskCard || _draggedTaskCard === card) return;
-    const grid = document.getElementById('taskGrid');
-    const draggedRect = _draggedTaskCard.getBoundingClientRect();
-    const targetRect = card.getBoundingClientRect();
-    if (draggedRect.top < targetRect.top) {
-      grid.insertBefore(_draggedTaskCard, card.nextSibling);
-    } else {
-      grid.insertBefore(_draggedTaskCard, card);
-    }
-    updateTaskOrder();
-  });
 }
 
-let _draggedTaskCard = null;
+// Ustawia karty w DOM zgodnie z STATE.taskOrder BEZ skakania ekranu:
+// przegladarka potrafi "podazac" za przenoszonymi wezlami (scroll anchoring),
+// wiec zapamietujemy i przywracamy pozycje scrolla natychmiastowo.
+function reorderGridDom() {
+  const grid = document.getElementById('taskGrid');
+  const y = window.scrollY;
+  STATE.taskOrder.forEach(t => {
+    const c = grid.querySelector('.task-card[data-task="' + t + '"]');
+    if (c) grid.appendChild(c);
+  });
+  window.scrollTo({ top: y, left: 0, behavior: 'instant' });
+}
+
+// Przesuwa zadanie o jedna pozycje w gore/dol W OBREBIE aktywnych zadan.
+function moveTask(task, dir) {
+  const active = activeTaskOrder();
+  const i = active.indexOf(task);
+  if (i === -1) return;
+  setTaskPosition(task, i + 1 + dir);
+}
+
+// Ustawia zadanie na zadanej pozycji (1-based) wsrod AKTYWNYCH zadan.
+// Zadania odznaczone / ukryte zostaja w swoich slotach taskOrder i nie
+// biora udzialu w numeracji - aktywne wymieniaja sie miedzy aktywnymi slotami.
+function setTaskPosition(task, newPos) {
+  const active = activeTaskOrder();
+  const total = active.length;
+  if (total === 0) { syncOrderInputs(); return; }
+  newPos = Math.max(1, Math.min(total, newPos));
+  const oldIdx = active.indexOf(task);
+  const newIdx = newPos - 1;
+  if (oldIdx === -1 || oldIdx === newIdx) { syncOrderInputs(); return; }
+  // Przestaw w liscie aktywnych, potem wpisz aktywne z powrotem w ich sloty.
+  active.splice(oldIdx, 1);
+  active.splice(newIdx, 0, task);
+  const activeSlots = [];
+  STATE.taskOrder.forEach((t, i) => { if (STATE.tasks[t]) activeSlots.push(i); });
+  activeSlots.forEach((slot, k) => { STATE.taskOrder[slot] = active[k]; });
+  reorderGridDom();
+  syncOrderInputs();
+}
 
 // Metadane statycznych kart - emoji + nazwa + opis. Bedziemy ich uzywac do
 // budowy kart instancji 2+ (np. "Flashcards 2"). Pobieramy raz przy starcie
@@ -2700,6 +2742,7 @@ function syncTaskInstancesUI() {
       if (!(key in STATE.taskImages)) STATE.taskImages[key] = '';
       if (!(key in STATE.taskImageFit)) STATE.taskImageFit[key] = 'cover';
       if (!(key in STATE.taskImageHeight)) STATE.taskImageHeight[key] = 150;
+      if (!(key in STATE.taskImagePosY)) STATE.taskImagePosY[key] = 50;
 
       // Zainicjalizuj karte (dodaje order-input, toggle instrukcji, edit-fields, drag-drop)
       initTaskCard(newCard);
@@ -2723,6 +2766,7 @@ function syncTaskInstancesUI() {
       delete STATE.taskImages[key];
       delete STATE.taskImageFit[key];
       delete STATE.taskImageHeight[key];
+      delete STATE.taskImagePosY[key];
       delete STATE.taskInstructions[key];
     }
   });
@@ -2734,16 +2778,7 @@ function syncTaskInstancesUI() {
     if (c) grid.appendChild(c);
   });
 
-  // Zsynchronizuj atrybut max w order-inputach (zmienila sie liczba kart).
-  document.querySelectorAll('#taskGrid .task-card .task-order-num').forEach(inp => {
-    inp.max = String(STATE.taskOrder.length);
-  });
-  syncOrderInputs();
-}
-
-function updateTaskOrder() {
-  const cards = document.querySelectorAll('#taskGrid .task-card');
-  STATE.taskOrder = Array.from(cards).map(c => c.dataset.task);
+  // Zsynchronizuj plakietki pozycji (zmienila sie liczba kart).
   syncOrderInputs();
 }
 
@@ -2753,42 +2788,41 @@ function activeTaskOrder() {
   return STATE.taskOrder.filter(t => STATE.tasks[t]);
 }
 
-// Po kazdej zmianie kolejnosci LUB zaznaczenia aktualizuj numery.
-// Numerowane sa wylacznie zadania zaznaczone; odznaczone maja puste,
-// zablokowane pole (nie biora udzialu w kolejnosci).
+// Po kazdej zmianie kolejnosci LUB zaznaczenia aktualizuj numery pozycji
+// i dostepnosc strzalek. Numerowane sa wylacznie zadania zaznaczone.
 function syncOrderInputs() {
   const active = activeTaskOrder();
   document.querySelectorAll('#taskGrid .task-card').forEach(card => {
-    const inp = card.querySelector('.task-order-num');
-    if (!inp) return;
+    const wrap = card.querySelector('.task-move');
+    if (!wrap) return;
+    const inp = wrap.querySelector('.task-order-num');
+    const up = wrap.querySelector('[data-dir="-1"]');
+    const down = wrap.querySelector('[data-dir="1"]');
     const pos = active.indexOf(card.dataset.task) + 1;
     if (pos > 0) {
       inp.value = String(pos);
-      inp.disabled = false;
       inp.max = String(active.length);
-      inp.classList.remove('order-inactive');
+      inp.disabled = false;
+      wrap.classList.remove('order-inactive');
+      up.disabled = (pos === 1);
+      down.disabled = (pos === active.length);
     } else {
       inp.value = '';
       inp.disabled = true;
-      inp.classList.add('order-inactive');
+      wrap.classList.add('order-inactive');
+      up.disabled = true;
+      down.disabled = true;
     }
   });
 }
 
 document.getElementById('reorderReset').addEventListener('click', () => {
   const defaultOrder = ['flashcards', 'matching', 'scramble', 'quiz', 'unscramble', 'cornell', 'gapfill', 'translate', 'writing'];
-  const grid = document.getElementById('taskGrid');
-  defaultOrder.forEach(taskName => {
-    const card = grid.querySelector('.task-card[data-task="' + taskName + '"]');
-    if (card) grid.appendChild(card);
-  });
-  STATE.taskOrder = defaultOrder.slice();
+  // Zachowaj klucze instancji 2+ (np. 'matching:2') - doklejamy je na koncu.
+  const extras = STATE.taskOrder.filter(t => !defaultOrder.includes(t));
+  STATE.taskOrder = defaultOrder.filter(t => STATE.taskOrder.includes(t)).concat(extras);
+  reorderGridDom();
   syncOrderInputs();
-});
-
-// Toggle: kolorystyka karty z koloru akcentu
-document.getElementById('accentDeriveChk').addEventListener('change', e => {
-  STATE.accentDerived = e.target.checked;
 });
 
 // Quiz suboption buttons
@@ -2804,22 +2838,121 @@ document.querySelectorAll('.suboption-buttons button').forEach(btn => {
 });
 
 // --- EDYTOR WYGLĄDU (tła, czcionka, rogi) ---
-// Styl tła (segmentowane przyciski).
+// Styl tła (segmentowane przyciski). 'svg' odsłania panel na własny wzorek.
 document.querySelectorAll('.bg-style-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.bg-style-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
     STATE.bgStyle = btn.dataset.bg;
+    const svgWrap = document.getElementById('svgBgWrap');
+    if (svgWrap) svgWrap.style.display = (STATE.bgStyle === 'svg') ? 'grid' : 'none';
   });
+});
+
+// Zamienia wklejony kod <svg> na CSS-owy data URI do background-image.
+function svgToDataUri(code) {
+  const min = code.replace(/\s+/g, ' ').trim();
+  return 'url("data:image/svg+xml,' + encodeURIComponent(min).replace(/'/g, '%27') + '")';
+}
+
+// Normalizuje to, co uzytkownik wkleja w pole tla SVG. Strony z gotowymi
+// wzorkami (heropatterns.com, pattern.monster, fffuel.co itd.) daja rozne
+// formaty - akceptujemy wszystkie:
+//   1) caly blok CSS:  background-image: url("data:image/svg+xml,%3Csvg...");
+//   2) sama wartosc:   url("data:image/svg+xml,...") lub goly data:image/svg+xml,...
+//   3) czysty kod:     <svg ...>...</svg>
+// Zwraca zawsze czysty kod <svg> albo '' gdy nie rozpoznano.
+function normalizeSvgInput(raw) {
+  const t = (raw || '').trim();
+  if (!t) return '';
+  // Format 1/2: wyciagnij data URI i zdekoduj do <svg>. Uwaga: strony typu
+  // heropatterns NIE enkoduja apostrofow ani spacji wewnatrz URI, wiec
+  // dopasowujemy do zamykajacego cudzyslowu/nawiasu, nie do "bezpiecznych" znakow.
+  const m = t.match(/url\(\s*"(data:image\/svg\+xml[^"]+)"\s*\)/i)
+    || t.match(/url\(\s*'(data:image\/svg\+xml[^']+)'\s*\)/i)
+    || t.match(/url\(\s*(data:image\/svg\+xml[^)]+)\)/i)
+    || t.match(/^(data:image\/svg\+xml[\s\S]+)$/i);
+  if (m) {
+    let payload = m[1].replace(/^data:image\/svg\+xml/i, '').replace(/^;?(charset=[^,]*|utf8|base64)?,/i, '');
+    if (/;base64,/i.test(m[1])) {
+      try { payload = atob(m[1].split(',').slice(1).join(',')); } catch (e) { return ''; }
+    } else {
+      try { payload = decodeURIComponent(payload); } catch (e) { /* zostaw jak jest */ }
+    }
+    const i = payload.indexOf('<svg');
+    return i >= 0 ? payload.slice(i) : '';
+  }
+  // Format 3: czysty <svg> (utnij ewentualne smieci przed tagiem).
+  const i = t.indexOf('<svg');
+  return i >= 0 ? t.slice(i) : '';
+}
+
+// Panel wlasnego tla SVG: kod + rozmiar kafelka + widocznosc. Miniaturka w
+// przycisku pokazuje na zywo wklejony wzorek.
+const _svgBgCode = document.getElementById('svgBgCode');
+const _svgBgSize = document.getElementById('svgBgSize');
+const _svgBgOpacity = document.getElementById('svgBgOpacity');
+function refreshSvgThumb() {
+  const thumb = document.getElementById('svgThumb');
+  if (!thumb) return;
+  const code = normalizeSvgInput(STATE.bgSvgCode);
+  if (code && /<svg[\s>]/i.test(code)) {
+    thumb.style.backgroundImage = svgToDataUri(code);
+    thumb.style.backgroundSize = STATE.bgSvgSize ? (Math.round(STATE.bgSvgSize / 4) + 'px') : 'auto';
+    thumb.style.backgroundPosition = '0 0';
+    thumb.style.opacity = STATE.bgSvgOpacity;
+  } else {
+    thumb.style.backgroundImage = '';
+    thumb.style.backgroundSize = '';
+    thumb.style.opacity = '';
+  }
+}
+if (_svgBgCode) _svgBgCode.addEventListener('input', e => {
+  STATE.bgSvgCode = e.target.value;
+  refreshSvgThumb();
+});
+if (_svgBgSize) _svgBgSize.addEventListener('input', e => {
+  const v = parseInt(e.target.value, 10);
+  STATE.bgSvgSize = (v >= 20 && v <= 800) ? v : null;
+  refreshSvgThumb();
+});
+if (_svgBgOpacity) _svgBgOpacity.addEventListener('input', e => {
+  STATE.bgSvgOpacity = parseFloat(e.target.value);
+  document.getElementById('svgBgOpacityVal').textContent = Math.round(STATE.bgSvgOpacity * 100) + '%';
+  refreshSvgThumb();
 });
 
 // Zestaw czcionek (select). 'custom' odsłania pola na własny link.
 const fontSelect = document.getElementById('fontSelect');
 const fontCustomWrap = document.getElementById('fontCustomWrap');
+
+// Podglad wybranej czcionki: dogrywa <link> z Google Fonts do generatora
+// i ustawia rodziny na probce tekstu pod selectem.
+function updateFontPreview() {
+  const set = resolveFontSet(STATE.fontKey);
+  const dispEl = document.getElementById('fontPreviewDisplay');
+  const bodyEl = document.getElementById('fontPreviewBody');
+  if (!dispEl || !bodyEl) return;
+  const hrefMatch = (set.imports || '').match(/href="([^"]+)"/);
+  if (hrefMatch) {
+    let link = document.getElementById('fontPreviewLink');
+    if (!link) {
+      link = document.createElement('link');
+      link.id = 'fontPreviewLink';
+      link.rel = 'stylesheet';
+      document.head.appendChild(link);
+    }
+    if (link.href !== hrefMatch[1]) link.href = hrefMatch[1];
+  }
+  dispEl.style.fontFamily = set.display;
+  bodyEl.style.fontFamily = set.body;
+}
+
 if (fontSelect) {
   fontSelect.addEventListener('change', e => {
     STATE.fontKey = e.target.value;
     if (fontCustomWrap) fontCustomWrap.style.display = (e.target.value === 'custom') ? 'grid' : 'none';
+    updateFontPreview();
   });
 }
 const fontCustomUrl = document.getElementById('fontCustomUrl');
@@ -2867,10 +3000,11 @@ if (fontCustomUrl) {
   fontCustomUrl.addEventListener('input', e => {
     STATE.fontCustom.url = e.target.value.trim();
     refreshFontFamilyDropdowns();
+    updateFontPreview();
   });
 }
-if (fontCustomFamily) fontCustomFamily.addEventListener('change', e => { STATE.fontCustom.family = e.target.value; });
-if (fontCustomDisplay) fontCustomDisplay.addEventListener('change', e => { STATE.fontCustom.displayFamily = e.target.value; });
+if (fontCustomFamily) fontCustomFamily.addEventListener('change', e => { STATE.fontCustom.family = e.target.value; updateFontPreview(); });
+if (fontCustomDisplay) fontCustomDisplay.addEventListener('change', e => { STATE.fontCustom.displayFamily = e.target.value; updateFontPreview(); });
 
 // Prefill: domyslny link uzytkownika juz w polu, listy gotowe od razu.
 if (fontCustomUrl && !STATE.fontCustom.url) {
@@ -2878,6 +3012,9 @@ if (fontCustomUrl && !STATE.fontCustom.url) {
   fontCustomUrl.value = WS_DEFAULT_FONT_LINK;
 }
 refreshFontFamilyDropdowns();
+// FONT_SETS jest zadeklarowane nizej w pliku (const = temporal dead zone),
+// wiec pierwszy podglad odpalamy po sparsowaniu calego skryptu.
+setTimeout(updateFontPreview, 0);
 
 // Rogi: ostre / zaokrąglone (przełącznik).
 document.querySelectorAll('.corner-btn').forEach(btn => {
@@ -3090,18 +3227,6 @@ if (window.speechSynthesis) {
   document.getElementById('ttsEnabled').checked = false;
   STATE.ttsEnabled = false;
 }
-
-// ============================================================
-// LOGO
-// ============================================================
-document.getElementById('logoEnabled').addEventListener('change', e => {
-  STATE.logoEnabled = e.target.checked;
-  document.getElementById('logoConfig').classList.toggle('disabled', !e.target.checked);
-});
-
-document.getElementById('logoUrl').addEventListener('input', e => {
-  STATE.logoUrl = e.target.value.trim();
-});
 
 // ============================================================
 // ŚLEDZENIE TRUDNOŚCI
@@ -3334,20 +3459,18 @@ function buildWorksheetHTML() {
     }
   });
 
-  // Kolejnosc aktywnych zadan (klucze) - przekazujemy do karty, zeby downloadTSV
-  // mogl ja dopisac jako "#order ...". taskKeyBase normalizuje instancje (np.
-  // 'gapfill:2' -> 'gapfill'), a duplikaty pomijamy.
+  // Kolejnosc aktywnych zadan (PELNE klucze, z instancjami np. 'gapfill:2') -
+  // przekazujemy do karty, zeby downloadTSV mogl ja dopisac jako blok "#order".
+  // Parser generatora rozumie te klucze przy ponownym wczytaniu (round-trip).
   const activeOrder = [];
-  const _aoSeen = new Set();
   if (!STATE.reviewOnly) STATE.taskOrder.forEach(taskKey => {
     if (!STATE.tasks[taskKey]) return;
-    const base = taskKeyBase(taskKey);
-    if (builders[base] && !_aoSeen.has(base)) { _aoSeen.add(base); activeOrder.push(base); }
+    if (builders[taskKeyBase(taskKey)]) activeOrder.push(taskKey);
   });
 
-  // Czy uzytkownik podal wlasny kolor akcentu? Jesli tak, harmonijny gradient
-  // (accentSecondary/Tertiary) bedzie wygenerowany dynamicznie z accentu.
-  const isCustomAccent = !!STATE.customAccent;
+  // Kolory towarzyszące (tlo, konfetti, gradient tytulu) ZAWSZE wyprowadzamy
+  // z aktualnego akcentu - dawne sztywne pastele byly dostrojone pod rozowy.
+  const isCustomAccent = true;
 
   // Build the full HTML based on preset
   return buildWorksheetTemplate({
@@ -3369,9 +3492,10 @@ function buildWorksheetHTML() {
       voiceName: STATE.ttsVoice,
       rate: STATE.ttsRate || 1.0
     },
+    // Logo jest zawsze widoczne; URL to stala WS_LOGO_URL (edycja w zrodle).
     logoConfig: {
-      show: STATE.logoEnabled,
-      url: STATE.logoUrl
+      show: true,
+      url: WS_LOGO_URL
     },
     difficulty: STATE.difficultyEnabled || STATE.reviewOnly,
     reviewOnly: STATE.reviewOnly
@@ -3423,16 +3547,19 @@ function sectionTitle(taskName, fallback) {
 }
 
 // Zwraca <div class="ws-sec-image"><img></div> jesli URL ustawiony, inaczej pusty string.
-// Tryb 'full' = cala grafika z zachowaniem proporcji; 'cover' = kadr o zadanej wysokosci.
+// Tryb 'full' = cala grafika z zachowaniem proporcji; 'cover' = kadr o proporcji
+// WS_IMG_REF_W : wysokosc-z-suwaka. Proporcja (a wiec i wycinek obrazu) jest
+// IDENTYCZNA w podgladzie i na karcie, niezaleznie od szerokosci ekranu.
 function sectionImage(taskName) {
   const url = (STATE.taskImages[taskName] || '').trim();
   if (!url) return '';
   const fit = STATE.taskImageFit[taskName] || 'cover';
   const h = STATE.taskImageHeight[taskName] || 150;
+  const posY = (STATE.taskImagePosY[taskName] != null) ? STATE.taskImagePosY[taskName] : 50;
   if (fit === 'full') {
     return `<div class="ws-sec-image ws-sec-image-full"><img src="${escapeHtml(url)}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'"></div>`;
   }
-  return `<div class="ws-sec-image"><img src="${escapeHtml(url)}" alt="" loading="lazy" style="height:${h}px" onerror="this.parentElement.style.display='none'"></div>`;
+  return `<div class="ws-sec-image"><img src="${escapeHtml(url)}" alt="" loading="lazy" style="aspect-ratio:${WS_IMG_REF_W} / ${h};object-position:50% ${posY}%" onerror="this.parentElement.style.display='none'"></div>`;
 }
 
 // ============================================================
@@ -4092,6 +4219,7 @@ function buildQuizSection(num, options = {}) {
         <div class="quiz-question">
           <span class="quiz-q-num">${i + 1}.</span>
           <span class="quiz-q-text">${escapeHtml(r.pl)}</span>
+          <button class="tts-btn quiz-hint-btn" onclick="hintQuiz_${num}(${i})" title="Podpowiedź: wyeliminuj jedną błędną odpowiedź" aria-label="Podpowiedź">💡</button>
           <button class="tts-btn quiz-solve-btn" onclick="solveQuizOne_${num}(${i})" title="Rozwiąż to pytanie" aria-label="Rozwiąż">✨</button>
         </div>
         <div class="quiz-options" data-opts="${opts.length}">${optHTML}</div>
@@ -4128,21 +4256,41 @@ function buildQuizJS(num, options = {}) {
   window.pickQuiz_${num} = function(btn, qIdx) {
     const card = btn.closest('.quiz-card');
     if (card.classList.contains('answered')) return;
+    if (btn.classList.contains('quiz-eliminated')) return;
+    if (btn.classList.contains('quiz-wrong')) return; // ta bledna juz kliknieta
     const correct = btn.dataset.correct === '1';
     wsSound(correct ? 'correct' : 'wrong');
-    btn.classList.add(correct ? 'quiz-correct' : 'quiz-wrong');
     if (!correct) {
-      // also highlight correct one
-      card.querySelectorAll('.quiz-option').forEach(b => {
-        if (b.dataset.correct === '1') b.classList.add('quiz-correct');
-      });
+      // Bledna odpowiedz: animacja bledu i czerwony na stale, ale karta ZOSTAJE
+      // otwarta - probujesz dalej, az klikniesz poprawna. Poprawnej NIE zdradzamy.
+      btn.classList.add('quiz-wrong');
+      return;
     }
+    btn.classList.add('quiz-correct');
     card.classList.add('answered');
     _quizDone_${num}.add(qIdx);
     if (_quizDone_${num}.size === _quizTotal_${num}) {
       showSectionFeedback(${num}, true, '✅ Quiz ukończony!');
       markSectionDone(${num});
       confettiFire();
+    }
+  };
+
+  // Podpowiedz: wyeliminuj jedna losowa BLEDNA odpowiedz (szarzeje, nieklikalna).
+  // Zawsze zostaje co najmniej jedna bledna opcja, zeby quiz nie stal sie
+  // jednokrotnym "wyborem" z samej poprawnej. Bez fajerwerkow - celowo.
+  window.hintQuiz_${num} = function(qIdx) {
+    const card = document.querySelector('#sec-${num} .quiz-card[data-idx="' + qIdx + '"]');
+    if (!card || card.classList.contains('answered')) return;
+    const wrongLeft = Array.from(card.querySelectorAll('.quiz-option[data-correct="0"]:not(.quiz-eliminated)'));
+    if (wrongLeft.length <= 1) return; // musi zostac min. 1 bledna
+    const pick = wrongLeft[Math.floor(Math.random() * wrongLeft.length)];
+    pick.classList.add('quiz-eliminated');
+    wsSound('tap');
+    // Gdy zostala juz tylko jedna bledna - wylacz przycisk podpowiedzi.
+    if (wrongLeft.length - 1 <= 1) {
+      const hb = card.querySelector('.quiz-hint-btn');
+      if (hb) hb.disabled = true;
     }
   };
 
@@ -5161,7 +5309,6 @@ ${bgEffectHTML}
     <span class="ws-diff-key"><span class="ws-diff-chip" style="background:#d97706">▲</span>trudne</span>
     <span class="ws-diff-key"><span class="ws-diff-chip" style="background:#16a34a">⬤</span>dobre</span>
     <span class="ws-diff-key"><span class="ws-diff-chip" style="background:#2563eb">✓</span>łatwe</span>
-    <span class="ws-diff-legend-hint">oznaczenia zapisują się i trafiają do pliku TSV</span>
   </div>` : ''}
 
   ${sectionsHTML}
@@ -5619,12 +5766,13 @@ function wsClearSection(num) {
     if (typeof wsSyncScrambleTiles === 'function') { try { wsSyncScrambleTiles(inp); } catch (e) {} }
   });
 
-  // ── QUIZ ── odznacz wybory, odblokuj opcje.
+  // ── QUIZ ── odznacz wybory, odblokuj opcje, cofnij eliminacje z podpowiedzi 💡.
   sec.querySelectorAll('.quiz-card').forEach(card => card.classList.remove('answered'));
   sec.querySelectorAll('.quiz-option').forEach(opt => {
-    opt.classList.remove('quiz-correct', 'quiz-wrong', 'selected');
+    opt.classList.remove('quiz-correct', 'quiz-wrong', 'selected', 'quiz-eliminated');
     opt.disabled = false;
   });
+  sec.querySelectorAll('.quiz-hint-btn').forEach(b => { b.disabled = false; });
 
   // ── UNSCRAMBLE ── przenies slowa z pola odpowiedzi z powrotem do puli,
   //    odblokuj je i przywroc placeholdery.
@@ -6320,7 +6468,9 @@ function _wsCollectQuiz() {
     const num = sec.dataset.section;
     const answered = [];
     sec.querySelectorAll('.quiz-card.answered').forEach(card => {
-      const picked = card.querySelector('.quiz-correct, .quiz-wrong');
+      // Karta konczy sie zawsze na POPRAWNEJ (klik albo ✨) - ja zapisujemy.
+      // Wczesniejsze bledne proby (czerwone) sa ulotne i nie wracaja po wczytaniu.
+      const picked = card.querySelector('.quiz-option.quiz-correct') || card.querySelector('.quiz-option.quiz-wrong');
       if (picked) {
         const opts = Array.from(card.querySelectorAll('.quiz-option'));
         answered.push({
@@ -6556,6 +6706,25 @@ function _wsRestoreUnscramble(data) {
           answerArea.appendChild(token);
         }
       });
+      // Sprzatanie artefaktow po odtworzeniu (bug: karta wygladala na
+      // "nierozpoczeta" mimo wstawionych slow):
+      if (cardData.answer && cardData.answer.length) {
+        // 1. Placeholder "Kliknij slowa ponizej..." nie ma sensu, gdy sa slowa.
+        const empty = answerArea.querySelector('.unsc-answer-empty');
+        if (empty) empty.remove();
+        // 2. Zaslona puli ("Kliknij, aby pokazac slowa") tez nie - ukladanie
+        //    juz sie zaczelo, wiec odslon pule i schowaj przycisk.
+        if (pool) pool.classList.remove('unsc-pool-hidden');
+        const reveal = card.querySelector('.unsc-pool-reveal');
+        if (reveal) reveal.style.display = 'none';
+        // 3. Gdy wszystkie slowa sa w odpowiedzi - placeholder pustej puli.
+        if (pool && pool.querySelectorAll('.unsc-word').length === 0 && !pool.querySelector('.unsc-pool-empty')) {
+          const ph = document.createElement('div');
+          ph.className = 'unsc-pool-empty';
+          ph.textContent = '(wszystkie słowa użyte)';
+          pool.appendChild(ph);
+        }
+      }
       if (cardData.done) {
         card.classList.add('done');
         card.querySelectorAll('.unsc-word').forEach(w => w.setAttribute('draggable', 'false'));
@@ -6771,10 +6940,12 @@ function downloadTSV() {
     });
     lines.push(cols.join('\\t'));
   });
-  // Metadane kolejnosci zadan na koncu (poza wierszami danych). Przy ponownym
+  // Metadane kolejnosci zadan na koncu (poza wierszami danych), w formacie
+  // kolumnowym: linia "#order", pod nia jeden klucz na linie. Przy ponownym
   // wczytaniu generator odtworzy ulozenie. Pomijamy, gdy nieznane.
   if (Array.isArray(WS_TASK_ORDER) && WS_TASK_ORDER.length) {
-    lines.push('#order\\t' + WS_TASK_ORDER.join(','));
+    lines.push('#order');
+    WS_TASK_ORDER.forEach(k => lines.push(k));
   }
   const tsv = lines.join('\\n');
   // Nazwa pliku z tytulu karty (sanityzacja)
@@ -6955,6 +7126,26 @@ function resolveFontSet(key) {
 // 'grid' (jak dawny atelier), 'dots' (nowe), 'none'. Zwraca { html, css }.
 // Zwraca { html, css } wstrzykiwane do karty.
 function buildBackground(style, accent, accent2, accent3, accentV) {
+  if (style === 'svg') {
+    // Akceptujemy <svg>, blok CSS z background-image albo goly data URI
+    // (patrz normalizeSvgInput) - zawsze sprowadzamy do czystego kodu SVG.
+    const code = normalizeSvgInput(STATE.bgSvgCode);
+    // Brak/nierozpoznany kod = zachowaj sie jak "Brak" (bez tla).
+    if (!code || !/<svg[\s>]/i.test(code)) return { html: '', css: '' };
+    const size = STATE.bgSvgSize;
+    const op = STATE.bgSvgOpacity || 1;
+    return {
+      html: `<div class="ws-bg-svg"></div>`,
+      css: `
+.ws-bg-svg {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image: ${svgToDataUri(code)};
+  background-repeat: repeat;
+  ${size ? `background-size: ${size}px;` : ''}
+  opacity: ${op};
+}`
+    };
+  }
   if (style === 'grid') {
     return {
       html: `<div class="ws-bg-grid"></div>`,
@@ -6962,8 +7153,8 @@ function buildBackground(style, accent, accent2, accent3, accentV) {
 .ws-bg-grid {
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
   background-image:
-    linear-gradient(${rgba(accent, 0.06)} 1px, transparent 1px),
-    linear-gradient(90deg, ${rgba(accent, 0.06)} 1px, transparent 1px);
+    linear-gradient(${rgba(accent, 0.09)} 1px, transparent 1px),
+    linear-gradient(90deg, ${rgba(accent, 0.09)} 1px, transparent 1px);
   background-size: 64px 64px;
 }`
     };
@@ -7333,57 +7524,20 @@ ${t.sharp ? `
 .ws-sec-image img {
   display: block;
   width: 100%;
-  height: 150px;
+  height: auto;
+  aspect-ratio: 916 / 150;
   object-fit: cover;
-  /* Punkt wyjsciowy dla parallax: lekko powiekszony, zeby pozniej mial gdzie sie "ruszyc" */
-  transform: scale(1.12) translateY(0);
-  transform-origin: center center;
-  will-change: transform;
+  /* Wlasciwa proporcja kadru (aspect-ratio) i kadr pionowy (object-position)
+     przychodza inline z generatora. Proporcja jest stala na kazdym ekranie,
+     wiec wycinek obrazu zawsze wyglada tak samo jak w podgladzie. */
 }
-/* Tryb "Cała grafika": pełne proporcje obrazka, bez kadrowania i bez parallax.
-   Wysokość wynika z proporcji, szerokość = pełna szerokość sekcji. */
+/* Tryb "Cała grafika": pełne proporcje obrazka, bez kadrowania. */
 .ws-sec-image-full {
   background: transparent;
 }
 .ws-sec-image-full img {
   height: auto !important;
   object-fit: contain;
-  transform: none !important;
-  will-change: auto;
-  animation: none !important;
-}
-
-/* Parallax: gdy obrazek wchodzi w viewport, transformacja sie zmienia.
-   Uzywamy nowych CSS scroll-driven animations - bez JS. */
-@supports (animation-timeline: view()) {
-  .ws-sec-image img {
-    animation: wsImageParallax linear both;
-    animation-timeline: view();
-    animation-range: cover 0% cover 100%;
-  }
-  @keyframes wsImageParallax {
-    /* Gdy obraz wchodzi w viewport od dolu */
-    from { transform: scale(1.12) translateY(-18px); }
-    /* W srodku viewportu */
-    50%  { transform: scale(1.12) translateY(0); }
-    /* Gdy wychodzi w gore */
-    to   { transform: scale(1.12) translateY(18px); }
-  }
-}
-
-/* Hover na obrazku celowo wylaczony - obraz pozostaje statyczny */
-
-@media (max-width: 640px) {
-  .ws-sec-image img { height: 110px; }
-}
-
-/* Szanuj prefers-reduced-motion - wylacz parallax */
-@media (prefers-reduced-motion: reduce) {
-  .ws-sec-image img {
-    transform: scale(1) translateY(0) !important;
-    animation: none !important;
-    transition: none !important;
-  }
 }
 
 .ws-sec-head {
@@ -8139,7 +8293,9 @@ ${t.sharp ? `
   border: 1.5px solid color-mix(in srgb, var(--ws-accent) 60%, #ffffff);
   border-radius: 8px;
   cursor: pointer; overflow: hidden;
-  transition: filter 0.15s, transform 0.15s;
+  /* Tylko hover (filter) - BEZ animowania geometrii. Po rozbiciu tafli maly
+     uchwyt z malpka pojawia sie statycznie, bez morfingu tafli w przycisk. */
+  transition: filter 0.15s;
   -webkit-print-color-adjust: exact; print-color-adjust: exact;
 }
 /* Połysk - ukośne pasmo światła sugerujące taflę szkła. Lekko rozmyte (szersze
@@ -8160,7 +8316,6 @@ ${t.sharp ? `
   color: color-mix(in srgb, var(--ws-accent) 78%, #000000);
 }
 .ws-review-cover:hover { filter: brightness(1.05); }
-.ws-review-cover:active { transform: scale(0.985); }
 /* Po odsłonięciu: zasłona znika, ale mały uchwyt "zasłoń" zostaje po prawej. */
 .ws-review-item-answer.revealed .ws-review-cover {
   inset: 50% 0 auto auto; transform: translateY(-50%);
@@ -8254,8 +8409,23 @@ ${t.sharp ? `
   transition: all 0.15s;
 }
 .ws-review-item-tts:hover { border-color: var(--ws-accent); background: var(--ws-accent-soft); }
-@media (max-width: 560px) {
-  .ws-review-row-main { grid-template-columns: 1fr 1rem 1fr; }
+/* Telefon: rzad "PL → odpowiedz" ciasno sie gniotl w trzech kolumnach.
+   Ukladamy w KOLUMNIE: polskie haslo u gory, zasl0nieta odpowiedz pelna
+   szerokoscia POD spodem (strzalka zbedna), stopka z ocenami zawija sie. */
+@media (max-width: 600px) {
+  .ws-review-row-main {
+    grid-template-columns: 1fr;
+    gap: 0.45rem;
+  }
+  .ws-review-item-arrow { display: none; }
+  .ws-review-item:not(.ws-review-item-gap) .ws-review-item-answer {
+    padding-right: 0;
+  }
+  /* Po odslonieciu maly uchwyt 🙈 siedzi po prawej - zrob mu miejsce. */
+  .ws-review-item:not(.ws-review-item-gap) .ws-review-item-answer.revealed {
+    padding-right: 2.4rem;
+  }
+  .ws-review-row-foot { flex-wrap: wrap; row-gap: 0.4rem; }
 }
 
 .ws-finale {
@@ -8656,6 +8826,18 @@ body.ws-review-only-mode .ws-review { margin-top: 0.5rem; }
   transition: all 0.18s;
   z-index: 2;
 }
+/* Telefon: napis "Kliknij, aby pokazac slowa..." ledwo miescil sie na tafli -
+   mniejsza czcionka, ciasniejszy gap i padding, tekst moze sie zawinac. */
+@media (max-width: 560px) {
+  .unsc-pool-reveal {
+    font-size: 0.78rem;
+    gap: 0.4rem;
+    padding: 0.3rem 0.7rem;
+    text-align: center;
+    line-height: 1.3;
+  }
+  .unsc-pool-reveal-icon { font-size: 0.9rem; }
+}
 .unsc-pool-reveal:hover {
   background: var(--ws-accent-soft);
   transform: translateY(-1px);
@@ -8930,7 +9112,7 @@ body.ws-review-only-mode .ws-review { margin-top: 0.5rem; }
   flex: 1;
   min-width: 0;
 }
-.quiz-solve-btn {
+.quiz-solve-btn, .quiz-hint-btn {
   flex-shrink: 0;
   width: 36px;
   height: 36px;
@@ -8939,10 +9121,20 @@ body.ws-review-only-mode .ws-review { margin-top: 0.5rem; }
   display: grid;
   place-items: center;
 }
-.quiz-card.answered .quiz-solve-btn {
+.quiz-hint-btn:disabled { opacity: 0.35; pointer-events: none; }
+.quiz-card.answered .quiz-solve-btn,
+.quiz-card.answered .quiz-hint-btn {
   opacity: 0.35;
   pointer-events: none;
 }
+/* Opcja wyeliminowana podpowiedzia (💡): szara, przekreslona, nieklikalna.
+   Celowo bez zadnej animacji - ma po prostu "odpasc". */
+.quiz-option.quiz-eliminated {
+  opacity: 0.35;
+  pointer-events: none;
+  filter: grayscale(1);
+}
+.quiz-option.quiz-eliminated .quiz-opt-text { text-decoration: line-through; }
 .quiz-options {
   display: grid;
   gap: 0.55rem;
@@ -9335,6 +9527,11 @@ body.ws-review-only-mode .ws-review { margin-top: 0.5rem; }
   .scramble-input-row > .scramble-solve-btn,
   .scramble-input-row > .scramble-tts-btn {
     flex: 1 1 auto;
+    /* Rzad przyciskow pod polem mial wysokosc "z contentu" i byl scisniety
+       w pionie - wymuszamy normalny, wygodny rozmiar dotykowy. */
+    min-height: 2.7rem;
+    padding-top: 0.45rem;
+    padding-bottom: 0.45rem;
   }
 }
 .trans-correct {
@@ -9578,7 +9775,6 @@ body.ws-review-only-mode .ws-review { margin-top: 0.5rem; }
   color: #fff; font-size: 0.78rem; font-weight: 700; line-height: 1;
   -webkit-print-color-adjust: exact; print-color-adjust: exact;
 }
-.ws-diff-legend-hint { width: 100%; text-align: center; font-size: 0.74rem; opacity: 0.75; }
 
 /* Fiszki: przyciski NAD karta, poza jej obszarem. */
 .flashcard-cell {
@@ -9730,7 +9926,6 @@ body.ws-review-only-mode .ws-review { margin-top: 0.5rem; }
      ale LEGENDA u góry zostaje, żeby było widać co oznaczają symbole/kolory. */
   .ws-diff-overlay { display: none !important; }
   /* Legenda zostaje na wydruku (z kolorami chipów), ale bez podpowiedzi o TSV. */
-  .ws-diff-legend-hint { display: none !important; }
   /* Rząd przycisków: ukryj wszystkie poza wybranym. Sam kontener zostaje,
      żeby wybrany symbol stał w miejscu. Gdy nic nie wybrano, kontener jest
      pusty i nie zajmuje miejsca (brak widocznych dzieci). */
@@ -9889,8 +10084,6 @@ body.ws-review-only-mode .ws-review { margin-top: 0.5rem; }
 
   /* Obrazki sekcji: bez animacji parallax w druku (czysty kadr).
      W trybie "cała grafika" obraz i tak ma transform: none. */
-  .ws-sec-image img { animation: none !important; }
-  .ws-sec-image:not(.ws-sec-image-full) img { transform: none !important; }
 
   /* Sekcje płyną normalnie między stronami - mogą się łamać.
      (page-break-inside: avoid celowo NIE jest tu ustawione na .ws-section) */
@@ -9979,10 +10172,15 @@ body.ws-review-only-mode .ws-review { margin-top: 0.5rem; }
 
   /* ── TRYB "DRUKUJ TYLKO POWTÓRKĘ" ──
      Gdy użytkownik kliknie przycisk w panelu, na body pojawia się klasa
-     ws-print-review-only. Wtedy chowamy wszystko poza panelem powtórki, a sam
-     panel nie ma już łamania strony przed sobą (jest jedyną treścią). */
-  body.ws-print-review-only .ws-app > *:not(.ws-review) { display: none !important; }
-  body.ws-print-review-only .ws-header { display: none !important; }
+     ws-print-review-only. Chowamy wszystko poza NAGŁÓWKIEM (logo + tytuł
+     karty - wydruk/PDF jest sygnowany) i panelem powtórki. Panel nie ma już
+     łamania strony przed sobą (jest jedyną treścią pod nagłówkiem). */
+  body.ws-print-review-only .ws-app > *:not(.ws-review):not(.ws-header) { display: none !important; }
+  body.ws-print-review-only .ws-header {
+    display: flex !important;
+    margin-bottom: 1.2rem;
+    padding: 0 0 0.8rem;
+  }
   body.ws-print-review-only .ws-review { break-before: auto !important; page-break-before: auto !important; }
 }
 
