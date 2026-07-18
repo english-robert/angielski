@@ -665,6 +665,35 @@ body {
 }
 .task-move.order-inactive { opacity: 0.35; }
 
+/* Sekcje materialow (linki / HTML) - dodawane przyciskami pod gridem */
+.custom-add-row { display: flex; gap: 0.7rem; flex-wrap: wrap; align-items: center; margin-top: 0.9rem; }
+.custom-add-btn {
+  font: inherit; font-size: 0.85rem; font-weight: 600;
+  padding: 0.5rem 0.95rem; cursor: pointer;
+  background: var(--surface-2); color: var(--text-dim);
+  border: 1.5px dashed var(--border-bright); border-radius: 9px;
+  transition: all 0.15s;
+}
+.custom-add-btn:hover { border-color: var(--accent); color: var(--accent); }
+.task-card-custom .task-custom-fields {
+  display: grid; gap: 0.45rem; margin-top: 0.7rem;
+}
+.task-card-custom .task-custom-fields .textarea { min-height: 110px; font-size: 0.88rem; }
+.task-custom-del {
+  position: absolute; top: 0.5rem; right: 0.5rem;
+  width: 26px; height: 26px; display: grid; place-items: center;
+  font-size: 0.8rem; line-height: 1; cursor: pointer;
+  background: var(--surface); color: var(--text-dim);
+  border: 1px solid var(--border); border-radius: 6px;
+  transition: all 0.15s;
+}
+.task-custom-del:hover { border-color: var(--warn); color: var(--warn); }
+.task-custom-label {
+  display: block; font-size: 0.72rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim);
+  margin-top: 0.3rem;
+}
+
 /* Skrot tagu TSV przed nazwa zadania (np. f, m2) */
 .task-tag {
   display: inline-block;
@@ -802,7 +831,7 @@ body {
 .font-custom-steps li { padding-left: 0.15rem; }
 
 /* Corner toggle */
-.corner-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 0.7rem; max-width: 320px; }
+.corner-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 0.7rem; max-width: 400px; }
 .corner-btn {
   cursor: pointer; display: flex; align-items: center; gap: 0.6rem; justify-content: center;
   padding: 0.7rem 0.9rem; background: var(--surface-2);
@@ -810,10 +839,12 @@ body {
   transition: all 0.18s; font: inherit; color: var(--text-dim); font-weight: 600;
   min-width: 0;
 }
-.corner-btn span:last-child { overflow-wrap: anywhere; }
-/* Telefon: wezsze paddingi i mniejszy tekst, zeby napisy nie wyjezdzaly z przyciskow */
+/* Desktop: napis w jednej linii (lamanie "Zaokrąglone" wygladalo zle) */
+.corner-btn span:last-child { white-space: nowrap; }
+/* Telefon: wezsze paddingi, mniejszy tekst i zgoda na zawijanie */
 @media (max-width: 480px) {
   .corner-btn { padding: 0.65rem 0.5rem; gap: 0.45rem; font-size: 0.82rem; }
+  .corner-btn span:last-child { white-space: normal; overflow-wrap: anywhere; }
 }
 .corner-btn:hover { border-color: var(--border-bright); }
 .corner-btn.selected { border-color: var(--accent); color: var(--text); box-shadow: 0 0 0 3px rgba(196, 245, 58, 0.15); }
@@ -1311,7 +1342,11 @@ Napisz krótki email do przyjaciela o weekendzie.	Use past simple. Include at le
         </div>
       </div>
     </div>
-    <button type="button" class="reorder-reset" id="reorderReset">↻ Resetuj kolejność do domyślnej</button>
+    <div class="custom-add-row">
+      <button type="button" class="custom-add-btn" id="addLinksSection">＋ Sekcja z linkami</button>
+      <button type="button" class="custom-add-btn" id="addHtmlSection">＋ Sekcja HTML</button>
+      <button type="button" class="reorder-reset" id="reorderReset">↻ Resetuj kolejność do domyślnej</button>
+    </div>
   </div>
 
   <!-- SECTION 3: STYLE -->
@@ -1440,10 +1475,10 @@ Napisz krótki email do przyjaciela o weekendzie.	Use past simple. Include at le
           <button type="button" class="color-reset" data-target="bg">RESET</button>
         </div>
         <div class="color-field">
-          <input type="color" id="colorText" value="#1a1414">
+          <input type="color" id="colorText" value="#000000">
           <div class="color-field-info">
             <div class="color-field-label">Kolor tekstu</div>
-            <div class="color-field-hex" id="colorTextHex">#1a1414</div>
+            <div class="color-field-hex" id="colorTextHex">#000000</div>
           </div>
           <button type="button" class="color-reset" data-target="text">RESET</button>
         </div>
@@ -1532,7 +1567,7 @@ Napisz krótki email do przyjaciela o weekendzie.	Use past simple. Include at le
         ⓘ Przy każdym elemencie karty pojawi się pięć małych przycisków z symbolami (bez cyfr):
         <strong style="color:#6b7280">✦ · nowe słowo</strong>,
         <strong style="color:#dc2626">✕ · nie umiem / nie pamiętam</strong>,
-        <strong style="color:#d97706">▲ · trudne</strong>,
+        <strong style="color:#ff8018">▲ · trudne</strong>,
         <strong style="color:#16a34a">⬤ · dobre</strong>,
         <strong style="color:#2563eb">✓ · łatwe</strong>.
         Symbole są rozróżnialne także bez koloru (przyjazne dla daltonizmu). W zadaniu Matching oceniasz parę zaraz po jej poprawnym połączeniu (nakładka na kafelku), a potem możesz zmienić ocenę klikając plakietkę obok kafelka. Oznaczenia zapisują się automatycznie razem z postępem, a po kliknięciu „⤓ TSV" trafiają do pliku jako kolumna <strong>difficulty</strong> (wiersze bez oznaczenia zostają puste). Ponowne kliknięcie wybranego symbolu usuwa go.
@@ -1692,14 +1727,14 @@ const DEFAULT_INSTRUCTIONS = {
   quiz:       'Wybierz prawidłowe tłumaczenie polskiego słowa. Tylko jedna odpowiedź jest poprawna.',
   unscramble: 'Kliknij pole "Pokaż słowa", a następnie ułóż je w odpowiedniej kolejności. Możesz też przeciągać słowa. Kliknij 💡, aby wstawić kolejne poprawne słowo, lub ✨, aby rozwiązać od razu.',
   cornell:    'Kliknij pytanie, żeby odsłonić odpowiedź. Spróbuj najpierw odpowiedzieć w głowie!',
-  gapfill:    'Wpisz brakujące słowa w lukach (Enter sprawdza). Kliknij 👁, żeby zobaczyć polskie tłumaczenie zdania jako wskazówkę, 💡 - kolejna litera, ✨ - rozwiąż całe zdanie.',
+  gapfill:    'Wpisz brakujące słowa w lukach (Enter sprawdza). 💡 - kolejna litera, ✨ - rozwiąż całe zdanie.',
   translate:  'Przetłumacz polskie słowo, frazę lub zdanie na angielski (Enter sprawdza). Sprawdzanie pomija wielkość liter i kropkę na końcu.',
   writing:    'Napisz odpowiedź według polecenia. Kliknij "Gotowe", gdy skończysz.'
 };
 
 // Domyślne kolory wyglądu: nasycony niebieski akcent + chłodna, prawie biała karta.
 // cardBg, border, textDim itp. wyliczane są w getPresetTheme / accentDerived.
-const APPEARANCE_DEFAULTS = { accent: '#2563eb', bg: '#fbfcff', text: '#1a1414' };
+const APPEARANCE_DEFAULTS = { accent: '#2563eb', bg: '#fbfcff', text: '#000000' };
 // Zachowane pod starą nazwą dla zgodności ze starszym kodem, który mógł
 // odwoływać się do PRESET_DEFAULTS[STATE.preset].
 const PRESET_DEFAULTS = { custom: APPEARANCE_DEFAULTS };
@@ -1717,6 +1752,8 @@ function parseTSV(text) {
   // i numery instancji (g2 -> gapfill:2). Linie te NIE sa wierszami danych.
   let parsedOrder = null;
   let orderMode = false;
+  // Metadane stylu z pobranego TSV: kolory + obrazki sekcji.
+  const parsedMeta = { colors: {}, images: [] };
   const lines = [];
   allLines.forEach(l => {
     const t = l.trim();
@@ -1730,15 +1767,32 @@ function parseTSV(text) {
       });
       return;
     }
+    // Inne linie metadanych (#accent, #bg, #text, #img) - nie sa wierszami danych.
+    if (t[0] === '#') {
+      orderMode = false;
+      const cells = t.split('\t').map(c => c.trim());
+      const key = cells[0].toLowerCase();
+      if ((key === '#accent' || key === '#bg' || key === '#text') && cells[1]) {
+        parsedMeta.colors[key.slice(1)] = cells[1];
+      } else if (key === '#bgsvg' && cells[1]) {
+        parsedMeta.bgsvg = { uri: cells[1], size: cells[2], opacity: cells[3] };
+      } else if (key === '#img' && cells[1] && cells[2]) {
+        parsedMeta.images.push({ key: cells[1].toLowerCase(), url: cells[2], h: cells[3], posY: cells[4], fit: cells[5] });
+      }
+      return; // nieznane linie # ignorujemy (nie psuja parsowania)
+    }
     // Tryb kolumnowy: pojedynczy tag w linii (bez tabulatora) nalezy do #order.
-    if (orderMode && !t.includes('\t') && /^[a-z]+[0-9]*$/i.test(t)) {
+    // Akceptujemy skroty (f, m4), pelne nazwy (matching) ORAZ klucze instancji
+    // w formie 'matching:2' - wczesniej dwukropek wypadal z regexa i sekcje
+    // z numerem gubily kolejnosc.
+    if (orderMode && !t.includes('\t') && /^[a-z]+[0-9]*(:[0-9]+)?$/i.test(t)) {
       parsedOrder.push(t.toLowerCase());
       return;
     }
     orderMode = false;
     lines.push(l);
   });
-  if (lines.length < 2) return { headers: [], rows: [], error: 'Potrzebny jest nagłówek + co najmniej 1 wiersz danych.', parsedOrder };
+  if (lines.length < 2) return { headers: [], rows: [], error: 'Potrzebny jest nagłówek + co najmniej 1 wiersz danych.', parsedOrder, parsedMeta };
 
   const firstLine = lines[0];
   let sep = '\t';
@@ -1787,12 +1841,34 @@ function parseTSV(text) {
           return true;
         });
       }
+      // ── ROZDZIELENIE G + U ──
+      // Wiersz otagowany JEDNOCZESNIE gapfill i unscramble (np. "g,u") to w
+      // praktyce DWA rozne cwiczenia o roznej trudnosci: uzupelnienie luki vs
+      // ulozenie calego zdania. Rozdzielamy go na dwa niezalezne wiersze:
+      //  A) klamry zostaja, tagi bez unscramble  -> luka (osobna ocena),
+      //  B) klamry usuniete, tylko tagi unscramble -> ukladanie (osobna ocena).
+      // Dzieki temu powtorka pokazuje je jako dwie pozycje, a TSV pobrany
+      // z karty zapisuje je juz jako dwie osobne linie.
+      const _hasGapTag = obj._tasks.some(t => taskKeyBase(t) === 'gapfill');
+      const _hasUnscTag = obj._tasks.some(t => taskKeyBase(t) === 'unscramble');
+      if (_hasGapTag && _hasUnscTag && /\{[^}]+\}/.test(obj.en)) {
+        const a = Object.assign({}, obj);
+        a._tasks = obj._tasks.filter(t => taskKeyBase(t) !== 'unscramble');
+        a.tasks = shortTaskTags(a._tasks);
+        const b = Object.assign({}, obj);
+        b.en = obj.en.replace(/\{([^}]+)\}/g, '$1');
+        b._tasks = obj._tasks.filter(t => taskKeyBase(t) === 'unscramble');
+        b.tasks = shortTaskTags(b._tasks);
+        rows.push(a);
+        rows.push(b);
+        continue;
+      }
       rows.push(obj);
     }
   }
 
-  if (rows.length === 0) return { headers, rows: [], error: 'Nie wykryto wierszy z danymi PL/EN. Czy nagłówki to "pl" i "en"?', parsedOrder };
-  return { headers, rows, error: null, parsedOrder };
+  if (rows.length === 0) return { headers, rows: [], error: 'Nie wykryto wierszy z danymi PL/EN. Czy nagłówki to "pl" i "en"?', parsedOrder, parsedMeta };
+  return { headers, rows, error: null, parsedOrder, parsedMeta };
 }
 
 // Parse "f,m" -> ['flashcards','matching']. Empty -> [] (means: include in all selected types).
@@ -2017,6 +2093,63 @@ function updateTSVStatus() {
   // 'gapfill:2') juz istnialy w STATE.taskOrder i dawaly sie ustawiac.
   if (typeof syncTaskInstancesUI === 'function') syncTaskInstancesUI();
 
+  // Metadane stylu z TSV (#accent/#bg/#text/#img): odtworz kolory i obrazki.
+  // Wartosci wpisujemy przez inputy + zdarzenie 'input', zeby caly istniejacy
+  // lancuch (STATE, hex-label, podglad, panel rozmiaru) zadzialal sam.
+  if (result.parsedMeta) {
+    const colors = result.parsedMeta.colors || {};
+    [['accent', 'colorAccent'], ['bg', 'colorBg'], ['text', 'colorText']].forEach(([k, id]) => {
+      const v = (colors[k] || '').trim();
+      if (/^#[0-9a-f]{6}$/i.test(v)) {
+        const el = document.getElementById(id);
+        if (el && el.value.toLowerCase() !== v.toLowerCase()) {
+          el.value = v;
+          el.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+      }
+    });
+    if (result.parsedMeta.bgsvg && result.parsedMeta.bgsvg.uri) {
+      const bs = result.parsedMeta.bgsvg;
+      const decoded = normalizeSvgInput(bs.uri);
+      if (decoded) {
+        STATE.bgStyle = 'svg';
+        STATE.bgSvgCode = decoded;
+        const sz = parseInt(bs.size, 10);
+        STATE.bgSvgSize = (sz >= 20 && sz <= 800) ? sz : null;
+        const op = parseFloat(bs.opacity);
+        STATE.bgSvgOpacity = (op >= 0.05 && op <= 1) ? op : 1;
+        // Odzwierciedl w UI: zaznacz przycisk stylu, pokaz panel, wpisz wartosci.
+        document.querySelectorAll('.bg-style-btn').forEach(b => b.classList.toggle('selected', b.dataset.bg === 'svg'));
+        const wrap = document.getElementById('svgBgWrap');
+        if (wrap) wrap.style.display = 'grid';
+        const codeEl = document.getElementById('svgBgCode');
+        if (codeEl) codeEl.value = decoded;
+        const sizeEl = document.getElementById('svgBgSize');
+        if (sizeEl) sizeEl.value = STATE.bgSvgSize || '';
+        const opEl = document.getElementById('svgBgOpacity');
+        if (opEl) opEl.value = STATE.bgSvgOpacity;
+        const opVal = document.getElementById('svgBgOpacityVal');
+        if (opVal) opVal.textContent = Math.round(STATE.bgSvgOpacity * 100) + '%';
+        refreshSvgThumb();
+      }
+    }
+    (result.parsedMeta.images || []).forEach(im => {
+      if (!(im.key in STATE.tasks)) return; // sekcja nie istnieje
+      if (im.fit === 'cover' || im.fit === 'full') STATE.taskImageFit[im.key] = im.fit;
+      const h = parseInt(im.h, 10);
+      if (h >= 80 && h <= 500) STATE.taskImageHeight[im.key] = h;
+      const p = parseInt(im.posY, 10);
+      if (p >= 0 && p <= 100) STATE.taskImagePosY[im.key] = p;
+      const inp = document.querySelector('.task-card[data-task="' + im.key + '"] .task-edit-image');
+      if (inp && inp.value !== im.url) {
+        inp.value = im.url || '';
+        inp.dispatchEvent(new Event('input', { bubbles: true }));
+      } else if (!inp) {
+        STATE.taskImages[im.key] = im.url || '';
+      }
+    });
+  }
+
   // Jesli TSV zawieral "#order", odtwarzamy ulozenie zadan. Wpisy normalizujemy
   // przez parseTaskTags (skroty f/m/g2..., pelne nazwy, tez zapis 'gapfill:2').
   // Rozpoznane klucze ida na poczatek w podanej kolejnosci, reszta (w tym
@@ -2067,6 +2200,11 @@ function updateTaskAvailability() {
   const cards = document.querySelectorAll('.task-card');
   cards.forEach(card => {
     const task = card.dataset.task;
+    // Sekcje materialow (linki/HTML) nie zaleza od danych TSV - zawsze dostepne.
+    if (card.classList.contains('task-card-custom')) {
+      card.classList.remove('disabled');
+      return;
+    }
     const taskRows = STATE.rows.length > 0 ? rowsForTask(task) : [];
     // Dla instancji 2+ porownujemy baze (np. 'matching:2' -> 'matching').
     const taskBase = (typeof taskKeyBase === 'function') ? taskKeyBase(task) : task;
@@ -2357,6 +2495,16 @@ const TASK_TAG = {
   flashcards: 'f', matching: 'm', scramble: 's', quiz: 'q',
   unscramble: 'u', cornell: 'c', gapfill: 'g', translate: 't', writing: 'w'
 };
+
+// Lista pelnych kluczy zadan -> skrocone tagi TSV, np.
+// ['gapfill','matching:2'] -> 'g,m2'. Uzywane m.in. przy rozdzielaniu G+U.
+function shortTaskTags(list) {
+  return (list || []).map(k => {
+    const b = taskKeyBase(k);
+    const n = taskKeyNum(k);
+    return (TASK_TAG[b] || b) + (n > 1 ? n : '');
+  }).join(',');
+}
 
 document.querySelectorAll('.task-card').forEach(card => {
   initTaskCard(card);
@@ -2815,6 +2963,122 @@ function syncOrderInputs() {
     }
   });
 }
+
+// ============================================================
+// SEKCJE MATERIAŁÓW (linki / własny HTML)
+// Dodawane recznie przyciskami pod gridem. Kazda dostaje kafelek jak zwykle
+// zadanie: checkbox aktywnosci, numer pozycji, strzalki - wiec kolejnosc
+// ustawia sie identycznie. Zawartosc NIE trafia do TSV (patrz odpowiedz w
+// czacie) - po ponownym wczytaniu danych sekcje trzeba dodac od nowa.
+// ============================================================
+STATE.customSections = {};
+let _customSeq = 0;
+
+function addCustomSection(kind) {
+  _customSeq++;
+  const key = kind + ':' + _customSeq;
+  const isLinks = (kind === 'links');
+  STATE.tasks[key] = true;
+  STATE.taskOrder.push(key);
+  STATE.customSections[key] = isLinks
+    ? { kind, title: 'Materiały', body: '' }
+    : { kind, title: 'Materiał HTML', body: '', height: 600 };
+
+  const card = document.createElement('div');
+  card.className = 'task-card task-card-custom checked';
+  card.dataset.task = key;
+  card.innerHTML =
+    '<input type="checkbox" hidden checked>' +
+    '<div class="task-checkbox"></div>' +
+    '<button type="button" class="task-custom-del" title="Usuń tę sekcję">✕</button>' +
+    '<div class="task-info">' +
+      '<div class="task-info-name">' + (isLinks ? '🔗 Sekcja z linkami' : '📄 Sekcja HTML') + '</div>' +
+      '<div class="task-info-desc">' + (isLinks
+        ? 'Odnośniki jako ładne przyciski. Jedna linia = jeden link: „Tytuł | https://adres" albo sam adres.'
+        : 'Wklejony kod HTML osadzony na karcie w odizolowanej ramce (działa też z pliku offline).') + '</div>' +
+    '</div>' +
+    '<div class="task-edit-fields task-custom-fields">' +
+      '<label class="task-custom-label">Tytuł sekcji na karcie</label>' +
+      '<input type="text" class="input custom-title" value="' + (isLinks ? 'Materiały' : 'Materiał HTML') + '">' +
+      '<label class="task-custom-label">' + (isLinks ? 'Linki (jedna linia = jeden link)' : 'Kod HTML') + '</label>' +
+      '<textarea class="textarea custom-body" spellcheck="false" placeholder="' + (isLinks
+        ? 'Filmik BBC | https://www.bbc.co.uk/...&#10;https://learnenglish.britishcouncil.org/...'
+        : '&lt;h2&gt;Mój materiał&lt;/h2&gt; ...') + '"></textarea>' +
+      (isLinks ? '' :
+        '<label class="task-custom-label">Wysokość ramki (px)</label>' +
+        '<input type="number" class="input custom-height" min="100" max="2000" step="50" value="600">') +
+    '</div>';
+
+  // Numer pozycji + strzalki - ta sama struktura co w zwyklych kafelkach,
+  // wiec syncOrderInputs / moveTask / setTaskPosition dzialaja bez zmian.
+  const moveWrap = document.createElement('div');
+  moveWrap.className = 'task-move';
+  const orderInput = document.createElement('input');
+  orderInput.type = 'number';
+  orderInput.className = 'task-order-num';
+  orderInput.min = '1';
+  orderInput.title = 'Wpisz numer pozycji (Enter zatwierdza)';
+  orderInput.addEventListener('click', e => e.stopPropagation());
+  orderInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); orderInput.blur(); }
+  });
+  orderInput.addEventListener('change', () => {
+    const p = parseInt(orderInput.value, 10);
+    if (isNaN(p)) { syncOrderInputs(); return; }
+    setTaskPosition(key, p);
+  });
+  moveWrap.appendChild(orderInput);
+  moveWrap.insertAdjacentHTML('beforeend',
+    '<button type="button" class="task-move-btn" data-dir="-1" title="Przesuń wyżej">▲</button>' +
+    '<button type="button" class="task-move-btn" data-dir="1" title="Przesuń niżej">▼</button>');
+  moveWrap.addEventListener('click', e => {
+    e.stopPropagation();
+    const btn = e.target.closest('.task-move-btn');
+    if (!btn || btn.disabled) return;
+    moveTask(key, parseInt(btn.dataset.dir, 10));
+  });
+  card.appendChild(moveWrap);
+
+  const cb = card.querySelector(':scope > input[type="checkbox"]');
+  card.addEventListener('click', e => {
+    if (e.target.closest('.task-custom-fields')) return;
+    if (e.target.closest('.task-move')) return;
+    if (e.target.closest('.task-custom-del')) return;
+    cb.checked = !cb.checked;
+    card.classList.toggle('checked', cb.checked);
+    STATE.tasks[key] = cb.checked;
+    syncOrderInputs();
+    validateGenerate();
+  });
+  card.querySelector('.task-custom-fields').addEventListener('click', e => e.stopPropagation());
+  card.querySelector('.custom-title').addEventListener('input', e => {
+    STATE.customSections[key].title = e.target.value;
+  });
+  card.querySelector('.custom-body').addEventListener('input', e => {
+    STATE.customSections[key].body = e.target.value;
+  });
+  const hEl = card.querySelector('.custom-height');
+  if (hEl) hEl.addEventListener('input', e => {
+    const v = parseInt(e.target.value, 10);
+    STATE.customSections[key].height = (v >= 100 && v <= 2000) ? v : 600;
+  });
+  card.querySelector('.task-custom-del').addEventListener('click', e => {
+    e.stopPropagation();
+    delete STATE.tasks[key];
+    delete STATE.customSections[key];
+    STATE.taskOrder = STATE.taskOrder.filter(t => t !== key);
+    card.remove();
+    syncOrderInputs();
+    validateGenerate();
+  });
+
+  document.getElementById('taskGrid').appendChild(card);
+  syncOrderInputs();
+  updateTaskAvailability();
+}
+
+document.getElementById('addLinksSection').addEventListener('click', () => addCustomSection('links'));
+document.getElementById('addHtmlSection').addEventListener('click', () => addCustomSection('html'));
 
 document.getElementById('reorderReset').addEventListener('click', () => {
   const defaultOrder = ['flashcards', 'matching', 'scramble', 'quiz', 'unscramble', 'cornell', 'gapfill', 'translate', 'writing'];
@@ -3409,6 +3673,61 @@ function downloadHTML(html) {
 }
 
 // ============================================================
+// SEKCJE MATERIAŁÓW (statyczne): LINKI + WŁASNY HTML
+// ============================================================
+
+// Sekcja z linkami: kazda linia z pola to jeden odnosnik, format
+// "Tytul | https://adres" albo sam adres. Renderowane jako duze przyciski.
+function buildLinksSection(num, options = {}) {
+  const cfg = STATE.customSections[options.taskKey] || { title: 'Materiały', body: '' };
+  const items = (cfg.body || '').split(/\r?\n/).map(l => l.trim()).filter(Boolean).map(line => {
+    let label = '', url = '';
+    const bar = line.indexOf('|');
+    if (bar >= 0) { label = line.slice(0, bar).trim(); url = line.slice(bar + 1).trim(); }
+    else { url = line; }
+    if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+    let domain = '';
+    try { domain = new URL(url).hostname.replace(/^www\./, ''); } catch (e) {}
+    if (!label) label = domain || url;
+    return `<a class="ws-link-btn" href="${escapeHtml(url)}" target="_blank" rel="noopener">
+      <span class="ws-link-btn-icon">🔗</span>
+      <span class="ws-link-btn-text"><span class="ws-link-btn-label">${escapeHtml(label)}</span>${domain ? `<span class="ws-link-btn-domain">${escapeHtml(domain)}</span>` : ''}</span>
+      <span class="ws-link-btn-arrow">↗</span>
+    </a>`;
+  }).join('');
+  if (!items) return '';
+  return `
+    <section class="ws-section ws-section-static" data-section="${num}" id="sec-${num}">
+      <div class="ws-sec-head">
+        <div class="ws-sec-num">${num < 10 ? '0' + num : num}</div>
+        <h2 class="ws-sec-title">${escapeHtml(cfg.title || 'Materiały')}</h2>
+      </div>
+      <div class="ws-links-grid">${items}</div>
+    </section>`;
+}
+
+// Sekcja HTML: wklejony kod osadzony w iframe przez srcdoc. Ramka jest
+// odizolowana (sandbox bez allow-same-origin), wiec obcy kod nie dotyka karty,
+// a dziala takze z pliku otwartego lokalnie (offline).
+function buildHtmlSection(num, options = {}) {
+  const cfg = STATE.customSections[options.taskKey] || { title: '', body: '', height: 600 };
+  const body = (cfg.body || '').trim();
+  if (!body) return '';
+  const h = cfg.height || 600;
+  return `
+    <section class="ws-section ws-section-static" data-section="${num}" id="sec-${num}">
+      <div class="ws-sec-head">
+        <div class="ws-sec-num">${num < 10 ? '0' + num : num}</div>
+        <h2 class="ws-sec-title">${escapeHtml(cfg.title || 'Materiał HTML')}</h2>
+      </div>
+      <div class="ws-embed-wrap" style="height:${h}px">
+        <iframe class="ws-embed-frame" sandbox="allow-scripts allow-popups allow-forms allow-modals" srcdoc="${escapeHtml(body)}" loading="lazy" title="Osadzony materiał"></iframe>
+      </div>
+      <div class="ws-embed-note">Materiał osadzony - ramkę można rozciągnąć za prawy dolny róg.</div>
+    </section>`;
+}
+
+// ============================================================
 // WORKSHEET BUILDER
 // ============================================================
 function buildWorksheetHTML() {
@@ -3433,8 +3752,16 @@ function buildWorksheetHTML() {
     cornell: { html: buildCornellSection, js: buildCornellJS },
     gapfill: { html: buildGapfillSection, js: buildGapfillJS },
     translate: { html: buildTranslateSection, js: buildTranslateJS },
-    writing: { html: buildWritingSection, js: buildWritingJS }
+    writing: { html: buildWritingSection, js: buildWritingJS },
+    // Sekcje materialow - statyczne (bez JS i bez udzialu w pasku postepu).
+    links: { html: buildLinksSection, js: () => '' },
+    html: { html: buildHtmlSection, js: () => '' }
   };
+
+  // Sekcje statyczne (materialy) nie licza sie do postepu - WS_SECTION_COUNT
+  // dostaje sectionCount MINUS staticCount, wiec pasek dochodzi do 100%
+  // po samych zadaniach interaktywnych.
+  let staticCount = 0;
 
   STATE.taskOrder.forEach(taskKey => {
     if (STATE.reviewOnly) return; // tryb tylko powtorka - brak sekcji zadan
@@ -3450,6 +3777,15 @@ function buildWorksheetHTML() {
         const opts = { startIdx: part * 8, partNum: part + 1, totalParts, taskKey };
         sectionsHTML.push(builders[taskName].html(sectionCount, opts));
         sectionsJS.push(builders[taskName].js(sectionCount, opts));
+      }
+    } else if (taskName === 'links' || taskName === 'html') {
+      sectionCount++;
+      const out = builders[taskName].html(sectionCount, { taskKey });
+      if (out) {
+        sectionsHTML.push(out);
+        staticCount++;
+      } else {
+        sectionCount--; // pusta sekcja (brak tresci) - cofnij numer
       }
     } else {
       sectionCount++;
@@ -3473,6 +3809,31 @@ function buildWorksheetHTML() {
   const isCustomAccent = true;
 
   // Build the full HTML based on preset
+  // Metadane stylu dopisywane do pobieranego TSV (#accent/#bg/#text/#img) -
+  // przy ponownym wklejeniu generator odtwarza kolory i obrazki sekcji.
+  // Tlo SVG do TSV: normalizujemy do jednolinijkowego data URI (TSV nie
+  // zniesie wielolinijkowego kodu <svg>). Parser odkoduje je z powrotem.
+  const _bgSvgNorm = (STATE.bgStyle === 'svg') ? normalizeSvgInput(STATE.bgSvgCode) : '';
+  const styleMeta = {
+    accent, bg, text: textColor,
+    bgsvg: _bgSvgNorm
+      ? {
+          uri: 'data:image/svg+xml,' + encodeURIComponent(_bgSvgNorm.replace(/\s+/g, ' ').trim()).replace(/'/g, '%27'),
+          size: STATE.bgSvgSize || '',
+          opacity: STATE.bgSvgOpacity || 1
+        }
+      : null,
+    images: STATE.taskOrder
+      .filter(k => STATE.tasks[k] && (STATE.taskImages[k] || '').trim())
+      .map(k => ({
+        key: k,
+        url: STATE.taskImages[k].trim(),
+        h: STATE.taskImageHeight[k] || 150,
+        posY: (STATE.taskImagePosY[k] != null) ? STATE.taskImagePosY[k] : 50,
+        fit: STATE.taskImageFit[k] || 'cover'
+      }))
+  };
+
   return buildWorksheetTemplate({
     title,
     subtitle,
@@ -3481,7 +3842,8 @@ function buildWorksheetHTML() {
     bg,
     textColor,
     isCustomAccent,
-    sectionCount,
+    styleMeta,
+    sectionCount: sectionCount - staticCount,
     taskOrder: activeOrder,
     sectionsHTML: sectionsHTML.join('\n'),
     sectionsJS: sectionsJS.join('\n'),
@@ -4844,16 +5206,15 @@ function buildGapfillSection(num, options = {}) {
     const totalGaps = gapIdx;
     return `
       <div class="gap-card" data-idx="${i}" data-total-gaps="${totalGaps}">
+        <div class="gap-translation">
+          <span class="gap-translation-label">${FLAG_PL_SVG}</span> <span class="gap-translation-text">${escapeHtml(r.pl)}</span>
+        </div>
         <div class="gap-sentence">${sentenceHTML}
           <span class="gap-actions">
             <button class="tts-btn tts-btn-gap gap-helper-btn" onclick="hintGap_${num}(${i})" title="Podpowiedź - kolejna litera w pierwszej pustej luce" aria-label="Podpowiedź">💡</button>
-            <button class="tts-btn tts-btn-gap gap-translate-btn" onclick="revealGapTranslation_${num}(${i})" title="Pokaż polskie tłumaczenie" aria-label="Pokaż tłumaczenie">👁</button>
             <button class="tts-btn tts-btn-gap gap-solve-btn" onclick="solveGapOne_${num}(${i})" title="Rozwiąż całe zdanie" aria-label="Rozwiąż">✨</button>
             <button class="tts-btn tts-btn-gap" onclick="ttsBtnClick(event, ${JSON.stringify(enClean).replace(/"/g, '&quot;')})" title="Posłuchaj całego zdania" aria-label="Czytaj">🔊</button>
           </span>
-        </div>
-        <div class="gap-translation" id="gap-tr-${num}-${i}">
-          <span class="gap-translation-label">${FLAG_PL_SVG}</span> <span class="gap-translation-text">${escapeHtml(r.pl)}</span>
         </div>
         ${diffRow(diffRowIdx(r))}
       </div>`;
@@ -4867,7 +5228,7 @@ function buildGapfillSection(num, options = {}) {
         <div class="ws-sec-num">${num < 10 ? "0" + num : num}</div>
         <h2 class="ws-sec-title">${sectionTitle(taskKey, 'Gap Fill')}</h2>
       </div>
-      ${sectionInstr(taskKey, 'Wpisz brakujące słowa w lukach (Enter sprawdza). Kliknij 👁, żeby zobaczyć polskie tłumaczenie zdania jako wskazówkę, 💡 - kolejna litera, ✨ - rozwiąż całe zdanie.')}
+      ${sectionInstr(taskKey, 'Wpisz brakujące słowa w lukach (Enter sprawdza). 💡 - kolejna litera, ✨ - rozwiąż całe zdanie.')}
       <div class="gap-grid">${items}</div>
       <div class="ws-actions">
         <button class="ws-btn-solve" onclick="solveGap_${num}()">Pokaż wszystkie odpowiedzi</button>
@@ -4954,8 +5315,6 @@ function buildGapfillJS(num, options = {}) {
       inp.disabled = true;
     });
     card.classList.add('done');
-    const tr = card.querySelector('.gap-translation');
-    if (tr) tr.classList.add('show');
     _gapDone_${num}.add(parseInt(card.dataset.idx));
     if (_gapDone_${num}.size === _gapTotal_${num}) {
       showSectionFeedback(${num}, true, '✓ Wszystkie luki uzupełnione');
@@ -4963,22 +5322,6 @@ function buildGapfillJS(num, options = {}) {
     }
   };
 
-  // Pokaz/ukryj polskie tlumaczenie zdania (wskazowka przed rozwiazaniem luki).
-  // Toggle - klikniecie ponownie chowa. Po rozwiazaniu zostaje na stale i tak.
-  window.revealGapTranslation_${num} = function(cardIdx) {
-    const card = document.querySelector('#sec-${num} .gap-card[data-idx="' + cardIdx + '"]');
-    if (!card) return;
-    const tr = card.querySelector('.gap-translation');
-    const btn = card.querySelector('.gap-translate-btn');
-    if (!tr) return;
-    // Jesli karta jest juz rozwiazana, tlumaczenie zostaje pokazane (nie pozwalamy schowac).
-    if (card.classList.contains('done')) {
-      tr.classList.add('show');
-      return;
-    }
-    tr.classList.toggle('show');
-    if (btn) btn.classList.toggle('active', tr.classList.contains('show'));
-  };
 
   function _gapCheckCardComplete_${num}(card) {
     const all = card.querySelectorAll('.gap-input');
@@ -5008,8 +5351,6 @@ function buildGapfillJS(num, options = {}) {
         inp.disabled = true;
       });
       card.classList.add('done');
-      const tr = card.querySelector('.gap-translation');
-      if (tr) tr.classList.add('show');
       _gapDone_${num}.add(parseInt(card.dataset.idx));
     });
     showSectionFeedback(${num}, true, '✓ Wszystkie odpowiedzi pokazane');
@@ -5260,7 +5601,7 @@ function buildWritingJS(num, options = {}) {
 // ============================================================
 // MAIN TEMPLATE - the worksheet HTML
 // ============================================================
-function buildWorksheetTemplate({ title, subtitle, preset, accent, bg, textColor, isCustomAccent, sectionCount, taskOrder, sectionsHTML, sectionsJS, rowsJSON, ttsConfig, logoConfig, difficulty, reviewOnly }) {
+function buildWorksheetTemplate({ title, subtitle, preset, accent, bg, textColor, isCustomAccent, styleMeta, sectionCount, taskOrder, sectionsHTML, sectionsJS, rowsJSON, ttsConfig, logoConfig, difficulty, reviewOnly }) {
   const presetTheme = getPresetTheme(preset, accent, bg, textColor, isCustomAccent);
   const fontImports = presetTheme.fontImports;
   const css = buildWorksheetCSS(presetTheme);
@@ -5306,7 +5647,7 @@ ${bgEffectHTML}
     <span class="ws-diff-legend-title">Oznacz trudność:</span>
     <span class="ws-diff-key"><span class="ws-diff-chip" style="background:#9ca3af">✦</span>nowe słowo</span>
     <span class="ws-diff-key"><span class="ws-diff-chip" style="background:#dc2626">✕</span>nie umiem / nie pamiętam</span>
-    <span class="ws-diff-key"><span class="ws-diff-chip" style="background:#d97706">▲</span>trudne</span>
+    <span class="ws-diff-key"><span class="ws-diff-chip" style="background:#ff8018">▲</span>trudne</span>
     <span class="ws-diff-key"><span class="ws-diff-chip" style="background:#16a34a">⬤</span>dobre</span>
     <span class="ws-diff-key"><span class="ws-diff-chip" style="background:#2563eb">✓</span>łatwe</span>
   </div>` : ''}
@@ -5339,7 +5680,7 @@ ${bgEffectHTML}
           <label class="ws-review-lvl"><input type="checkbox" value="none"${reviewOnly ? ' checked' : ''} onchange="wsBuildReview()"><span class="ws-review-chip" style="background:#cbd5e1;color:#475569">○</span> nieocenione</label>
           <label class="ws-review-lvl"><input type="checkbox" value="new" checked onchange="wsBuildReview()"><span class="ws-review-chip" style="background:#9ca3af">✦</span> nowe słowo</label>
           <label class="ws-review-lvl"><input type="checkbox" value="1" checked onchange="wsBuildReview()"><span class="ws-review-chip" style="background:#dc2626">✕</span> nie umiem / nie pamiętam</label>
-          <label class="ws-review-lvl"><input type="checkbox" value="2" checked onchange="wsBuildReview()"><span class="ws-review-chip" style="background:#d97706">▲</span> trudne</label>
+          <label class="ws-review-lvl"><input type="checkbox" value="2" checked onchange="wsBuildReview()"><span class="ws-review-chip" style="background:#ff8018">▲</span> trudne</label>
           <label class="ws-review-lvl"><input type="checkbox" value="3" onchange="wsBuildReview()"><span class="ws-review-chip" style="background:#16a34a">⬤</span> dobre</label>
           <label class="ws-review-lvl"><input type="checkbox" value="4" onchange="wsBuildReview()"><span class="ws-review-chip" style="background:#2563eb">✓</span> łatwe</label>
         </div>
@@ -5357,7 +5698,7 @@ ${bgEffectHTML}
           <div class="ws-review-legend">
             <span class="ws-review-legend-item"><span class="ws-review-chip" style="background:#9ca3af">✦</span> nowe słowo</span>
             <span class="ws-review-legend-item"><span class="ws-review-chip" style="background:#dc2626">✕</span> nie umiem / nie pamiętam</span>
-            <span class="ws-review-legend-item"><span class="ws-review-chip" style="background:#d97706">▲</span> trudne</span>
+            <span class="ws-review-legend-item"><span class="ws-review-chip" style="background:#ff8018">▲</span> trudne</span>
             <span class="ws-review-legend-item"><span class="ws-review-chip" style="background:#16a34a">⬤</span> dobre</span>
             <span class="ws-review-legend-item"><span class="ws-review-chip" style="background:#2563eb">✓</span> łatwe</span>
           </div>
@@ -5398,6 +5739,11 @@ const WS_HEADERS = ${JSON.stringify(STATE.headers)};
 // "#order ...", zeby przy ponownym wczytaniu odtworzyc ulozenie bez recznego
 // przestawiania.
 const WS_TASK_ORDER = ${JSON.stringify(taskOrder || [])};
+// Skroty tagow per typ zadania - do zapisu #order w TSV (m4 zamiast matching:4).
+const WS_TAG_BY_BASE = { flashcards: 'f', matching: 'm', scramble: 's', quiz: 'q', unscramble: 'u', cornell: 'c', gapfill: 'g', translate: 't', writing: 'w' };
+// Kolory i obrazki sekcji - dopisywane do pobieranego TSV (#accent/#bg/#text/#img),
+// zeby generator przy ponownym wczytaniu odtworzyl wyglad bez klikania.
+const WS_STYLE_META = ${JSON.stringify(styleMeta || null)};
 // Tryb "tylko powtorka": karta bez zadan, sama powtorka ze WSZYSTKIMI slowami.
 const WS_REVIEW_ONLY = ${reviewOnly ? 'true' : 'false'};
 const WS_TITLE = ${JSON.stringify(title)};
@@ -5416,7 +5762,7 @@ const WS_TTS = ${JSON.stringify(ttsConfig)};
 // ── ŚLEDZENIE TRUDNOŚCI (nowe + 4 oceny jak w Anki) ─────
 const WS_DIFF_ENABLED = ${difficulty ? 'true' : 'false'};
 const WS_DIFF_LABELS = { 'new': 'nowe słowo', 1: 'nie umiem / nie pamiętam', 2: 'trudne', 3: 'dobre', 4: 'łatwe' };
-const WS_DIFF_COLORS = { 'new': '#9ca3af', 1: '#dc2626', 2: '#d97706', 3: '#16a34a', 4: '#2563eb' };
+const WS_DIFF_COLORS = { 'new': '#9ca3af', 1: '#dc2626', 2: '#ff8018', 3: '#16a34a', 4: '#2563eb' };
 // Symbole pokazywane na przyciskach i plakietkach (NIE cyfry, NIE emoji).
 const WS_DIFF_SYMBOLS = { 'new': '✦', 1: '✕', 2: '▲', 3: '⬤', 4: '✓' };
 // Wartosc zapisywana do kolumny TSV "difficulty" (czytelna i odwracalna przy imporcie).
@@ -5810,8 +6156,6 @@ function wsClearSection(num) {
     inp.classList.remove('gap-correct', 'gap-wrong');
     inp.disabled = false;
   });
-  sec.querySelectorAll('.gap-translation').forEach(tr => tr.classList.remove('show'));
-  sec.querySelectorAll('.gap-translate-btn').forEach(b => b.classList.remove('active'));
 
   // ── TRANSLATE ── wyczysc pola i schowaj odsloniety wzor odpowiedzi.
   sec.querySelectorAll('.trans-card').forEach(card => card.classList.remove('done'));
@@ -6144,10 +6488,29 @@ function wsBuildReview() {
         + '<button type="button" class="ws-review-cover" onclick="wsToggleCover(this)" aria-label="Odsłoń lub zasłoń odpowiedź"></button>';
     }
 
+    // Wiersze z zadania "ułóż zdanie" (unscramble): przypomnienie CALEGO zdania
+    // z glowy to za duzo, wiec pod polskim haslem pokazujemy rozsypane slowa -
+    // uczen uklada je ustnie, a nakladka odslania poprawna kolejnosc.
+    // Celowo minimalistycznie: sam tekst, zero przyciskow i logiki.
+    let unscHint = '';
+    const isUnsc = Array.isArray(r._tasks) && r._tasks.some(t => String(t).indexOf('unscramble') === 0);
+    if (isUnsc && !isGap) {
+      const ws = String(r.en).replace(/\\{([^}]+)\\}/g, '$1').trim().split(/\\s+/).filter(Boolean);
+      if (ws.length >= 3) {
+        const sh = ws.slice();
+        for (let k = sh.length - 1; k > 0; k--) {
+          const j = Math.floor(Math.random() * (k + 1));
+          [sh[k], sh[j]] = [sh[j], sh[k]];
+        }
+        if (sh.join(' ') === ws.join(' ')) { [sh[0], sh[1]] = [sh[1], sh[0]]; }
+        unscHint = '<span class="ws-review-unsc-words">' + sh.map(w => _wsEsc(w)).join(' ◆ ') + '</span>';
+      }
+    }
+
     return '<div class="ws-review-item' + gapCls + '" data-row="' + i + '">'
       + printRating
       + '<div class="ws-review-row-main">'
-      +   '<span class="ws-review-item-pl">' + _wsEsc(r.pl) + '</span>'
+      +   '<span class="ws-review-item-pl">' + _wsEsc(r.pl) + unscHint + '</span>'
       +   '<span class="ws-review-item-arrow">→</span>'
       +   '<span class="ws-review-item-answer">' + answerInner + '</span>'
       + '</div>'
@@ -6773,8 +7136,6 @@ function _wsRestoreGapfill(data) {
       });
       if (cardData.done) {
         card.classList.add('done');
-        const tr = card.querySelector('.gap-translation');
-        if (tr) tr.classList.add('show');
       }
     });
   });
@@ -6940,12 +7301,33 @@ function downloadTSV() {
     });
     lines.push(cols.join('\\t'));
   });
+  // Metadane stylu: kolory + obrazki sekcji (odtwarzane przez generator).
+  if (WS_STYLE_META) {
+    if (WS_STYLE_META.accent) lines.push('#accent\\t' + WS_STYLE_META.accent);
+    if (WS_STYLE_META.bg) lines.push('#bg\\t' + WS_STYLE_META.bg);
+    if (WS_STYLE_META.text) lines.push('#text\\t' + WS_STYLE_META.text);
+    if (WS_STYLE_META.bgsvg && WS_STYLE_META.bgsvg.uri) {
+      lines.push('#bgsvg\\t' + WS_STYLE_META.bgsvg.uri + '\\t' + (WS_STYLE_META.bgsvg.size || '') + '\\t' + (WS_STYLE_META.bgsvg.opacity || 1));
+    }
+    (WS_STYLE_META.images || []).forEach(im => {
+      lines.push('#img\\t' + im.key + '\\t' + im.url + '\\t' + im.h + '\\t' + im.posY + '\\t' + im.fit);
+    });
+  }
   // Metadane kolejnosci zadan na koncu (poza wierszami danych), w formacie
   // kolumnowym: linia "#order", pod nia jeden klucz na linie. Przy ponownym
   // wczytaniu generator odtworzy ulozenie. Pomijamy, gdy nieznane.
   if (Array.isArray(WS_TASK_ORDER) && WS_TASK_ORDER.length) {
-    lines.push('#order');
-    WS_TASK_ORDER.forEach(k => lines.push(k));
+    const tags = WS_TASK_ORDER.map(k => {
+      const parts = String(k).split(':');
+      const short = WS_TAG_BY_BASE[parts[0]];
+      if (!short) return null; // sekcje materialow (links/html) - nie do TSV
+      const n = parseInt(parts[1], 10);
+      return short + (n > 1 ? n : '');
+    }).filter(Boolean);
+    if (tags.length) {
+      lines.push('#order');
+      tags.forEach(t => lines.push(t));
+    }
   }
   const tsv = lines.join('\\n');
   // Nazwa pliku z tytulu karty (sanityzacja)
@@ -7538,6 +7920,64 @@ ${t.sharp ? `
 .ws-sec-image-full img {
   height: auto !important;
   object-fit: contain;
+}
+
+/* ===== SEKCJE MATERIAŁÓW (linki + osadzony HTML) ===== */
+.ws-links-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 0.8rem;
+}
+.ws-link-btn {
+  display: flex; align-items: center; gap: 0.8rem;
+  padding: 0.9rem 1.05rem;
+  background: var(--ws-box-bg);
+  border: 1.5px solid var(--ws-border-strong);
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--ws-text);
+  transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+  min-width: 0;
+}
+.ws-link-btn:hover {
+  border-color: var(--ws-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px ${accentRgba(0.14)};
+}
+.ws-link-btn-icon { flex-shrink: 0; font-size: 1.15rem; }
+.ws-link-btn-text { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; flex: 1; }
+.ws-link-btn-label {
+  font-family: var(--ws-body); font-weight: 700; font-size: 0.98rem;
+  overflow-wrap: anywhere;
+}
+.ws-link-btn-domain {
+  font-size: 0.74rem; color: var(--ws-text-dim);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.ws-link-btn-arrow { flex-shrink: 0; color: var(--ws-accent); font-weight: 700; }
+
+.ws-embed-wrap {
+  border: 1.5px solid var(--ws-border-strong);
+  border-radius: 12px;
+  overflow: auto;
+  resize: vertical; /* mozna rozciagnac za prawy dolny rog */
+  min-height: 120px;
+  background: #fff;
+}
+.ws-embed-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.ws-embed-note {
+  margin-top: 0.5rem;
+  font-size: 0.76rem;
+  color: var(--ws-text-dim);
+}
+@media print {
+  /* Osadzone ramki nie drukuja sie sensownie - chowamy cala sekcje HTML. */
+  .ws-embed-wrap, .ws-embed-note { display: none !important; }
 }
 
 .ws-sec-head {
@@ -8407,6 +8847,15 @@ ${t.sharp ? `
   background: var(--ws-card); cursor: pointer; font-size: 0.9rem;
   display: inline-flex; align-items: center; justify-content: center;
   transition: all 0.15s;
+}
+/* Rozsypane slowa (wiersze z unscramble) - pod polskim haslem, do ulozenia ustnie */
+.ws-review-unsc-words {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--ws-text-dim);
+  line-height: 1.5;
 }
 .ws-review-item-tts:hover { border-color: var(--ws-accent); background: var(--ws-accent-soft); }
 /* Telefon: rzad "PL → odpowiedz" ciasno sie gniotl w trzech kolumnach.
@@ -9307,16 +9756,6 @@ body.ws-review-only-mode .ws-review { margin-top: 0.5rem; }
 }
 .gap-helper-btn:hover,
 .gap-solve-btn:hover,
-.gap-translate-btn:hover {
-  border-color: var(--ws-accent);
-  color: var(--ws-accent);
-  background: var(--ws-accent-soft);
-}
-.gap-translate-btn.active {
-  background: var(--ws-accent);
-  color: #fff;
-  border-color: var(--ws-accent);
-}
 .gap-input {
   display: inline-block;
   font-family: var(--ws-body);
@@ -9355,16 +9794,13 @@ body.ws-review-only-mode .ws-review { margin-top: 0.5rem; }
   font-weight: 600;
   font-style: normal;
 }
+/* Polskie zdanie: ZAWSZE widoczne, nad zdaniem angielskim, bez kursywy.
+   (Dawny przycisk 👁 do odslaniania usuniety - i tak zawsze byl klikany.) */
 .gap-translation {
-  margin-top: 1rem;
-  padding-top: 0.85rem;
-  border-top: 1px solid var(--ws-border);
+  margin-bottom: 0.7rem;
   font-size: 0.98rem;
   color: var(--ws-text-dim);
-  display: none;
-  animation: wsFadeIn 0.4s ease-out;
 }
-.gap-translation.show { display: block; }
 .gap-translation-label {
   display: inline-flex;
   align-items: center;
@@ -9383,7 +9819,6 @@ body.ws-review-only-mode .ws-review { margin-top: 0.5rem; }
 }
 .gap-translation-text {
   color: var(--ws-text);
-  font-style: italic;
 }
 
 /* ===== TRANSLATE ===== */
@@ -9730,12 +10165,12 @@ body.ws-review-only-mode .ws-review { margin-top: 0.5rem; }
 .ws-diff-btn:active { transform: translateZ(0) scale(0.92); }
 .ws-diff-new { color: #9ca3af; border-color: #9ca3af; }
 .ws-diff-1 { color: #dc2626; border-color: #dc2626; }
-.ws-diff-2 { color: #d97706; border-color: #d97706; }
+.ws-diff-2 { color: #ff8018; border-color: #ff8018; }
 .ws-diff-3 { color: #16a34a; border-color: #16a34a; }
 .ws-diff-4 { color: #2563eb; border-color: #2563eb; }
 .ws-diff-new.sel { background: #9ca3af; color: #fff; }
 .ws-diff-1.sel { background: #dc2626; color: #fff; }
-.ws-diff-2.sel { background: #d97706; color: #fff; }
+.ws-diff-2.sel { background: #ff8018; color: #fff; }
 .ws-diff-3.sel { background: #16a34a; color: #fff; }
 .ws-diff-4.sel { background: #2563eb; color: #fff; }
 /* Kolo "dobre" (⬤) jest optycznie cieższe - leciutko zmniejszamy, by pasowalo do reszty. */
@@ -10061,7 +10496,6 @@ body.ws-review-only-mode .ws-review { margin-top: 0.5rem; }
   }
 
   /* Gap-fill: pokaż tłumaczenia, puste inputy jako linia do napisania */
-  .gap-translation { display: block !important; }
   /* Translate: ukryj wzór i przycisk sprawdzania (pole do uzupełnienia) */
   .trans-input-actions { display: none !important; }
   /* Writing: licznik + "Gotowe" niepotrzebne. Wpisaną odpowiedź drukujemy
@@ -10145,7 +10579,7 @@ body.ws-review-only-mode .ws-review { margin-top: 0.5rem; }
   /* Tło plakietki = kolor danej oceny (te same co przyciski .sel). */
   .ws-review-print-rating.ws-diff-new { background: #9ca3af !important; }
   .ws-review-print-rating.ws-diff-1   { background: #dc2626 !important; }
-  .ws-review-print-rating.ws-diff-2   { background: #d97706 !important; }
+  .ws-review-print-rating.ws-diff-2   { background: #ff8018 !important; }
   .ws-review-print-rating.ws-diff-3   { background: #16a34a !important; }
   .ws-review-print-rating.ws-diff-4   { background: #2563eb !important; }
   /* Legenda ocen - widoczna tylko na wydruku, żeby objaśnić symbole. */
