@@ -11,7 +11,7 @@
      ╚═══════════════════════════════════════════════════════════════════════╝ -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Amaranth:ital,wght@0,400;0,700;1,400;1,700&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Joan&family=Katibeh&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&family=Lora:ital,wght@0,400..700;1,400..700&family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Onest:wght@100..900&family=Paprika&family=Philosopher:ital,wght@0,400;0,700;1,400;1,700&family=Quicksand:wght@300..700&family=Signika:wght@300..700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Amaranth:ital,wght@0,400;0,700;1,400;1,700&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Fraunces:ital,wght@0,400;0,700;0,900;1,400&family=JetBrains+Mono:wght@400;500&family=Joan&family=Katibeh&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&family=Lora:ital,wght@0,400..700;1,400..700&family=Merriweather+Sans:ital,wght@0,300..800;1,300..800&family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Onest:wght@100..900&family=Paprika&family=Philosopher:ital,wght@0,400;0,700;1,400;1,700&family=Quicksand:wght@300..700&family=Signika:wght@300..700&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -261,15 +261,17 @@ body {
 .task-card.disabled { display: none; }
 
 .reorder-reset {
-  margin-top: 1rem;
+  /* Stoi w jednym rzedzie z przyciskami "+ Sekcja..." (custom-add-row) -
+     bez wlasnego marginesu i w tym samym rozmiarze, zeby byly na rowni. */
+  margin-top: 0;
   font-family: var(--mono);
   font-size: 0.78rem;
   letter-spacing: 0.05em;
   background: none;
   border: 1px dashed var(--border-bright);
   color: var(--text-dim);
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
+  padding: 0.55rem 1rem;
+  border-radius: 9px;
   cursor: pointer;
   transition: all 0.15s;
 }
@@ -281,10 +283,17 @@ body {
 
 .task-card > input[type="checkbox"] { display: none; }
 .task-checkbox {
-  width: 18px; height: 18px; border: 1.5px solid var(--border-bright); border-radius: 5px;
-  flex-shrink: 0; margin-top: 2px;
+  width: 22px; height: 22px; border: 1.5px solid var(--border-bright); border-radius: 6px;
+  flex-shrink: 0; margin-top: 1px;
   display: grid; place-items: center;
   transition: all 0.15s;
+  /* Jedyny element przelaczajacy kafelek - wyrazny kursor + hover, zeby bylo
+     widac, ze to tu sie klika (reszta kafelka juz nie przelacza). */
+  cursor: pointer;
+}
+.task-checkbox:hover {
+  border-color: var(--accent);
+  transform: scale(1.08);
 }
 .task-card.checked .task-checkbox {
   background: var(--accent); border-color: var(--accent);
@@ -561,10 +570,15 @@ body {
   text-transform: none;
 }
 
-.task-instr-toggle {
+/* Kontener obu przelacznikow (Naglowek + Instrukcja) w prawym gornym rogu kafelka. */
+.task-toggles {
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
+  display: flex;
+  gap: 0.35rem;
+}
+.task-instr-toggle {
   display: inline-flex;
   align-items: center;
   gap: 0.32rem;
@@ -1199,7 +1213,7 @@ pies	dog
       <div class="tsv-example-wrap" id="tsvExampleBox">
         <div class="tsv-example-head">
           <div class="tsv-example-info">
-            <strong>Przykładowe dane TSV</strong> dopasowane do różnych typów zadań. Kolumna <code>tasks</code> (opcjonalna) ogranicza wiersz do konkretnych typów. Puste = wiersz idzie do wszystkich zaznaczonych typów. Skróty: <code>f</code>=flashcards, <code>m</code>=matching, <code>s</code>=scramble, <code>q</code>=quiz, <code>u</code>=unscramble, <code>c</code>=cornell, <code>g</code>=gapfill, <code>t</code>=translate, <code>w</code>=writing. Możesz podać kilka tagów po przecinku (np. <code>f,m</code>), ale zwykle czytelniej jest dać jeden tag na wiersz. Quiz z własnymi odpowiedziami: w kolumnie <code>en</code> oddziel opcje kreską, np. <code>cat|cut|cot|cap</code> - pierwsza jest poprawna, pytanie używa dokładnie tych opcji (globalna liczba opcji go nie dotyczy), a w pozostałych zadaniach wiersz działa jak samo <code>cat</code>. Kolumna <code>distractors</code> (opcjonalna): atrapy oddzielone kreską, np. <code>commuter|commute</code>. W zadaniu Matching dokładają do prawej kolumny dodatkowe słowa bez pary, których nie da się połączyć - utrudnienie. Zbierane są z całej części sekcji.
+            <strong>Przykładowe dane TSV</strong> dopasowane do różnych typów zadań. Kolumna <code>tasks</code> (opcjonalna) ogranicza wiersz do konkretnych typów. Puste = wiersz idzie do wszystkich zaznaczonych typów. Skróty: <code>f</code>=flashcards, <code>m</code>=matching, <code>s</code>=scramble, <code>q</code>=quiz, <code>u</code>=unscramble, <code>c</code>=cornell, <code>g</code>=gapfill, <code>t</code>=translate, <code>w</code>=writing. Możesz podać kilka tagów po przecinku (np. <code>f,m</code>), ale zwykle czytelniej jest dać jeden tag na wiersz. Quiz z własnymi odpowiedziami: w kolumnie <code>en</code> oddziel opcje kreską, np. <code>cat|cut|cot|cap</code> - pierwsza jest poprawna, pytanie używa dokładnie tych opcji (globalna liczba opcji go nie dotyczy), a w pozostałych zadaniach wiersz działa jak samo <code>cat</code>. Kolumna <code>distractors</code> (opcjonalna): atrapy oddzielone kreską, np. <code>commuter|commute</code>. W zadaniu Matching dokładają do prawej kolumny dodatkowe słowa bez pary, których nie da się połączyć - utrudnienie. Zbierane są z całej części sekcji. Klamerki <code>{…}</code> w EN działają tylko w Gap Fill - jeśli wiersz ma tagi i żaden z nich nie jest <code>g</code>, klamerki są automatycznie usuwane (możesz kopiować zdania z Gap Fill pod inne tagi bez czyszczenia).
           </div>
           <button type="button" class="tsv-example-use" id="tsvExampleUse" title="Wklej te dane do pola">📋 Użyj tych danych</button>
         </div>
@@ -1400,36 +1414,29 @@ Napisz krótki email do przyjaciela o weekendzie.	Use past simple. Include at le
     </div>
 
     <div class="field">
-      <label class="label">Czcionka</label>
-      <select id="fontSelect" class="select">
-        <option value="grotesque">Bricolage + Montserrat (nowoczesny)</option>
-        <option value="serif">Fraunces + Merriweather (elegancki serif)</option>
-        <option value="geometric">Space Grotesk + Inter (geometryczny)</option>
-        <option value="system">Systemowa (najszybsza, bez pobierania)</option>
-        <option value="custom">Własna (wklej link Google Fonts)</option>
-      </select>
-      <div class="font-preview" id="fontPreview">
-        <span class="font-preview-display" id="fontPreviewDisplay">Nagłówek Aa Ąę</span>
-        <span class="font-preview-body" id="fontPreviewBody">Tekst karty: Zażółć gęślą jaźń · the quick brown fox 0123</span>
-      </div>
-      <div id="fontCustomWrap" class="font-custom-wrap" style="display:none;">
-        <input type="text" id="fontCustomUrl" class="input" placeholder="Link z Google Fonts (jeden, może zawierać kilka rodzin)">
+      <label class="label">Czcionki karty (domyślnie: nagłówki Bricolage Grotesque, tekst Montserrat)</label>
+      <div id="fontCustomWrap" class="font-custom-wrap">
         <div class="font-custom-selects">
-          <label class="font-custom-sel-label">Czcionka tekstu
-            <select id="fontCustomFamily" class="select"></select>
-          </label>
           <label class="font-custom-sel-label">Czcionka nagłówków
             <select id="fontCustomDisplay" class="select"></select>
           </label>
+          <label class="font-custom-sel-label">Czcionka tekstu
+            <select id="fontCustomFamily" class="select"></select>
+          </label>
         </div>
+        <input type="text" id="fontCustomUrl" class="input" placeholder="Link z Google Fonts (jeden, może zawierać kilka rodzin)">
         <div class="font-custom-hint">
-          <strong>Jak to działa:</strong> wklej <em>jeden</em> link z Google Fonts - rodziny z linku pojawią się w listach poniżej, wystarczy wybrać.
+          <strong>Jak to działa:</strong> wszystkie rodziny z linku powyżej są od razu na listach - wystarczy wybrać. Chcesz inne czcionki?
           <ol class="font-custom-steps">
             <li>Na <code>fonts.google.com</code> dodaj czcionki (każdą, której chcesz móc użyć).</li>
-            <li>Otwórz "Get embed code" i skopiuj sam adres z <code>&lt;link href="..."&gt;</code> - ten jeden link zawiera wszystkie wybrane rodziny. Wklej go wyżej.</li>
-            <li>Wybierz czcionkę tekstu i (opcjonalnie) osobną do nagłówków z list. „Nagłówki: jak tekst" = ta sama co tekst.</li>
+            <li>Otwórz "Get embed code" i skopiuj sam adres z <code>&lt;link href="..."&gt;</code> - ten jeden link zawiera wszystkie wybrane rodziny. Wklej go w pole linku.</li>
+            <li>Wybierz czcionkę nagłówków i tekstu z list (mogą być tą samą rodziną).</li>
           </ol>
         </div>
+      </div>
+      <div class="font-preview" id="fontPreview">
+        <span class="font-preview-display" id="fontPreviewDisplay">Nagłówek Aa Ąę</span>
+        <span class="font-preview-body" id="fontPreviewBody">Tekst karty: Zażółć gęślą jaźń · the quick brown fox 0123</span>
       </div>
     </div>
 
@@ -1609,7 +1616,7 @@ Napisz krótki email do przyjaciela o weekendzie.	Use past simple. Include at le
 // Jedno zrodlo prawdy o numerze wersji. Uzywane w naglowku generatora
 // ORAZ w badge "Worksheet vX.Y" na samej karcie pracy - dzieki temu
 // wiadomo, w jakiej wersji generatora powstala dana karta.
-const WS_GEN_VERSION = '2.6';
+const WS_GEN_VERSION = '2.9';
 
 // LOGO KARTY PRACY - jeden staly URL, zawsze widoczne na gorze i dole karty.
 // Chcesz inne logo? Podmien ponizszy adres (jedyne miejsce w kodzie).
@@ -1625,7 +1632,7 @@ const WS_IMG_REF_W = 916;
 // Domyslny zestaw czcionek uzytkownika (ten sam link, ktory siedzi w <head>).
 // Z niego budujemy listy rozwijane w trybie "Własna czcionka", zeby nie trzeba
 // bylo wpisywac nazw recznie. Aby zmienic zestaw - podmien ten link (i ten w <head>).
-const WS_DEFAULT_FONT_LINK = 'https://fonts.googleapis.com/css2?family=Amaranth:ital,wght@0,400;0,700;1,400;1,700&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Joan&family=Katibeh&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&family=Lora:ital,wght@0,400..700;1,400..700&family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Onest:wght@100..900&family=Paprika&family=Philosopher:ital,wght@0,400;0,700;1,400;1,700&family=Quicksand:wght@300..700&family=Signika:wght@300..700&display=swap';
+const WS_DEFAULT_FONT_LINK = 'https://fonts.googleapis.com/css2?family=Amaranth:ital,wght@0,400;0,700;1,400;1,700&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Fraunces:ital,wght@0,400;0,700;0,900;1,400&family=JetBrains+Mono:wght@400;500&family=Joan&family=Katibeh&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&family=Lora:ital,wght@0,400..700;1,400..700&family=Merriweather+Sans:ital,wght@0,300..800;1,300..800&family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Onest:wght@100..900&family=Paprika&family=Philosopher:ital,wght@0,400;0,700;1,400;1,700&family=Quicksand:wght@300..700&family=Signika:wght@300..700&family=Space+Grotesk:wght@300..700&display=swap';
 
 // Wyciaga nazwy rodzin z linku Google Fonts (css2 ?family=...). Dekoduje '+' na
 // spacje, odcina osie/wagi po ':', usuwa duplikaty. Zwraca tablice nazw.
@@ -1663,10 +1670,13 @@ const STATE = {
   bgSvgCode: '',
   bgSvgSize: null,
   bgSvgOpacity: 1,
-  // Zestaw czcionek: 'grotesque' | 'serif' | 'geometric' | 'system' | 'custom'.
-  fontKey: 'grotesque',
-  // Własna czcionka (gdy fontKey === 'custom'): { url, family, displayFamily }.
-  fontCustom: { url: '', family: '', displayFamily: '' },
+  // Czcionki: JEDEN ujednolicony tryb (dawne presety usuniete z UI).
+  // fontKey zostaje na 'custom' na stale - resolveFontSet('custom') czyta
+  // STATE.fontCustom, a FONT_SETS.grotesque sluzy tylko jako awaryjny fallback.
+  fontKey: 'custom',
+  // Wybrane czcionki: { url, family (tekst), displayFamily (naglowki) }.
+  // Domyslnie: naglowki Bricolage Grotesque, tekst Montserrat.
+  fontCustom: { url: '', family: 'Montserrat', displayFamily: 'Bricolage Grotesque' },
   // Rogi: true = ostre (0px), false = zaokrąglone.
   sharpCorners: false,
   // Gradient w tytule karty: true = kolorowy sweep, false = płaski akcent.
@@ -1682,6 +1692,11 @@ const STATE = {
   // zaznaczanie wszystkich dostepnych zadan nie nadpisze recznych zmian.
   userOverrodeTasks: false,
   taskInstructions: { flashcards: true, matching: true, scramble: true, quiz: true, unscramble: true, cornell: true, gapfill: true, translate: true, writing: true },
+  // Widocznosc naglowka sekcji (numer + tytul) per zadanie. Wylaczony naglowek
+  // = sekcja-"wtracenie": bez tytulu i bez numeru, a numeracja widocznych
+  // sekcji jest przeliczana tak, jakby tej sekcji nie bylo (zadnych dziur).
+  // Instrukcja jest NIEZALEZNA - moze zostac wlaczona mimo braku naglowka.
+  taskHeaders: { flashcards: true, matching: true, scramble: true, quiz: true, unscramble: true, cornell: true, gapfill: true, translate: true, writing: true },
   taskOrder: ['flashcards', 'matching', 'scramble', 'quiz', 'unscramble', 'cornell', 'gapfill', 'translate', 'writing'],
   // Edytowalne tytuly sekcji w wygenerowanej karcie pracy.
   // Domyslnie sama nazwa zadania (bez "· polecenia"), zeby nie dublowac instrukcji ktora jest pod spodem.
@@ -1774,6 +1789,10 @@ function parseTSV(text) {
       const key = cells[0].toLowerCase();
       if ((key === '#accent' || key === '#bg' || key === '#text') && cells[1]) {
         parsedMeta.colors[key.slice(1)] = cells[1];
+      } else if ((key === '#title' || key === '#subtitle') && cells[1]) {
+        // Tytul/podtytul karty - zapisywane przy pobieraniu TSV z karty,
+        // odtwarzane w polach generatora przy ponownym wczytaniu.
+        parsedMeta[key.slice(1)] = cells.slice(1).join(' ').trim();
       } else if (key === '#bgsvg' && cells[1]) {
         parsedMeta.bgsvg = { uri: cells[1], size: cells[2], opacity: cells[3] };
       } else if (key === '#img' && cells[1] && cells[2]) {
@@ -1862,6 +1881,16 @@ function parseTSV(text) {
         rows.push(a);
         rows.push(b);
         continue;
+      }
+      // ── KLAMERKI TYLKO DLA GAP FILL ──
+      // Jesli wiersz MA tagi i ZADEN z nich nie jest gapfill, klamry {slowo}
+      // nie niosa zadnej informacji (to zwykle kopia zdania z gap-filla
+      // przypisana do innego zadania). Usuwamy je od razu przy parsowaniu,
+      // wiec kazdy widok (fiszki, matching, quiz, translate, powtorka...)
+      // dostaje czysty tekst - bez recznego kasowania klamerek w TSV.
+      // Wiersze bez tagow ida m.in. do gap-filla, wiec ich nie ruszamy.
+      if (obj._tasks.length > 0 && !_hasGapTag && /\{[^}]+\}/.test(obj.en)) {
+        obj.en = obj.en.replace(/\{([^}]+)\}/g, '$1');
       }
       rows.push(obj);
     }
@@ -2097,6 +2126,17 @@ function updateTSVStatus() {
   // Wartosci wpisujemy przez inputy + zdarzenie 'input', zeby caly istniejacy
   // lancuch (STATE, hex-label, podglad, panel rozmiaru) zadzialal sam.
   if (result.parsedMeta) {
+    // Tytul i podtytul z TSV (#title / #subtitle) - wpisujemy do pol generatora.
+    [['title', 'title'], ['subtitle', 'subtitle']].forEach(([k, id]) => {
+      const v = result.parsedMeta[k];
+      if (typeof v === 'string' && v) {
+        const el = document.getElementById(id);
+        if (el && el.value !== v) {
+          el.value = v;
+          el.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+      }
+    });
     const colors = result.parsedMeta.colors || {};
     [['accent', 'colorAccent'], ['bg', 'colorBg'], ['text', 'colorText']].forEach(([k, id]) => {
       const v = (colors[k] || '').trim();
@@ -2212,9 +2252,9 @@ function updateTaskAvailability() {
     let ok = taskRows.length > 0;
     let reason = '';
 
-    if (taskBase === 'matching' && taskRows.length < 3) {
+    if (taskBase === 'matching' && taskRows.length < 1) {
       ok = false;
-      reason = `Potrzeba min. 3 wiersze (jest ${taskRows.length})`;
+      reason = `Potrzeba min. 1 wiersza (jest ${taskRows.length})`;
     }
     if (taskBase === 'quiz') {
       // Wiersze z własnymi odpowiedziami (EN z kreskami) nie potrzebują innych
@@ -2565,7 +2605,7 @@ function initTaskCard(card) {
   // Dodaj toggle "pokaż instrukcję w karcie pracy" - per typ zadania
   const instrToggle = document.createElement('button');
   instrToggle.type = 'button';
-  instrToggle.className = 'task-instr-toggle active';
+  instrToggle.className = 'task-instr-toggle' + (STATE.taskInstructions[task] !== false ? ' active' : '');
   instrToggle.title = 'Pokaż/ukryj instrukcję pod tytułem sekcji';
   instrToggle.innerHTML = '<span class="task-instr-icon">📋</span><span class="task-instr-label">Instrukcja</span>';
   instrToggle.addEventListener('click', e => {
@@ -2574,7 +2614,27 @@ function initTaskCard(card) {
     STATE.taskInstructions[task] = isActive;
     updateInstrMaster();
   });
-  card.appendChild(instrToggle);
+
+  // Toggle "pokaż nagłówek sekcji" (numer + tytuł). Wyłączony = sekcja jako
+  // "wtrącenie" bez tytułu, pomijana w widocznej numeracji sekcji.
+  // Instrukcja działa niezależnie (może istnieć bez nagłówka).
+  const headToggle = document.createElement('button');
+  headToggle.type = 'button';
+  headToggle.className = 'task-instr-toggle' + (STATE.taskHeaders[task] !== false ? ' active' : '');
+  headToggle.title = 'Pokaż/ukryj nagłówek sekcji (numer + tytuł). Bez nagłówka sekcja jest "wtrąceniem" i nie liczy się do numeracji.';
+  headToggle.innerHTML = '<span class="task-instr-icon">🔖</span><span class="task-instr-label">Nagłówek</span>';
+  headToggle.addEventListener('click', e => {
+    e.stopPropagation();
+    const isActive = headToggle.classList.toggle('active');
+    STATE.taskHeaders[task] = isActive;
+  });
+
+  // Oba przelaczniki w jednym absolutnym kontenerze w prawym gornym rogu.
+  const togglesWrap = document.createElement('div');
+  togglesWrap.className = 'task-toggles';
+  togglesWrap.appendChild(headToggle);
+  togglesWrap.appendChild(instrToggle);
+  card.appendChild(togglesWrap);
 
   // === OPAKOWANIE LEWEJ STRONY w task-card-main ===
   const mainWrap = document.createElement('div');
@@ -2588,7 +2648,7 @@ function initTaskCard(card) {
   if (infoEl) mainTop.appendChild(infoEl);
   mainWrap.appendChild(mainTop);
   if (subOptEl) mainWrap.appendChild(subOptEl);
-  card.insertBefore(mainWrap, instrToggle);
+  card.insertBefore(mainWrap, togglesWrap);
 
   // === POLA EDYCJI: tytul + instrukcja + obrazek ===
   const editFields = document.createElement('div');
@@ -2762,10 +2822,10 @@ function initTaskCard(card) {
 
   card.addEventListener('click', e => {
     if (card.classList.contains('disabled')) return;
-    if (e.target.closest('.suboption-buttons')) return;
-    if (e.target.closest('.task-instr-toggle')) return;
-    if (e.target.closest('.task-edit-fields')) return;
-    if (e.target.closest('.task-move')) return;
+    // Zaznaczanie/odznaczanie TYLKO kliknieciem pola zaznaczania (tick).
+    // Klik w reszte kafelka (nazwa, edycja, strzalki) niczego nie przelacza -
+    // wczesniej przypadkowe klikniecie w kafelek odznaczalo zadanie.
+    if (!e.target.closest('.task-checkbox')) return;
     const cb = card.querySelector(':scope > input[type="checkbox"]');
     cb.checked = !cb.checked;
     card.classList.toggle('checked', cb.checked);
@@ -2881,6 +2941,7 @@ function syncTaskInstancesUI() {
       }
       // Domyslnie: tytuly/instrukcje/obrazki nie sa ustawione, taskInstructions defaultowo true.
       if (!(key in STATE.taskInstructions)) STATE.taskInstructions[key] = true;
+      if (!(key in STATE.taskHeaders)) STATE.taskHeaders[key] = true;
       if (!(key in STATE.taskTitles)) {
         // Domyslny tytul: bazowy + " " + numer (np. "Word scramble 2")
         const baseTitleMatch = (STATE.taskTitles[base] || '').match(/^(.+)$/);
@@ -2982,7 +3043,7 @@ function addCustomSection(kind) {
   STATE.taskOrder.push(key);
   STATE.customSections[key] = isLinks
     ? { kind, title: 'Materiały', body: '' }
-    : { kind, title: 'Materiał HTML', body: '', height: 600 };
+    : { kind, title: 'Materiał HTML', body: '', height: 'auto', bare: false };
 
   const card = document.createElement('div');
   card.className = 'task-card task-card-custom checked';
@@ -3005,8 +3066,13 @@ function addCustomSection(kind) {
         ? 'Filmik BBC | https://www.bbc.co.uk/...&#10;https://learnenglish.britishcouncil.org/...'
         : '&lt;h2&gt;Mój materiał&lt;/h2&gt; ...') + '"></textarea>' +
       (isLinks ? '' :
-        '<label class="task-custom-label">Wysokość ramki (px)</label>' +
-        '<input type="number" class="input custom-height" min="100" max="2000" step="50" value="600">') +
+        '<label class="task-custom-label">Wysokość ramki (px) - puste = automatyczna, dopasowana do treści</label>' +
+        '<input type="number" class="input custom-height" min="100" max="2000" step="50" placeholder="auto" value="">' +
+        '<label class="checkbox-row custom-bare-row">' +
+          '<input type="checkbox" class="custom-bare">' +
+          '<span class="checkbox-mark"></span>' +
+          '<span class="checkbox-label">Sam kontener - bez pudła sekcji i tytułu (materiał na miejscu zwykłej sekcji, tylko zaokrąglone rogi)</span>' +
+        '</label>') +
     '</div>';
 
   // Numer pozycji + strzalki - ta sama struktura co w zwyklych kafelkach,
@@ -3041,9 +3107,8 @@ function addCustomSection(kind) {
 
   const cb = card.querySelector(':scope > input[type="checkbox"]');
   card.addEventListener('click', e => {
-    if (e.target.closest('.task-custom-fields')) return;
-    if (e.target.closest('.task-move')) return;
-    if (e.target.closest('.task-custom-del')) return;
+    // Tak jak w zwyklych kafelkach: przelaczanie TYLKO polem zaznaczania.
+    if (!e.target.closest('.task-checkbox')) return;
     cb.checked = !cb.checked;
     card.classList.toggle('checked', cb.checked);
     STATE.tasks[key] = cb.checked;
@@ -3059,8 +3124,18 @@ function addCustomSection(kind) {
   });
   const hEl = card.querySelector('.custom-height');
   if (hEl) hEl.addEventListener('input', e => {
-    const v = parseInt(e.target.value, 10);
-    STATE.customSections[key].height = (v >= 100 && v <= 2000) ? v : 600;
+    const raw = e.target.value.trim();
+    const v = parseInt(raw, 10);
+    // Puste pole albo wartosc spoza zakresu = wysokosc automatyczna.
+    STATE.customSections[key].height = (raw && v >= 100 && v <= 2000) ? v : 'auto';
+  });
+  const bareEl = card.querySelector('.custom-bare');
+  if (bareEl) bareEl.addEventListener('change', e => {
+    STATE.customSections[key].bare = e.target.checked;
+    // "Sam kontener" nie ma tytulu na karcie - przygaszamy pole tytulu, zeby
+    // bylo widac, ze w tym trybie nie jest uzywane.
+    const titleEl = card.querySelector('.custom-title');
+    if (titleEl) titleEl.disabled = e.target.checked;
   });
   card.querySelector('.task-custom-del').addEventListener('click', e => {
     e.stopPropagation();
@@ -3186,9 +3261,8 @@ if (_svgBgOpacity) _svgBgOpacity.addEventListener('input', e => {
   refreshSvgThumb();
 });
 
-// Zestaw czcionek (select). 'custom' odsłania pola na własny link.
-const fontSelect = document.getElementById('fontSelect');
-const fontCustomWrap = document.getElementById('fontCustomWrap');
+// Czcionki: jeden ujednolicony panel (link + dwie listy). Dawny select
+// z presetami usuniety - STATE.fontKey jest na stale 'custom'.
 
 // Podglad wybranej czcionki: dogrywa <link> z Google Fonts do generatora
 // i ustawia rodziny na probce tekstu pod selectem.
@@ -3212,13 +3286,6 @@ function updateFontPreview() {
   bodyEl.style.fontFamily = set.body;
 }
 
-if (fontSelect) {
-  fontSelect.addEventListener('change', e => {
-    STATE.fontKey = e.target.value;
-    if (fontCustomWrap) fontCustomWrap.style.display = (e.target.value === 'custom') ? 'grid' : 'none';
-    updateFontPreview();
-  });
-}
 const fontCustomUrl = document.getElementById('fontCustomUrl');
 const fontCustomFamily = document.getElementById('fontCustomFamily');
 const fontCustomDisplay = document.getElementById('fontCustomDisplay');
@@ -3247,16 +3314,24 @@ function refreshFontFamilyDropdowns() {
   }
   if (fontCustomDisplay) {
     fontCustomDisplay.innerHTML = '';
-    const same = document.createElement('option');
-    same.value = ''; same.textContent = 'Nagłówki: jak tekst';
-    fontCustomDisplay.appendChild(same);
-    fams.forEach(f => {
+    if (!fams.length) {
       const o = document.createElement('option');
-      o.value = f; o.textContent = f;
+      o.value = ''; o.textContent = '(wklej link, żeby wybrać czcionkę)';
       fontCustomDisplay.appendChild(o);
-    });
-    fontCustomDisplay.value = fams.includes(prevHead) ? prevHead : '';
-    STATE.fontCustom.displayFamily = fontCustomDisplay.value;
+    } else {
+      fams.forEach(f => {
+        const o = document.createElement('option');
+        o.value = f; o.textContent = f;
+        fontCustomDisplay.appendChild(o);
+      });
+      // Zachowaj poprzedni wybor; inaczej domyslnie Bricolage Grotesque,
+      // a gdy jej nie ma w linku - pierwsza rodzina. (Opcja "jak tekst"
+      // usunieta: te sama czcionke i tak mozna wybrac wprost z listy.)
+      fontCustomDisplay.value = fams.includes(prevHead)
+        ? prevHead
+        : (fams.includes('Bricolage Grotesque') ? 'Bricolage Grotesque' : fams[0]);
+      STATE.fontCustom.displayFamily = fontCustomDisplay.value;
+    }
   }
 }
 
@@ -3709,21 +3784,59 @@ function buildLinksSection(num, options = {}) {
 // Sekcja HTML: wklejony kod osadzony w iframe przez srcdoc. Ramka jest
 // odizolowana (sandbox bez allow-same-origin), wiec obcy kod nie dotyka karty,
 // a dziala takze z pliku otwartego lokalnie (offline).
+// Opcje: cfg.bare = sam kontener (bez pudla sekcji i tytulu),
+// cfg.height = liczba px albo 'auto' (wysokosc dopasowana do tresci materialu -
+// material wysyla swoja wysokosc przez postMessage, karta jej nasluchuje;
+// sandbox bez allow-same-origin nie pozwala odczytac wysokosci wprost).
 function buildHtmlSection(num, options = {}) {
-  const cfg = STATE.customSections[options.taskKey] || { title: '', body: '', height: 600 };
-  const body = (cfg.body || '').trim();
+  const cfg = STATE.customSections[options.taskKey] || { title: '', body: '', height: 'auto', bare: false };
+  let body = (cfg.body || '').trim();
   if (!body) return '';
-  const h = cfg.height || 600;
+  const isAuto = (cfg.height === 'auto' || !cfg.height);
+  // Auto: startujemy od MALEJ ramki (60px) i tylko ROSNIEMY do wysokosci tresci.
+  // scrollHeight nigdy nie spada ponizej aktualnej wysokosci ramki, wiec przy
+  // duzym starcie nie daloby sie "skurczyc" do tresci, a doklejanie stalego
+  // zapasu (+2px) tworzylo petle powolnego rosniecia w nieskonczonosc.
+  // Wzrost wylacznie w gore, bez dodatku = stabilnie, zero samorozwijania.
+  const h = isAuto ? 60 : cfg.height;
+  let autoScript = '';
+  if (isAuto) {
+    // Skrypt POMIAROWY doklejany do materialu (przed escapowaniem do srcdoc):
+    // wysyla wysokosc dokumentu do karty przy load, po chwili (obrazki/czcionki)
+    // i przy kazdej zmianie DOM / rozmiaru.
+    body += `<script>(function(){var send=function(){try{var h=Math.max(document.documentElement.scrollHeight,document.body?document.body.scrollHeight:0);parent.postMessage({__wsEmbedH:'sec-${num}',h:h},'*');}catch(e){}};window.addEventListener('load',send);setTimeout(send,80);setTimeout(send,500);setTimeout(send,1500);try{new MutationObserver(send).observe(document.documentElement,{subtree:true,childList:true,attributes:true});}catch(e){}window.addEventListener('resize',send);})();<\/script>`;
+    // Skrypt NASLUCHUJACY po stronie karty: powieksza kontener TYLKO gdy tresc
+    // jest wyzsza niz obecna ramka (prog 2px odcina szum pomiaru).
+    autoScript = `
+      <script>window.addEventListener('message', function(e){
+        var d = e.data;
+        if (d && d.__wsEmbedH === 'sec-${num}' && d.h > 0) {
+          var w = document.getElementById('embed-wrap-${num}');
+          if (!w) return;
+          var cur = parseInt(w.style.height, 10) || 0;
+          var target = Math.min(Math.ceil(d.h), 20000);
+          if (target > cur + 2) w.style.height = target + 'px';
+        }
+      });<\/script>`;
+  }
+  const frame = `
+      <div class="ws-embed-wrap${isAuto ? ' ws-embed-auto' : ''}" id="embed-wrap-${num}" style="height:${h}px">
+        <iframe class="ws-embed-frame" sandbox="allow-scripts allow-popups allow-forms allow-modals" srcdoc="${escapeHtml(body)}" loading="lazy" title="Osadzony materiał"></iframe>
+      </div>${autoScript}`;
+  // Wariant "sam kontener": bez pudla sekcji, numeru i tytulu - materiał
+  // zajmuje miejsce zwyklej sekcji, ma tylko zaokraglone rogi.
+  if (cfg.bare) {
+    return `
+    <section class="ws-section ws-section-static ws-section-bare" data-section="${num}" id="sec-${num}">${frame}
+    </section>`;
+  }
   return `
     <section class="ws-section ws-section-static" data-section="${num}" id="sec-${num}">
       <div class="ws-sec-head">
         <div class="ws-sec-num">${num < 10 ? '0' + num : num}</div>
         <h2 class="ws-sec-title">${escapeHtml(cfg.title || 'Materiał HTML')}</h2>
-      </div>
-      <div class="ws-embed-wrap" style="height:${h}px">
-        <iframe class="ws-embed-frame" sandbox="allow-scripts allow-popups allow-forms allow-modals" srcdoc="${escapeHtml(body)}" loading="lazy" title="Osadzony materiał"></iframe>
-      </div>
-      <div class="ws-embed-note">Materiał osadzony - ramkę można rozciągnąć za prawy dolny róg.</div>
+      </div>${frame}
+      ${isAuto ? '' : '<div class="ws-embed-note">Materiał osadzony - ramkę można rozciągnąć za prawy dolny róg.</div>'}
     </section>`;
 }
 
@@ -3775,7 +3888,11 @@ function buildWorksheetHTML() {
       for (let part = 0; part < totalParts; part++) {
         sectionCount++;
         const opts = { startIdx: part * 8, partNum: part + 1, totalParts, taskKey };
-        sectionsHTML.push(builders[taskName].html(sectionCount, opts));
+        let out = builders[taskName].html(sectionCount, opts);
+        if (STATE.taskHeaders && STATE.taskHeaders[taskKey] === false) {
+          out = out.replace('<section class="ws-section', '<section class="ws-section ws-no-head');
+        }
+        sectionsHTML.push(out);
         sectionsJS.push(builders[taskName].js(sectionCount, opts));
       }
     } else if (taskName === 'links' || taskName === 'html') {
@@ -3790,10 +3907,33 @@ function buildWorksheetHTML() {
     } else {
       sectionCount++;
       const opts = { taskKey };
-      sectionsHTML.push(builders[taskName].html(sectionCount, opts));
+      let out = builders[taskName].html(sectionCount, opts);
+      // Wylaczony naglowek: sekcja dostaje klase ws-no-head (CSS chowa numer
+      // i tytul), a nizej jest pomijana przy widocznej numeracji.
+      if (STATE.taskHeaders && STATE.taskHeaders[taskKey] === false) {
+        out = out.replace('<section class="ws-section', '<section class="ws-section ws-no-head');
+      }
+      sectionsHTML.push(out);
       sectionsJS.push(builders[taskName].js(sectionCount, opts));
     }
   });
+
+  // ── WIDOCZNA NUMERACJA SEKCJI ──
+  // Wewnetrzne numery (id sec-N, nazwy funkcji JS, pasek postepu) zostaja
+  // sekwencyjne, ale numer POKAZYWANY w naglowku jest przeliczany z pominieciem
+  // sekcji bez naglowka (ws-no-head) - dzieki temu "wtracenia" nie robia dziur
+  // w numeracji (bez skoku 01 -> 03).
+  {
+    let visNum = 0;
+    for (let i = 0; i < sectionsHTML.length; i++) {
+      const s = sectionsHTML[i];
+      if (!s || s.indexOf('ws-sec-num') === -1) continue;
+      if (s.indexOf('ws-no-head') !== -1) continue;
+      visNum++;
+      const label = visNum < 10 ? '0' + visNum : String(visNum);
+      sectionsHTML[i] = s.replace(/<div class="ws-sec-num">\d+<\/div>/, '<div class="ws-sec-num">' + label + '</div>');
+    }
+  }
 
   // Kolejnosc aktywnych zadan (PELNE klucze, z instancjami np. 'gapfill:2') -
   // przekazujemy do karty, zeby downloadTSV mogl ja dopisac jako blok "#order".
@@ -4735,10 +4875,10 @@ function buildUnscrambleSection(num, options = {}) {
           </button>
         </div>
         <div class="unsc-controls">
-          <button class="unsc-check-btn" onclick="checkUnscramble_${num}(${i})">Sprawdź</button>
-          <button class="unsc-hint-btn" onclick="hintUnscramble_${num}(${i})">💡 Podpowiedź</button>
-          <button class="unsc-solve-btn" onclick="solveUnscrambleOne_${num}(${i})">✨ Rozwiąż</button>
-          <button class="unsc-clear-btn" onclick="clearUnscramble_${num}(${i})">Wyczyść</button>
+          <button type="button" class="unsc-check-btn" onclick="checkUnscramble_${num}(${i})">Sprawdź</button>
+          <button type="button" class="unsc-hint-btn" onclick="hintUnscramble_${num}(${i})">💡 Podpowiedź</button>
+          <button type="button" class="unsc-solve-btn" onclick="solveUnscrambleOne_${num}(${i})">✨ Rozwiąż</button>
+          <button type="button" class="unsc-clear-btn" onclick="clearUnscramble_${num}(${i})">Wyczyść</button>
         </div>
         ${diffRow(diffRowIdx(r))}
       </div>`;
@@ -4821,7 +4961,19 @@ function buildUnscrambleJS(num, options = {}) {
     const card = document.querySelector('#sec-${num} .unsc-card[data-idx="' + cardIdx + '"]');
     const correct = JSON.parse(card.getAttribute('data-correct'));
     const user = _unscGetUserAnswer(${num}, cardIdx);
-    if (user.length === 0) return;
+    if (user.length === 0) {
+      // Puste pole odpowiedzi: zamiast cichego "nic sie nie dzieje" dajemy
+      // wyrazny sygnal - dzwiek bledu + potrzasniecie ramka odpowiedzi.
+      wsSound('wrong');
+      const aa = card.querySelector('.unsc-answer-area');
+      if (aa) {
+        aa.classList.remove('unsc-shake');
+        void aa.offsetWidth; // restart animacji
+        aa.classList.add('unsc-shake');
+        setTimeout(() => aa.classList.remove('unsc-shake'), 600);
+      }
+      return;
+    }
     const words = card.querySelectorAll('.unsc-answer-area .unsc-word');
     let allOk = user.length === correct.length;
     words.forEach((w, idx) => {
@@ -4894,7 +5046,7 @@ function buildUnscrambleJS(num, options = {}) {
   // CSS.escape fallback
   function cssEscape(s) {
     if (window.CSS && CSS.escape) return CSS.escape(s);
-    return s.replace(/([!"#$%&'()*+,./:;<=>?@\\\\\\[\\\\\\]^\`{|}~])/g, '\\\\\\\\$1');
+    return s.replace(/([!"#$%&'()*+,./:;<=>?@\\\\\\[\\\\\\]^\`{|}~])/g, '\\\\$1');
   }
 
   window.clearUnscramble_${num} = function(cardIdx) {
@@ -4929,6 +5081,12 @@ function buildUnscrambleJS(num, options = {}) {
       const correct = JSON.parse(card.getAttribute('data-correct'));
       const answerArea = card.querySelector('.unsc-answer-area');
       const pool = card.querySelector('.unsc-pool');
+      // Spojnie z pojedynczym "Rozwiaz": zdejmij zaslone puli i schowaj
+      // nakladke "Kliknij, aby pokazac slowa" - po rozwiazaniu nie ma juz
+      // czego zaslaniac (wszystkie slowa laduja w polu odpowiedzi).
+      pool.classList.remove('unsc-pool-hidden');
+      const reveal = card.querySelector('.unsc-pool-reveal');
+      if (reveal) reveal.style.display = 'none';
       // wszystkie słowa do poola
       Array.from(card.querySelectorAll('.unsc-word')).forEach(w => pool.appendChild(w));
       // wyczyść answer-area placeholder
@@ -4941,6 +5099,9 @@ function buildUnscrambleJS(num, options = {}) {
           answerArea.appendChild(token);
         }
       });
+      // Komunikat "(wszystkie slowa uzyte)" w pustej puli - identycznie jak
+      // przy recznym ulozeniu zdania.
+      _unscUpdatePoolEmpty(pool);
       card.classList.add('done');
       _unscDone_${num}.add(cardIdx);
     });
@@ -4970,6 +5131,9 @@ function buildUnscrambleJS(num, options = {}) {
         answerArea.appendChild(token);
       }
     });
+    // Spojny komunikat "(wszystkie slowa uzyte)" - tak samo jak przy recznym
+    // ulozeniu i przy rozwiazaniu calej sekcji.
+    _unscUpdatePoolEmpty(pool);
     card.classList.add('done');
     _unscDone_${num}.add(cardIdx);
     if (_unscDone_${num}.size === _unscTotal_${num}) {
@@ -5054,6 +5218,9 @@ function buildUnscrambleJS(num, options = {}) {
       dragged.classList.remove('correct-pos', 'wrong-pos');
       const empty = dragged.parentElement.querySelector('.unsc-answer-empty');
       if (empty) empty.remove();
+      // Gdy przeciagnieto OSTATNIE slowo z puli - pokaz "(wszystkie slowa uzyte)",
+      // spojnie z przenoszeniem klikaniem.
+      _unscUpdatePoolEmpty(card.querySelector('.unsc-pool'));
     } else {
       dragged.classList.remove('in-answer', 'correct-pos', 'wrong-pos');
       // Sprawdź czy answer-area jest pusta
@@ -5747,6 +5914,7 @@ const WS_STYLE_META = ${JSON.stringify(styleMeta || null)};
 // Tryb "tylko powtorka": karta bez zadan, sama powtorka ze WSZYSTKIMI slowami.
 const WS_REVIEW_ONLY = ${reviewOnly ? 'true' : 'false'};
 const WS_TITLE = ${JSON.stringify(title)};
+const WS_SUBTITLE = ${JSON.stringify(subtitle || '')};
 const WS_SECTION_COUNT = ${sectionCount};
 // Klucz w localStorage zawiera hash z danych - dzięki temu różne worksheety
 // (nawet z tym samym tytułem) mają osobny progress.
@@ -7301,6 +7469,9 @@ function downloadTSV() {
     });
     lines.push(cols.join('\\t'));
   });
+  // Tytul i podtytul karty - generator odtworzy je w polach przy wczytaniu TSV.
+  if (WS_TITLE) lines.push('#title\\t' + String(WS_TITLE).replace(/\\t/g, ' '));
+  if (typeof WS_SUBTITLE !== 'undefined' && WS_SUBTITLE) lines.push('#subtitle\\t' + String(WS_SUBTITLE).replace(/\\t/g, ' '));
   // Metadane stylu: kolory + obrazki sekcji (odtwarzane przez generator).
   if (WS_STYLE_META) {
     if (WS_STYLE_META.accent) lines.push('#accent\\t' + WS_STYLE_META.accent);
@@ -7496,7 +7667,9 @@ function resolveFontSet(key) {
         // Tytuły mogą używać tej samej rodziny; jeśli user podał osobną do nagłówków, użyj jej.
         display: (c.displayFamily ? `'${c.displayFamily.replace(/'/g, '')}', ` : '') + famCss,
         body: famCss,
-        mono: "ui-monospace, 'SF Mono', 'Cascadia Code', monospace"
+        // JetBrains Mono jest w domyslnym linku - drobne etykiety/numerki
+        // wygladaja tak jak w dawnym zestawie "grotesque".
+        mono: "'JetBrains Mono', ui-monospace, 'SF Mono', 'Cascadia Code', monospace"
       };
     }
     return FONT_SETS.grotesque;
@@ -7957,18 +8130,41 @@ ${t.sharp ? `
 .ws-link-btn-arrow { flex-shrink: 0; color: var(--ws-accent); font-weight: 700; }
 
 .ws-embed-wrap {
-  border: 1.5px solid var(--ws-border-strong);
-  border-radius: 12px;
+  /* Bez wewnetrznego obramowania - sam materiał z zaokraglonymi rogami. */
+  border: none;
+  border-radius: 14px;
   overflow: auto;
   resize: vertical; /* mozna rozciagnac za prawy dolny rog */
   min-height: 120px;
   background: #fff;
+}
+/* Wariant automatycznej wysokosci: ramka sama dopasowuje sie do tresci
+   (wysokosc ustawia skrypt nasluchujacy postMessage z materialu), wiec
+   reczne rozciaganie jest zbedne. clip-path gwarantuje zaokraglone rogi
+   nawet gdy material w iframe maluje wlasne tlo od krawedzi do krawedzi. */
+.ws-embed-wrap.ws-embed-auto {
+  resize: none;
+  overflow: hidden;
+  clip-path: inset(0 round 14px);
 }
 .ws-embed-frame {
   display: block;
   width: 100%;
   height: 100%;
   border: 0;
+  border-radius: 14px;
+}
+/* Wariant "sam kontener": sekcja bez pudla, tytulu i numeru - material
+   wyglada jak zwykla sekcja karty, tylko z zaokraglonymi rogami. */
+.ws-section-bare {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+.ws-section-bare .ws-embed-wrap {
+  background: transparent;
+  clip-path: inset(0 round 14px);
 }
 .ws-embed-note {
   margin-top: 0.5rem;
@@ -7976,8 +8172,17 @@ ${t.sharp ? `
   color: var(--ws-text-dim);
 }
 @media print {
-  /* Osadzone ramki nie drukuja sie sensownie - chowamy cala sekcje HTML. */
-  .ws-embed-wrap, .ws-embed-note { display: none !important; }
+  /* Osadzony material HTML DRUKUJE SIE domyslnie (ramka srcdoc renderuje sie
+     w tym samym procesie, wiec Chrome ja wydrukuje w aktualnej wysokosci).
+     Niepotrzebna na papierze jest tylko notka o rozciaganiu ramki.
+     Nie chcesz materialu na wydruku? Usun go jednorazowo w DevTools (Inspect). */
+  .ws-embed-note { display: none !important; }
+  .ws-embed-wrap {
+    resize: none !important;
+    overflow: hidden !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 }
 
 .ws-sec-head {
@@ -8055,6 +8260,10 @@ ${t.sharp ? `
   font-size: 1.02rem;
   margin: 0 0 1.5rem 3.7rem;
 }
+/* Sekcja bez naglowka ("wtracenie"): numer i tytul ukryte, instrukcja (jesli
+   wlaczona) zaczyna sie od lewej krawedzi zamiast wciecia pod tytulem. */
+.ws-no-head .ws-sec-head { display: none; }
+.ws-no-head .ws-sec-desc { margin-left: 0; }
 
 /* FEEDBACK */
 .ws-feedback {
@@ -8073,6 +8282,17 @@ ${t.sharp ? `
 
 /* ACTION BUTTONS */
 .ws-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 1.2rem; }
+/* Waski ekran: przyciski akcji ("Pokaz wszystkie odpowiedzi" / "Wyczysc sekcje")
+   ustawiaja sie JEDEN POD DRUGIM, oba wyrownane do lewej. Wczesniej przy
+   zawinieciu jeden zostawal przy lewej, a drugi (margin-left:auto) uciekal
+   do prawej - wygladalo to niechlujnie. */
+@media (max-width: 560px) {
+  .ws-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .ws-actions .ws-btn-clear-sec { margin-left: 0; }
+}
 .ws-btn-solve {
   font-family: var(--ws-body);
   font-size: 0.92rem; font-weight: 500;
@@ -9289,7 +9509,6 @@ body.ws-review-only-mode .ws-review { margin-top: 0.5rem; }
 }
 .unsc-pool-reveal:hover {
   background: var(--ws-accent-soft);
-  transform: translateY(-1px);
 }
 .unsc-pool-reveal-icon {
   font-size: 1.2rem;
@@ -9378,6 +9597,33 @@ body.ws-review-only-mode .ws-review { margin-top: 0.5rem; }
 .unsc-hint-btn:hover, .unsc-solve-btn:hover, .unsc-clear-btn:hover {
   border-color: var(--ws-accent);
   color: var(--ws-accent);
+}
+/* "Sprawdz" przy pustym polu odpowiedzi: potrzasniecie ramka (feedback zamiast ciszy). */
+.unsc-answer-area.unsc-shake {
+  animation: wsBuzz 0.45s;
+  border-color: var(--ws-no);
+}
+/* Telefon: cztery przyciski w rownej siatce 2x2 - stale rozmiary, wygodne
+   cele dotykowe, nic sie nie rozjezdza przy zawijaniu. */
+@media (max-width: 560px) {
+  .unsc-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+  .unsc-check-btn, .unsc-hint-btn, .unsc-solve-btn, .unsc-clear-btn {
+    width: 100%;
+    min-height: 2.7rem;
+    padding: 0.5rem 0.3rem;
+    font-size: 0.84rem;
+    /* Etykieta z emotka ("💡 Podpowiedź") nie moze sie lamac na dwie linie -
+       trzymamy jedna linie, a gdyby i tak bylo za ciasno, tekst delikatnie
+       sie zwezi zamiast przeskoczyc pod ikonke. */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: -0.01em;
+  }
 }
 
 /* ========== CORNELL ========== */
@@ -9754,8 +10000,6 @@ body.ws-review-only-mode .ws-review { margin-top: 0.5rem; }
 .gap-actions .tts-btn-gap {
   margin-left: 0;
 }
-.gap-helper-btn:hover,
-.gap-solve-btn:hover,
 .gap-input {
   display: inline-block;
   font-family: var(--ws-body);
