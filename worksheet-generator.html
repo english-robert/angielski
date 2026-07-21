@@ -1269,7 +1269,10 @@ Napisz krótki email do przyjaciela o weekendzie.	Use past simple. Include at le
       <button type="button" class="instr-master-btn active" id="instrMasterBtn">
         <span class="instr-master-icon">📋</span>
         <span class="instr-master-label">Instrukcje pod tytułem sekcji</span>
-        <span class="instr-master-state" id="instrMasterState">wszystkie włączone</span>
+      </button>
+      <button type="button" class="instr-master-btn active" id="headMasterBtn">
+        <span class="instr-master-icon">🔖</span>
+        <span class="instr-master-label">Nagłówki sekcji</span>
       </button>
     </div>
 
@@ -1616,7 +1619,7 @@ Napisz krótki email do przyjaciela o weekendzie.	Use past simple. Include at le
 // Jedno zrodlo prawdy o numerze wersji. Uzywane w naglowku generatora
 // ORAZ w badge "Worksheet vX.Y" na samej karcie pracy - dzieki temu
 // wiadomo, w jakiej wersji generatora powstala dana karta.
-const WS_GEN_VERSION = '2.9';
+const WS_GEN_VERSION = '3.0';
 
 // LOGO KARTY PRACY - jeden staly URL, zawsze widoczne na gorze i dole karty.
 // Chcesz inne logo? Podmien ponizszy adres (jedyne miejsce w kodzie).
@@ -1793,6 +1796,12 @@ function parseTSV(text) {
         // Tytul/podtytul karty - zapisywane przy pobieraniu TSV z karty,
         // odtwarzane w polach generatora przy ponownym wczytaniu.
         parsedMeta[key.slice(1)] = cells.slice(1).join(' ').trim();
+      } else if (key === '#extra' && cells[1]) {
+        // Pelny pakiet wygladu (czcionki, tytuly/instrukcje, przelaczniki,
+        // sekcje linkow/HTML) zakodowany w jednej linii przez karte.
+        try {
+          parsedMeta.extra = JSON.parse(decodeURIComponent(cells[1].trim()));
+        } catch (e) { /* uszkodzona linia #extra - ignorujemy po cichu */ }
       } else if (key === '#bgsvg' && cells[1]) {
         parsedMeta.bgsvg = { uri: cells[1], size: cells[2], opacity: cells[3] };
       } else if (key === '#img' && cells[1] && cells[2]) {
@@ -2126,6 +2135,9 @@ function updateTSVStatus() {
   // Wartosci wpisujemy przez inputy + zdarzenie 'input', zeby caly istniejacy
   // lancuch (STATE, hex-label, podglad, panel rozmiaru) zadzialal sam.
   if (result.parsedMeta) {
+    // Pelny pakiet wygladu (#extra): czcionki, tytuly/instrukcje, przelaczniki,
+    // sekcje linkow/HTML. Stosowany PO syncTaskInstancesUI (karty juz istnieja).
+    if (result.parsedMeta.extra) applyExtraSettings(result.parsedMeta.extra);
     // Tytul i podtytul z TSV (#title / #subtitle) - wpisujemy do pol generatora.
     [['title', 'title'], ['subtitle', 'subtitle']].forEach(([k, id]) => {
       const v = result.parsedMeta[k];
@@ -2204,6 +2216,19 @@ function updateTSVStatus() {
     });
     STATE.taskOrder.forEach(k => { if (!seen.has(k)) { seen.add(k); merged.push(k); } });
     STATE.taskOrder = merged;
+    reorderGridDom();
+    syncOrderInputs();
+  }
+  // Sekcje materialow odtworzone z #extra maja zapamietane pozycje - #order
+  // zna tylko zwykle zadania, wiec po jego scaleniu wstawiamy je z powrotem
+  // na wlasciwe miejsca.
+  if (STATE._pendingCustomPos) {
+    STATE._pendingCustomPos.forEach(({ key, pos }) => {
+      if (!STATE.taskOrder.includes(key)) return;
+      STATE.taskOrder = STATE.taskOrder.filter(t => t !== key);
+      STATE.taskOrder.splice(Math.min(pos, STATE.taskOrder.length), 0, key);
+    });
+    delete STATE._pendingCustomPos;
     reorderGridDom();
     syncOrderInputs();
   }
@@ -2438,40 +2463,38 @@ document.getElementById('tsvExampleUse').addEventListener('click', () => {
 });
 
 // Aktualizuje wygląd master toggle na podstawie stanu wszystkich per-task toggli
-function updateInstrMaster() {
-  const master = document.getElementById('instrMasterBtn');
-  const state = document.getElementById('instrMasterState');
-  if (!master || !state) return;
-  const values = Object.values(STATE.taskInstructions);
+// Wspolna logika obu zbiorczych przelacznikow (instrukcje / naglowki).
+// Bez dopisku stanu - klasa active/mixed/off (przygaszenie) mowi wszystko.
+function _updateMasterBtn(btnId, stateObj) {
+  const master = document.getElementById(btnId);
+  if (!master) return;
+  const values = Object.values(stateObj);
   const allOn = values.every(v => v);
   const allOff = values.every(v => !v);
   master.classList.remove('active', 'mixed', 'off');
-  if (allOn) {
-    master.classList.add('active');
-    state.textContent = 'wszystkie włączone';
-  } else if (allOff) {
-    master.classList.add('off');
-    state.textContent = 'wszystkie wyłączone';
-  } else {
-    master.classList.add('mixed');
-    const onCount = values.filter(v => v).length;
-    state.textContent = `${onCount}/${values.length} włączone`;
-  }
+  master.classList.add(allOn ? 'active' : (allOff ? 'off' : 'mixed'));
 }
+function updateInstrMaster() { _updateMasterBtn('instrMasterBtn', STATE.taskInstructions); }
+function updateHeadMaster() { _updateMasterBtn('headMasterBtn', STATE.taskHeaders); }
 
-// Klik na master: jeśli choć jedna włączona -> wyłącz wszystkie; jeśli wszystkie wyłączone -> włącz wszystkie
+// Klik na master: jeśli choć jedna włączona -> wyłącz wszystkie; jeśli wszystkie wyłączone -> włącz wszystkie.
+// Selektory sa zawezone przez data-toggle, zeby master instrukcji NIE ruszal
+// przelacznikow naglowka (dziela klase CSS dla wygladu, ale nie logike).
 document.getElementById('instrMasterBtn').addEventListener('click', () => {
-  const values = Object.values(STATE.taskInstructions);
-  const allOff = values.every(v => !v);
-  const newState = allOff;  // jeśli wszystko wyłączone -> włącz; w innym wypadku -> wyłącz
-  Object.keys(STATE.taskInstructions).forEach(t => {
-    STATE.taskInstructions[t] = newState;
-  });
-  // Zsynchronizuj wszystkie per-task toggle
-  document.querySelectorAll('.task-instr-toggle').forEach(tg => {
+  const newState = Object.values(STATE.taskInstructions).every(v => !v);
+  Object.keys(STATE.taskInstructions).forEach(t => { STATE.taskInstructions[t] = newState; });
+  document.querySelectorAll('.task-instr-toggle[data-toggle="instr"]').forEach(tg => {
     tg.classList.toggle('active', newState);
   });
   updateInstrMaster();
+});
+document.getElementById('headMasterBtn').addEventListener('click', () => {
+  const newState = Object.values(STATE.taskHeaders).every(v => !v);
+  Object.keys(STATE.taskHeaders).forEach(t => { STATE.taskHeaders[t] = newState; });
+  document.querySelectorAll('.task-instr-toggle[data-toggle="head"]').forEach(tg => {
+    tg.classList.toggle('active', newState);
+  });
+  updateHeadMaster();
 });
 
 // ============================================================
@@ -2606,6 +2629,7 @@ function initTaskCard(card) {
   const instrToggle = document.createElement('button');
   instrToggle.type = 'button';
   instrToggle.className = 'task-instr-toggle' + (STATE.taskInstructions[task] !== false ? ' active' : '');
+  instrToggle.dataset.toggle = 'instr';
   instrToggle.title = 'Pokaż/ukryj instrukcję pod tytułem sekcji';
   instrToggle.innerHTML = '<span class="task-instr-icon">📋</span><span class="task-instr-label">Instrukcja</span>';
   instrToggle.addEventListener('click', e => {
@@ -2621,12 +2645,14 @@ function initTaskCard(card) {
   const headToggle = document.createElement('button');
   headToggle.type = 'button';
   headToggle.className = 'task-instr-toggle' + (STATE.taskHeaders[task] !== false ? ' active' : '');
+  headToggle.dataset.toggle = 'head';
   headToggle.title = 'Pokaż/ukryj nagłówek sekcji (numer + tytuł). Bez nagłówka sekcja jest "wtrąceniem" i nie liczy się do numeracji.';
   headToggle.innerHTML = '<span class="task-instr-icon">🔖</span><span class="task-instr-label">Nagłówek</span>';
   headToggle.addEventListener('click', e => {
     e.stopPropagation();
     const isActive = headToggle.classList.toggle('active');
     STATE.taskHeaders[task] = isActive;
+    updateHeadMaster();
   });
 
   // Oba przelaczniki w jednym absolutnym kontenerze w prawym gornym rogu.
@@ -3150,10 +3176,127 @@ function addCustomSection(kind) {
   document.getElementById('taskGrid').appendChild(card);
   syncOrderInputs();
   updateTaskAvailability();
+  // Zwracamy klucz i karte - odtwarzanie sekcji z TSV (#extra) / localStorage
+  // wypelnia nimi pola programowo.
+  return { key, card };
 }
 
 document.getElementById('addLinksSection').addEventListener('click', () => addCustomSection('links'));
 document.getElementById('addHtmlSection').addEventListener('click', () => addCustomSection('html'));
+
+// ============================================================
+// ODTWARZANIE PELNEGO WYGLADU (#extra z TSV / localStorage)
+// Czcionki, wlasne tytuly i instrukcje sekcji, stany przelacznikow
+// (naglowek/instrukcja), sekcje linkow i HTML wraz z trescia i pozycja.
+// Wartosci wpisywane przez inputy + zdarzenia, zeby istniejace listenery
+// same utrzymaly spojnosc STATE i UI.
+// ============================================================
+function applyExtraSettings(extra) {
+  if (!extra || typeof extra !== 'object') return;
+
+  // ── CZCIONKI ──
+  if (extra.fonts && typeof extra.fonts === 'object') {
+    const f = extra.fonts;
+    if (typeof f.url === 'string' && f.url.trim()) {
+      STATE.fontCustom.url = f.url.trim();
+      if (fontCustomUrl) fontCustomUrl.value = f.url.trim();
+    }
+    if (typeof f.family === 'string' && f.family) STATE.fontCustom.family = f.family;
+    if (typeof f.displayFamily === 'string' && f.displayFamily) STATE.fontCustom.displayFamily = f.displayFamily;
+    refreshFontFamilyDropdowns();
+    updateFontPreview();
+  }
+
+  // ── TYTULY + INSTRUKCJE WLASNE (zwykle kafelki) ──
+  const titles = extra.titles || {};
+  const instrs = extra.instrs || {};
+  document.querySelectorAll('.task-card:not(.task-card-custom)').forEach(card => {
+    const task = card.dataset.task;
+    const titleInp = card.querySelector('.task-edit-title');
+    if (titleInp && typeof titles[task] === 'string') {
+      // Pole trzyma tylko WLASNY tytul (placeholder = domyslny). Jesli
+      // odtwarzany tytul rowna sie domyslnemu (placeholder), pole zostaje puste.
+      const v = (titles[task] === titleInp.placeholder) ? '' : titles[task];
+      if (titleInp.value !== v) {
+        titleInp.value = v;
+        titleInp.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+    }
+    const instrInp = card.querySelector('.task-edit-instr');
+    if (instrInp && typeof instrs[task] === 'string' && instrInp.value !== instrs[task]) {
+      instrInp.value = instrs[task];
+      instrInp.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+  });
+
+  // ── PRZELACZNIKI: instrukcje + naglowki ──
+  const applyToggles = (src, stateObj, sel) => {
+    if (!src || typeof src !== 'object') return;
+    Object.keys(src).forEach(k => {
+      if (k in stateObj) stateObj[k] = !!src[k];
+    });
+    document.querySelectorAll(sel).forEach(tg => {
+      const task = tg.closest('.task-card') && tg.closest('.task-card').dataset.task;
+      if (task && task in stateObj) tg.classList.toggle('active', stateObj[task]);
+    });
+  };
+  applyToggles(extra.instrOn, STATE.taskInstructions, '.task-instr-toggle[data-toggle="instr"]');
+  applyToggles(extra.headOn, STATE.taskHeaders, '.task-instr-toggle[data-toggle="head"]');
+  updateInstrMaster();
+  updateHeadMaster();
+
+  // ── SEKCJE LINKOW / HTML ──
+  if (Array.isArray(extra.customs)) {
+    // Najpierw usun obecne sekcje materialow - TSV/zapis opisuje CALY docelowy
+    // zestaw, wiec ponowne wklejenie nie moze dublowac kart.
+    document.querySelectorAll('.task-card-custom').forEach(card => {
+      const k = card.dataset.task;
+      delete STATE.tasks[k];
+      delete STATE.customSections[k];
+      STATE.taskOrder = STATE.taskOrder.filter(t => t !== k);
+      card.remove();
+    });
+    extra.customs.forEach(c => {
+      if (!c || (c.kind !== 'links' && c.kind !== 'html')) return;
+      const made = addCustomSection(c.kind);
+      if (!made) return;
+      const { key, card } = made;
+      const setVal = (sel, val, evt) => {
+        const el = card.querySelector(sel);
+        if (!el) return;
+        if (el.type === 'checkbox') { el.checked = !!val; }
+        else { el.value = (val == null) ? '' : String(val); }
+        el.dispatchEvent(new Event(evt || 'input', { bubbles: true }));
+      };
+      setVal('.custom-title', c.title || '');
+      setVal('.custom-body', c.body || '');
+      if (c.kind === 'html') {
+        setVal('.custom-height', (c.height === 'auto' || !c.height) ? '' : c.height);
+        setVal('.custom-bare', !!c.bare, 'change');
+      }
+      // Stan zaznaczenia (sekcja mogla byc wylaczona).
+      if (c.on === false) {
+        const cb = card.querySelector(':scope > input[type="checkbox"]');
+        if (cb) cb.checked = false;
+        card.classList.remove('checked');
+        STATE.tasks[key] = false;
+      }
+      // Pozycja w kolejnosci zadan (addCustomSection dopisal na koniec).
+      if (typeof c.pos === 'number' && c.pos >= 0) {
+        STATE.taskOrder = STATE.taskOrder.filter(t => t !== key);
+        STATE.taskOrder.splice(Math.min(c.pos, STATE.taskOrder.length), 0, key);
+        // Zapamietaj docelowa pozycje - blok #order (stosowany PO #extra)
+        // przeklada rozpoznane zadania na poczatek i zepchnalby sekcje
+        // materialow na koniec; po scaleniu #order pozycje sa przywracane.
+        STATE._pendingCustomPos = STATE._pendingCustomPos || [];
+        STATE._pendingCustomPos.push({ key, pos: c.pos });
+      }
+    });
+    reorderGridDom();
+    syncOrderInputs();
+    validateGenerate();
+  }
+}
 
 document.getElementById('reorderReset').addEventListener('click', () => {
   const defaultOrder = ['flashcards', 'matching', 'scramble', 'quiz', 'unscramble', 'cornell', 'gapfill', 'translate', 'writing'];
@@ -3284,6 +3427,13 @@ function updateFontPreview() {
   }
   dispEl.style.fontFamily = set.display;
   bodyEl.style.fontFamily = set.body;
+  // W tekst podgladu wpisujemy NAZWY wybranych rodzin - od razu widac, czy
+  // naglowek faktycznie dostal swoja czcionke (Bricolage i Montserrat sa na
+  // tyle podobne, ze bez podpisu latwo uznac podglad za zepsuty).
+  const headName = (STATE.fontCustom && STATE.fontCustom.displayFamily) || 'jak tekst';
+  const bodyName = (STATE.fontCustom && STATE.fontCustom.family) || '';
+  dispEl.textContent = `Nagłówek · ${headName} · Ąę 012`;
+  bodyEl.textContent = `Tekst${bodyName ? ' · ' + bodyName : ''} · Zażółć gęślą jaźń · the quick brown fox`;
 }
 
 const fontCustomUrl = document.getElementById('fontCustomUrl');
@@ -3822,7 +3972,8 @@ function buildHtmlSection(num, options = {}) {
   const frame = `
       <div class="ws-embed-wrap${isAuto ? ' ws-embed-auto' : ''}" id="embed-wrap-${num}" style="height:${h}px">
         <iframe class="ws-embed-frame" sandbox="allow-scripts allow-popups allow-forms allow-modals" srcdoc="${escapeHtml(body)}" loading="lazy" title="Osadzony materiał"></iframe>
-      </div>${autoScript}`;
+      </div>${isAuto ? `
+      <button type="button" class="ws-embed-recalc" title="Zmniejsza ramkę do minimum - materiał zaraz zgłosi swoją aktualną wysokość i ramka dopasuje się na nowo (przydatne, gdy treść się skurczyła)" onclick="(function(){var w=document.getElementById('embed-wrap-${num}');if(w)w.style.height='60px';})()">↕ Przelicz wysokość</button>` : ''}${autoScript}`;
   // Wariant "sam kontener": bez pudla sekcji, numeru i tytulu - materiał
   // zajmuje miejsce zwyklej sekcji, ma tylko zaokraglone rogi.
   if (cfg.bare) {
@@ -3971,7 +4122,33 @@ function buildWorksheetHTML() {
         h: STATE.taskImageHeight[k] || 150,
         posY: (STATE.taskImagePosY[k] != null) ? STATE.taskImagePosY[k] : 50,
         fit: STATE.taskImageFit[k] || 'cover'
-      }))
+      })),
+    // "extra" = pelny round-trip wygladu w jednej zakodowanej linii TSV
+    // (#extra): czcionki, wlasne tytuly/instrukcje sekcji, stany przelacznikow
+    // naglowkow i instrukcji oraz sekcje materialow (linki/HTML) z ich trescia.
+    // encodeURIComponent chroni przed tabami/nowymi liniami w tresci HTML.
+    extra: encodeURIComponent(JSON.stringify({
+      fonts: {
+        url: STATE.fontCustom.url || '',
+        family: STATE.fontCustom.family || '',
+        displayFamily: STATE.fontCustom.displayFamily || ''
+      },
+      titles: STATE.taskTitles,
+      instrs: STATE.taskCustomInstr,
+      instrOn: STATE.taskInstructions,
+      headOn: STATE.taskHeaders,
+      customs: STATE.taskOrder
+        .map((k, pos) => {
+          const c = STATE.customSections[k];
+          if (!c) return null;
+          return {
+            key: k, kind: c.kind, title: c.title || '', body: c.body || '',
+            height: c.height || 'auto', bare: !!c.bare,
+            on: !!STATE.tasks[k], pos
+          };
+        })
+        .filter(Boolean)
+    }))
   };
 
   return buildWorksheetTemplate({
@@ -7472,6 +7649,9 @@ function downloadTSV() {
   // Tytul i podtytul karty - generator odtworzy je w polach przy wczytaniu TSV.
   if (WS_TITLE) lines.push('#title\\t' + String(WS_TITLE).replace(/\\t/g, ' '));
   if (typeof WS_SUBTITLE !== 'undefined' && WS_SUBTITLE) lines.push('#subtitle\\t' + String(WS_SUBTITLE).replace(/\\t/g, ' '));
+  // Pelny pakiet wygladu (czcionki, tytuly/instrukcje sekcji, przelaczniki,
+  // sekcje linkow/HTML) - jedna zakodowana linia, generator ja odtworzy.
+  if (WS_STYLE_META && WS_STYLE_META.extra) lines.push('#extra\\t' + WS_STYLE_META.extra);
   // Metadane stylu: kolory + obrazki sekcji (odtwarzane przez generator).
   if (WS_STYLE_META) {
     if (WS_STYLE_META.accent) lines.push('#accent\\t' + WS_STYLE_META.accent);
@@ -8166,6 +8346,29 @@ ${t.sharp ? `
   background: transparent;
   clip-path: inset(0 round 14px);
 }
+/* Przycisk "przelicz wysokosc" pod ramka auto - dyskretny, tylko na ekranie.
+   Kurczy ramke do minimum; material natychmiast zglasza swoja wysokosc
+   (skrypt pomiarowy reaguje na resize) i ramka dopasowuje sie na nowo. */
+.ws-embed-recalc {
+  display: inline-block;
+  margin-top: 0.4rem;
+  font-family: var(--ws-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  padding: 0.3rem 0.7rem;
+  background: transparent;
+  border: 1px dashed var(--ws-border-strong);
+  color: var(--ws-text-dim);
+  border-radius: 8px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.15s, color 0.15s, border-color 0.15s;
+}
+.ws-embed-recalc:hover {
+  opacity: 1;
+  color: var(--ws-accent);
+  border-color: var(--ws-accent);
+}
 .ws-embed-note {
   margin-top: 0.5rem;
   font-size: 0.76rem;
@@ -8176,7 +8379,7 @@ ${t.sharp ? `
      w tym samym procesie, wiec Chrome ja wydrukuje w aktualnej wysokosci).
      Niepotrzebna na papierze jest tylko notka o rozciaganiu ramki.
      Nie chcesz materialu na wydruku? Usun go jednorazowo w DevTools (Inspect). */
-  .ws-embed-note { display: none !important; }
+  .ws-embed-note, .ws-embed-recalc { display: none !important; }
   .ws-embed-wrap {
     resize: none !important;
     overflow: hidden !important;
@@ -8848,7 +9051,33 @@ ${t.sharp ? `
   padding: 0.3rem 0.45rem; border-radius: 8px;
 }
 .ws-review-lvl:hover { background: var(--ws-box-bg); }
-.ws-review-lvl input { width: 1.05rem; height: 1.05rem; cursor: pointer; accent-color: var(--ws-accent); }
+/* Checkboxy filtrow ocen: stylowane od zera zamiast natywnych - natywne maja
+   twarde, niemal czarne obramowanie systemowe, ktore gryzlo sie z motywem.
+   Ramka w kolorze obramowan karty, zaznaczenie wypelnione akcentem. */
+.ws-review-lvl input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1.05rem; height: 1.05rem;
+  margin: 0;
+  border: 1.5px solid var(--ws-border-strong);
+  border-radius: 5px;
+  background: var(--ws-bg);
+  cursor: pointer;
+  display: inline-grid; place-items: center;
+  transition: border-color 0.15s, background 0.15s;
+}
+.ws-review-lvl input:hover { border-color: var(--ws-accent); }
+.ws-review-lvl input:checked {
+  background: var(--ws-accent);
+  border-color: var(--ws-accent);
+}
+.ws-review-lvl input:checked::after {
+  content: '✓';
+  font-size: 0.7rem;
+  font-weight: 900;
+  line-height: 1;
+  color: ${isDarkTheme ? t.bg : '#fff'};
+}
 .ws-review-chip {
   width: 1.4rem; height: 1.4rem; border-radius: 5px;
   display: inline-flex; align-items: center; justify-content: center;
@@ -10881,6 +11110,172 @@ body.ws-review-only-mode .ws-review { margin-top: 0.5rem; }
 }
 `;
 }
+
+// ============================================================
+// AUTOZAPIS USTAWIEN GENERATORA (localStorage)
+// Wszystko, co user wyklikal, przezywa odswiezenie strony: dane TSV, tytuly,
+// kolory, tlo, czcionki, przelaczniki, sekcje materialow, obrazki, kolejnosc.
+// Zapis odpalany z opoznieniem po kazdej zmianie; przywracanie raz, na starcie.
+// ============================================================
+const WSGEN_LS_KEY = 'wsgen-autosave-v1';
+let _wsgenRestoring = false; // podczas przywracania nie zapisujemy w kolko
+
+function wsgenBuildSnapshot() {
+  const val = id => { const el = document.getElementById(id); return el ? el.value : ''; };
+  const chk = id => { const el = document.getElementById(id); return el ? !!el.checked : null; };
+  return {
+    v: 1,
+    savedAt: Date.now(),
+    tsv: val('tsv'),
+    title: val('title'),
+    subtitle: val('subtitle'),
+    colors: { accent: val('colorAccent'), bg: val('colorBg'), text: val('colorText') },
+    bg: { style: STATE.bgStyle, svg: STATE.bgSvgCode || '', size: STATE.bgSvgSize, op: STATE.bgSvgOpacity },
+    corners: STATE.sharpCorners,
+    headerGradient: chk('headerGradientChk'),
+    tts: { enabled: chk('ttsEnabled'), lang: val('ttsLang'), voice: val('ttsVoice'), rate: val('ttsRate') },
+    difficulty: chk('difficultyEnabled'),
+    reviewOnly: chk('reviewOnlyMode'),
+    quizOptions: STATE.quizOptions,
+    tasks: Object.fromEntries(Object.entries(STATE.tasks).filter(([k]) => !STATE.customSections[k])),
+    taskOrder: STATE.taskOrder.filter(k => !STATE.customSections[k]),
+    userOverrodeTasks: STATE.userOverrodeTasks,
+    images: { url: { ...STATE.taskImages }, fit: { ...STATE.taskImageFit }, h: { ...STATE.taskImageHeight }, y: { ...STATE.taskImagePosY } },
+    extra: {
+      fonts: { ...STATE.fontCustom },
+      titles: { ...STATE.taskTitles },
+      instrs: { ...STATE.taskCustomInstr },
+      instrOn: { ...STATE.taskInstructions },
+      headOn: { ...STATE.taskHeaders },
+      customs: STATE.taskOrder.map((k, pos) => {
+        const c = STATE.customSections[k];
+        if (!c) return null;
+        return { key: k, kind: c.kind, title: c.title || '', body: c.body || '', height: c.height || 'auto', bare: !!c.bare, on: !!STATE.tasks[k], pos };
+      }).filter(Boolean)
+    }
+  };
+}
+
+let _wsgenSaveTimer = null;
+function wsgenScheduleSave() {
+  if (_wsgenRestoring) return;
+  clearTimeout(_wsgenSaveTimer);
+  _wsgenSaveTimer = setTimeout(() => {
+    try {
+      localStorage.setItem(WSGEN_LS_KEY, JSON.stringify(wsgenBuildSnapshot()));
+    } catch (e) { /* brak miejsca / tryb prywatny - autozapis po cichu pomijamy */ }
+  }, 700);
+}
+// Kazda interakcja z generatorem moze zmieniac stan - lapiemy szeroko,
+// debounce trzyma koszt w ryzach.
+document.addEventListener('input', wsgenScheduleSave, true);
+document.addEventListener('change', wsgenScheduleSave, true);
+document.addEventListener('click', wsgenScheduleSave, true);
+
+function wsgenRestore() {
+  let snap = null;
+  try { snap = JSON.parse(localStorage.getItem(WSGEN_LS_KEY) || 'null'); } catch (e) {}
+  if (!snap || snap.v !== 1) return;
+  _wsgenRestoring = true;
+  try {
+    const setInput = (id, v, evt) => {
+      const el = document.getElementById(id);
+      if (!el || v == null || el.value === String(v)) return;
+      el.value = v;
+      el.dispatchEvent(new Event(evt || 'input', { bubbles: true }));
+    };
+    const setChk = (id, v) => {
+      const el = document.getElementById(id);
+      if (!el || v == null || el.checked === !!v) return;
+      el.checked = !!v;
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+    };
+    // 1. Tlo (styl + SVG) - przed TSV, zeby klik w kafelek stylu nie nadpisal nic pozniej.
+    if (snap.bg) {
+      if (typeof snap.bg.svg === 'string') setInput('svgBgCode', snap.bg.svg);
+      if (snap.bg.size != null) setInput('svgBgSize', snap.bg.size);
+      if (snap.bg.op != null) setInput('svgBgOpacity', snap.bg.op);
+      const bgBtn = document.querySelector('.bg-style-btn[data-bg="' + (snap.bg.style || 'blobs') + '"]');
+      if (bgBtn) bgBtn.click();
+    }
+    // 2. Rogi + gradient.
+    const cornerBtn = document.querySelector('.corner-btn[data-corner="' + (snap.corners ? 'sharp' : 'round') + '"]');
+    if (cornerBtn) cornerBtn.click();
+    setChk('headerGradientChk', snap.headerGradient);
+    // 3. TTS / trudnosc / tryb powtorki / quiz.
+    if (snap.tts) {
+      setChk('ttsEnabled', snap.tts.enabled);
+      setInput('ttsLang', snap.tts.lang, 'change');
+      setInput('ttsVoice', snap.tts.voice, 'change');
+      setInput('ttsRate', snap.tts.rate);
+    }
+    setChk('difficultyEnabled', snap.difficulty);
+    setChk('reviewOnlyMode', snap.reviewOnly);
+    if (snap.quizOptions) {
+      const qbtn = document.querySelector('.suboption-buttons button[data-quiz-opts="' + snap.quizOptions + '"]');
+      if (qbtn) qbtn.click(); else STATE.quizOptions = snap.quizOptions;
+    }
+    // 4. Dane TSV (uruchamia caly potok: parsowanie, instancje, dostepnosc).
+    setInput('tsv', snap.tsv);
+    // 5. Tytul, podtytul, kolory.
+    setInput('title', snap.title);
+    setInput('subtitle', snap.subtitle);
+    if (snap.colors) {
+      setInput('colorAccent', snap.colors.accent);
+      setInput('colorBg', snap.colors.bg);
+      setInput('colorText', snap.colors.text);
+    }
+    // 6. Pelny pakiet wygladu (czcionki, tytuly/instrukcje, przelaczniki, sekcje materialow).
+    if (snap.extra) applyExtraSettings(snap.extra);
+    // 7. Zaznaczenia i kolejnosc zwyklych zadan (PO TSV, bo auto-wybor mogl je ustawic).
+    if (snap.tasks) {
+      Object.keys(snap.tasks).forEach(k => {
+        if (!(k in STATE.tasks)) return;
+        STATE.tasks[k] = !!snap.tasks[k];
+        const card = document.querySelector('.task-card[data-task="' + k + '"]');
+        if (card) {
+          const cb = card.querySelector(':scope > input[type="checkbox"]');
+          if (cb) cb.checked = STATE.tasks[k];
+          card.classList.toggle('checked', STATE.tasks[k]);
+        }
+      });
+      STATE.userOverrodeTasks = !!snap.userOverrodeTasks;
+    }
+    if (Array.isArray(snap.taskOrder) && snap.taskOrder.length) {
+      const valid = new Set(STATE.taskOrder);
+      const seen = new Set();
+      const merged = [];
+      snap.taskOrder.forEach(k => { if (valid.has(k) && !seen.has(k)) { seen.add(k); merged.push(k); } });
+      STATE.taskOrder.forEach(k => { if (!seen.has(k)) { seen.add(k); merged.push(k); } });
+      STATE.taskOrder = merged;
+      reorderGridDom();
+    }
+    // 8. Obrazki sekcji (przez inputy na kartach - podglad i suwaki ida same).
+    if (snap.images && snap.images.url) {
+      document.querySelectorAll('.task-card:not(.task-card-custom)').forEach(card => {
+        const k = card.dataset.task;
+        if (typeof snap.images.fit[k] === 'string') STATE.taskImageFit[k] = snap.images.fit[k];
+        if (snap.images.h[k] != null) STATE.taskImageHeight[k] = snap.images.h[k];
+        if (snap.images.y[k] != null) STATE.taskImagePosY[k] = snap.images.y[k];
+        const inp = card.querySelector('.task-edit-image');
+        if (inp && typeof snap.images.url[k] === 'string' && inp.value !== snap.images.url[k]) {
+          inp.value = snap.images.url[k];
+          inp.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+      });
+    }
+    syncOrderInputs();
+    updateSelectAllState();
+    updateInstrMaster();
+    updateHeadMaster();
+    validateGenerate();
+  } finally {
+    _wsgenRestoring = false;
+  }
+}
+// Przywracanie po pelnym sparsowaniu skryptu (wszystkie handlery juz wpiete).
+setTimeout(wsgenRestore, 0);
+
 </script>
 
 </body>
