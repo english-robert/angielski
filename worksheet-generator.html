@@ -765,7 +765,6 @@ body {
     linear-gradient(90deg, rgba(37,99,235,0.3) 1px, transparent 1px);
   background-size: 16px 16px; background-color: #fbfcff;
 }
-.thumb-none { background: #fbfcff; }
 .thumb-html {
   background-color: #fbfcff;
   background-image:
@@ -1231,7 +1230,7 @@ pies	dog
       <div class="tsv-example-wrap" id="tsvExampleBox">
         <div class="tsv-example-head">
           <div class="tsv-example-info">
-            <strong>Przykładowe dane TSV</strong> dopasowane do różnych typów zadań. Kolumna <code>tasks</code> (opcjonalna) ogranicza wiersz do konkretnych typów. Puste = wiersz idzie do wszystkich zaznaczonych typów. Skróty: <code>f</code>=flashcards, <code>m</code>=matching, <code>s</code>=scramble, <code>q</code>=quiz, <code>u</code>=unscramble, <code>c</code>=cornell, <code>g</code>=gapfill, <code>e</code>=error (znajdź błąd), <code>t</code>=translate, <code>w</code>=writing. Możesz podać kilka tagów po przecinku (np. <code>f,m</code>), ale zwykle czytelniej jest dać jeden tag na wiersz. Quiz z własnymi odpowiedziami: w kolumnie <code>en</code> oddziel opcje kreską ze spacjami, np. <code>cat | cut | cot | cap</code> - pierwsza jest poprawna, pytanie używa dokładnie tych opcji (globalna liczba opcji go nie dotyczy), a w pozostałych zadaniach wiersz działa jak samo <code>cat</code>. Kolumna <code>distractors</code> (opcjonalna): atrapy oddzielone kreską ze spacjami, np. <code>commuter | commute</code>. Spacje wokół kreski są tylko dla czytelności - sam znak też zadziała. W zadaniu <strong>Matching</strong> dokładają do prawej kolumny dodatkowe słowa bez pary, których nie da się połączyć (zbierane z całej części sekcji). W zadaniu <strong>Sentence Unscramble</strong> wpadają do puli klocków tego zdania jako dodatkowe słowa, które do niego nie pasują - fraza wielowyrazowa rozbija się na osobne klocki, a atrapy pokrywające się ze słowami zdania są pomijane. W zadaniu <strong>Gap Fill</strong> dokładają opcje do listy rozwijanej przy tej konkretnej luce (lista pojawia się, gdy opcji jest co najmniej dwie; poza dystraktorami zawiera wszystkie poprawne odpowiedzi z sekcji). Klamerki <code>{…}</code> w EN działają w Gap Fill i w zadaniu <strong>Correct the Mistake</strong> - w każdym innym zadaniu (także gdy wiersz ma tagi mieszane, np. <code>g,m</code>) są automatycznie czyszczone z widoku. W <strong>Correct the Mistake</strong> w klamry wpisujesz słowo BŁĘDNE, a po ukośniku poprawkę, np. <code>She {don't/doesn't} like it</code>: uczeń klika słowa w zdaniu, dobre robią się zielone, błędne czerwone i dopiero wtedy odsłania się polskie tłumaczenie. Kolumna <code>note</code> (opcjonalna): notatka do podzadania, pokazuje się po jego rozwiązaniu (w fiszkach: na odwrocie, w szybkiej powtórce: dopiero po zdjęciu zasłony, żeby nie podpowiadała) - np. kontekst, alternatywne odpowiedzi. Karta zapisuje też do TSV linię <code>#progress</code> ze stanem rozwiązania - wklejona z powrotem przenosi postęp do nowo wygenerowanej karty. Kolejność zadań bez <code>#order</code> = auto-order: o układzie karty decyduje kolejność PIERWSZEGO wystąpienia tagu w danych (możesz układać grupy wierszy w arkuszu, a karta to odwzoruje); jawny <code>#order</code> i ręczne strzałki mają pierwszeństwo.
+            <strong>Przykładowe dane TSV</strong> dopasowane do różnych typów zadań. Kolumna <code>tasks</code> (opcjonalna) ogranicza wiersz do konkretnych typów. Puste = wiersz idzie do wszystkich zaznaczonych typów. Skróty: <code>f</code>=flashcards, <code>m</code>=matching, <code>s</code>=scramble, <code>q</code>=quiz, <code>u</code>=unscramble, <code>c</code>=cornell, <code>g</code>=gapfill, <code>e</code>=error (znajdź błąd), <code>t</code>=translate, <code>w</code>=writing. Możesz podać kilka tagów po przecinku (np. <code>f,m</code>), ale zwykle czytelniej jest dać jeden tag na wiersz. Quiz z własnymi odpowiedziami: w kolumnie <code>en</code> oddziel opcje kreską ze spacjami, np. <code>cat | cut | cot | cap</code> - pierwsza jest poprawna, pytanie używa dokładnie tych opcji (globalna liczba opcji go nie dotyczy), a w pozostałych zadaniach wiersz działa jak samo <code>cat</code>. Kolumna <code>distractors</code> (opcjonalna): atrapy oddzielone kreską ze spacjami, np. <code>commuter | commute</code>. Spacje wokół kreski są tylko dla czytelności - sam znak też zadziała. W zadaniu <strong>Matching</strong> dokładają do prawej kolumny dodatkowe słowa bez pary, których nie da się połączyć (zbierane z całej części sekcji). W zadaniu <strong>Sentence Unscramble</strong> wpadają do puli klocków tego zdania jako dodatkowe słowa, które do niego nie pasują - fraza wielowyrazowa rozbija się na osobne klocki, a atrapy pokrywające się ze słowami zdania są pomijane. W zadaniu <strong>Gap Fill</strong> dokładają kafelki do banku słów pod tym zdaniem (bank jest zasłonięty, odsłania się kliknięciem; poza dystraktorami zawiera odpowiedzi z tego zdania i kilka słów z pozostałych zdań sekcji, a luka wielowyrazowa rozbija się na osobne kafelki). Klamerki <code>{…}</code> w EN działają w Gap Fill i w zadaniu <strong>Correct the Mistake</strong> - w każdym innym zadaniu (także gdy wiersz ma tagi mieszane, np. <code>g,m</code>) są automatycznie czyszczone z widoku. W <strong>Correct the Mistake</strong> w klamry wpisujesz słowo BŁĘDNE, a po ukośniku poprawkę, np. <code>She {don't/doesn't} like it</code>: uczeń klika słowa w zdaniu, dobre robią się zielone, błędne czerwone i dopiero wtedy odsłania się polskie tłumaczenie. Kolumna <code>note</code> (opcjonalna): notatka do podzadania, pokazuje się po jego rozwiązaniu (w fiszkach: na odwrocie, w szybkiej powtórce: dopiero po zdjęciu zasłony, żeby nie podpowiadała) - np. kontekst, alternatywne odpowiedzi. Notatka jako jedyna kolumna przyjmuje HTML: możesz w niej dać <code>&lt;br&gt;</code>, pogrubienie, własny rozmiar tekstu czy obrazek. Bez znaczników działa jak zwykły tekst, a jeśli owiniesz całą notatkę w jeden własny element (np. <code>&lt;div style="…"&gt;</code>), to on staje się notatką i znika domyślne tło z ramką. Niedomknięty znacznik zgłaszamy w ostrzeżeniu pod polem danych. Karta zapisuje też do TSV linię <code>#progress</code> ze stanem rozwiązania - wklejona z powrotem przenosi postęp do nowo wygenerowanej karty. Kolejność zadań bez <code>#order</code> = auto-order: o układzie karty decyduje kolejność PIERWSZEGO wystąpienia tagu w danych (możesz układać grupy wierszy w arkuszu, a karta to odwzoruje); jawny <code>#order</code> i ręczne strzałki mają pierwszeństwo.
           </div>
           <button type="button" class="tsv-example-use" id="tsvExampleUse" title="Wklej te dane do pola">📋 Użyj tych danych</button>
         </div>
@@ -1250,8 +1249,9 @@ zima	winter	q
 Lubię uczyć się angielskiego.	I like learning English.	u		
 Gdzie jest najbliższa stacja?	Where is the nearest station?	u	train | bus	Atrapy wpadają do puli klocków jako słowa, które nie pasują.
 Idę do szkoły o ósmej.	I {go} to school at eight.	g		
-Ona pije kawę każdego ranka.	She {drinks} coffee every morning.	g	drink | drank	Atrapy dokładają opcje do listy rozwijanej przy tej luce.
+Ona pije kawę każdego ranka.	She {drinks} coffee every morning.	g	drink | drank	Atrapy dokładają kafelki do banku słów pod tym zdaniem.
 Oni mieszkają w dużym domu.	They {live} in a {big} house.	g		W jednym zdaniu może być kilka luk.
+Ona mieszka w Warszawie.	She {lives} in Warsaw.	g		&lt;div style="font-size:1.3rem;line-height:1.45"&gt;&lt;b&gt;3. osoba&lt;/b&gt; liczby pojedynczej: &lt;span style="color:#c0392b"&gt;-s&lt;/span&gt; na końcu czasownika.&lt;br&gt;Notatka przyjmuje HTML - większy tekst, kolor, łamanie linii, obrazek.&lt;/div&gt;
 Ona tego nie lubi.	She {don't/doesn't} like it.	e		
 Mam dwa koty.	I have two {cat/cats}.	e		W klamrach błędne słowo, po ukośniku poprawka.
 Jak przetłumaczysz "dzień dobry"?	Good morning.	t		
@@ -1408,10 +1408,6 @@ Opisz swój idealny dzień.	Write 5-8 sentences about your perfect day.	w		Tekst
         <button type="button" class="bg-style-btn" data-bg="grid">
           <span class="bg-style-thumb thumb-grid"></span>
           <span class="bg-style-name">Siatka</span>
-        </button>
-        <button type="button" class="bg-style-btn" data-bg="none">
-          <span class="bg-style-thumb thumb-none"></span>
-          <span class="bg-style-name">Brak</span>
         </button>
         <button type="button" class="bg-style-btn" data-bg="svg">
           <span class="bg-style-thumb thumb-svg" id="svgThumb"></span>
@@ -1659,7 +1655,7 @@ Opisz swój idealny dzień.	Write 5-8 sentences about your perfect day.	w		Tekst
 </div>
 
 <script>
-const WS_GEN_VERSION = '5.0';
+const WS_GEN_VERSION = '5.3';
 
 const WS_LOGO_URL = 'https://english-robert.github.io/angielski/img/loga/ewr-logo.svg';
 
@@ -2019,12 +2015,32 @@ function getOrphanedTagWarnings() {
   return warnings;
 }
 
+/* Notatki z HTML-em sprawdzamy przy kazdej zmianie danych, zeby autor od razu
+   widzial, ze cos zostalo niedomkniete. Karta i tak sie wygeneruje. */
+function getNoteHtmlWarnings() {
+  const out = [];
+  STATE.rows.forEach((r, i) => {
+    const msg = noteHtmlProblem(r && r.note);
+    if (msg) out.push({ row: i + 1, msg });
+  });
+  return out;
+}
+
 function updateOrphanWarning() {
   const warnEl = document.getElementById('orphanWarn');
   if (!warnEl) return;
   const warnings = getOrphanedTagWarnings();
+  const noteWarnings = getNoteHtmlWarnings();
+  const noteHTMLWarn = noteWarnings.length
+    ? `<span class="hint"><strong>HTML w notatce:</strong> ${noteWarnings.slice(0, 4).map(w => `wiersz ${w.row} - ${escapeHtml(w.msg)}`).join('; ')}${noteWarnings.length > 4 ? ` i ${noteWarnings.length - 4} więcej` : ''}. Przeglądarka domknie to sama, ale wynik może wyglądać inaczej, niż chcesz.</span>`
+    : '';
   if (warnings.length === 0) {
-    warnEl.classList.remove('show');
+    if (noteHTMLWarn) {
+      warnEl.innerHTML = `<span class="icon">⚠</span> <strong>Uwaga:</strong> notatka zawiera niepełny kod HTML.${noteHTMLWarn}`;
+      warnEl.classList.add('show');
+    } else {
+      warnEl.classList.remove('show');
+    }
     return;
   }
   const uniqueRows = new Set();
@@ -2034,7 +2050,7 @@ function updateOrphanWarning() {
     }
   });
   const items = warnings.map(w => `<strong>${w.label}</strong> (${w.count})`).join(', ');
-  warnEl.innerHTML = `<span class="icon">⚠</span> <strong>Uwaga:</strong> ${uniqueRows.size} ${uniqueRows.size === 1 ? 'wiersz zostanie zignorowany' : 'wierszy zostanie zignorowanych'} - ${items} ${warnings.length === 1 ? 'nie jest zaznaczony jako typ zadania' : 'nie są zaznaczone jako typy zadań'}.<span class="hint">Wiersze z tymi tagami nie pojawią się w żadnej sekcji. Zaznacz odpowiedni typ zadania albo zmień tagi.</span>`;
+  warnEl.innerHTML = `<span class="icon">⚠</span> <strong>Uwaga:</strong> ${uniqueRows.size} ${uniqueRows.size === 1 ? 'wiersz zostanie zignorowany' : 'wierszy zostanie zignorowanych'} - ${items} ${warnings.length === 1 ? 'nie jest zaznaczony jako typ zadania' : 'nie są zaznaczone jako typy zadań'}.<span class="hint">Wiersze z tymi tagami nie pojawią się w żadnej sekcji. Zaznacz odpowiedni typ zadania albo zmień tagi.</span>${noteHTMLWarn}`;
   warnEl.classList.add('show');
 }
 
@@ -3623,7 +3639,6 @@ const ICO_RECOVER = _ICO('<path d="M4 5.5h16"/><path d="M12 9v7.5"/><path d="M8.
 const ICO_REVIEW = _ICO('<path d="M3.5 9.5a8.5 8.5 0 0114.3-3.3L20.5 9"/><path d="M20.5 4.5V9H16"/><path d="M20.5 14.5a8.5 8.5 0 01-14.3 3.3L3.5 15"/><path d="M3.5 19.5V15H8"/>');
 const ICO_UNDO = _ICO('<path d="M3.5 6v5.5H9"/><path d="M4.6 11.5a8 8 0 113 8"/>');
 const ICO_PRINT = _ICO('<path d="M7 8.5V3.5h10v5"/><path d="M7 17.5H4.5v-6A2.5 2.5 0 017 9h10a2.5 2.5 0 012.5 2.5v6H17"/><rect x="7" y="14.5" width="10" height="6" rx="1"/>');
-const ICO_PICKLIST = _ICO('<path d="M4 7h9"/><path d="M4 12h9"/><path d="M4 17h6"/><path d="M16.5 15.5l2.5 2.5 3.5-4"/>');
 const ICO_CARET = _ICO('<path d="M6.5 9.5L12 15l5.5-5.5"/>', 2.4);
 const ICO_BACKSPACE = _ICO('<path d="M21 5.5H9.2L3 12l6.2 6.5H21z"/><path d="M12.5 9.5l5 5"/><path d="M17.5 9.5l-5 5"/>');
 
@@ -3642,14 +3657,83 @@ function flagOffClsUK(taskKey) {
 function flagOffCls(taskKey) {
   return (STATE.taskFlags && STATE.taskFlags[taskKey] === false) ? ' no-flag' : '';
 }
+/* Notatka jest jedynym polem, ktore przepuszcza HTML. Jesli nie ma w niej zadnego
+   znacznika, dziala dokladnie jak wczesniej - zwykly tekst, escape'owany.
+   Jesli sa znaczniki, przepuszczamy je przez parser przegladarki: on domyka to,
+   co zostalo otwarte, wiec polamany kod nie rozjedzie reszty karty. */
+const NOTE_HTML_RE = /<\/?[a-z][^>]*>/i;
+const NOTE_DROP_TAGS = 'script, iframe, object, embed, link, meta, base, form, style';
+
+function noteHasHTML(raw) {
+  return NOTE_HTML_RE.test(String(raw || ''));
+}
+
+function noteRich(raw) {
+  const n = String(raw || '').trim();
+  if (!n) return '';
+  if (!noteHasHTML(n)) return escapeHtml(n);
+  const box = document.createElement('div');
+  box.innerHTML = n;
+  box.querySelectorAll(NOTE_DROP_TAGS).forEach(el => el.remove());
+  box.querySelectorAll('*').forEach(el => {
+    Array.prototype.slice.call(el.attributes).forEach(a => {
+      if (/^on/i.test(a.name)) el.removeAttribute(a.name);
+      if (a.name === 'href' || a.name === 'src') {
+        if (/^\s*javascript:/i.test(a.value)) el.removeAttribute(a.name);
+      }
+    });
+  });
+  return box.innerHTML;
+}
+
+/* Ostrzezenie dla autora karty: parser i tak to naprawi, ale lepiej wiedziec,
+   ze w notatce cos zostalo otwarte i niedomkniete. */
+const NOTE_VOID_TAGS = new Set(['br', 'img', 'hr', 'input', 'source', 'wbr', 'col', 'area']);
+function noteHtmlProblem(raw) {
+  const n = String(raw || '').trim();
+  if (!n || !noteHasHTML(n)) return '';
+  const stack = [];
+  let m;
+  const re = /<(\/?)([a-z][a-z0-9]*)\b[^>]*?(\/?)>/gi;
+  while ((m = re.exec(n)) !== null) {
+    const tag = m[2].toLowerCase();
+    if (NOTE_VOID_TAGS.has(tag) || m[3] === '/') continue;
+    if (m[1]) {
+      const at = stack.lastIndexOf(tag);
+      if (at === -1) return 'zamykasz <' + tag + '>, który nie został otwarty';
+      stack.length = at;
+    } else {
+      stack.push(tag);
+    }
+  }
+  if (stack.length) return 'niedomknięty znacznik <' + stack[stack.length - 1] + '>';
+  const dropped = n.match(/<(script|iframe|object|embed|link|meta|base|form|style)\b/i);
+  if (dropped) return '<' + dropped[1].toLowerCase() + '> zostanie usunięty ze względów bezpieczeństwa';
+  return '';
+}
+
+/* Gdy cala notatka jest opakowana w jeden wlasny element, to on staje sie notatka:
+   zdejmujemy wtedy tlo i padding, zeby autor mial pelna kontrole nad wygladem. */
+function noteBare(raw) {
+  const n = String(raw || '').trim();
+  if (!n || !noteHasHTML(n)) return false;
+  const box = document.createElement('div');
+  box.innerHTML = noteRich(n);
+  if (box.children.length !== 1) return false;
+  return Array.prototype.every.call(box.childNodes, nd => nd.nodeType === 1 || !nd.textContent.trim());
+}
+
 function noteHTML(r, cls) {
   const n = (r && r.note || '').trim();
-  return n ? `<div class="${cls || 'ws-note'}">📝 ${escapeHtml(n)}</div>` : '';
+  if (!n) return '';
+  const rich = noteHasHTML(n);
+  const extra = rich ? (' ws-note-html' + (noteBare(n) ? ' ws-note-bare' : '')) : '';
+  return `<div class="${cls || 'ws-note'}${extra}">${rich ? '' : '📝 '}${noteRich(n)}</div>`;
 }
 function sectionNotesHTML(rows) {
   const items = (rows || [])
     .filter(r => r && (r.note || '').trim())
-    .map(r => `<div class="ws-section-note-item">📝 <strong>${escapeHtml(r.en)} – ${escapeHtml(r.pl)}</strong>: ${escapeHtml(r.note.trim())}</div>`);
+    .map(r => `<div class="ws-section-note-item">📝 <strong>${escapeHtml(r.en)} – ${escapeHtml(r.pl)}</strong>: ${noteRich(r.note.trim())}</div>`);
   if (!items.length) return '';
   return `<div class="ws-section-note">${items.join('')}</div>`;
 }
@@ -5213,32 +5297,44 @@ function buildGapfillSection(num, options = {}) {
     if (lastEnd < r.en.length) {
       parts.push({ type: 'text', text: r.en.slice(lastEnd) });
     }
-    // Dystraktory tego wiersza dokladamy do puli tylko na czas tego zdania.
-    const rowOpts = _gapPool.slice();
-    const rowSeen = new Set(rowOpts.map(o => o.toLowerCase()));
-    (r._distractors || []).forEach(d => {
-      const t = String(d || '').trim();
-      if (!t || rowSeen.has(t.toLowerCase())) return;
-      rowSeen.add(t.toLowerCase());
-      rowOpts.push(t);
-    });
-    rowOpts.sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }));
-    const hasPicks = rowOpts.length >= 2;
-    const pickHTML = hasPicks
-      ? `<button type="button" class="gap-pick-btn" onclick="wsGapPickToggle(this)" title="Wybierz z listy" aria-label="Wybierz z listy" aria-expanded="false">${ICO_CARET}</button>
-           <span class="gap-pick-list" hidden>${rowOpts.map(o =>
-             `<button type="button" class="gap-pick-opt" onclick="wsGapPickChoose(this)" data-val="${escapeHtml(o)}">${escapeHtml(o)}</button>`
-           ).join('')}</span>`
+    // Bank slow pod zdaniem - te same kafelki co w Unscramble. Zawiera odpowiedzi
+    // z tego zdania, dystraktory wiersza i kilka slow z pozostalych zdan sekcji,
+    // zeby sam sklad banku nie zdradzal odpowiedzi.
+    const cardAnswers = parts.filter(p => p.type === 'gap').map(p => p.answer);
+    const bank = [];
+    const bankSeen = new Set();
+    // Kazde slowo to osobny kafelek, takze gdy luka mieci kilka slow
+    // ("are you" -> "are" + "you"). Inaczej kafelek zdradzalby cala luke.
+    const bankAdd = (v) => {
+      String(v || '').trim().split(/\s+/).filter(Boolean).forEach(tok => {
+        const k = tok.toLowerCase();
+        if (bankSeen.has(k)) return;
+        bankSeen.add(k);
+        bank.push(tok);
+      });
+    };
+    cardAnswers.forEach(bankAdd);
+    (r._distractors || []).forEach(bankAdd);
+    const cardTokens = cardAnswers.join(' ').split(/\s+/).filter(Boolean).length;
+    const bankTarget = Math.min(10, Math.max(cardTokens + 3, 5));
+    shuffle(_gapPool).forEach(w => { if (bank.length < bankTarget) bankAdd(w); });
+    const hasBank = bank.length >= 2;
+    const bankHTML = hasBank
+      ? `<div class="unsc-pool-wrap gap-bank-wrap">
+          <div class="unsc-pool unsc-pool-hidden gap-bank">${shuffle(bank).map(w =>
+            `<button type="button" class="unsc-word gap-bank-word" draggable="false" data-word="${escapeHtml(w)}" onclick="wsGapBankPick(this)">${escapeHtml(w)}</button>`
+          ).join('')}</div>
+          <button type="button" class="unsc-pool-reveal" onclick="wsGapRevealBank(this)">
+            <span class="unsc-pool-reveal-icon">${ICO_EYE}</span>
+            <span>Kliknij, aby pokazać słowa do wyboru</span>
+          </button>
+        </div>`
       : '';
 
     const sentenceHTML = parts.map(p => {
       if (p.type === 'text') return escapeHtml(p.text);
-      const w = Math.max(p.answer.length + 1, 4);
       const wordCount = p.answer.trim().split(/\s+/).filter(Boolean).length || 1;
-      const inputHTML = `<input type="text" class="gap-input" data-answer="${escapeHtml(p.answer.toLowerCase())}" data-display="${escapeHtml(p.answer)}" data-gap-idx="${p.idx}" size="${w}" placeholder="(${wordCount})" onkeydown="if(event.key==='Enter') checkGap_${num}(this)">`;
-      if (!pickHTML) return inputHTML;
-      const slotId = `${num}-${i}-${p.idx}`;
-      return `<span class="gap-slot" data-slot="${slotId}">${inputHTML}${pickHTML.replace('<span class="gap-pick-list"', `<span class="gap-pick-list" data-slot="${slotId}"`)}</span>`;
+      return `<input type="text" class="gap-input" data-answer="${escapeHtml(p.answer.toLowerCase())}" data-display="${escapeHtml(p.answer)}" data-gap-idx="${p.idx}" data-words="${wordCount}" placeholder="(${wordCount})" onkeydown="if(event.key==='Enter') checkGap_${num}(this)">`;
     }).join('');
     const enClean = r.en.replace(/\{([^}]+)\}/g, '$1');
     const totalGaps = gapIdx;
@@ -5249,12 +5345,12 @@ function buildGapfillSection(num, options = {}) {
         </div>
         <div class="gap-sentence"><span class="gap-sentence-text">${sentenceHTML}</span>
           <span class="gap-actions">
-            ${hasPicks ? `<button class="tts-btn tts-btn-gap gap-picks-btn" onclick="wsGapPicksToggle(this)" title="Pokaż lub ukryj listy podpowiedzi przy lukach" aria-label="Listy przy lukach" aria-pressed="false">${ICO_PICKLIST}</button>` : ''}
             <button class="tts-btn tts-btn-gap gap-helper-btn" onclick="hintGap_${num}(${i})" title="Podpowiedź - kolejna litera w pierwszej pustej luce" aria-label="Podpowiedź">${ICO_HINT}</button>
             <button class="tts-btn tts-btn-gap gap-solve-btn" onclick="solveGapOne_${num}(${i})" title="Rozwiąż całe zdanie" aria-label="Rozwiąż">${ICO_SOLVE}</button>
             <button class="tts-btn tts-btn-gap" onclick="ttsBtnClick(event, ${JSON.stringify(enClean).replace(/"/g, '&quot;')})" title="Posłuchaj całego zdania" aria-label="Czytaj">${ICO_TTS}</button>
           </span>
         </div>
+        ${bankHTML}
         ${diffRow(diffRowIdx(r))}
         ${noteHTML(r)}
       </div>`;
@@ -5268,7 +5364,7 @@ function buildGapfillSection(num, options = {}) {
         <div class="ws-sec-num">${num < 10 ? "0" + num : num}</div>
         <h2 class="ws-sec-title">${sectionTitle(taskKey, 'Gap Fill')}</h2>
       </div>
-      ${sectionInstr(taskKey, 'Wpisz brakujące słowa w lukach (Enter sprawdza). Żarówka podpowiada kolejną literę, klucz rozwiązuje całe zdanie.')}
+      ${sectionInstr(taskKey, 'Wpisz brakujące słowa w lukach (Enter sprawdza). Możesz też odsłonić bank słów pod zdaniem i kliknąć gotowe słowo. Żarówka podpowiada kolejną literę, klucz rozwiązuje całe zdanie.')}
       <div class="gap-grid">${items}</div>
       <div class="ws-actions">
         <button class="ws-btn-solve" onclick="solveGap_${num}()">Pokaż wszystkie odpowiedzi</button>
@@ -5352,6 +5448,7 @@ function buildGapfillJS(num, options = {}) {
       inp.classList.add('gap-correct');
       inp.disabled = true;
     });
+    wsGapSyncBank(card);
     card.classList.add('done');
     _gapDone_${num}.add(parseInt(card.dataset.idx));
     if (_gapDone_${num}.size === _gapTotal_${num}) {
@@ -5377,6 +5474,7 @@ function buildGapfillJS(num, options = {}) {
         confettiFire();
       }
     }
+    wsGapSyncBank(card);
   }
 
   window.solveGap_${num} = function() {
@@ -5384,10 +5482,12 @@ function buildGapfillJS(num, options = {}) {
     document.querySelectorAll('#sec-${num} .gap-card').forEach(card => {
       card.querySelectorAll('.gap-input').forEach(inp => {
         if (inp.classList.contains('gap-correct')) return;
-        inp.value = inp.dataset.answer;
+        inp.value = inp.dataset.display || inp.dataset.answer;
+        wsFitGap(inp);
         inp.classList.add('gap-correct');
         inp.disabled = true;
       });
+      wsGapSyncBank(card);
       card.classList.add('done');
       const tr = card.querySelector('.gap-translation');
       if (tr) tr.classList.add('show');
@@ -6192,15 +6292,25 @@ function _wsTextWidth(text, font) {
   _wsGapCtx.font = font;
   return _wsGapCtx.measureText(text || '').width;
 }
+/* Wszystkie luki startuja z ta sama szerokoscia (WS_GAP_BASE znakow), zeby dlugosc
+   luki nie zdradzala dlugosci slowa. Pole rosnie dopiero z tym, co jest wpisane. */
+const WS_GAP_BASE = 'nnnnnnn';
 function wsFitGap(inp) {
   if (!inp) return;
   const cs = getComputedStyle(inp);
   const font = cs.fontStyle + ' ' + cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily;
-  let w = 0;
-  [inp.dataset.answer || '', inp.value || '', inp.placeholder || ''].forEach(t => {
-    const m = _wsTextWidth(t, font);
-    if (m > w) w = m;
-  });
+  const val = inp.value || '';
+  /* Pusta luka ma zawsze ten sam rozmiar, zeby nie zdradzala dlugosci slowa.
+     Gdy cos w niej stoi, pole dopasowuje sie do tresci z tym samym marginesem
+     z obu stron - krotkie slowo nie plywa w rozciagnietym polu. */
+  let w;
+  if (val.trim()) {
+    w = _wsTextWidth(val, font);
+    inp.style.minWidth = '0';
+  } else {
+    w = Math.max(_wsTextWidth(WS_GAP_BASE, font), _wsTextWidth(inp.placeholder || '', font));
+    inp.style.minWidth = '';
+  }
   const extra = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight)
               + parseFloat(cs.borderLeftWidth) + parseFloat(cs.borderRightWidth);
   inp.style.width = Math.ceil(w + extra + 1) + 'px';
@@ -6279,12 +6389,17 @@ function wsClearSection(num) {
     }
   });
 
-  sec.querySelectorAll('.gap-card:not(.err-card)').forEach(card => card.classList.remove('done'));
   sec.querySelectorAll('.gap-input').forEach(inp => {
     inp.value = '';
-    inp.classList.remove('gap-correct', 'gap-wrong');
+    inp.classList.remove('gap-correct', 'gap-wrong', 'gap-sel');
     inp.disabled = false;
-    wsFitGap(inp);   // po skasowaniu dluzszego wpisu pole wraca do szerokosci slowa
+    wsFitGap(inp);   // po skasowaniu dluzszego wpisu pole wraca do szerokosci bazowej
+  });
+  sec.querySelectorAll('.gap-card:not(.err-card)').forEach(card => {
+    card.classList.remove('done');
+    card._wsGap = null;
+    wsGapCoverBank(card);   // bank slow wraca pod zaslone razem z pustymi lukami
+    wsGapSyncBank(card);    // dopiero po wyczyszczeniu luk, inaczej slowa zostaja zuzyte
   });
 
   sec.querySelectorAll('.trans-card').forEach(card => card.classList.remove('done'));
@@ -6466,8 +6581,27 @@ function wsPrintReview() {
   setTimeout(() => window.print(), 60);
 }
 
+/* Correct the Mistake zapisuje sie jako {bledne/poprawne}. W powtorce nie ma sensu
+   pokazywac obu form naraz, wiec wiersz rozbijamy na czesci i skladamy zdanie
+   w wersji poprawnej. Gdy tagow zadan brak (tryb "tylko powtorka"), rozpoznajemy
+   go po ukosniku wewnatrz klamry. */
+function _wsErrParts(r) {
+  const m = String(r.en || '').match(/\{([^}]+)\}/);
+  if (!m) return null;
+  const tasks = r._tasks || [];
+  const tagged = tasks.some(t => t === 'error' || t.indexOf('error:') === 0);
+  const slash = m[1].indexOf('/');
+  if (!tagged && !(tasks.length === 0 && slash !== -1)) return null;
+  if (slash === -1) return null;
+  const bad = m[1].slice(0, slash).trim();
+  const fix = m[1].slice(slash + 1).trim();
+  if (!bad || !fix) return null;
+  return { bad: bad, fix: fix, fixed: r.en.replace(/\{([^}]+)\}/, fix) };
+}
+
 function _wsIsGap(r) {
   if (!/\{[^}]+\}/.test(r.en || '')) return false;
+  if (_wsErrParts(r)) return false;
   const tasks = r._tasks || [];
   if (tasks.length === 0) return true;
   if (typeof WS_REVIEW_ONLY !== 'undefined' && WS_REVIEW_ONLY) return true;
@@ -6475,8 +6609,28 @@ function _wsIsGap(r) {
 }
 
 function _wsTtsText(r) {
+  const err = _wsErrParts(r);
+  if (err) return err.fixed;
   if (_wsIsGap(r)) return r.en.replace(/\{([^}]+)\}/g, '$1');
   return r.en;
+}
+
+/* Notatka moze zawierac HTML. Bez znacznikow zachowuje sie jak zwykly tekst. */
+function _wsNoteRender(raw) {
+  const n = String(raw || '').trim();
+  if (!n) return null;
+  if (!/<\\/?[a-z][^>]*>/i.test(n)) return { html: '📝 ' + _wsEsc(n), bare: false };
+  const box = document.createElement('div');
+  box.innerHTML = n;
+  box.querySelectorAll('script, iframe, object, embed, link, meta, base, form, style').forEach(el => el.remove());
+  box.querySelectorAll('*').forEach(el => {
+    Array.prototype.slice.call(el.attributes).forEach(a => {
+      if (/^on/i.test(a.name)) el.removeAttribute(a.name);
+    });
+  });
+  const bare = box.children.length === 1
+    && Array.prototype.every.call(box.childNodes, nd => nd.nodeType === 1 || !nd.textContent.trim());
+  return { html: box.innerHTML, bare: bare };
 }
 
 function wsBuildReview() {
@@ -6518,6 +6672,7 @@ function wsBuildReview() {
   const rows = items.map(({ r, i }) => {
     const lvl = r._diff;
     const ttsText = JSON.stringify(_wsTtsText(r)).replace(/"/g, '&quot;');
+    const errParts = _wsErrParts(r);
     const isGap = _wsIsGap(r);
     const gapCls = isGap ? ' ws-review-item-gap' : '';
     const rateBtns = ['new', 1, 2, 3, 4].map(L => {
@@ -6536,11 +6691,24 @@ function wsBuildReview() {
       : '';
 
     let answerInner;
-    if (isGap) {
+    if (errParts) {
+      // Correct the Mistake: w powtorce liczy sie gotowe, poprawne zdanie.
+      answerInner = '<span class="ws-review-ans-text">' + _wsCoverBar(errParts.fixed, false) + '</span>';
+    } else if (isGap) {
       answerInner = '<span class="ws-review-ans-text">' + _wsRenderGapCovered(r) + '</span>';
     } else {
       answerInner = '<span class="ws-review-ans-text">' + _wsRenderAnswerText(r.en) + '</span>';
     }
+
+    // Dopisek o bledzie korzysta z klasy notatki, wiec sam pokazuje sie dopiero
+    // po odslonieciu odpowiedzi i nie zdradza jej wczesniej.
+    const errBlock = errParts
+      ? '<div class="ws-review-note ws-review-note-err" aria-hidden="true">'
+        + '<span class="ws-review-err-bad">' + _wsEsc(errParts.bad) + '</span>'
+        + '<span class="ws-review-err-arrow">\u2192</span>'
+        + '<span class="ws-review-err-fix">' + _wsEsc(errParts.fix) + '</span>'
+        + '</div>'
+      : '';
 
     let unscHint = '';
     const isUnsc = Array.isArray(r._tasks) && r._tasks.some(t => String(t).indexOf('unscramble') === 0);
@@ -6568,8 +6736,9 @@ function wsBuildReview() {
       ? '<div class="ws-review-written"><span class="ws-review-written-lab">✍️ Twój tekst</span>'
         + '<span class="ws-review-written-text">' + _wsEsc(String(r._written).trim()) + '</span></div>'
       : '';
-    const noteBlock = (r.note && String(r.note).trim())
-      ? '<div class="ws-review-note" aria-hidden="true">📝 ' + _wsEsc(String(r.note).trim()) + '</div>'
+    const noteRend = _wsNoteRender(r.note);
+    const noteBlock = noteRend
+      ? '<div class="ws-review-note' + (noteRend.bare ? ' ws-note-bare' : '') + '" aria-hidden="true">' + noteRend.html + '</div>'
       : '';
     const recoverBtnHtml = '<button type="button" class="ws-review-item-recover" onclick="wsToggleItemCover(this)" title="Odsłoń odpowiedź" aria-label="Odsłoń lub zasłoń odpowiedź">' + ICO_EYE_S + '</button>';
     const ttsBtnHtml = '<button type="button" class="ws-review-item-tts' + (WS_DIFF_HIDDEN ? ' ws-review-item-tts-inline' : '') + '" onclick="ttsBtnClick(event, ' + ttsText + ')" title="Posłuchaj" aria-label="Czytaj">' + ICO_TTS_S + '</button>';
@@ -6587,6 +6756,7 @@ function wsBuildReview() {
       +   '<span class="ws-review-item-answer">' + answerInner + '</span>'
       +   (WS_DIFF_HIDDEN ? '<span class="ws-review-foot-btns">' + recoverBtnHtml + ttsBtnHtml + '</span>' : '')
       + '</div>'
+      + errBlock
       + writtenBlock
       + noteBlock
       + footBlock
@@ -6669,98 +6839,105 @@ function wsToggleCover(el) {
   wsSound('tap');
 }
 
-/* Lista podpowiedzi przy luce w Gap Fill. Wpisywanie z klawiatury dziala
-   dalej bez zmian - lista jest tylko skrotem. */
-function wsGapPicksToggle(btn) {
-  const card = btn.closest('.gap-card');
+/* Bank slow w Gap Fill. Ten sam mechanizm co pula w Unscramble: kafelki sa
+   zakryte, jedno klikniecie je odslania, a kolejne wstawia slowo do luki.
+   Wpisywanie z klawiatury dziala dalej bez zmian. */
+function wsGapRevealBank(btn) {
+  const wrap = btn.closest('.gap-bank-wrap');
+  if (!wrap) return;
+  const bank = wrap.querySelector('.gap-bank');
+  if (bank) bank.classList.remove('unsc-pool-hidden');
+  btn.style.display = 'none';
+  wsSound('tap');
+}
+
+function wsGapCoverBank(card) {
   if (!card) return;
-  const on = !card.classList.contains('picks-on');
-  card.classList.toggle('picks-on', on);
-  btn.setAttribute('aria-pressed', on ? 'true' : 'false');
-  btn.classList.toggle('active', on);
-  if (!on) wsGapPickCloseAll();
-  wsSound('tap');
+  const bank = card.querySelector('.gap-bank');
+  const btn = card.querySelector('.gap-bank-wrap .unsc-pool-reveal');
+  if (bank) bank.classList.add('unsc-pool-hidden');
+  if (btn) btn.style.display = '';
 }
 
-function wsGapPickList(slot) {
-  return slot.querySelector('.gap-pick-list')
-    || document.querySelector('.gap-pick-list[data-slot="' + slot.dataset.slot + '"]');
-}
-
-function wsGapPickCloseAll(except) {
-  document.querySelectorAll('.gap-slot.open').forEach(s => {
-    if (s === except) return;
-    s.classList.remove('open');
-    const b = s.querySelector('.gap-pick-btn');
-    const l = wsGapPickList(s);
-    if (b) b.setAttribute('aria-expanded', 'false');
-    if (l) { l.hidden = true; s.appendChild(l); }
+/* Kafelek, ktorego slowo stoi juz w rozwiazanej luce, znika z banku - slowo jest
+   widoczne w zdaniu, wiec nie ma po co go powtarzac. Przekreslamy to, co po
+   skonczeniu zdania zostalo niewykorzystane: to znaczy "niepotrzebne", nie "bledne". */
+function wsGapSyncBank(card) {
+  if (!card) return;
+  const bank = card.querySelector('.gap-bank');
+  if (!bank) return;
+  const used = {};
+  card.querySelectorAll('.gap-input.gap-correct').forEach(inp => {
+    (inp.dataset.answer || '').trim().toLowerCase().split(/\\s+/).filter(Boolean).forEach(t => {
+      used[t] = (used[t] || 0) + 1;
+    });
   });
-}
-
-function wsGapPickPlace(btn, list) {
-  // Lista ladzie w <body>. Wewnatrz karty .ws-app tworzy wlasny kontekst
-  // nakladania, przez co potrafila wyladowac pod innymi elementami.
-  if (list.parentElement !== document.body) document.body.appendChild(list);
-  list.style.visibility = 'hidden';
-  list.style.top = '0px';
-  list.style.left = '0px';
-  list.hidden = false;
-
-  const r = btn.getBoundingClientRect();
-  const h = list.offsetHeight;
-  const w = list.offsetWidth;
-  const gap = 4;
-  let top = r.bottom + gap;
-  if (top + h > window.innerHeight - 8 && r.top - h - gap > 8) top = r.top - h - gap;
-  top = Math.max(8, Math.min(top, window.innerHeight - h - 8));
-  let left = Math.max(8, Math.min(r.left, window.innerWidth - w - 8));
-
-  list.style.top = Math.round(top) + 'px';
-  list.style.left = Math.round(left) + 'px';
-  list.style.visibility = '';
-}
-
-function wsGapPickToggle(btn) {
-  const slot = btn.closest('.gap-slot');
-  if (!slot) return;
-  const list = wsGapPickList(slot);
-  const open = !slot.classList.contains('open');
-  wsGapPickCloseAll(slot);
-  slot.classList.toggle('open', open);
-  btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-  if (list) {
-    if (open) wsGapPickPlace(btn, list);
-    else { list.hidden = true; slot.appendChild(list); }
+  const done = card.classList.contains('done');
+  bank.querySelectorAll('.gap-bank-word').forEach(w => {
+    const k = (w.dataset.word || '').trim().toLowerCase();
+    const taken = used[k] > 0;
+    if (taken) used[k]--;
+    w.classList.toggle('taken', taken);
+    w.classList.toggle('used', !taken && done);
+    w.disabled = taken || done;
+  });
+  const left = bank.querySelectorAll('.gap-bank-word:not(.taken)').length;
+  let ph = bank.querySelector('.unsc-pool-empty');
+  if (!left) {
+    if (!ph) {
+      ph = document.createElement('div');
+      ph.className = 'unsc-pool-empty';
+      ph.textContent = '(wszystkie słowa użyte)';
+      bank.appendChild(ph);
+    }
+  } else if (ph) {
+    ph.remove();
   }
-  wsSound('tap');
 }
 
-function wsGapPickChoose(opt) {
-  const slot = opt.closest('.gap-slot')
-    || document.querySelector('.gap-slot[data-slot="' + opt.closest('.gap-pick-list').dataset.slot + '"]');
-  if (!slot) return;
-  const inp = slot.querySelector('.gap-input');
-  wsGapPickCloseAll();
+function wsGapSyncAllBanks() {
+  document.querySelectorAll('.gap-card').forEach(wsGapSyncBank);
+}
+
+/* Ostatnia dotknieta luka w karcie. Dzieki temu kliknniecie w bank trafia tam,
+   gdzie uzytkownik patrzy, a nie zawsze w pierwsza wolna luke. */
+document.addEventListener('focusin', e => {
+  const inp = e.target.closest && e.target.closest('.gap-input');
   if (!inp || inp.disabled) return;
-  inp.value = opt.dataset.val || '';
-  const sec = slot.closest('.ws-section');
-  const num = sec && sec.dataset ? sec.dataset.section : null;
-  const check = num && window['checkGap_' + num];
-  if (typeof check === 'function') check(inp);
-  else inp.focus();
-}
+  const card = inp.closest('.gap-card');
+  if (!card) return;
+  card.querySelectorAll('.gap-input.gap-sel').forEach(o => o.classList.remove('gap-sel'));
+  inp.classList.add('gap-sel');
+  card._wsGap = inp;
+});
 
-document.addEventListener('click', e => {
-  if (!e.target.closest) return;
-  if (e.target.closest('.gap-slot') || e.target.closest('.gap-pick-list')) return;
-  wsGapPickCloseAll();
-});
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') wsGapPickCloseAll();
-});
-window.addEventListener('scroll', () => wsGapPickCloseAll(), true);
-window.addEventListener('resize', () => wsGapPickCloseAll());
+function wsGapBankPick(btn) {
+  const card = btn.closest('.gap-card');
+  if (!card || btn.disabled) return;
+  const gaps = Array.prototype.slice.call(card.querySelectorAll('.gap-input:not([disabled])'));
+  if (!gaps.length) return;
+  const target = (card._wsGap && gaps.indexOf(card._wsGap) !== -1) ? card._wsGap : gaps[0];
+  const want = parseInt(target.dataset.words || '1', 10) || 1;
+  const have = (target.value || '').trim().split(/\\s+/).filter(Boolean);
+  /* Luke wielowyrazowa skladamy kliknieciami, slowo po slowie, w kolejnosci
+     klikania. Gdy luka jest juz pelna (albo jednowyrazowa), kolejne klikniecie
+     zaczyna ja od nowa - dzieki temu zawsze da sie poprawic wybor. */
+  target.value = (want > 1 && have.length && have.length < want)
+    ? have.join(' ') + ' ' + (btn.dataset.word || '')
+    : (btn.dataset.word || '');
+  wsFitGap(target);
+  const filled = target.value.trim().split(/\\s+/).filter(Boolean).length;
+  if (filled >= want) {
+    const sec = card.closest('.ws-section');
+    const num = sec && sec.dataset ? sec.dataset.section : null;
+    const check = num && window['checkGap_' + num];
+    if (typeof check === 'function') check(target);
+    else target.focus();
+  } else {
+    target.focus();
+  }
+  wsGapSyncBank(card);
+}
 
 /* Correct the Mistake. Slowa to te same kafelki co w Unscramble, a stany
    correct-pos / wrong-pos pochodza ze wspolnego bloku STANY ODPOWIEDZI. */
@@ -6954,12 +7131,12 @@ document.addEventListener('keydown', e => {
 
 function _wsSyncNote(item) {
   if (!item) return;
-  const note = item.querySelector('.ws-review-note');
-  if (!note) return;
+  const notes = item.querySelectorAll('.ws-review-note');
+  if (!notes.length) return;
   const stillCovered = item.querySelector('.wsc.covered');
   const open = !stillCovered;
   item.classList.toggle('note-open', open);
-  note.setAttribute('aria-hidden', open ? 'false' : 'true');
+  notes.forEach(n => n.setAttribute('aria-hidden', open ? 'false' : 'true'));
 }
 function _wsSyncAllNotes() {
   document.querySelectorAll('.ws-review-item').forEach(_wsSyncNote);
@@ -7506,17 +7683,28 @@ function _wsRestoreGapfill(data) {
       const card = sec.querySelector('.gap-card:not(.err-card)[data-idx="' + cardData.idx + '"]');
       if (!card) return;
       const inputs = card.querySelectorAll('.gap-input');
+      let anyValue = false;
       cardData.inputs.forEach((inpData, i) => {
         if (!inputs[i]) return;
         inputs[i].value = inpData.value || '';
+        if (inpData.value) anyValue = true;
         if (inpData.correct) {
           inputs[i].classList.add('gap-correct');
           inputs[i].disabled = true;
         }
+        wsFitGap(inputs[i]);
       });
       if (cardData.done) {
         card.classList.add('done');
       }
+      // Skoro cos juz w tej karcie zrobiono, bank slow nie wraca pod zaslone.
+      if (anyValue || cardData.done) {
+        const reveal = card.querySelector('.gap-bank-wrap .unsc-pool-reveal');
+        const bank = card.querySelector('.gap-bank');
+        if (bank) bank.classList.remove('unsc-pool-hidden');
+        if (reveal) reveal.style.display = 'none';
+      }
+      wsGapSyncBank(card);
     });
   });
 }
@@ -8007,8 +8195,8 @@ function buildBackground(style, accent, accent2, accent3, accentV) {
 .ws-bg-grid {
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
   background-image:
-    linear-gradient(${rgba(accent, 0.09)} 1px, transparent 1px),
-    linear-gradient(90deg, ${rgba(accent, 0.09)} 1px, transparent 1px);
+    linear-gradient(${rgba(accent, 0.15)} 1px, transparent 1px),
+    linear-gradient(90deg, ${rgba(accent, 0.15)} 1px, transparent 1px);
   background-size: 64px 64px;
 }`
     };
@@ -8039,10 +8227,10 @@ function buildBackground(style, accent, accent2, accent3, accentV) {
   pointer-events: none; z-index: 0;
   filter: blur(70px);
   background:
-    radial-gradient(ellipse 60% 52% at 6% 12%, ${rgba(accent, 0.34)}, transparent 60%),
-    radial-gradient(ellipse 52% 44% at 96% 84%, ${rgba(accent2, 0.30)}, transparent 60%),
-    radial-gradient(ellipse 46% 40% at 86% 8%, ${rgba(accent3, 0.32)}, transparent 60%),
-    radial-gradient(ellipse 50% 44% at 10% 92%, ${rgba(accentV, 0.26)}, transparent 60%);
+    radial-gradient(ellipse 60% 52% at 6% 12%, ${rgba(accent, 0.44)}, transparent 60%),
+    radial-gradient(ellipse 52% 44% at 96% 84%, ${rgba(accent2, 0.40)}, transparent 60%),
+    radial-gradient(ellipse 46% 40% at 86% 8%, ${rgba(accent3, 0.42)}, transparent 60%),
+    radial-gradient(ellipse 50% 44% at 10% 92%, ${rgba(accentV, 0.35)}, transparent 60%);
 }`
   };
 }
@@ -9194,6 +9382,14 @@ body.ws-diff-hidden .ws-review-row-main {
   user-select: auto;
   -webkit-user-select: auto;
 }
+/* Dopisek "bylo -> jest" przy Correct the Mistake. */
+.ws-review-note-err {
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.45rem;
+  font-weight: 600;
+}
+.ws-review-err-bad { color: var(--ws-no); text-decoration: line-through; }
+.ws-review-err-arrow { color: var(--ws-text-dim); }
+.ws-review-err-fix { color: var(--ws-ok); }
 .ws-review-row-foot .ws-diff { display: inline-flex; align-items: center; gap: 0.3rem; flex-wrap: wrap; }
 .ws-review-item-tts,
 .ws-review-item-recover {
@@ -9615,7 +9811,9 @@ body.ws-review-only-mode .ws-review { margin-top: 0.5rem; }
   flex-wrap: wrap;
   gap: 0.45rem;
   padding: 0.7rem 0.85rem;
-  border: 1px dotted var(--ws-border);
+  /* Jedno obramowanie dla puli Unscramble i banku Gap Fill - zwykla ciagla
+     linia, przygaszona, zeby nie konkurowala z kafelkami. */
+  border: 1.5px solid color-mix(in srgb, var(--ws-border-strong) 45%, transparent);
   border-radius: 10px;
   min-height: 56px;
   margin-bottom: 0;
@@ -10069,7 +10267,10 @@ body.ws-review-only-mode .ws-review { margin-top: 0.5rem; }
   font-size: 1.05rem;
   font-weight: 600;
   padding: 0.3rem 0.62rem;
-  margin: 0 0.1rem;
+  /* Staly odstep z obu stron i wspolna szerokosc startowa - luka nie zdradza
+     dlugosci slowa, a zdanie nie rozjezdza sie przy pisaniu. */
+  margin: 0 0.28rem;
+  min-width: 4.5rem;
   background: var(--ws-bg);
   border: 1.5px solid var(--ws-border-strong);
   border-radius: 9px;
@@ -10077,7 +10278,8 @@ body.ws-review-only-mode .ws-review { margin-top: 0.5rem; }
   text-align: center;
   transition: background 0.18s, border-color 0.18s, box-shadow 0.18s;
 }
-.gap-input:focus {
+.gap-input:focus,
+.gap-input.gap-sel:not(:disabled) {
   outline: none;
   background: var(--ws-accent-soft);
   border-color: var(--ws-accent);
@@ -10193,6 +10395,13 @@ body.ws-review-only-mode .ws-review { margin-top: 0.5rem; }
 .quiz-card.answered .ws-note,
 .write-card.saved .ws-note { display: block; }
 .ws-note-open { display: block; margin: 0.15rem 1.1rem 0.95rem 4rem; }
+/* Notatka z wlasnym HTML: rozmiar tekstu i obrazki ustala autor, my pilnujemy
+   tylko, zeby nic nie wyszlo poza karte. */
+.ws-note-html { font-size: 1rem; }
+.ws-note-html img, .ws-note-html svg, .ws-note-html video { max-width: 100%; height: auto; }
+.ws-note-html > :first-child { margin-top: 0; }
+.ws-note-html > :last-child { margin-bottom: 0; }
+.ws-note-bare { background: transparent; padding: 0; }
 
 /* Wypracowanie ucznia w szybkiej powtorce. */
 .ws-review-written {
@@ -10259,57 +10468,39 @@ body.ws-review-only-mode .ws-review { margin-top: 0.5rem; }
   color: var(--ws-text);
 }
 
-.gap-slot { position: relative; display: inline-flex; align-items: center; gap: 0.15rem; }
-.gap-pick-btn {
-  width: 1.55rem; height: 1.55rem;
-  place-items: center;
-  padding: 0;
-  border: 1px solid var(--ws-border-strong);
-  border-radius: 6px;
-  background: var(--ws-bg);
-  color: var(--ws-text-dim);
-  cursor: pointer;
-  flex-shrink: 0;
+/* Bank slow pod zdaniem. Kafelki i uklad bierzemy z puli Unscramble; po odslonieciu
+   ramka jest zwykla ciagla linia, tylko przygaszona, zeby nie konkurowala ze zdaniem. */
+.gap-bank-wrap { margin-top: 0.9rem; }
+.gap-bank { min-height: 48px; }
+/* Slowo wstawione do luki znika z banku - stoi juz w zdaniu, nie ma powodu,
+   zeby dublowalo sie w ramce. */
+.gap-bank .unsc-word.taken { display: none; }
+.gap-bank .unsc-word { cursor: pointer; font-size: 1rem; padding: 0.45rem 0.85rem; }
+.gap-bank .unsc-word:disabled { cursor: default; }
+/* Przekreslenie dostaja tylko slowa, ktore po rozwiazaniu zdania zostaly niezuzyte. */
+.gap-bank .unsc-word.used {
+  opacity: 0.4;
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
 }
-/* Strzalki przy lukach sa domyslnie schowane, zeby nie rozpychac zdania.
-   Wlacza je jeden przycisk w rzedzie akcji karty. */
-.gap-pick-btn { display: none; }
-.gap-card.picks-on .gap-pick-btn { display: inline-grid; }
-.gap-card.picks-on .gap-input:disabled + .gap-pick-btn { display: none; }
-.gap-picks-btn.active { color: var(--ws-accent); border-color: var(--ws-accent); }
-.gap-pick-btn:hover { color: var(--ws-accent); border-color: var(--ws-accent); }
-.gap-pick-btn .ws-ico { width: 0.85rem; height: 0.85rem; }
-.gap-slot.open .gap-pick-btn { color: var(--ws-accent); border-color: var(--ws-accent); }
-.gap-pick-list[hidden] { display: none; }
-.gap-pick-list {
-  /* pozycja liczona w JS wzgledem okna: karta ma overflow: hidden,
-     wiec lista pozycjonowana wzglednie zostalaby przyciecia */
-  position: fixed;
-  z-index: 60;
-  display: flex;
-  flex-direction: column;
-  min-width: 8rem;
-  max-height: 13rem;
-  overflow-y: auto;
-  padding: 0.25rem;
-  background: var(--ws-card);
-  border: 1.5px solid var(--ws-border-strong);
-  border-radius: var(--ws-radius-sm);
-  box-shadow: var(--ws-shadow);
+
+/* Waskie ekrany: rzad akcji dostaje wlasne pietro nad zdaniem, zdanie ma cala
+   szerokosc bez sciskania z bokow, bank slow zostaje pod spodem. */
+@media (max-width: 600px) {
+  .gap-sentence {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.55rem;
+  }
+  .gap-sentence .gap-sentence-text { width: 100%; }
+  .gap-actions {
+    order: -1;
+    margin-left: 0;
+    justify-content: flex-end;
+    gap: 0.45rem;
+  }
+  .gap-sentence .tts-btn-gap { margin-left: 0; }
 }
-.gap-pick-opt {
-  font-family: var(--ws-body);
-  font-size: 0.92rem;
-  text-align: left;
-  padding: 0.35rem 0.55rem;
-  border: 0;
-  border-radius: 6px;
-  background: transparent;
-  color: var(--ws-text);
-  cursor: pointer;
-  white-space: nowrap;
-}
-.gap-pick-opt:hover { background: var(--ws-accent-soft); color: var(--ws-accent); }
 
 .ws-cover {
   cursor: pointer;
@@ -10752,7 +10943,7 @@ body.ws-rater::before {
 }
 
 @media print { .ws-tool-btn { display: none !important; }
-  .gap-pick-btn, .gap-pick-list, .gap-picks-btn { display: none !important; }
+  .gap-bank-wrap .unsc-pool-reveal { display: none !important; }
   .ws-cover.ws-hidden {
     color: inherit !important;
     background: transparent !important;
