@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cover &amp; Recall — zakrywanie słów w dowolnym tekście</title>
+<title>Cover &amp; Recall: zakrywanie słów w dowolnym tekście</title>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -59,6 +59,7 @@ body{
   font-size:17px;
   line-height:1.6;
 }
+body.bank-pad{padding-bottom:7rem}
 
 .wrap{max-width:1140px;margin:0 auto;padding:0 1.4rem}
 
@@ -96,6 +97,10 @@ section{margin-bottom:var(--gap-out)}
   font-family:var(--display);font-weight:700;font-size:1.55rem;letter-spacing:-.02em;
 }
 .card-head p{font-size:.98rem;color:var(--ink-soft)}
+.card-head .btn.icon{margin-left:auto;align-self:center}
+.card.collapsed .card-head{margin-bottom:0}
+.card.collapsed .editor-body{display:none}
+.card.collapsed .card-head .btn.icon.flip svg{transform:rotate(180deg)}
 
 /* ══════════ EDITOR ══════════ */
 textarea{
@@ -143,12 +148,14 @@ textarea:focus{outline:none;border-color:var(--teal);background:#fff}
 
 .btn.ghost{
   color:var(--ink);
-  background-color:#d3e0e7;
-  background-image:linear-gradient(125deg,#dceaf0 0%,#c6d7e0 100%);
+  background-color:#ffffff;
+  background-image:linear-gradient(125deg,#ffffff 0%,#eef4f7 100%);
 }
-.btn.ghost:hover{background-image:linear-gradient(125deg,#e6f2f7 0%,#cfe0e9 100%)}
+.btn.ghost:hover{background-image:linear-gradient(125deg,#ffffff 0%,#f6fafc 100%)}
+.card-head .btn.icon,.editor-actions .btn.ghost{background-color:#d3e0e7;background-image:linear-gradient(125deg,#dceaf0 0%,#c6d7e0 100%)}
+.card-head .btn.icon:hover,.editor-actions .btn.ghost:hover{background-image:linear-gradient(125deg,#e6f2f7 0%,#cfe0e9 100%)}
 
-/* shine only on the two key action buttons */
+/* shine only on the key action buttons */
 .btn.shine{position:relative;overflow:hidden}
 .btn.shine::after{
   content:'';position:absolute;top:0;left:-130%;width:60%;height:100%;
@@ -158,6 +165,13 @@ textarea:focus{outline:none;border-color:var(--teal);background:#fff}
 .btn.shine:hover::after{animation:sweep .45s ease-out}
 @keyframes sweep{to{left:150%}}
 
+/* przycisk z ikoną i podpisem */
+.btn.act{
+  display:inline-flex;align-items:center;gap:.55rem;
+  padding:.62rem 1rem;font-size:.97rem;
+}
+.btn.act svg{width:1.25rem;height:1.25rem;flex:0 0 auto;display:block}
+
 .btn.icon{
   padding:0;width:2.9rem;height:2.9rem;
   display:inline-flex;align-items:center;justify-content:center;
@@ -165,7 +179,6 @@ textarea:focus{outline:none;border-color:var(--teal);background:#fff}
 }
 .btn.icon svg{width:1.35rem;height:1.35rem;display:block}
 .btn.icon.flip svg{transition:transform .25s ease}
-.collapsed > .tool-top .btn.icon.flip svg,
 .bank.collapsed .btn.icon.flip svg{transform:rotate(180deg)}
 .btn.icon::before{
   content:attr(data-tip);
@@ -179,64 +192,94 @@ textarea:focus{outline:none;border-color:var(--teal);background:#fff}
 .btn.icon:hover::before,.btn.icon:focus-visible::before{opacity:1}
 .bank .btn.icon::before{top:auto;bottom:calc(100% + .5rem)}
 
-/* ══════════ TOOLBAR ══════════ */
-.toolbar{
-  position:sticky;top:.7rem;z-index:40;
-  background:rgba(255,255,255,.92);
-  backdrop-filter:blur(14px);
-  border-radius:20px;
-  box-shadow:0 5px 16px rgba(19,36,48,.09);
-  padding:1rem 1.2rem;
-  margin-bottom:var(--gap-in);
-}
-.tool-top{display:flex;gap:.9rem;align-items:center}
-.tool-body{margin-top:.85rem;padding-top:.85rem;border-top:2px solid #e5edf1}
-.toolbar.collapsed .tool-body{display:none}
-.tool-row{display:flex;gap:.65rem;flex-wrap:wrap;align-items:center}
-.tool-row + .tool-row{margin-top:.85rem;padding-top:.85rem;border-top:2px solid #e5edf1}
+/* ══════════ PANEL ══════════ */
+.tool-title{font-family:var(--display);font-weight:700;font-size:1.3rem}
 
-.seg{display:inline-flex;background:#dfe9ee;border-radius:11px;padding:.25rem;gap:.2rem}
+.paint-badge{
+  display:none;align-items:center;gap:.45rem;
+  font-family:var(--ui);font-weight:600;font-size:.9rem;
+  padding:.35rem .8rem;border:none;border-radius:99px;cursor:pointer;
+  background-color:var(--amber);color:#2a1a00;
+}
+.paint-badge svg{width:1rem;height:1rem}
+body.paint .paint-badge{display:inline-flex}
+
+.tool-body{
+  margin-top:1rem;
+  display:grid;gap:1rem;
+  grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr));
+}
+
+.group{border-radius:16px;padding:1rem 1.1rem 1.15rem;background-color:var(--g-bg)}
+.group h3{
+  display:flex;align-items:center;gap:.65rem;
+  font-family:var(--display);font-size:1.12rem;font-weight:700;color:var(--g-ink);
+  margin-bottom:.85rem;
+}
+.group h3 .gi{
+  width:2.1rem;height:2.1rem;border-radius:10px;flex:0 0 auto;
+  display:grid;place-items:center;
+  background-color:var(--g-ink);color:#fff;
+}
+.group h3 .gi svg{width:1.15rem;height:1.15rem}
+.group h3{flex-wrap:wrap}
+.group h3 small{font-family:var(--ui);font-weight:500;font-size:.88rem;color:var(--ink-soft);flex-basis:100%;margin-top:-.35rem;padding-left:2.75rem}
+
+.g-cover {--g-bg:#e1f1f0;--g-ink:var(--teal-dk)}
+.g-reveal{--g-bg:#fcefd9;--g-ink:#7a4d00}
+.g-rules {--g-bg:#e5ecfb;--g-ink:var(--blue-dk)}
+.g-view  {--g-bg:#f8e6e1;--g-ink:var(--rust-dk)}
+
+.row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.row + .row{margin-top:.75rem}
+.row.split{margin-top:.95rem;padding-top:.95rem;border-top:2px dashed rgba(10,65,68,.28)}
+.row-label{font-weight:600;font-size:.95rem;color:var(--g-ink);min-width:5.2rem}
+.act-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.55rem}
+.act-grid .btn.act{justify-content:flex-start}
+
+.seg{display:inline-flex;background:rgba(255,255,255,.75);border-radius:11px;padding:.25rem;gap:.2rem}
 .seg button{
-  font-family:var(--ui);font-weight:600;font-size:.92rem;
-  padding:.42rem .85rem;border:none;border-radius:8px;
+  font-family:var(--ui);font-weight:600;font-size:.94rem;
+  padding:.42rem .9rem;border:none;border-radius:8px;
   background-color:transparent;color:var(--ink-soft);cursor:pointer;
   transition:background-color .15s ease,color .15s ease;
 }
-.seg button:hover{background-color:#e0eaee;color:var(--ink)}
-.seg button.on{color:#fff;background-color:var(--teal)}
+.seg button:hover{background-color:#fff;color:var(--ink)}
+.seg button.on{color:#fff;background-color:var(--g-ink,var(--teal))}
 .seg button:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.font-val{font-weight:700;font-variant-numeric:tabular-nums;color:var(--g-ink);min-width:3.2rem;text-align:center}
 
-.tool-label{font-size:.92rem;font-weight:600;color:var(--ink-soft)}
-.numwrap{display:inline-flex;align-items:center;gap:.5rem}
 .numin{
-  width:4.4rem;font-family:var(--ui);font-weight:700;font-size:1.05rem;
+  width:4.6rem;font-family:var(--ui);font-weight:700;font-size:1.05rem;
   text-align:center;
   padding:.5rem .5rem;border-radius:10px;
   border:2px solid #a9c2cb;background-color:#fff;color:var(--ink);
 }
 .numin::placeholder{color:#a9c2cb;font-weight:500}
 .numin:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(18,103,107,.15)}
-.numgo{padding:.5rem .9rem;font-size:.92rem}
 
-.switch{
-  display:inline-flex;align-items:center;gap:.5rem;
-  font-size:.94rem;font-weight:500;color:var(--ink-soft);cursor:pointer;
-  user-select:none;
+/* przełączniki: suwak + nazwa + jednozdaniowy opis */
+.opt{
+  display:grid;grid-template-columns:auto 1fr;column-gap:.85rem;row-gap:.1rem;
+  align-items:center;padding:.5rem .2rem;cursor:pointer;user-select:none;
 }
-.switch input[type="checkbox"]{
+.opt + .opt{border-top:2px solid rgba(255,255,255,.7)}
+.opt input{
+  grid-row:span 2;
   appearance:none;-webkit-appearance:none;
-  width:1.3rem;height:1.3rem;border-radius:7px;cursor:pointer;
-  background-color:#ffffff;
-  border:1.5px solid #9db6c0;
-  transition:background-color .15s ease,border-color .15s ease;
+  width:2.75rem;height:1.55rem;border-radius:99px;cursor:pointer;position:relative;
+  background-color:#b5c6ce;transition:background-color .2s ease;
 }
-.switch input[type="checkbox"]:hover{border-color:var(--teal)}
-.switch input[type="checkbox"]:checked{
-  background-color:var(--teal);border-color:var(--teal);
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 13l4 4L19 7'/%3E%3C/svg%3E");
-  background-size:80%;background-position:center;background-repeat:no-repeat;
+.opt input::after{
+  content:'';position:absolute;top:.22rem;left:.22rem;
+  width:1.11rem;height:1.11rem;border-radius:50%;background-color:#fff;
+  transition:transform .2s ease;
 }
-.switch input[type="checkbox"]:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.opt input:checked{background-color:var(--g-ink)}
+.opt input:checked::after{transform:translateX(1.2rem)}
+.opt input:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.opt .t{font-weight:600;font-size:1rem;color:var(--ink);line-height:1.3}
+.opt .d{grid-column:2;font-size:.88rem;color:var(--ink-soft);line-height:1.35}
 
 .counter{
   margin-left:auto;display:flex;align-items:center;gap:.75rem;
@@ -245,7 +288,7 @@ textarea:focus{outline:none;border-color:var(--teal);background:#fff}
 .count-pill{
   background-color:var(--ink);color:#fff;
   padding:.35rem .85rem;border-radius:99px;
-  font-variant-numeric:tabular-nums;
+  font-variant-numeric:tabular-nums;font-weight:600;
 }
 .bar{width:140px;height:11px;background:#dce6ea;border-radius:99px;overflow:hidden}
 .bar span{
@@ -253,6 +296,47 @@ textarea:focus{outline:none;border-color:var(--teal);background:#fff}
   background:linear-gradient(90deg,var(--teal),var(--amber));
   transition:width .35s ease;
 }
+
+/* ══════════ PRZYCISK W ROGU + PŁYWAJĄCY PANEL ══════════ */
+.fab{
+  position:fixed;top:1rem;right:1rem;z-index:80;
+  display:flex;align-items:center;gap:.55rem;
+}
+.fab .paint-badge{box-shadow:0 3px 10px rgba(19,36,48,.18)}
+.fab .count-pill{box-shadow:0 3px 10px rgba(19,36,48,.18)}
+.fab-btn{
+  width:3.5rem;height:3.5rem;border-radius:50%;border:none;cursor:pointer;
+  display:grid;place-items:center;color:#fff;
+  background-image:linear-gradient(135deg,#1fa39e 0%,#0e6c74 100%);
+  box-shadow:0 4px 12px rgba(10,65,68,.32),inset 0 -3px 0 rgba(0,0,0,.18),inset 0 2px 0 rgba(255,255,255,.25);
+  transition:transform .15s ease;
+}
+.fab-btn:hover{transform:scale(1.07)}
+.fab-btn:focus{outline:none}
+.fab-btn:focus-visible{outline:3px solid var(--amber);outline-offset:3px}
+.fab-btn svg{width:1.6rem;height:1.6rem;transition:transform .35s ease}
+.fab-btn[aria-expanded="true"] svg{transform:rotate(90deg)}
+body.paint .fab-btn{background-image:linear-gradient(135deg,#f2b02a 0%,#d98a05 100%);color:#2a1a00}
+
+.scrim{
+  position:fixed;inset:0;z-index:78;
+  background-color:rgba(19,36,48,.42);
+  opacity:0;pointer-events:none;transition:opacity .2s ease;
+}
+.scrim.open{opacity:1;pointer-events:auto}
+.float-panel{
+  position:fixed;top:5.4rem;left:50%;transform:translateX(-50%);z-index:79;
+  width:min(1140px,calc(100vw - 2rem));
+  max-height:calc(100vh - 6.6rem);overflow-y:auto;
+  background-color:#fff;border-radius:20px;
+  box-shadow:0 8px 24px rgba(19,36,48,.18);
+  padding:1.2rem 1.3rem 1.3rem;
+  display:none;
+}
+.float-panel.open{display:block}
+.float-head{display:flex;align-items:center;gap:.9rem;flex-wrap:wrap;margin-bottom:1rem}
+.float-head .counter{margin-left:auto}
+.float-panel .tool-body{margin-top:0}
 
 /* ══════════ STAGE ══════════ */
 .stage{
@@ -314,7 +398,7 @@ body.show-marked .w.marked:not(.covered)::after{background-color:var(--marked-li
 .w.quiet .cover{transition:none}
 
 body.paint .w{cursor:cell}
-body.paint .w:hover{background-color:rgba(59,163,166,.16);border-radius:.18em}
+body.paint .w:hover{background-color:rgba(227,148,0,.2);border-radius:.18em}
 
 .w.covered.done::after{background-color:var(--done-line)}
 
@@ -323,36 +407,46 @@ body.paint .w:hover{background-color:rgba(59,163,166,.16);border-radius:.18em}
   font-family:var(--ui);font-size:1.05rem;padding:2rem 0;
 }
 
+/* ══════════ BANK SŁÓW ══════════ */
 .bank{
-  position:fixed;left:0;right:0;bottom:0;z-index:70;
-  display:none;padding:0 1.4rem;
+  position:fixed;left:50%;bottom:1rem;transform:translateX(-50%);z-index:70;
+  width:min(860px,calc(100vw - 2rem));
+  display:none;
 }
 .bank.on{display:block}
 .bank-inner{
-  max-width:1140px;margin:0 auto;
-  padding:.85rem 1.3rem 1.1rem;
-  border-radius:20px 20px 0 0;
-  background-color:rgba(255,255,255,.95);
-  backdrop-filter:blur(14px);
-  box-shadow:0 -6px 20px rgba(19,36,48,.12);
+  display:flex;align-items:center;gap:.8rem;
+  padding:.6rem .7rem .6rem 1rem;
+  border-radius:18px;
+  background-color:var(--teal-dk);
+  background-image:linear-gradient(120deg,#0d5458 0%,#173a86 100%);
+  box-shadow:0 4px 14px rgba(10,40,60,.35),inset 0 2px 0 rgba(255,255,255,.12);
+  color:#fff;
 }
-.bank-head{display:flex;align-items:center;gap:.9rem;font-weight:600;font-size:1rem}
-.bank-head .n{color:var(--ink-soft);font-weight:500}
-.bank-head .acts{margin-left:auto;display:flex;gap:.5rem}
+.bank-title{display:flex;flex-direction:column;line-height:1.2;flex:0 0 auto}
+.bank-title b{font-weight:700;font-size:1rem}
+.bank-title span{font-size:.82rem;color:#bfe3e1;white-space:nowrap}
 .bank-list{
-  display:flex;flex-wrap:wrap;gap:.5rem;
-  margin-top:.8rem;max-height:26vh;overflow-y:auto;
+  flex:1 1 auto;min-width:0;
+  display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;
+  max-height:4.9rem;overflow-y:auto;
 }
 .bank.collapsed .bank-list{display:none}
+.bank.collapsed .bank-inner{gap:1rem}
+.bank-acts{display:flex;gap:.4rem;margin-left:auto;flex:0 0 auto}
+.bank .btn.icon{width:2.4rem;height:2.4rem;border-radius:10px;color:#fff;background-color:rgba(255,255,255,.16);background-image:none}
+.bank .btn.icon:hover{background-color:rgba(255,255,255,.26)}
+.bank .btn.icon svg{width:1.15rem;height:1.15rem}
 .chip{
-  font-size:1.1rem;font-weight:500;
-  padding:.32rem .85rem;border-radius:10px;
-  background-color:#dcefee;color:#0d5154;
-  transition:background-color .2s ease,color .2s ease;
+  font-size:1.02rem;font-weight:500;line-height:1.3;
+  padding:.24rem .75rem;border-radius:9px;
+  background-color:#ffffff;color:var(--teal-dk);font-weight:600;
+  box-shadow:inset 0 -2px 0 rgba(0,0,0,.12);
+  white-space:nowrap;
 }
-.chip.marked{background-color:#fbeacd;color:#7a5300}
-.chip.used{background-color:#eaf0f3;color:#a2b6bf;text-decoration:line-through}
-.bank-empty{color:var(--ink-soft);font-size:.98rem;margin-top:.7rem}
+.chip.marked{background-color:#f6c14e;color:#3d2700}
+.bank-more{font-size:.88rem;font-weight:600;color:#bfe3e1;white-space:nowrap;padding:0 .3rem}
+.bank-empty{color:#d7eeed;font-size:.95rem}
 
 /* ══════════ HINT BAR ══════════ */
 .hintbar{
@@ -373,18 +467,14 @@ body.paint .w:hover{background-color:rgba(59,163,166,.16);border-radius:.18em}
 .finish p{color:var(--ink-soft);margin-bottom:1.4rem}
 #celebrate{font-size:1.2rem;padding:1rem 2.4rem}
 
-footer{
-  text-align:center;padding:2rem 0 3rem;
-  font-size:.92rem;color:var(--ink-soft);
-}
 
 .toast{
-  position:fixed;left:50%;bottom:2rem;transform:translateX(-50%) scale(.96);
+  position:fixed;left:50%;top:1.2rem;transform:translateX(-50%) scale(.96);
   background-color:var(--ink);color:#fff;font-weight:600;
   padding:.8rem 1.5rem;border-radius:12px;
   box-shadow:0 6px 18px rgba(0,0,0,.22);
   opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;
-  z-index:99;
+  z-index:99;max-width:calc(100vw - 2rem);text-align:center;
 }
 .toast.show{opacity:1;transform:translateX(-50%) scale(1)}
 
@@ -393,6 +483,8 @@ footer{
   .card,.stage{padding:1.3rem}
   .line{flex-wrap:wrap;gap:.4rem}
   .counter{margin-left:0;width:100%}
+  .bank-inner{flex-wrap:wrap}
+  .bank-list{order:3;flex-basis:100%}
 }
 </style>
 </head>
@@ -410,69 +502,25 @@ footer{
       <div class="card-head">
         <h2>Twój tekst</h2>
         <p>Format <strong>Imię: kwestia</strong> zamienia się w oznaczone role, ale zwykły akapit też zadziała.</p>
+        <button class="btn ghost icon flip" id="toggleEditor" data-tip="Zwiń edytor" aria-label="Zwiń edytor" aria-expanded="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 15 6-6 6 6"/></svg></button>
       </div>
+      <div class="editor-body">
       <textarea id="input" spellcheck="false"></textarea>
       <p class="brace-tip">Chcesz zakryć konkretne słowa? Owiń je w klamry: <code>{would you mind}</code>. Klamry nie pojawią się w tekście, a słowa zostaną zakryte dopiero po kliknięciu przycisku.</p>
       <div class="editor-actions">
         <button class="btn blue" id="apply">Wczytaj tekst</button>
         <button class="btn ghost" id="sample">Wstaw przykładowy tekst</button>
         <button class="btn ghost" id="clearText">Wyczyść</button>
-        <button class="btn ghost" id="toggleEditor">Ukryj edytor</button>
+      </div>
       </div>
     </div>
   </section>
 
   <section>
-    <div class="toolbar" id="toolbar">
-      <div class="tool-top">
-        <button class="btn ghost icon flip" id="toolToggle" data-tip="Zwiń panel" aria-label="Zwiń panel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 15 6-6 6 6"/></svg></button>
-        <span class="tool-label" id="toolTitle">Panel</span>
-        <div class="counter">
-          <div class="bar"><span id="barFill"></span></div>
-          <span class="count-pill" id="count">0 / 0</span>
-        </div>
-      </div>
-      <div class="tool-body" id="toolBody">
-        <div class="tool-row">
-          <button class="btn amber shine" id="coverMarked">Zakryj wybrane</button>
-          <button class="btn shine" id="coverRandom">Zakryj losowe</button>
-          <button class="btn ghost icon" id="coverAll" data-tip="Zakryj wszystkie słowa" aria-label="Zakryj wszystkie słowa"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="6" width="18" height="12" rx="3"/></svg></button>
-          <button class="btn rust icon" id="revealAll" data-tip="Odsłoń wszystko" aria-label="Odsłoń wszystko"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="3"/></svg></button>
-          <button class="btn ghost icon" id="undo" data-tip="Cofnij ostatnie słowo" aria-label="Cofnij"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h9a7 7 0 0 1 7 7v3"/></svg></button>
-          <button class="btn ghost icon" id="next" data-tip="Odsłoń następne słowo" aria-label="Odsłoń następne"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 14 5-5-5-5"/><path d="M20 9h-9a7 7 0 0 0-7 7v3"/></svg></button>
-          <button class="btn ghost icon" id="recover" data-tip="Przywróć wszystkie zasłony" aria-label="Zakryj ponownie"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v7"/><path d="m8.5 7 3.5 3.5L15.5 7"/><rect x="3" y="13" width="18" height="7" rx="2.5"/></svg></button>
-          <button class="btn ghost icon" id="uncoverAll" data-tip="Zdejmij zasłony, wróć do czystego tekstu" aria-label="Zdejmij zakrycia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
-        </div>
-        <div class="tool-row">
-          <span class="tool-label">Ile losować:</span>
-          <div class="seg" id="intensity">
-            <button data-r="0.12">Mało</button>
-            <button data-r="0.25" class="on">Średnio</button>
-            <button data-r="0.45">Dużo</button>
-          </div>
-          <span class="numwrap">
-            <span class="tool-label">albo dokładnie</span>
-            <input type="number" min="1" max="999" id="coverN" class="numin" placeholder="8">
-            <button class="btn ghost numgo" id="coverNGo">Zakryj</button>
-          </span>
-          <label class="switch"><input type="checkbox" id="skipShort"> pomijaj słowa 1–2 literowe</label>
-          <label class="switch"><input type="checkbox" id="wholeWord"> klik odsłania całe słowo</label>
-          <label class="switch"><input type="checkbox" id="paintMode"> tryb zakrywania</label>
-          <label class="switch"><input type="checkbox" id="showMarked" checked> podkreśl {klamry}</label>
-          <label class="switch"><input type="checkbox" id="bankOn"> bank słów</label>
-          <span class="tool-label" style="margin-left:.4rem">Tekst:</span>
-          <div class="seg">
-            <button id="fontDown">A −</button>
-            <button id="fontUp">A +</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <div class="stage" id="stage"></div>
 
     <div class="hintbar">
-      <span><b>Klik</b> odsłania jedną literę <span class="sep">·</span> <b>przeciągnięcie</b> kolejne <span class="sep">·</span> <b>dwuklik</b> całe słowo <span class="sep">·</span> <b>prawy przycisk</b> zakrywa z powrotem <span class="sep">·</span> strzałki <b>← →</b> zdejmują i cofają po literze, <b>↑ ↓</b> całe słowo <span class="sep">·</span> w <b>trybie zakrywania</b> klikasz to, co ma zniknąć</span>
+      <span><b>Klik</b> odsłania jedną literę <span class="sep">·</span> <b>przeciągnięcie</b> kolejne <span class="sep">·</span> <b>dwuklik</b> całe słowo <span class="sep">·</span> <b>prawy przycisk</b> zakrywa z powrotem <span class="sep">·</span> strzałki <b>← →</b> litera po literze (można je wyłączyć w panelu)</span>
       <span class="acts">
         <button class="btn blue" id="save">Zapisz stan</button>
         <button class="btn ghost" id="reset">Wyczyść zapis</button>
@@ -488,21 +536,112 @@ footer{
     </div>
   </section>
 
-  <footer>Cover &amp; Recall — odtwarzanie tekstu z pamięci. Działa offline, wystarczy ten jeden plik.</footer>
 
 </div>
 
-<div class="bank collapsed" id="bank">
-  <div class="bank-inner">
-    <div class="bank-head">
-      <span>Bank słów</span>
-      <span class="n" id="bankCount">0</span>
-      <span class="acts">
-        <button class="btn ghost icon" id="bankShuffle" data-tip="Przetasuj" aria-label="Przetasuj"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3l4 4-4 4"/><path d="M3 7h18"/><path d="M7 21l-4-4 4-4"/><path d="M21 17H3"/></svg></button>
-        <button class="btn ghost icon flip" id="bankToggle" data-tip="Rozwiń / zwiń" aria-label="Rozwiń lub zwiń"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 15 6-6 6 6"/></svg></button>
-      </span>
+<!-- przycisk w rogu otwiera panel -->
+<div class="fab" id="fab">
+  <button class="paint-badge" data-paint-off title="Kliknij, żeby wyłączyć"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>Tryb zakrywania</button>
+  <span class="count-pill" id="fabCount">0 / 0</span>
+  <button class="fab-btn" id="fabBtn" aria-label="Otwórz panel" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button>
+</div>
+<div class="scrim" id="scrim"></div>
+<div class="float-panel" id="floatPanel" role="dialog" aria-label="Panel">
+  <div class="float-head">
+    <span class="tool-title">Panel</span>
+    <button class="paint-badge" data-paint-off title="Kliknij, żeby wyłączyć"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>Tryb zakrywania włączony</button>
+    <div class="counter">
+      <div class="bar"><span id="barFill"></span></div>
+      <span class="count-pill" id="count">0 / 0</span>
     </div>
+    <button class="btn ghost icon" id="floatClose" data-tip="Zamknij" aria-label="Zamknij panel" style="background-color:#e6eef2;background-image:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+  </div>
+  <div id="floatBody">
+      <div class="tool-body" id="toolBody">
+
+        <!-- 1. ZAKRYWANIE -->
+        <div class="group g-cover">
+          <h3><span class="gi"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="7" width="18" height="10" rx="3"/></svg></span>Zakrywanie</h3>
+          <div class="row">
+            <span class="row-label">Losowo</span>
+            <div class="seg" id="intensity">
+              <button data-r="0.12">Mało</button>
+              <button data-r="0.25" class="on">Średnio</button>
+              <button data-r="0.45">Dużo</button>
+            </div>
+            <button class="btn act shine" id="coverRandom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.3" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/></svg>Zakryj losowo</button>
+          </div>
+          <div class="row">
+            <span class="row-label">Dokładnie</span>
+            <input type="number" min="1" max="999" id="coverN" class="numin" placeholder="8" aria-label="Liczba słów do zakrycia">
+            <span class="row-label" style="min-width:0;font-weight:500;color:var(--ink-soft)">słów</span>
+            <button class="btn act" id="coverNGo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16"/><path d="M4 15h16"/><path d="M10 3 8 21"/><path d="M16 3l-2 18"/></svg>Zakryj tyle</button>
+          </div>
+          <div class="row split">
+            <button class="btn amber act shine" id="coverMarked"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5a2 2 0 0 0 2 2h1"/><path d="M16 3h1a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2 2 2 0 0 0-2 2v5a2 2 0 0 1-2 2h-1"/></svg>Zakryj słowa w {klamrach}</button>
+            <button class="btn ghost act" id="coverAll"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="5" width="9" height="6" rx="2"/><rect x="13" y="5" width="9" height="6" rx="2"/><rect x="2" y="13" width="9" height="6" rx="2"/><rect x="13" y="13" width="9" height="6" rx="2"/></svg>Zakryj wszystko</button>
+          </div>
+        </div>
+
+        <!-- 2. ODSŁANIANIE -->
+        <div class="group g-reveal">
+          <h3><span class="gi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span>Odsłanianie i powtórka</h3>
+          <div class="act-grid">
+            <button class="btn ghost act" id="next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 14 5-5-5-5"/><path d="M20 9h-9a7 7 0 0 0-7 7v3"/></svg>Odsłoń następne</button>
+            <button class="btn ghost act" id="undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h9a7 7 0 0 1 7 7v3"/></svg>Cofnij ostatnie</button>
+            <button class="btn act" id="recover"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Zakryj od nowa</button>
+            <button class="btn rust act" id="revealAll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Pokaż wszystko</button>
+          </div>
+          <div class="row split" style="border-top-color:rgba(122,77,0,.3)">
+            <button class="btn ghost act" id="uncoverAll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>Usuń zasłony, wróć do czystego tekstu</button>
+          </div>
+        </div>
+
+        <!-- 3. ZASADY LOSOWANIA -->
+        <div class="group g-rules">
+          <h3><span class="gi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h10"/><path d="M18 6h2"/><circle cx="16" cy="6" r="2"/><path d="M4 12h3"/><path d="M11 12h9"/><circle cx="9" cy="12" r="2"/><path d="M4 18h12"/><path d="M20 18h0"/><circle cx="18" cy="18" r="2"/></svg></span>Zasady losowania<small>dotyczą „Zakryj losowo” i „Zakryj tyle”</small></h3>
+          <label class="opt"><input type="checkbox" id="skipOne" data-opt checked><span class="t">Pomijaj słowa jednoliterowe</span><span class="d">„I”, „a”, „w”, „z” zostają widoczne.</span></label>
+          <label class="opt"><input type="checkbox" id="perPara" data-opt checked><span class="t">Coś zakryte w każdym akapicie</span><span class="d">Każda linia tekstu dostaje co najmniej jedno zakryte słowo.</span></label>
+          <div class="row" style="margin-top:.6rem">
+            <span class="row-label" style="min-width:0">Najwięcej zakrytych słów obok siebie:</span>
+            <div class="seg" id="maxRun">
+              <button data-n="1">1</button>
+              <button data-n="2" class="on">2</button>
+              <button data-n="3">3</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. STEROWANIE I WIDOK -->
+        <div class="group g-view">
+          <h3><span class="gi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="6"/><path d="M12 6v4"/></svg></span>Sterowanie i widok</h3>
+          <label class="opt"><input type="checkbox" id="arrowKeys" data-opt checked><span class="t">Odsłanianie strzałkami ← →</span><span class="d">Strzałka w prawo odsłania literę, w lewo ją zakrywa.</span></label>
+          <label class="opt"><input type="checkbox" id="wholeWord" data-opt><span class="t">Klik odsłania całe słowo</span><span class="d">Zamiast jednej litery naraz.</span></label>
+          <label class="opt"><input type="checkbox" id="paintMode"><span class="t">Tryb zakrywania</span><span class="d">Klikasz lub przeciągasz po słowach, które mają zniknąć.</span></label>
+          <label class="opt"><input type="checkbox" id="showMarked" data-opt checked><span class="t">Podkreślaj słowa w {klamrach}</span><span class="d">Pomarańczowa linia pod słowami, które jeszcze nie są zakryte.</span></label>
+          <label class="opt"><input type="checkbox" id="bankOn" data-opt><span class="t">Bank słów</span><span class="d">Pasek na dole z kilkoma najbliższymi zakrytymi słowami.</span></label>
+          <div class="row" style="margin-top:.6rem">
+            <span class="row-label">Rozmiar tekstu</span>
+            <div class="seg">
+              <button id="fontDown" aria-label="Mniejszy tekst">A −</button>
+              <button id="fontUp" aria-label="Większy tekst">A +</button>
+            </div>
+            <span class="font-val" id="fontVal">100%</span>
+          </div>
+        </div>
+
+      </div>
+  </div>
+</div>
+
+<div class="bank" id="bank">
+  <div class="bank-inner">
+    <div class="bank-title"><b>Bank słów</b><span id="bankCount"></span></div>
     <div class="bank-list" id="bankList"></div>
+    <span class="bank-acts">
+      <button class="btn ghost icon" id="bankShuffle" data-tip="Przetasuj" aria-label="Przetasuj"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3l4 4-4 4"/><path d="M3 7h18"/><path d="M7 21l-4-4 4-4"/><path d="M21 17H3"/></svg></button>
+      <button class="btn ghost icon flip" id="bankToggle" data-tip="Zwiń" aria-label="Zwiń lub rozwiń bank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+    </span>
   </div>
 </div>
 
@@ -526,13 +665,17 @@ Nina: I will. So, how about you? Any plans for the weekend?
 Tom: I'm thinking of going to the coast if the weather {holds up}.`;
 
 const STORE_KEY = 'coverRecall.v1';
+const OPTS_KEY = 'coverRecall.opts.v1';
+const BANK_LIMIT = 8;   // ile zakrytych jednostek naraz pokazuje bank
 
 let doc = [];          // sparsowane linie
 let speakers = [];     // kolejność ról
 let ratio = 0.25;
+let maxRun = 2;        // najwięcej zakrytych słów obok siebie przy losowaniu
 
-const stage = document.getElementById('stage');
-const input = document.getElementById('input');
+const $ = id => document.getElementById(id);
+const stage = $('stage');
+const input = $('input');
 
 function parseText(raw){
   speakers = [];
@@ -568,6 +711,21 @@ function tokenize(str){
   return tokens;
 }
 
+function shuffle(arr){
+  for(let i = arr.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function wordsLabel(n){
+  if(n === 1) return '1 słowo';
+  const d = n % 10, h = n % 100;
+  if(d >= 2 && d <= 4 && (h < 12 || h > 14)) return n + ' słowa';
+  return n + ' słów';
+}
+
 /* ═══════════════════════════════════════════
    RENDER
    ═══════════════════════════════════════════ */
@@ -577,6 +735,8 @@ let wordSeq = 0;
 function render(){
   wordSeq = 0;
   stage.innerHTML = '';
+  undoStack = [];
+  bankOrder = [];
   const hasContent = doc.some(l => !l.blank && l.tokens.length);
   if(!hasContent){
     stage.innerHTML = '<p class="stage-empty">Wklej tekst powyżej i kliknij „Wczytaj tekst”.</p>';
@@ -609,7 +769,7 @@ function render(){
       }
       const w = document.createElement('span');
       w.className = 'w' + (tok.marked ? ' marked' : '');
-      w.dataset.len = tok.text.length;
+      w.dataset.len = [...tok.text].length;
       w.dataset.id = 'w' + (wordSeq++);
       w.dataset.text = tok.text;
       const txt = document.createElement('span');
@@ -628,8 +788,6 @@ function render(){
 
   updateProgress();
 }
-
-
 
 /* ═══════════════════════════════════════════
    ZAKRYWANIE / ODSŁANIANIE
@@ -723,59 +881,106 @@ function revealNext(){
   next.scrollIntoView({ block:'nearest', behavior:'smooth' });
 }
 
-function eligibleWords(){
-  const skipShort = document.getElementById('skipShort').checked;
-  return [...stage.querySelectorAll('.w:not(.covered)')].filter(w =>
-    !skipShort || Number(w.dataset.len) > 2
-  );
+/* ── zasady losowania ──
+   1. słowa jednoliterowe są pomijane (opcja, domyślnie włączona),
+   2. każda linia/akapit dostaje co najmniej jedno zakryte słowo (opcja, domyślnie włączona),
+   3. obok siebie stoi najwyżej `maxRun` zakrytych słów,
+   4. najpierw wybierane są słowa bez zakrytych sąsiadów, dopiero potem te obok innych. */
+
+function lineGroups(){
+  return [...stage.querySelectorAll('.line-text')]
+    .map(lt => [...lt.querySelectorAll('.w')])
+    .filter(arr => arr.length);
 }
 
-document.getElementById('coverMarked').addEventListener('click', () => {
+function canPick(w){
+  if(w.classList.contains('covered')) return false;
+  if($('skipOne').checked && Number(w.dataset.len) <= 1) return false;
+  return true;
+}
+
+function pickWords(n, strict){
+  const groups = lineGroups();
+  const pos = new Map();
+  groups.forEach((arr, li) => arr.forEach((w, i) => pos.set(w, [li, i])));
+  const picked = new Set();
+  const isCov = w => w.classList.contains('covered') || picked.has(w);
+
+  /* długość ciągu zakrytych słów, gdyby dołożyć w */
+  const runWith = w => {
+    const [li, i] = pos.get(w), arr = groups[li];
+    let len = 1;
+    for(let j = i - 1; j >= 0 && isCov(arr[j]); j--) len++;
+    for(let j = i + 1; j < arr.length && isCov(arr[j]); j++) len++;
+    return len;
+  };
+
+  if($('perPara').checked){
+    const needy = shuffle(groups.filter(arr => !arr.some(w => w.classList.contains('covered'))));
+    for(const arr of needy){
+      if(strict && picked.size >= n) break;
+      const cands = shuffle(arr.filter(canPick));
+      const w = cands.find(c => runWith(c) <= 1) || cands.find(c => runWith(c) <= maxRun);
+      if(w) picked.add(w);
+    }
+  }
+
+  const pool = shuffle(groups.flat().filter(w => canPick(w) && !picked.has(w)));
+  for(const limit of [1, maxRun]){
+    for(const w of pool){
+      if(picked.size >= n) break;
+      if(!picked.has(w) && runWith(w) <= limit) picked.add(w);
+    }
+  }
+
+  /* zakrywaj w kolejności czytania, żeby animacja szła od góry */
+  return [...picked].sort((a, b) => Number(a.dataset.id.slice(1)) - Number(b.dataset.id.slice(1)));
+}
+
+function coverRandomWords(n, strict){
+  if(!stage.querySelector('.w')){ toast('Najpierw wczytaj tekst'); return; }
+  const list = pickWords(Math.max(1, n), strict);
+  if(!list.length){ toast('Przy obecnych zasadach nie ma już czego zakryć'); return; }
+  list.forEach((w, i) => coverWord(w, i * 30));
+  updateProgress();
+  let msg = 'Zakryto ' + wordsLabel(list.length);
+  if(strict && list.length < n) msg += ' (więcej się nie da przy obecnych zasadach)';
+  toast(msg);
+}
+
+$('coverRandom').addEventListener('click', () => {
+  const eligible = [...stage.querySelectorAll('.w')].filter(canPick).length;
+  coverRandomWords(Math.round(eligible * ratio), false);
+});
+
+function coverExactCount(){
+  const field = $('coverN');
+  const n = parseInt(field.value, 10);
+  if(!n || n < 1){ toast('Wpisz liczbę słów'); field.focus(); return; }
+  coverRandomWords(n, true);
+}
+
+$('coverN').addEventListener('keydown', e => {
+  if(e.key === 'Enter'){ e.preventDefault(); coverExactCount(); }
+  e.stopPropagation();
+});
+$('coverNGo').addEventListener('click', coverExactCount);
+
+$('coverMarked').addEventListener('click', () => {
   const list = [...stage.querySelectorAll('.w.marked:not(.covered)')];
   if(!list.length){ toast('Brak nowych słów w klamrach {…}'); return; }
   list.forEach((w,i) => coverWord(w, i*35));
   updateProgress();
-  toast('Zakryto ' + list.length + ' zaznaczonych słów');
+  toast('Zakryto ' + wordsLabel(list.length) + ' z klamer');
 });
 
-function coverRandomWords(n){
-  const pool = eligibleWords();
-  if(!pool.length){ toast('Wszystko już zakryte'); return 0; }
-  n = Math.max(1, Math.min(pool.length, n));
-  for(let i = pool.length - 1; i > 0; i--){
-    const j = Math.floor(Math.random() * (i + 1));
-    [pool[i], pool[j]] = [pool[j], pool[i]];
-  }
-  pool.slice(0, n).forEach((w,i) => coverWord(w, i*30));
-  updateProgress();
-  toast('Zakryto ' + n + ' losowych słów');
-  return n;
-}
-
-document.getElementById('coverRandom').addEventListener('click', () => {
-  coverRandomWords(Math.round(eligibleWords().length * ratio));
-});
-
-function coverExactCount(){
-  const field = document.getElementById('coverN');
-  const n = parseInt(field.value, 10);
-  if(!n || n < 1){ toast('Wpisz liczbę słów'); field.focus(); return; }
-  coverRandomWords(n);
-}
-
-document.getElementById('coverN').addEventListener('keydown', e => {
-  if(e.key === 'Enter'){ e.preventDefault(); coverExactCount(); }
-  e.stopPropagation();
-});
-document.getElementById('coverNGo').addEventListener('click', coverExactCount);
-
-document.getElementById('coverAll').addEventListener('click', () => {
+$('coverAll').addEventListener('click', () => {
   const list = [...stage.querySelectorAll('.w:not(.covered)')];
   list.forEach((w,i) => coverWord(w, i*10));
   updateProgress();
 });
 
-document.getElementById('revealAll').addEventListener('click', () => {
+$('revealAll').addEventListener('click', () => {
   stage.querySelectorAll('.w.covered').forEach(w => {
     w.classList.add('done');
     coverOf(w).style.clipPath = '';
@@ -785,17 +990,17 @@ document.getElementById('revealAll').addEventListener('click', () => {
 });
 
 /* Cofnij: zakrywa z powrotem ostatnie ruszane słowo */
-document.getElementById('undo').addEventListener('click', () => {
+$('undo').addEventListener('click', () => {
   const w = undoStack.pop();
   if(!w || !w.isConnected){ toast('Nie ma czego cofać'); return; }
   coverWord(w);
   updateProgress();
 });
 
-/* Zakryj ponownie: przywraca wszystkie zasłony, bez zmiany doboru słów */
-document.getElementById('next').addEventListener('click', revealNext);
+$('next').addEventListener('click', revealNext);
 
-document.getElementById('recover').addEventListener('click', () => {
+/* Zakryj od nowa: przywraca wszystkie zasłony, bez zmiany doboru słów */
+$('recover').addEventListener('click', () => {
   const list = [...stage.querySelectorAll('.w.covered')];
   if(!list.length){ toast('Nic nie jest zakryte'); return; }
   list.forEach(w => coverWord(w));
@@ -804,7 +1009,7 @@ document.getElementById('recover').addEventListener('click', () => {
   toast('Przywrócono ' + list.length + ' zasłon');
 });
 
-document.getElementById('uncoverAll').addEventListener('click', () => {
+$('uncoverAll').addEventListener('click', () => {
   stage.querySelectorAll('.w').forEach(uncoverWord);
   undoStack = [];
   setCursorWord(null);
@@ -817,14 +1022,14 @@ document.getElementById('uncoverAll').addEventListener('click', () => {
 
 let dragging = false, painting = false, activeWord = null, downX = 0, downY = 0, dragRevealed = 0;
 
-function paintOn(){ return document.getElementById('paintMode').checked; }
+function paintOn(){ return $('paintMode').checked; }
 
-/* słowo wymaga zasłony, gdy nie jest zakryte albo gdy ktoś zdjął z niego choć jedną płytkę */
+/* słowo wymaga zasłony, gdy nie jest zakryte albo gdy ktoś zdjął z niego choć kawałek */
 function needsCover(w){
   return !w.classList.contains('covered') || w.classList.contains('done') || Number(w.dataset.p || 0) > 0;
 }
 
-function wholeWordOn(){ return document.getElementById('wholeWord').checked; }
+function wholeWordOn(){ return $('wholeWord').checked; }
 
 function wordUnderAny(x, y){
   const el = document.elementFromPoint(x, y);
@@ -934,7 +1139,7 @@ stage.addEventListener('contextmenu', e => {
 });
 
 /* ═══════════════════════════════════════════
-   STEROWANIE KLAWIATURĄ
+   STEROWANIE KLAWIATURĄ (tylko ← →, można wyłączyć)
    ═══════════════════════════════════════════ */
 
 let cursorWord = null;
@@ -978,6 +1183,7 @@ function letterForward(){
   const p = Number(w.dataset.p || 0);
   const next = stops.find(s => s > p + 0.5);
   setProgress(w, next === undefined ? stops[stops.length - 1] : next, false);
+  if(w.classList.contains('done')) pushUndo(w);
 }
 
 /* ← jedna litera w lewo */
@@ -1000,38 +1206,14 @@ function letterBack(){
   setProgress(w, prevStop, false);
 }
 
-/* ↑ całe słowo odsłonięte, kursor idzie dalej */
-function wordForward(){
-  const w = currentWord();
-  if(!w) return;
-  if(!w.classList.contains('done')) revealWord(w);
-  const nxt = stage.querySelector('.w.covered:not(.done)');
-  if(nxt) setCursorWord(nxt);
-}
-
-/* ↓ całe słowo z powrotem pod zasłonę */
-function wordBack(){
-  let w = currentWord();
-  if(!w) return;
-  if(!w.classList.contains('done') && Number(w.dataset.p || 0) <= 0){
-    const prev = neighbourWord(-1);
-    if(prev){ setCursorWord(prev); w = prev; }
-  }
-  coverWord(w);
-  updateProgress();
-}
-
 document.addEventListener('keydown', e => {
+  if(e.key === 'Escape'){ closeFloat(); return; }
+  if(!$('arrowKeys').checked) return;
   const tag = (document.activeElement && document.activeElement.tagName) || '';
   if(tag === 'TEXTAREA' || tag === 'INPUT') return;
-  if(e.metaKey || e.ctrlKey || e.altKey) return;
+  if(e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
 
-  const map = {
-    ArrowRight: letterForward,
-    ArrowLeft:  letterBack,
-    ArrowUp:    wordForward,
-    ArrowDown:  wordBack
-  };
+  const map = { ArrowRight: letterForward, ArrowLeft: letterBack };
   const fn = map[e.key];
   if(!fn) return;
   if(!stage.querySelector('.w.covered')) return;
@@ -1041,78 +1223,94 @@ document.addEventListener('keydown', e => {
 
 /* ═══════════════════════════════════════════
    BANK SŁÓW
+   Pokazuje tylko kilka najbliższych (w kolejności czytania) zakrytych jednostek,
+   wymieszanych między sobą. Sąsiednie zakryte słowa tworzą jedną jednostkę.
+   Odgadnięte jednostki znikają, a na ich miejsce wchodzą kolejne.
    ═══════════════════════════════════════════ */
 
-const bank = document.getElementById('bank');
-const bankList = document.getElementById('bankList');
-let bankOrder = [];   // kolejność wylosowana raz, stabilna między odsłonięciami
+const bank = $('bank');
+const bankList = $('bankList');
+let bankOrder = [];
+let bankSig = '';
+
+function bankUnits(){
+  const units = [];
+  stage.querySelectorAll('.line-text').forEach(lt => {
+    let cur = null, joinable = false;
+    for(const el of lt.children){
+      const isW = el.classList.contains('w');
+      if(isW && el.classList.contains('covered')){
+        if(cur && joinable){ cur.words.push(el); cur.text += ' ' + el.dataset.text; }
+        else { cur = {key: el.dataset.id, words:[el], text: el.dataset.text}; units.push(cur); }
+        joinable = true;
+      } else if(isW || !/^\s+$/.test(el.textContent)){
+        joinable = false;
+      }
+    }
+  });
+  units.forEach(u => {
+    u.done = u.words.every(w => w.classList.contains('done'));
+    u.marked = u.words.some(w => w.classList.contains('marked'));
+  });
+  return units;
+}
 
 function buildBank(reshuffle){
-  const covered = [...stage.querySelectorAll('.w.covered')];
-  const ids = covered.map(w => w.dataset.id);
+  const all = bankUnits();
+  const pending = all.filter(u => !u.done);
+  const visible = pending.slice(0, BANK_LIMIT);
+  const byKey = new Map(visible.map(u => [u.key, u]));
+  const keys = visible.map(u => u.key);
 
-  if(reshuffle || bankOrder.length === 0){
-    bankOrder = ids.slice();
-  } else {
-    // zachowaj dotychczasową kolejność, dopisz nowe na końcu i wytnij zdjęte
-    bankOrder = bankOrder.filter(id => ids.includes(id));
-    const added = ids.filter(id => !bankOrder.includes(id));
-    added.forEach(id => bankOrder.splice(Math.floor(Math.random() * (bankOrder.length + 1)), 0, id));
-    if(added.length) reshuffle = false;
-  }
   if(reshuffle){
-    for(let i = bankOrder.length - 1; i > 0; i--){
-      const j = Math.floor(Math.random() * (i + 1));
-      [bankOrder[i], bankOrder[j]] = [bankOrder[j], bankOrder[i]];
-    }
+    bankOrder = shuffle(keys.slice());
+  } else {
+    bankOrder = bankOrder.filter(k => byKey.has(k));
+    keys.filter(k => !bankOrder.includes(k))
+        .forEach(k => bankOrder.splice(Math.floor(Math.random() * (bankOrder.length + 1)), 0, k));
   }
+
+  const more = pending.length - visible.length;
+  const sig = bankOrder.map(k => k + ':' + byKey.get(k).text).join('|') + '#' + more + '#' + all.length;
+  $('bankCount').textContent = pending.length ? pending.length + ' do odgadnięcia' : '';
+  if(sig === bankSig && !reshuffle) return;
+  bankSig = sig;
 
   bankList.innerHTML = '';
-  if(!bankOrder.length){
-    bankList.innerHTML = '<p class="bank-empty">Nic jeszcze nie jest zakryte.</p>';
-  } else {
-    bankOrder.forEach(id => {
-      const w = stage.querySelector('[data-id="' + id + '"]');
-      if(!w) return;
-      const chip = document.createElement('span');
-      chip.className = 'chip' + (w.classList.contains('marked') ? ' marked' : '');
-      chip.dataset.for = id;
-      chip.textContent = w.dataset.text;
-      bankList.appendChild(chip);
-    });
+  if(!all.length){
+    bankList.innerHTML = '<span class="bank-empty">Nic jeszcze nie jest zakryte.</span>';
+    return;
   }
-  syncBank();
-}
-
-function syncBank(){
-  let used = 0;
-  bankList.querySelectorAll('.chip').forEach(chip => {
-    const w = stage.querySelector('[data-id="' + chip.dataset.for + '"]');
-    const done = w && w.classList.contains('done');
-    chip.classList.toggle('used', !!done);
-    if(done) used++;
+  if(!pending.length){
+    bankList.innerHTML = '<span class="bank-empty">Wszystko odgadnięte.</span>';
+    return;
+  }
+  bankOrder.forEach(k => {
+    const u = byKey.get(k);
+    const chip = document.createElement('span');
+    chip.className = 'chip' + (u.marked ? ' marked' : '');
+    chip.textContent = u.text;
+    bankList.appendChild(chip);
   });
-  const total = bankList.querySelectorAll('.chip').length;
-  document.getElementById('bankCount').textContent = total ? (total - used) + ' do znalezienia' : '';
+  if(more > 0){
+    const m = document.createElement('span');
+    m.className = 'bank-more';
+    m.textContent = '+ ' + more + ' dalej';
+    bankList.appendChild(m);
+  }
 }
 
-document.getElementById('showMarked').addEventListener('change', e => {
-  document.body.classList.toggle('show-marked', e.target.checked);
-});
+function setBank(on){
+  bank.classList.toggle('on', on);
+  document.body.classList.toggle('bank-pad', on);
+  if(on){ bankSig = ''; buildBank(true); }
+}
 
-document.getElementById('paintMode').addEventListener('change', e => {
-  document.body.classList.toggle('paint', e.target.checked);
-  if(e.target.checked) toast('Tryb zakrywania: klikaj słowa, żeby je zasłonić');
-});
-
-document.getElementById('bankOn').addEventListener('change', e => {
-  bank.classList.toggle('on', e.target.checked);
-  if(e.target.checked) buildBank(true);
-});
-document.getElementById('bankShuffle').addEventListener('click', () => buildBank(true));
-document.getElementById('bankToggle').addEventListener('click', e => {
+$('bankOn').addEventListener('change', e => setBank(e.target.checked));
+$('bankShuffle').addEventListener('click', () => buildBank(true));
+$('bankToggle').addEventListener('click', e => {
   const collapsed = bank.classList.toggle('collapsed');
-  e.currentTarget.textContent = collapsed ? '▲' : '▼';
+  e.currentTarget.dataset.tip = collapsed ? 'Rozwiń' : 'Zwiń';
 });
 
 /* ═══════════════════════════════════════════
@@ -1124,14 +1322,13 @@ let wasComplete = false;
 function updateProgress(){
   const covered = stage.querySelectorAll('.w.covered').length;
   const done = stage.querySelectorAll('.w.covered.done').length;
-  document.getElementById('count').textContent = done + ' / ' + covered;
+  const label = done + ' / ' + covered;
+  $('count').textContent = label;
+  $('fabCount').textContent = label;
   const pct = covered ? (done / covered) * 100 : 0;
-  document.getElementById('barFill').style.width = pct + '%';
+  $('barFill').style.width = pct + '%';
 
-  if(bank.classList.contains('on')){
-    const chips = bankList.querySelectorAll('.chip').length;
-    if(chips !== covered) buildBank(false); else syncBank();
-  }
+  if(bank.classList.contains('on')) buildBank(false);
 
   if(covered > 0 && done === covered){
     if(!wasComplete){ wasComplete = true; sectionShot(); }
@@ -1147,13 +1344,15 @@ function updateProgress(){
 const PALETTE = ['#12676b','#c9452c','#e39400','#2352b8','#7fb7b3'];
 
 function sectionShot(){
+  if(typeof confetti !== 'function') return;
   const defaults = { origin:{ y:0.62 }, colors: PALETTE };
   confetti(Object.assign({}, defaults, { spread:26, startVelocity:52, particleCount:36 }));
   confetti(Object.assign({}, defaults, { spread:70, particleCount:30 }));
   confetti(Object.assign({}, defaults, { spread:110, decay:0.91, scalar:0.85, particleCount:44 }));
 }
 
-document.getElementById('celebrate').addEventListener('click', () => {
+$('celebrate').addEventListener('click', () => {
+  if(typeof confetti !== 'function') return;
   const end = Date.now() + 2600;
   (function frame(){
     confetti({ particleCount:3, angle:60, spread:58, origin:{ x:0 }, colors:PALETTE });
@@ -1173,61 +1372,130 @@ document.getElementById('celebrate').addEventListener('click', () => {
 });
 
 /* ═══════════════════════════════════════════
+   PANEL: PRZYCISK W ROGU + NAKŁADKA
+   ═══════════════════════════════════════════ */
+
+const fab = $('fab');
+const fabBtn = $('fabBtn');
+const floatPanel = $('floatPanel');
+const scrim = $('scrim');
+
+function openFloat(){
+  floatPanel.classList.add('open');
+  scrim.classList.add('open');
+  fabBtn.setAttribute('aria-expanded','true');
+  fabBtn.setAttribute('aria-label','Zamknij panel');
+}
+
+function closeFloat(){
+  if(!floatPanel.classList.contains('open')) return;
+  floatPanel.classList.remove('open');
+  scrim.classList.remove('open');
+  fabBtn.setAttribute('aria-expanded','false');
+  fabBtn.setAttribute('aria-label','Otwórz panel');
+}
+
+fabBtn.addEventListener('click', () => {
+  floatPanel.classList.contains('open') ? closeFloat() : openFloat();
+});
+$('floatClose').addEventListener('click', closeFloat);
+scrim.addEventListener('click', closeFloat);
+
+/* ═══════════════════════════════════════════
    UI: EDYTOR, USTAWIENIA, ZAPIS
    ═══════════════════════════════════════════ */
 
-document.getElementById('apply').addEventListener('click', () => {
+$('apply').addEventListener('click', () => {
   doc = parseText(input.value);
   render();
   toast('Tekst wczytany');
 });
 
-document.getElementById('sample').addEventListener('click', () => {
+$('sample').addEventListener('click', () => {
   input.value = SAMPLE;
   doc = parseText(SAMPLE);
   render();
 });
 
-document.getElementById('clearText').addEventListener('click', () => {
+$('clearText').addEventListener('click', () => {
   input.value = '';
   doc = [];
   render();
 });
 
-document.getElementById('toggleEditor').addEventListener('click', e => {
-  const card = input.closest('.card');
-  const hidden = input.style.display === 'none';
-  input.style.display = hidden ? '' : 'none';
-  card.querySelector('.brace-tip').style.display = hidden ? '' : 'none';
-  e.target.textContent = hidden ? 'Ukryj edytor' : 'Pokaż edytor';
+$('toggleEditor').addEventListener('click', e => {
+  const collapsed = input.closest('.card').classList.toggle('collapsed');
+  const label = collapsed ? 'Rozwiń edytor' : 'Zwiń edytor';
+  e.currentTarget.dataset.tip = label;
+  e.currentTarget.setAttribute('aria-label', label);
+  e.currentTarget.setAttribute('aria-expanded', String(!collapsed));
 });
 
-document.getElementById('toolToggle').addEventListener('click', e => {
-  const t = document.getElementById('toolbar');
-  const collapsed = t.classList.toggle('collapsed');
-  e.currentTarget.dataset.tip = collapsed ? 'Rozwiń panel' : 'Zwiń panel';
-  document.getElementById('toolTitle').textContent = collapsed ? 'Panel zwinięty' : 'Panel';
+function segPick(segId, attr, onPick){
+  $(segId).addEventListener('click', e => {
+    const b = e.target.closest('button');
+    if(!b) return;
+    $(segId).querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+    onPick(Number(b.dataset[attr]));
+    saveOpts();
+  });
+}
+segPick('intensity', 'r', v => { ratio = v; });
+segPick('maxRun', 'n', v => { maxRun = v; });
+
+$('showMarked').addEventListener('change', e => {
+  document.body.classList.toggle('show-marked', e.target.checked);
 });
 
-document.getElementById('intensity').addEventListener('click', e => {
-  const b = e.target.closest('button');
-  if(!b) return;
-  document.querySelectorAll('#intensity button').forEach(x => x.classList.remove('on'));
-  b.classList.add('on');
-  ratio = Number(b.dataset.r);
+function setPaint(on){
+  $('paintMode').checked = on;
+  document.body.classList.toggle('paint', on);
+}
+$('paintMode').addEventListener('change', e => {
+  setPaint(e.target.checked);
+  if(e.target.checked) toast('Tryb zakrywania: klikaj słowa, żeby je zasłonić');
 });
+document.querySelectorAll('[data-paint-off]').forEach(b => b.addEventListener('click', () => setPaint(false)));
 
+$('arrowKeys').addEventListener('change', e => {
+  toast(e.target.checked ? 'Strzałki ← → odsłaniają litery' : 'Strzałki znów przewijają stronę');
+});
 
 let fontSize = 2;
 function setFont(v){
-  fontSize = Math.min(3.4, Math.max(1.1, v));
+  fontSize = Math.min(3.4, Math.max(1.2, Math.round(v * 10) / 10));
   stage.querySelectorAll('.w').forEach(w => { w._stops = null; });
   document.documentElement.style.setProperty('--stage-size', fontSize.toFixed(2) + 'rem');
+  $('fontVal').textContent = Math.round(fontSize / 2 * 100) + '%';
 }
-document.getElementById('fontUp').addEventListener('click', () => setFont(fontSize + 0.2));
-document.getElementById('fontDown').addEventListener('click', () => setFont(fontSize - 0.2));
+$('fontUp').addEventListener('click', () => setFont(fontSize + 0.2));
+$('fontDown').addEventListener('click', () => setFont(fontSize - 0.2));
 
-document.getElementById('save').addEventListener('click', () => {
+/* ustawienia panelu pamiętane w tej przeglądarce */
+function saveOpts(){
+  const o = { ratio, maxRun };
+  document.querySelectorAll('[data-opt]').forEach(i => { o[i.id] = i.checked; });
+  try { localStorage.setItem(OPTS_KEY, JSON.stringify(o)); } catch(_) {}
+}
+document.querySelectorAll('[data-opt]').forEach(i => i.addEventListener('change', saveOpts));
+
+function loadOpts(){
+  let o = null;
+  try { o = JSON.parse(localStorage.getItem(OPTS_KEY) || 'null'); } catch(_) {}
+  if(!o) return;
+  document.querySelectorAll('[data-opt]').forEach(i => { if(typeof o[i.id] === 'boolean') i.checked = o[i.id]; });
+  if(o.ratio){
+    ratio = o.ratio;
+    $('intensity').querySelectorAll('button').forEach(b => b.classList.toggle('on', Number(b.dataset.r) === ratio));
+  }
+  if(o.maxRun){
+    maxRun = o.maxRun;
+    $('maxRun').querySelectorAll('button').forEach(b => b.classList.toggle('on', Number(b.dataset.n) === maxRun));
+  }
+  document.body.classList.toggle('show-marked', $('showMarked').checked);
+}
+
+$('save').addEventListener('click', () => {
   const state = {
     text: input.value,
     font: fontSize,
@@ -1243,7 +1511,7 @@ document.getElementById('save').addEventListener('click', () => {
   } catch(_) { toast('Nie udało się zapisać'); }
 });
 
-document.getElementById('reset').addEventListener('click', () => {
+$('reset').addEventListener('click', () => {
   try { localStorage.removeItem(STORE_KEY); } catch(_) {}
   toast('Zapis wyczyszczony');
 });
@@ -1297,14 +1565,17 @@ window.addEventListener('resize', () => {
 
 let toastTimer;
 function toast(msg){
-  const el = document.getElementById('toast');
+  const el = $('toast');
   el.textContent = msg;
   el.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 1900);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
 }
 
+loadOpts();
+setFont(2);
 restore();
+setBank($('bankOn').checked);
 </script>
 </body>
 </html>
