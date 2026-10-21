@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Widok dla ucznia: link zakończony #uczen pokazuje tylko materiały -->
+<script>if(location.hash==='#uczen')document.documentElement.classList.add('student-view');</script>
 <title>English with Robert | Korepetycje z angielskiego online, A1–B2</title>
-<meta name="description" content="Pomagam przełamać blokadę w angielskim. Lekcje online na poziomach A1–B2, dopasowane do Twoich celów i zainteresowań. Bez oceniania i presji, z autorskimi narzędziami do nauki i notatkami do powtórek. Lekcja próbna 35 zł.">
-<meta name="keywords" content="English with Robert, korepetycje angielski online, lektor angielskiego, angielski dla początkujących, konwersacje angielski, angielski dla dzieci, pomoc w pracach domowych angielski">
+<meta name="description" content="Pomagam przełamać blokadę w angielskim. Lekcje online na poziomach A1–B2, dopasowane do Twoich celów i zainteresowań. Bez oceniania i presji, z autorskimi narzędziami do nauki i notatkami do powtórek. Lekcja próbna 40 zł.">
+<meta name="keywords" content="English with Robert, korepetycje angielski online, lektor angielskiego, angielski dla początkujących, konwersacje angielski, angielski dla dzieci, pomoc w pracach domowych angielski, egzamin ósmoklasisty angielski">
 <meta name="author" content="Robert D. | English with Robert">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="google" content="notranslate">
@@ -15,13 +17,13 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="English with Robert">
 <meta property="og:title" content="English with Robert | Korepetycje z angielskiego online">
-<meta property="og:description" content="Pomagam przełamać blokadę w angielskim. Lekcje online A1–B2 dopasowane do Twoich celów i zainteresowań. Lekcja próbna 35 zł.">
+<meta property="og:description" content="Pomagam przełamać blokadę w angielskim. Lekcje online A1–B2 dopasowane do Twoich celów i zainteresowań. Lekcja próbna 40 zł.">
 <meta property="og:url" content="https://english-robert.github.io/angielski/index.html">
 <meta property="og:image" content="https://english-robert.github.io/angielski/img/loga/ewr-logo.svg">
 <meta property="og:locale" content="pl_PL">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="English with Robert | Korepetycje z angielskiego online">
-<meta name="twitter:description" content="Pomagam przełamać blokadę w angielskim. Lekcje online A1–B2. Lekcja próbna 35 zł.">
+<meta name="twitter:description" content="Pomagam przełamać blokadę w angielskim. Lekcje online A1–B2. Lekcja próbna 40 zł.">
 <meta name="twitter:image" content="https://english-robert.github.io/angielski/img/loga/ewr-logo.svg">
 
 <!-- Dane strukturalne (Schema.org) -->
@@ -48,7 +50,7 @@
     "reviewCount": "3",
     "bestRating": "5"
   },
-  "sameAs": ["https://www.instagram.com/englishwithroberto/"]
+  "sameAs": ["https://www.instagram.com/englishwithroberto/", "https://preply.in/ROBERT6PL31796429102?ts=17926045"]
 }
 </script>
 
@@ -86,6 +88,7 @@
   --amber:#a16a0c;  --amber-soft:#f9ecd1;
   --rose:#a23a55;   --rose-soft:#f8e1e8;
   --teal:#18707c;   --teal-soft:#d9f0f2;
+  --violet:#6b3fb8; --violet-soft:#ece4f8;
 
   /* gradienty */
   --grad-text:linear-gradient(115deg, var(--navy) 0%, var(--blue) 100%);
@@ -182,6 +185,7 @@ section{padding:6rem 0}
 .c-rose {--c:var(--rose); --c-soft:var(--rose-soft)}
 .c-teal {--c:var(--teal); --c-soft:var(--teal-soft)}
 .c-gold {--c:#8f6519;     --c-soft:var(--gold-soft)}
+.c-violet{--c:var(--violet);--c-soft:var(--violet-soft)}
 .icon-tile{
   display:grid;place-items:center;flex-shrink:0;
   width:52px;height:52px;
@@ -456,6 +460,7 @@ section{padding:6rem 0}
 }
 .review-name{font-weight:700}
 .review-meta{font-size:.9rem;color:var(--ink-3)}
+.reviews-more{margin-top:2.2rem;text-align:center}
 
 /* ══════════════════════════════════════════════
    10. FAQ
@@ -506,8 +511,8 @@ section{padding:6rem 0}
 .gated.unlocked .gated-content{filter:none;pointer-events:auto;user-select:auto}
 .gate{
   position:absolute;inset:0;z-index:10;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:3rem 2rem;text-align:center;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  padding:4.5rem 2rem 3rem;text-align:center;
   background:rgba(246,247,250,.86);
   border-radius:var(--r-lg);
 }
@@ -583,6 +588,11 @@ section{padding:6rem 0}
   box-shadow:var(--shadow);
 }
 .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.video-intro{margin-bottom:2.5rem}
+
+/* widok dla ucznia (#uczen): ukrywa wszystko, co dotyczy rezerwacji, cen i kontaktu */
+.student-view [data-public]{display:none!important}
+.student-view .sec-num{display:none}
 
 /* ══════════════════════════════════════════════
    15. STOPKA
@@ -699,18 +709,18 @@ section{padding:6rem 0}
       <span></span><span></span><span></span>
     </button>
     <ul class="nav-links" id="nav-links">
-      <li><a href="#about">O mnie</a></li>
-      <li><a href="#reviews">Opinie</a></li>
-      <li><a href="#faq">FAQ</a></li>
+      <li data-public><a href="#about">O mnie</a></li>
+      <li data-public><a href="#reviews">Opinie</a></li>
+      <li data-public><a href="#faq">FAQ</a></li>
       <li><a href="#materials">Karty pracy</a></li>
       <li><a href="#recommended">Polecane</a></li>
-      <li><a href="#booking" class="nav-cta"><svg class="i"><use href="#i-calendar"/></svg>Umów lekcję</a></li>
+      <li data-public><a href="#booking" class="nav-cta"><svg class="i"><use href="#i-calendar"/></svg>Umów lekcję</a></li>
     </ul>
   </div>
 </nav>
 
 <!-- ═══════════ HERO ═══════════ -->
-<section id="hero">
+<section id="hero" data-public>
   <div class="wrap">
     <div class="hero-grid">
 
@@ -765,7 +775,7 @@ section{padding:6rem 0}
         <div class="stat-label">za lekcję (50 min)</div>
       </div>
       <div class="stat panel stat-trial">
-        <div class="stat-num"><span class="count" data-target="35">35</span>zł</div>
+        <div class="stat-num"><span class="count" data-target="40">40</span>zł</div>
         <div class="stat-label">lekcja próbna</div>
       </div>
     </div>
@@ -773,7 +783,7 @@ section{padding:6rem 0}
 </section>
 
 <!-- ═══════════ 01 ATUTY ═══════════ -->
-<section id="info-panel">
+<section id="info-panel" data-public>
   <div class="wrap">
     <div class="sec-head">
       <div class="sec-label reveal"><span class="sec-num">01</span>Atuty</div>
@@ -786,21 +796,21 @@ section{padding:6rem 0}
         <div class="icon-tile c-navy"><svg class="i"><use href="#i-award"/></svg></div>
         <div>
           <h3>Doświadczenie, które widać</h3>
-          <p>Uczę od 2023 roku i mam za sobą ponad 200 lekcji. Posiadam Preply Language Teaching Certificate, a od uczniów dostaję wyłącznie pozytywne opinie.</p>
+          <p>Uczę od 2023 roku i mam za sobą ponad 200 lekcji. Posiadam Preply Language Teaching Certificate, a dotychczas dostawałem od uczniów wyłącznie pozytywne opinie.</p>
         </div>
       </div>
       <div class="info-card panel reveal" data-delay="1">
         <div class="icon-tile c-rose"><svg class="i"><use href="#i-heart"/></svg></div>
         <div>
-          <h3>Lekcje wokół Ciebie</h3>
-          <p>Zajęcia buduję wokół Twoich celów (szkoła, praca, podróże) i zainteresowań: gier, filmów, muzyki czy innego hobby.</p>
+          <h3>Spersonalizowane lekcje</h3>
+          <p>Każdą lekcję planuję pod Twój cel i zainteresowania, a materiały tworzę sam lub starannie dobieram ze sprawdzonych źródeł. Każda lekcja ma stały, przejrzysty schemat, a zadania w nim dobieram na bieżąco, dlatego zajęcia są dynamiczne i za każdym razem trochę inne.</p>
         </div>
       </div>
       <div class="info-card panel reveal" data-delay="2">
         <div class="icon-tile c-amber"><svg class="i"><use href="#i-bulb"/></svg></div>
         <div>
           <h3>Zapamiętywanie na długo</h3>
-          <p>Notatki do samodzielnych powtórek i mnemotechniki. Uczniowie przypominają sobie dzięki nim zagadnienia sprzed kilku miesięcy.</p>
+          <p>Korzystam ze sprawdzonych metod zapamiętywania, takich jak mnemotechniki czy pałac pamięci, i tworzę z uczniami notatki do samodzielnych powtórek.</p>
         </div>
       </div>
     </div>
@@ -818,11 +828,11 @@ section{padding:6rem 0}
       <div class="usp-inner">
         <div class="icon-tile"><svg class="i"><use href="#i-file"/></svg></div>
         <div>
-          <h3>Autorskie narzędzia, których nie znajdziesz nigdzie indziej</h3>
-          <p>Na lekcjach korzystam z <strong>interaktywnych narzędzi, które sam projektuję</strong> pod potrzeby moich uczniów. Nie są nigdzie publicznie udostępnione, więc pracujemy na nich wyłącznie na moich zajęciach.</p>
-          <p>Przykład? Karty pracy z <strong>natychmiastową informacją zwrotną</strong>: w trakcie ćwiczeń oznaczasz trudność słów i wyrażeń, a na końcu od razu widzisz podsumowanie tego, co było trudne, co nowe, a co już znasz.</p>
+          <h3>Autorskie narzędzia, stworzone specjalnie na moje lekcje</h3>
+          <p>Na lekcjach korzystam z <strong>interaktywnych narzędzi, które sam projektuję</strong> pod potrzeby moich uczniów. To nie gotowe aplikacje z internetu, tylko narzędzia zbudowane z myślą o moich zajęciach.</p>
+          <p>Przykłady? <strong>„Idea Box”</strong>, czyli mój bank ponad 15 sprawdzonych aktywności, z którego dobieram zadania na bieżąco, pod konkretnego ucznia i sytuację. Albo <strong>karty pracy z natychmiastową informacją zwrotną</strong>: w trakcie ćwiczeń oznaczasz trudność słów i wyrażeń, a na końcu od razu widzisz, co było trudne, co nowe, a co już znasz.</p>
           <div class="usp-tags">
-            <span class="usp-tag"><svg class="i"><use href="#i-lock"/></svg>Tylko na moich lekcjach</span>
+            <span class="usp-tag"><svg class="i"><use href="#i-code"/></svg>Projektowane przeze mnie</span>
             <span class="usp-tag"><svg class="i"><use href="#i-target"/></svg>Tworzone pod konkretne potrzeby</span>
             <span class="usp-tag"><svg class="i"><use href="#i-check"/></svg>Natychmiastowa informacja zwrotna</span>
           </div>
@@ -833,12 +843,22 @@ section{padding:6rem 0}
 </section>
 
 <!-- ═══════════ 02 O MNIE ═══════════ -->
-<section id="about">
+<section id="about" data-public>
   <div class="wrap">
     <div class="sec-head">
       <div class="sec-label reveal"><span class="sec-num">02</span>O mnie</div>
       <h2 class="sec-title reveal" data-delay="1">Poznaj, <em class="grad">kim jestem</em></h2>
       <p class="sec-lead reveal" data-delay="2">Kilka słów o mnie, o moim podejściu do nauczania i o tym, czego możesz spodziewać się na lekcjach.</p>
+    </div>
+
+    <div class="video video-intro reveal" data-delay="2">
+      <iframe
+        src="https://www.youtube-nocookie.com/embed/7w2kNJG0C6c?rel=0"
+        title="Robert: krótkie przedstawienie"
+        loading="lazy"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen></iframe>
     </div>
 
     <div class="about-box panel reveal" data-delay="2">
@@ -857,6 +877,7 @@ section{padding:6rem 0}
           <li class="c-green"><svg class="i"><use href="#i-sprout"/></svg>Angielski od podstaw</li>
           <li class="c-rose"><svg class="i"><use href="#i-smile"/></svg>Dzieci i młodzież</li>
           <li class="c-teal"><svg class="i"><use href="#i-book"/></svg>Pomoc przy pracach domowych</li>
+          <li class="c-violet"><svg class="i"><use href="#i-award"/></svg>Przygotowanie do egzaminów</li>
           <li class="c-amber"><svg class="i"><use href="#i-zap"/></svg>Intensywna nauka przed terminem</li>
         </ul>
       </div>
@@ -872,6 +893,7 @@ section{padding:6rem 0}
 
             <h3>Doświadczenie w nauczaniu</h3>
             <p>Nauczam angielskiego od 2023 roku. Posiadam <strong>Preply Language Teaching Certificate</strong>. Pracuję z dorosłymi, dziećmi i młodzieżą na poziomach od A1 do B2.</p>
+            <p>Cały czas się doszkalam: dużo czytam o pedagogice, psychologii uczenia się i metodach zapamiętywania, a to, co się sprawdza, od razu trafia na moje lekcje.</p>
 
             <h3>Jak wyglądają moje lekcje</h3>
             <ul class="lesson-list">
@@ -931,7 +953,7 @@ section{padding:6rem 0}
 </section>
 
 <!-- ═══════════ 03 OPINIE ═══════════ -->
-<section id="reviews">
+<section id="reviews" data-public>
   <div class="wrap">
     <div class="sec-head">
       <div class="sec-label reveal"><span class="sec-num">03</span>Opinie</div>
@@ -976,11 +998,15 @@ section{padding:6rem 0}
         </figcaption>
       </figure>
     </div>
+
+    <div class="reviews-more reveal">
+      <a class="btn btn-ghost" href="https://preply.in/ROBERT6PL31796429102?ts=17926045" target="_blank" rel="noopener"><svg class="i"><use href="#i-open"/></svg>Mój profil i opinie na Preply</a>
+    </div>
   </div>
 </section>
 
 <!-- ═══════════ 04 FAQ ═══════════ -->
-<section id="faq">
+<section id="faq" data-public>
   <div class="wrap">
     <div class="sec-head">
       <div class="sec-label reveal"><span class="sec-num">04</span>FAQ</div>
@@ -1004,6 +1030,13 @@ section{padding:6rem 0}
         <div class="collapse"><div><div class="faq-a">
           <p>Lekcja próbna to przede wszystkim czas na to, żebyśmy się poznali. Rozmawiamy o Tobie, Twoich potrzebach i celu: do czego potrzebujesz angielskiego i co sprawia Ci najwięcej trudności. Dzięki temu wiem, od czego zacząć i jak ułożyć kolejne zajęcia.</p>
           <p>Potem robimy krótkie ćwiczenie dopasowane do Twojego poziomu i zainteresowań. Jeśli zdążymy, na koniec dostajesz ode mnie informację zwrotną i wspólnie ustalamy dalsze cele.</p>
+        </div></div></div>
+      </div>
+
+      <div class="faq-item panel">
+        <button class="faq-q" aria-expanded="false"><span>Czy przygotowujesz do egzaminów?</span><span class="faq-icon"><svg class="i"><use href="#i-plus"/></svg></span></button>
+        <div class="collapse"><div><div class="faq-a">
+          <p>Tak. Plan układam pod konkretny egzamin i jego wymagania, a materiały dobieram ze sprawdzonych źródeł przygotowawczych. Najwięcej doświadczenia mam w przygotowaniu do <strong>egzaminu ósmoklasisty</strong>.</p>
         </div></div></div>
       </div>
 
@@ -1044,12 +1077,12 @@ section{padding:6rem 0}
 </section>
 
 <!-- ═══════════ 05 REZERWACJA ═══════════ -->
-<section id="booking">
+<section id="booking" data-public>
   <div class="wrap">
     <div class="sec-head">
       <div class="sec-label reveal"><span class="sec-num">05</span>Umów lekcję</div>
       <h2 class="sec-title reveal" data-delay="1">Wybierz <em class="grad">dogodny termin</em></h2>
-      <p class="sec-lead reveal" data-delay="2">Zacznij od lekcji próbnej za 35 zł. Wybierz dzień i godzinę, które Ci pasują. Po rezerwacji otrzymasz wiadomość z potwierdzeniem oraz linkiem do lekcji.</p>
+      <p class="sec-lead reveal" data-delay="2">Zacznij od lekcji próbnej za 40 zł. Wybierz dzień i godzinę, które Ci pasują. Po rezerwacji otrzymasz wiadomość z potwierdzeniem oraz linkiem do lekcji.</p>
     </div>
 
     <div class="booking-box panel reveal" data-delay="2">
@@ -1358,7 +1391,8 @@ section{padding:6rem 0}
     <div class="video reveal">
       <iframe
         src="https://www.youtube-nocookie.com/embed/nsrTJ8tjEDw?list=PLJ-cNWgEeSuaA4zKhK_cwAhs8wFYssiYX&rel=0"
-        title="Filmik od Roberta"
+        title="Polecany filmik"
+        loading="lazy"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         referrerpolicy="strict-origin-when-cross-origin"
         allowfullscreen></iframe>
@@ -1373,7 +1407,7 @@ section{padding:6rem 0}
       <span class="brand-mark grad">EWR</span>
       <span class="brand-sub">English with Robert</span>
     </a>
-    <div class="footer-links">
+    <div class="footer-links" data-public>
       <a href="mailto:robert.rd777@gmail.com" aria-label="E-mail"><svg class="i"><use href="#i-mail"/></svg></a>
       <a href="https://www.instagram.com/englishwithroberto/" target="_blank" rel="noopener" aria-label="Instagram"><svg class="i"><use href="#i-insta"/></svg></a>
     </div>
@@ -1386,6 +1420,13 @@ section{padding:6rem 0}
   const $  = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ─── Widok dla ucznia (#uczen) ─── */
+  window.addEventListener('hashchange', () => {
+    if (location.hash !== '#uczen') return;
+    document.documentElement.classList.add('student-view');
+    window.scrollTo(0, 0);
+  });
 
   /* ─── Menu mobilne ─── */
   const navToggle = $('#nav-toggle');
@@ -1492,6 +1533,7 @@ section{padding:6rem 0}
 
 <!-- Cal.com (osadzony kalendarz) -->
 <script type="text/javascript">
+if (!document.documentElement.classList.contains('student-view')) {
   (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
   Cal("init", "angielski", {origin:"https://app.cal.com"});
   Cal.ns.angielski("inline", {
@@ -1500,6 +1542,7 @@ section{padding:6rem 0}
     calLink: "robert-korepetycje/angielski",
   });
   Cal.ns.angielski("ui", {"cssVarsPerTheme":{"light":{"cal-brand":"#080637"}},"hideEventTypeDetails":false,"layout":"month_view"});
+}
 </script>
 
 </body>
