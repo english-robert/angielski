@@ -192,8 +192,8 @@ Podtytuł (opcjonalnie)
 - kot = cat
 - ryba = fish
   ~ fishing | finish
-  > notatka po rozwiązaniu
-  > może mieć kilka linii
+  > informacja po rozwiązaniu
+  > 💬 albo pytanie do rozmowy
 
 ## Gap Fill: Present Simple
 Własna instrukcja (opcjonalnie)
@@ -206,6 +206,7 @@ Własna instrukcja (opcjonalnie)
               <li><code>## Typ</code> albo <code>## Typ: tytuł</code> zaczyna sekcję, kolejność nagłówków = kolejność na karcie.</li>
               <li>Typy: Flashcards, Matching, Word Scramble, Quiz, Sentence Unscramble, Pytania, Gap Fill, Correct the Mistake, Translate, Writing, Categorize, Linki.</li>
               <li><code>(bez instrukcji)</code> pod nagłówkiem ukrywa instrukcję, <code>![](url)</code> dodaje obrazek nad sekcją.</li>
+              <li>Notatka <code>&gt;</code> pokazuje się dopiero po rozwiązaniu, więc nie wpisuj w niej poleceń. Polecenia idą do akapitu pod nagłówkiem.</li>
             </ul>
           </div>
           <div>
@@ -443,10 +444,8 @@ button:disabled { cursor: default; }
   padding: clamp(1.2rem, 3vw, 2.1rem);
   margin-bottom: 1.4rem;
   box-shadow: var(--shadow);
-  transition: box-shadow .3s, opacity .55s ease, transform .55s ease;
+  transition: box-shadow .3s;
 }
-.reveal { opacity: 0; transform: scale(.985); }
-.reveal.is-in { opacity: 1; transform: none; }
 .sec.is-done { box-shadow: 0 0 0 2px var(--ok-line), var(--shadow); }
 .sec-head { display: flex; align-items: center; gap: .9rem; flex-wrap: wrap; }
 .sec-num {
@@ -478,14 +477,14 @@ button:disabled { cursor: default; }
 .sec-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-left: auto; }
 .act {
   display: inline-flex; align-items: center; gap: .45rem;
-  padding: .6rem 1.05rem; border-radius: var(--r);
+  height: 44px; padding: 0 1.05rem; border-radius: var(--r);
   border: 0; background: var(--tint); color: var(--ink);
   font-size: .95rem; font-weight: 600;
   transition: transform .15s, background .15s;
 }
 .act svg { width: 1.15em; height: 1.15em; }
 .act:hover { transform: scale(1.03); background: var(--tint-2); }
-.act-clear { background: transparent; color: var(--dim); }
+.act-clear { width: 44px; padding: 0; justify-content: center; background: transparent; color: var(--dim); }
 .act-clear:hover { color: var(--bad); background: var(--bad-bg); }
 
 .sec-image { border-radius: var(--r-xl); overflow: hidden; margin-bottom: 1rem; background: var(--tint); }
@@ -645,7 +644,7 @@ button:disabled { cursor: default; }
 .flag svg { display: block; width: 100%; height: 100%; }
 .pl-strip { display: flex; align-items: center; gap: .6rem; margin-bottom: .8rem; font-size: 1.02rem; }
 .pl-strip.is-solid { font-size: 1.2rem; font-weight: 600; margin-bottom: 0; line-height: 1.35; }
-.pl-cover { padding: .1rem .5rem; border-radius: 8px; cursor: pointer; transition: background .15s; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.pl-cover { padding: .1rem .5rem; border-radius: 8px; cursor: pointer; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 .pl-cover.is-hidden { color: transparent; background: var(--cover); user-select: none; }
 .pl-cover.is-hidden:hover { filter: brightness(.96); }
 
@@ -683,7 +682,7 @@ button:disabled { cursor: default; }
 .diff-overlay.show { opacity: 1; pointer-events: auto; }
 body.diff-hidden .diff, body.diff-hidden .diff-row, body.diff-hidden .diff-overlay,
 body.diff-hidden .lv-badge, body.diff-hidden .legend, body.diff-hidden .diff-only,
-body.diff-hidden .rv-foot, body.diff-hidden .rv-print-level { display: none !important; }
+body.diff-hidden .rv-rate, body.diff-hidden .rv-print-level { display: none !important; }
 
 /* ---------- Flashcards ---------- */
 .fc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1.1rem; }
@@ -810,7 +809,7 @@ body.diff-hidden .rv-foot, body.diff-hidden .rv-print-level { display: none !imp
 .link-btn svg { width: 1.1em; height: 1.1em; }
 .cn-a { display: none; padding: 0 1.25rem 1.15rem; }
 .cn.is-open .cn-a { display: block; }
-.cn-a .answer-box { margin-top: 0; }
+.cn-a-text { background: var(--white); border-radius: var(--r); padding: .9rem 1.1rem; font-size: 1.1rem; line-height: 1.55; }
 
 /* ---------- Gap Fill i Correct the Mistake ---------- */
 .gap-line { display: flex; align-items: flex-start; gap: .9rem; }
@@ -957,7 +956,7 @@ body.diff-hidden .rv-foot, body.diff-hidden .rv-print-level { display: none !imp
 .rv-arrow { color: var(--dim); text-align: center; }
 .rv-ans { font-size: 1.08rem; min-width: 0; overflow-wrap: anywhere; }
 .rv-btns { gap: .35rem; }
-.rv-btns .diff { margin-right: .35rem; }
+.rv-rate { margin-top: .5rem; }
 .rv-after { display: none; margin-top: .6rem; }
 .rv-item.is-open .rv-after { display: block; }
 .rv-item.is-open .note.rv-after { display: flex; }
@@ -968,7 +967,6 @@ body.diff-hidden .rv-foot, body.diff-hidden .rv-print-level { display: none !imp
 .rv-written { margin-top: .6rem; background: var(--white); border-radius: var(--r); padding: .75rem 1rem; white-space: pre-wrap; }
 .rv-written-label { display: inline-flex; align-items: center; gap: .35rem; color: var(--dim); font-size: .86rem; font-weight: 600; margin-bottom: .2rem; }
 .rv-written-label svg { width: 1em; height: 1em; }
-.rv-foot { display: flex; justify-content: flex-end; margin-top: .6rem; }
 .rv-print-level { display: none; }
 .rv-chips { display: block; position: relative; margin-top: .45rem; font-weight: 500; }
 .rv-chips-list { display: flex; flex-wrap: wrap; gap: .3rem; }
@@ -1044,9 +1042,14 @@ body.review-only .legend { margin-bottom: .8rem; }
   .answer-row .btns { margin-left: auto; }
   .gap-line { flex-direction: column; align-items: stretch; gap: .5rem; }
   .gap-line .btns { justify-content: flex-end; }
-  .rv-main { grid-template-columns: 1fr; gap: .45rem; }
+  /* Telefon: polskie, odpowiedz, a pod nia ocena z lewej i przyciski z prawej. */
+  .rv-main { grid-template-columns: 1fr auto; gap: .5rem; align-items: center; }
+  .rv-pl { display: contents; }
+  .rv-pl > span, .rv-chips, .rv-ans { grid-column: 1 / -1; }
   .rv-arrow { display: none; }
-  .rv-btns { justify-content: flex-start; }
+  .rv-ans { order: 1; }
+  .rv-rate { order: 2; margin-top: 0; }
+  .rv-btns { order: 3; justify-self: end; }
   .cat-top { flex-direction: column-reverse; align-items: stretch; }
   .cat-top .btns { justify-content: flex-end; }
   .sec-actions { margin-left: 0; }
@@ -1057,7 +1060,7 @@ body.review-only .legend { margin-bottom: .8rem; }
   html { font-size: 15px; }
   body { background: #fff; }
   .bg-fx, .progress, .legend, .sec-actions, .sec-fb, .sec-instr, .ibtn, .btns, .cover-btn, .rv-chips-cover,
-  .review-prompt, .finale, .foot, .toast, .rv-levels, .rv-toolbar, .rv-hint, .rv-foot, .diff-overlay,
+  .review-prompt, .finale, .foot, .toast, .rv-levels, .rv-toolbar, .rv-hint, .rv-rate, .diff-overlay,
   .lv-badge, .link-btn, .wr-foot, .review-arrow, .rv-finish { display: none !important; }
   .sec, .review-card, .finale { box-shadow: none !important; border: 1px solid #ddd; }
   .sec { break-inside: auto; }
@@ -1084,7 +1087,6 @@ body.review-only .legend { margin-bottom: .8rem; }
   .review-body[hidden] { display: block !important; }
   .rv-after { display: block !important; }
   .note.rv-after { display: flex !important; }
-  .reveal { opacity: 1 !important; transform: none !important; }
   .rv-item { display: grid; grid-template-columns: 1.8rem 1fr; column-gap: .6rem; }
   .rv-item > * { grid-column: 2; }
   .rv-print-level {
@@ -1937,7 +1939,7 @@ function setLevel(gi, L, opts) {
   sound('tap');
   linked(gi).forEach(i => { ST.level[i] = next; paintLevel(i); });
   hideOverlays();
-  reviewRefresh();
+  reviewCount();   // lista powtorki zostaje, jak byla: bez przestawiania i bez zaslaniania
   save();
   broadcastLevels();
 }
@@ -2011,7 +2013,7 @@ function sectionEl(u, num) {
   const actions = [];
   if (u.type !== 'links') {
     if (u.type !== 'writing') actions.push(h('button', { type: 'button', class: 'act act-solve', html: ICO.solve + '<span>' + solveLabel(u.type) + '</span>', onclick: () => solveUnit(u) }));
-    actions.push(h('button', { type: 'button', class: 'act act-clear', title: 'Wyczyść odpowiedzi w tej sekcji (oceny zostają)', html: ICO.undo + '<span>Wyczyść sekcję</span>', onclick: () => clearUnit(u) }));
+    actions.push(h('button', { type: 'button', class: 'act act-clear', title: 'Wyczyść odpowiedzi w tej sekcji (oceny zostają)', 'aria-label': 'Wyczyść sekcję', html: ICO.undo, onclick: () => clearUnit(u) }));
   }
   u.body = h('div', { class: 'sec-body' });
   u.fb = h('div', { class: 'sec-fb', role: 'status' });
@@ -2676,7 +2678,7 @@ MOD.cornell = {
           onclick: () => { write.classList.toggle('is-writing'); if (write.classList.contains('is-writing')) area.focus(); } }),
         area, copy);
       append(item, [q, write,
-        h('div', { class: 'cn-a' }, answerBox('Wzorcowa odpowiedź', stripBraces(r.en)), noteEl(gi, 'is-open'), diffRow(gi))]);
+        h('div', { class: 'cn-a' }, h('div', { class: 'cn-a-text', text: stripBraces(r.en) }), noteEl(gi, 'is-open'), diffRow(gi))]);
       list.appendChild(item);
     });
     append(body, list);
@@ -3009,7 +3011,6 @@ MOD.writing = {
       area.addEventListener('input', () => { st.text[gi] = area.value; copy.textContent = area.value; paint(); save(); });
       btn.addEventListener('click', () => {
         if (saved()) { removeVal(st.saved, gi); uncomplete(u); paint(); save(); area.focus(); reviewRefresh(); return; }
-        if (!area.value.trim()) { sound('wrong'); flashBad(area); return; }
         addOnce(st.saved, gi);
         sound('correct');
         paint();
@@ -3249,10 +3250,10 @@ function reviewItem(gi) {
   return h('div', { class: 'rv-item', 'data-row': gi },
     L ? h('span', { class: 'rv-print-level', style: '--lc:' + LEVELS[L].color, html: LEVELS[L].ico }) : null,
     h('div', { class: 'rv-main' },
-      h('div', { class: 'rv-pl' }, h('span', { text: r.pl }), chips),
+      h('div', { class: 'rv-pl' }, h('span', { text: r.pl }), chips, h('div', { class: 'rv-rate' }, diffWidget(gi))),
       h('span', { class: 'rv-arrow', text: '→' }),
       h('div', { class: 'rv-ans' }, ans.el),
-      h('div', { class: 'btns rv-btns' }, diffWidget(gi), eye, ttsBtn(reviewSpeech(gi), 'ibtn-sm'))),
+      h('div', { class: 'btns rv-btns' }, eye, ttsBtn(reviewSpeech(gi), 'ibtn-sm'))),
     written ? h('div', { class: 'rv-written' }, h('span', { class: 'rv-written-label', html: ICO.pen + '<span>Twój tekst</span>' }), h('div', { text: written })) : null,
     extra);
 }
@@ -3270,6 +3271,7 @@ function buildReview() {
   if (want && !want.length) { box.innerHTML = ''; box.appendChild(h('p', { class: 'rv-empty', text: 'Zaznacz przynajmniej jeden poziom.' })); return; }
   const items = reviewItems();
   box.innerHTML = '';
+  syncRevealAll();
   if (!items.length) {
     box.appendChild(h('p', { class: 'rv-empty', text: D.reviewOnly ? 'Brak słów do powtórki.' : 'Nic tu jeszcze nie ma. Oceń słowa w zadaniach albo zaznacz inne poziomy.' }));
     return;
@@ -3305,6 +3307,7 @@ function syncRevealAll() {
   const b = $('#rvRevealAll');
   if (!b) return;
   const covered = !!$('#rvResult .wsc.is-covered');
+  b.hidden = !$('#rvResult .wsc');
   b.innerHTML = (covered ? ICO.eye : ICO.eyeOff) + '<span>' + (covered ? 'Pokaż wszystkie' : 'Zasłoń wszystkie') + '</span>';
 }
 function revealAll() {
@@ -3423,7 +3426,7 @@ function applyRemoteLevels(lv) {
     const v = lv[i] || 0;
     if ((ST.level[i] || 0) !== v) { ST.level[i] = v; paintLevel(i); changed = true; }
   });
-  if (changed) { reviewRefresh(); save(); }
+  if (changed) { reviewCount(); save(); }
 }
 if (channel) {
   channel.onmessage = e => {
@@ -3578,7 +3581,7 @@ function reviewEl() {
             h('button', { type: 'button', class: 'is-sel', 'data-sort': 'level', text: 'wg oceny', onclick: () => setReviewSort('level') }),
             h('button', { type: 'button', 'data-sort': 'hist', text: 'jak w karcie', onclick: () => setReviewSort('hist') })),
           h('div', { class: 'rv-tools' },
-            h('button', { type: 'button', class: 'pill-btn', id: 'rvRevealAll', onclick: revealAll }),
+            h('button', { type: 'button', class: 'pill-btn', id: 'rvRevealAll', hidden: true, html: ICO.eye + '<span>Pokaż wszystkie</span>', onclick: revealAll }),
             h('button', { type: 'button', class: 'pill-btn', html: ICO.print + '<span>Drukuj powtórkę</span>', onclick: printReview }))),
         h('p', { class: 'rv-hint', text: 'Kliknij odpowiedź, żeby odsłonić ją do tego miejsca, albo przeciągnij po niej. Strzałki ← → odsłaniają po literze.' }),
         h('div', { class: 'rv-print-legend' }, [1, 2, 3].map(L => h('span', { class: 'legend-item' }, h('span', { class: 'lv-chip', style: '--lc:' + LEVELS[L].color, html: LEVELS[L].ico }), LEVELS[L].name))),
@@ -3637,14 +3640,6 @@ function boot() {
         h('button', { type: 'button', class: 'pill-btn', title: 'Skopiuj dane z ocenami i postępem', html: ICO.copy + '<span>Kopiuj TSV</span>', onclick: copyTSV })),
       h('span', { class: 'foot-ver', text: 'Worksheet v' + WS_VERSION }))
   ]);
-
-  /* Sekcje pojawiaja sie lagodnie, gdy wjezdzaja na ekran. */
-  if ('IntersectionObserver' in window && !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) {
-    const io = new IntersectionObserver(list => list.forEach(e => {
-      if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
-    }), { rootMargin: '0px 0px -6% 0px' });
-    $$('.sec, .review').forEach(el => { el.classList.add('reveal'); io.observe(el); });
-  }
 
   if (RATER) paintEye($('#eyeBtn'), false, 'Ukryj oceny na karcie ucznia', 'Pokaż oceny na karcie ucznia');
   else paintEye($('#eyeBtn'), !diffHidden, 'Ukryj oceny', 'Pokaż oceny');
@@ -4193,7 +4188,7 @@ const AI_PROMPT = [
   'ZASADY',
   '1. Pierwsza linia: "# Tytuł karty". Pod nią możesz dać jedną linię podtytułu.',
   '2. Każda sekcja zaczyna się od nagłówka "## Typ" albo "## Typ: własny tytuł". Dozwolone typy (dokładnie te nazwy): Flashcards, Matching, Word Scramble, Quiz, Sentence Unscramble, Pytania, Gap Fill, Correct the Mistake, Translate, Writing, Categorize, Linki. Ten sam typ może wystąpić kilka razy.',
-  '3. Pod nagłówkiem możesz dać jeden zwykły akapit: to będzie własna instrukcja dla ucznia. Bez akapitu zostaje instrukcja domyślna.',
+  '3. Pod nagłówkiem możesz dać jeden zwykły akapit: to będzie własna instrukcja (polecenie) dla ucznia do całej sekcji. Bez akapitu zostaje instrukcja domyślna. Tylko tutaj umieszczaj polecenia typu „odpowiedz pełnym zdaniem” czy „użyj Past Simple”.',
   '4. Każda pozycja to jedna linia listy w formie "- polski = angielski" (spacja, znak =, spacja). Po lewej zawsze polski, po prawej angielski.',
   '5. Zapisy specjalne:',
   '   - Quiz z własnymi odpowiedziami: "- statek = ship | sheep | shop | chip" (pierwsza jest poprawna). Bez kresek quiz sam dobierze złe odpowiedzi z innych pozycji.',
@@ -4206,9 +4201,17 @@ const AI_PROMPT = [
   '   - Linki: "- Tytuł = https://adres".',
   '6. Pod pozycją, z wcięciem dwóch spacji, możesz dodać:',
   '   - "~ słowo | słowo" czyli atrapy (słowa-pułapki) w Matching, Quiz, Sentence Unscramble i Gap Fill,',
-  '   - "> notatka", która pokaże się po rozwiązaniu. Może mieć kilka linii, każdą zaczynaj od "> ". Wolno użyć **pogrubienia**.',
+  '   - "> notatka" (zasady w części NOTATKI). Każdą linię notatki zaczynaj od "> ", sam ">" robi pustą linię. Wolno użyć **pogrubienia**.',
   '7. Nie używaj tabel ani numerowanych list. Nie formatuj pozycji (bez pogrubień w "- polski = angielski").',
   '8. Tłumaczenia mają być w pełni poprawne i naturalne.',
+  '',
+  'NOTATKI',
+  '- Uczeń widzi notatkę dopiero PO rozwiązaniu pozycji (w Flashcards i Matching pod sekcją, po ukończeniu całej sekcji). Notatka trafia też do szybkiej powtórki.',
+  '- Dlatego notatka NIGDY nie zawiera polecenia ani podpowiedzi do zadania (np. „odpowiedz pełnym zdaniem”, „użyj czasu przeszłego”). Polecenia idą do akapitu pod nagłówkiem sekcji.',
+  '- Notatka nie powtarza tłumaczenia ani odpowiedzi.',
+  '- Dozwolone są dwa rodzaje notatek, każda krótka (1-2 zdania):',
+  '   a) informacja, która coś wnosi po rozwiązaniu: reguła, wyjątek, kolokacja, różnica znaczeń, fałszywy przyjaciel. Tylko tam, gdzie naprawdę jest potrzebna, nie przy każdej pozycji.',
+  '   b) pytanie do rozmowy, czyli krótkie pytanie po angielsku do ucznia, nawiązujące do pozycji, żeby od razu użył języka. Zaczynaj je od "💬 ". Najwyżej jedno takie pytanie na sekcję i nie w każdej sekcji.',
   '',
   'PRZYKŁAD',
   '```markdown',
@@ -4221,8 +4224,11 @@ const AI_PROMPT = [
   '  ~ brad | bred',
   '',
   '## Gap Fill: Present Simple',
+  'Uzupełnij zdania czasownikami w Present Simple.',
   '- Ona pije kawę rano. = She {drinks} coffee in the morning.',
   '  > **3. osoba** liczby pojedynczej: końcówka -s.',
+  '- Nie jem mięsa. = I {don\'t eat} meat.',
+  '  > 💬 What do you usually eat for breakfast?',
   '',
   '## Categorize: Countable or uncountable?',
   '- Countable = apple, egg, sandwich',
@@ -4236,7 +4242,7 @@ Unit 5 · Przykładowa karta
 ## Flashcards
 - słońce = sun
 - księżyc = moon
-  > Notatka widoczna w podsumowaniu sekcji.
+  > **a full moon** = pełnia
 
 ## Matching
 - kot = cat
@@ -4264,7 +4270,8 @@ Unit 5 · Przykładowa karta
 - Ona pije kawę każdego ranka. = She {drinks} coffee every morning.
   ~ drink | drank
   > **3. osoba** liczby pojedynczej: końcówka -s.
-  > Druga linia notatki.
+  >
+  > 💬 What do you usually drink in the morning?
 
 ## Correct the Mistake
 - Ona tego nie lubi. = She {don't/doesn't} like it.
@@ -4291,9 +4298,9 @@ const EXAMPLE_TSV = [
   'pl\ten\ttasks\tdistractors\tnote',
   'kot\tcat\tm\t\t',
   'pies\tdog\tm\t\t',
-  'ryba\tfish\tm\tfishing | finish\tAtrapy dokładają słowa bez pary.',
+  'ryba\tfish\tm\tfishing | finish\t**fish** w liczbie mnogiej zwykle też fish.',
   'słońce\tsun\tf\t\t',
-  'księżyc\tmoon\tf\t\tNotatka\\nw dwóch liniach.',
+  'księżyc\tmoon\tf\t\t**a full moon** = pełnia\\n💬 Do you like looking at the moon?',
   'statek\tship | sheep | shop | chip\tq\t\t',
   'jabłko\tapple\tq\t\t',
   'lato\tsummer\tq\t\t',
