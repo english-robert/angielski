@@ -166,7 +166,8 @@ button:disabled{opacity:.6;cursor:default;transform:none}
 .expr{display:none;max-width:1140px;margin:0 auto}
 .app.em .stage{display:none}
 .app.em .expr{display:block}
-.app.mm .stage{display:none}
+.app.mm .stage,.app.sm .stage{display:none}
+.app.sm .sch{display:block}
 .app.mm .mats{display:block}
 .data{border-radius:var(--r-m);overflow:hidden}
 .d-head{width:100%;display:flex;align-items:center;gap:.8rem;padding:1rem 1.3rem;color:var(--ink);font-size:1.3rem;font-weight:700;text-align:left}
@@ -194,7 +195,7 @@ button:disabled{opacity:.6;cursor:default;transform:none}
 .e-tools button{display:flex;align-items:center;gap:.5rem;padding:.6rem 1.15rem;border-radius:var(--r-s);background:var(--glass);font-size:1.15rem;font-weight:600}
 .e-btns{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:1rem 1.2rem;max-width:1000px;margin:1.6rem auto 0}
 .e-btns .go{flex:1 1 240px;max-width:380px;padding:.95rem 1.5rem}
-.e-count{display:flex;align-items:center;gap:.5rem;height:66px;padding:0 .6rem 0 1rem;border-radius:var(--r-m);background:#fde4ee;color:#a61e4d;cursor:text}
+.e-count{display:flex;align-items:center;gap:.5rem;height:66px;padding:0 .55rem 0 1rem;border-radius:var(--r-m);background:#fde4ee;color:#a61e4d;cursor:text}
 .e-count svg{width:28px;height:28px;flex:none}
 .e-count input{width:76px;height:50px;border:0;border-radius:var(--r-s);background:#fff;color:#8a1c46;font:inherit;font-size:1.35rem;font-weight:700;text-align:center;-moz-appearance:textfield;appearance:textfield}
 .e-count input::-webkit-inner-spin-button,.e-count input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
@@ -217,6 +218,18 @@ button:disabled{opacity:.6;cursor:default;transform:none}
 .e-histbox{margin-top:2rem}
 .h-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:.8rem}
 .h-head .b-les{margin:0}
+.h-toggle{display:flex;align-items:center;gap:.6rem;margin-right:auto;padding:.3rem .4rem;border-radius:var(--r-s);color:var(--ink)}
+.h-toggle:hover{transform:none;background:rgba(29,53,87,.06)}
+.h-toggle .chev{width:28px;height:28px;transition:transform .2s}
+.h-toggle[aria-expanded="true"] .chev{transform:rotate(180deg)}
+#eHistCover{display:none}
+.e-histbox.open #eHistCover{display:grid}
+.e-lab{font-size:1.12rem;font-weight:700;color:var(--muted)}
+#eFrom{--a:var(--ink);--al:#e6ecf4;--ad:var(--ink)}
+.e-step{display:flex;flex-direction:column;gap:3px}
+.e-step button{width:34px;height:23px;display:grid;place-items:center;border-radius:7px;background:#fff;color:#a61e4d}
+.e-step button:hover{transform:none;background:#ffd0e1}
+.e-step svg{width:20px;height:20px}
 .h-show{padding:0;background:none;color:inherit;font:inherit;font-weight:600!important;text-align:left;cursor:pointer}
 .h-show:hover{transform:none;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px}
 
@@ -377,6 +390,49 @@ button:disabled{opacity:.6;cursor:default;transform:none}
 .mat-g li::before{content:'';position:absolute;left:.85rem;top:1.05rem;width:9px;height:9px;border-radius:50%;background:var(--c)}
 .mat-g b{font-weight:700}
 
+/* ---------- schemat lekcji ---------- */
+.sch{display:none;max-width:1000px;margin:0 auto}
+.sch-title{text-align:center;font-size:clamp(2.2rem,5vw,3.4rem);font-weight:800;line-height:1.05}
+.sch-title span{background:linear-gradient(90deg,#7048e8,#d6336c 55%,#f26a1b);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.sch-intro{max-width:760px;margin:1rem auto 2rem;text-align:center;font-size:clamp(1.15rem,1.9vw,1.35rem);line-height:1.5;color:var(--muted)}
+.sch-notes{padding:1.5rem 1.6rem 1.7rem;border-radius:var(--r-l);background:#fff;border:3px solid var(--frame)}
+.sch-notes-lead{margin-bottom:1rem;font-size:1.2rem;font-weight:700}
+.sch-notes-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+.sch-note{padding:1.1rem 1.2rem 1.25rem;border-radius:var(--r-m);background:var(--l);border:3px solid var(--m)}
+.sch-note-h{display:flex;align-items:center;gap:.7rem;margin-bottom:.5rem}
+.sch-note-h span{flex:none;width:46px;height:46px;border-radius:var(--r-s);background:var(--c);color:#fff;display:grid;place-items:center}
+.sch-note-h svg{width:26px;height:26px}
+.sch-note-h b{font-size:1.3rem;font-weight:800;color:var(--d);line-height:1.15}
+.sch-note p{font-size:1.08rem;line-height:1.45}
+.sch-sec{margin:2.4rem 0 1rem;font-size:clamp(1.6rem,3vw,2.1rem);font-weight:800}
+.sch-sec:empty{display:none}
+.sch-trial .sch-steps::before{display:none}
+.sch-steps{position:relative;list-style:none;padding:0;margin:0;display:grid;gap:1.3rem}
+.sch-steps::before{content:'';position:absolute;left:35px;top:20px;bottom:20px;width:4px;border-radius:4px;background:linear-gradient(#cdd6e4,#cdd6e4) padding-box}
+.sch-step{position:relative;display:grid;grid-template-columns:74px minmax(0,1fr);gap:1.1rem;align-items:start;animation:schIn .55s cubic-bezier(.2,1.2,.4,1) backwards}
+@keyframes schIn{from{opacity:0;transform:translateY(24px) scale(.97)}}
+.sch-num{position:relative;z-index:1;width:74px;height:74px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-size:2.1rem;font-weight:800;border:6px solid var(--bg)}
+.sch-card{padding:1.25rem 1.5rem 1.4rem;border-radius:var(--r-l);background:#fff;border:3px solid var(--m)}
+.sch-step.trial .sch-card{border:2px dashed var(--d);background:#fbfcfe}
+.sch-step.trial .sch-num{background:#fff;color:var(--c);box-shadow:inset 0 0 0 3px var(--c)}
+.sch-step.trial .sch-num svg,.sch-end .sch-num svg{width:34px;height:34px}
+.sch-head{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem 1rem;margin-bottom:.55rem}
+.sch-head svg{width:30px;height:30px;color:var(--c);flex:none}
+.sch-head h3{font-size:clamp(1.45rem,2.6vw,1.85rem);font-weight:800;color:var(--d);line-height:1.1}
+.sch-tag{padding:.2rem .8rem;border-radius:99px;background:var(--l);color:var(--d);font-size:1rem;font-weight:700}
+.sch-card p{font-size:1.15rem;line-height:1.5}
+.sch-card ul{list-style:none;padding:0;display:grid;gap:.5rem}
+.sch-card li{position:relative;padding-left:1.5rem;font-size:1.15rem;line-height:1.45}
+.sch-card li::before{content:'';position:absolute;left:.2rem;top:.6em;width:10px;height:10px;border-radius:50%;background:var(--c)}
+.sch-card a,.sch-note a{color:var(--d);font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+.sch-paths{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+.sch-path{padding:1rem 1.15rem 1.15rem;border-radius:var(--r-m);background:var(--l)}
+.sch-path b{display:block;margin-bottom:.35rem;font-size:1.2rem;font-weight:800;color:var(--d)}
+.sch-path p{font-size:1.1rem}
+.sch-end{align-items:center}
+.sch-end .sch-num{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 3px var(--ink)}
+.sch-end b{font-size:1.5rem;font-weight:800}
+
 /* ---------- pełnoekranowe tło: karta aktywności i STOP ---------- */
 .ov,.stop{position:fixed;inset:0;display:grid;place-items:center;background:var(--c)}
 .ov{z-index:50;padding:clamp(.75rem,2.4vw,2rem);overflow:hidden}
@@ -493,6 +549,7 @@ button:disabled{opacity:.6;cursor:default;transform:none}
       <button id="mBoard"><i data-ico="plansza"></i>Plansza</button>
       <button id="mExpr"><i data-ico="abc"></i>Wyrażenia</button>
       <button id="mMat"><i data-ico="teczka"></i>Z materiałami</button>
+      <button id="mSch"><i data-ico="schemat"></i>Schemat lekcji</button>
     </div>
   </header>
 
@@ -566,6 +623,16 @@ button:disabled{opacity:.6;cursor:default;transform:none}
             <button class="e-ic" id="eClear" title="Usuń wszystkie gwiazdki" aria-label="Usuń wszystkie gwiazdki"><i data-ico="odznacz"></i></button>
           </div>
         </div>
+        <div class="e-row d-only">
+          <span class="e-lab">Losuj z:</span>
+          <div class="seg3" id="eFrom">
+            <button data-from="all">Wszystkie</button>
+            <button data-from="noOk">Bez opanowanych</button>
+            <button data-from="rev"><i data-ico="powtorz"></i>Do powtórki <small id="eFromRev">0</small></button>
+            <button data-from="ok"><i data-ico="zaznaczone"></i>Opanowane <small id="eFromOk">0</small></button>
+            <button data-from="star"><i data-ico="gwiazdka"></i>Z gwiazdką <small id="eFromStar">0</small></button>
+          </div>
+        </div>
         <div class="e-row">
           <div class="seg3" id="eFilter"></div>
         </div>
@@ -577,7 +644,7 @@ button:disabled{opacity:.6;cursor:default;transform:none}
         <button data-c="gap"><i data-ico="luka"></i>Luka</button>
         <button data-c="all"><i data-ico="oko_off"></i>Zasłona</button>
       </div>
-      <label class="e-count" title="Ile wyrażeń wylosować"><i data-ico="kostka"></i><input type="number" id="eN" min="1" value="1" inputmode="numeric" aria-label="Ile wyrażeń wylosować"></label>
+      <div class="e-count" title="Ile wyrażeń wylosować"><i data-ico="kostka"></i><input type="number" id="eN" min="1" max="99" value="1" inputmode="numeric" aria-label="Ile wyrażeń wylosować"><span class="e-step"><button id="eNUp" title="Więcej" aria-label="Więcej"><i data-ico="gora"></i></button><button id="eNDown" title="Mniej" aria-label="Mniej"><i data-ico="dol"></i></button></span></div>
       <button id="eDraw" class="go"><i data-ico="losuj"></i>Losuj</button>
       <label class="tg" id="nrEBox"><input type="checkbox" id="nrE" checked><span class="bx"><i data-ico="ptaszek"></i></span>Nie powtarzaj</label>
     </div>
@@ -593,14 +660,29 @@ button:disabled{opacity:.6;cursor:default;transform:none}
     <div class="b-deck d-only" id="eDeck" hidden></div>
     <section class="e-histbox d-only" id="eHistBox" hidden>
       <div class="h-head">
-        <h3 class="b-les">Historia losowania<span class="d-count" id="eHistCnt">0</span></h3>
+        <button class="h-toggle" id="eHistTog" aria-expanded="false"><span class="b-les">Historia losowania<span class="d-count" id="eHistCnt">0</span></span><i data-ico="strzalka" class="chev"></i></button>
+        <button class="sq" id="eHistCover" title="Zasłoń od nowa" aria-label="Zasłoń od nowa"><i data-ico="reset"></i></button>
         <button class="sq h-clear" id="eHistClear" title="Wyczyść historię" aria-label="Wyczyść historię"><i data-ico="kosz"></i></button>
       </div>
-      <div class="b-rows" id="eHistList"></div>
+      <div class="b-rows" id="eHistList" hidden></div>
     </section>
     <div class="e-browse" id="eList"></div>
   </section>
-  <section class="mats" id="mats"><div class="mat-grid" id="matGrid"></div></section>
+  <section class="mats" id="mats">
+    <div class="mat-grid" id="matGrid"></div>
+  </section>
+  <section class="sch" id="sch">
+    <h2 class="sch-title">Schemat <span>lekcji</span></h2>
+    <p class="sch-intro" id="schIntro"></p>
+    <div class="sch-notes">
+      <p class="sch-notes-lead" id="schNotesLead"></p>
+      <div class="sch-notes-grid" id="schNotes"></div>
+    </div>
+    <h3 class="sch-sec" id="schTrialTitle"></h3>
+    <div class="sch-trial" id="schTrial"></div>
+    <h3 class="sch-sec" id="schMainTitle"></h3>
+    <ol class="sch-steps" id="schSteps"></ol>
+  </section>
 </main>
 
 <div class="ov" id="ov" hidden>
@@ -1139,6 +1221,7 @@ const METODY = [
    grupa (opcjonalnie): nagłówek, pod którym pojawi się strona
    ================================================================ */
 const STRONY = [
+  { nazwa: "Znikające słowa", opis: "Wklej tekst i zakrywaj słowa, a potem odtwarzaj go z pamięci", url: "https://english-robert.github.io/angielski/dialog-generator.html" },
   { nazwa: "Vocabulary.com", opis: "Słownik z przykładami zdań", url: "https://www.vocabulary.com/" },
   { nazwa: "Fast Phrases", opis: "Ułóż zdanie pasujące do obrazka, na czas", url: "https://www.gamestolearnenglish.com/fast-phrases/" },
   { nazwa: "Describer", opis: "Przeczytaj opis i wskaż pasujący obrazek", url: "https://www.gamestolearnenglish.com/describer/" },
@@ -1243,6 +1326,65 @@ const MATERIALY = [
     ]
   }
 ];
+
+/* ================================================================
+   SCHEMAT LEKCJI (zakładka „Schemat lekcji”)
+   Tekst można dowolnie zmieniać. **pogrubienie**, [tekst](adres) = link.
+   kolor: dowolny kolor; proba: lekcja próbna (osobno, nad zwykłą lekcją)
+   meta: napis przy fladze na końcu (pusty = bez mety)
+   ================================================================ */
+const SCHEMAT = {
+  wstep: "To nie jest sztywny plan, tylko szkielet. Kolejność i proporcje zmieniają się w zależności od Ciebie, Twoich potrzeb i tego, co dzieje się na lekcji.",
+  notatkiWstep: "Notatki z każdej lekcji mają trzy sekcje, które uzupełniamy na bieżąco:",
+  notatki: [
+    { nazwa: "Translations", opis: "to, co chcesz powiedzieć, przełożone na angielski.", ikona: "abc", kolor: "#0b86d1" },
+    { nazwa: "Questions & Answers", opis: "wyrażenia z Translations osadzone w sytuacjach z życia („Co powiesz, gdy…?”), a także wszystko inne, co było dla Ciebie nowe, razem z odpowiedziami.", ikona: "pytanie", kolor: "#7048e8" },
+    { nazwa: "Text", opis: "dialog, historia, mail albo inny praktyczny tekst. Powstaje na większości lekcji, ale nie na każdej.", ikona: "notatki", kolor: "#0f9d8f" }
+  ],
+  proba: {
+    nazwa: "Lekcja próbna", ikona: "iskra", kolor: "#1d3557",
+    punkty: [
+      "Poznajemy się i omawiamy Twoje potrzeby.",
+      "Ustalamy cel oraz to, po czym poznamy, że został osiągnięty.",
+      "W głównej części robimy np. mapę myśli „Things I’d most like to learn in English” albo inne zadanie jak np. [BBC Easy English Conversations](https://www.bbc.co.uk/learningenglish/features/easy_english_conversations).",
+      "Feedback + Twoje pytania."
+    ]
+  },
+  zwykla: "Zwykła lekcja",
+  meta: "Koniec lekcji",
+  kroki: [
+    {
+      nr: "1", nazwa: "Rozmowa na start", ikona: "dymki", kolor: "#f26a1b",
+      opis: "„Co ostatnio u Ciebie?”, „Kiedy ostatnio przydałby Ci się angielski?” itp."
+    },
+    {
+      nr: "2", nazwa: "Powtórka", ikona: "powtorz", kolor: "#0f9d8f",
+      opis: "Wracamy do poprzedniej lekcji w formie różnych krótkich zadań."
+    },
+    {
+      nr: "3", nazwa: "Główna część", dopisek: "jedna ścieżka albo obie", ikona: "klocki", kolor: "#7048e8",
+      sciezki: [
+        { nazwa: "Z Twojego życia", opis: "to, co opowiadasz, przekładamy na angielski i budujemy z tego tekst, najczęściej dialog, który potem trafia do znikających słów." },
+        { nazwa: "Z gotowych materiałów", opis: "ćwiczenie, gra, nagranie albo tekst (np. z BBC Learning English, Macaroni Story, Fix My Sentence, worksheet). To, czego nie znasz, zapisujemy w Translations i Questions & Answers." }
+      ]
+    },
+    {
+      nr: "4", nazwa: "Utrwalanie", ikona: "kotwica", kolor: "#0b86d1",
+      punkty: [
+        "[Znikające słowa](https://english-robert.github.io/angielski/dialog-generator.html): odtwarzamy tekst z lekcji z coraz większą liczbą luk (gdy powstał tekst).",
+        "Powtórka tego, co zapisaliśmy w notatkach."
+      ]
+    },
+    {
+      nr: "5", nazwa: "Zamknięcie", ikona: "flaga", kolor: "#d6336c",
+      punkty: [
+        "Twoje pytania do mnie.",
+        "Co było dziś najbardziej przydatne?",
+        "Co robimy na następnej lekcji (ogólny dział tematyczny lub konkretne zagadnienie)?"
+      ]
+    }
+  ]
+};
 
 /* ================================================================
    PRZYKŁADOWE WYRAŻENIA (przycisk „Wstaw przykłady” w zakładce Wyrażenia)
@@ -1352,6 +1494,11 @@ const ICONS={
   klocki:'<rect x="3" y="14" width="8" height="7" rx="1.5"/><rect x="13" y="14" width="8" height="7" rx="1.5"/><rect x="8" y="5" width="8" height="7" rx="1.5"/>',
   kosz:'<path d="M4 7h16M10 11v6M14 11v6"/><path d="M5 7l1 12.5A2 2 0 0 0 8 21.5h8a2 2 0 0 0 2-2L19 7"/><path d="M9 7V4h6v3"/>',
   kopiuj:'<rect x="8" y="8" width="13" height="13" rx="2.5"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/>',
+  schemat:'<circle cx="6" cy="5" r="2.5"/><circle cx="18" cy="12" r="2.5"/><circle cx="6" cy="19" r="2.5"/><path d="M8.5 5h5.5a3.5 3.5 0 0 1 1.5 6.7M15.5 13.3A3.5 3.5 0 0 1 14 19H8.5"/>',
+  gora:'<path d="M6 15l6-6 6 6"/>',
+  dol:'<path d="M6 9l6 6 6-6"/>',
+  kotwica:'<circle cx="12" cy="5" r="2.5"/><path d="M12 7.5V21M8 11h8M4.5 14a7.5 7.5 0 0 0 15 0"/>',
+  meta:'<path d="M5 21V3"/><path d="M5 4h14v9H5"/><g fill="currentColor" stroke="none"><rect x="5" y="4" width="3.5" height="3"/><rect x="12" y="4" width="3.5" height="3"/><rect x="8.5" y="7" width="3.5" height="3"/><rect x="15.5" y="7" width="3.5" height="3"/><rect x="5" y="10" width="3.5" height="3"/><rect x="12" y="10" width="3.5" height="3"/></g>',
   ptaszek:'<path d="M4 12l5 5L20 6"/>',
   strzalka:'<path d="M6 9l6 6 6-6"/>',
   wroc:'<path d="M15 5l-7 7 7 7"/>',
@@ -1597,7 +1744,7 @@ const loadJSON=(k,d)=>{try{return JSON.parse(store.get(k))||d}catch(e){return d}
 const E={items:[],lessons:[],tags:[],sel:new Set(loadJSON('ruletka-lekcje',[])),filter:'all',
   lang:store.get('ruletka-kierunek')==='en'?'en':'pl',view:'draw',
   cover:Object.assign({draw:'all',browse:'all'},loadJSON('ruletka-zaslona3',{})),
-  used:new Set(),deck:null,deal:0,only:null,stars:[],last:loadJSON('ruletka-gwiazdki-poprz',[]),anim:false,cur:-1,busy:false,hist:[],col:0};
+  used:new Set(),from:store.get('ruletka-losuj-z')||'all',histOpen:false,deck:null,deal:0,only:null,stars:[],last:loadJSON('ruletka-gwiazdki-poprz',[]),anim:false,cur:-1,busy:false,hist:[],col:0};
 if(E.cover.draw==='none')E.cover.draw='all';
 const keyOf=o=>o.q?'Q\t'+o.q:o.pl+'\t'+o.en;
 /* gwiazdki i historia są zapisywane po treści, więc przetrwają zamknięcie pliku i zmiany listy */
@@ -1635,13 +1782,16 @@ function eParse(){
   E.used.clear();E.stars=keysToIdx(prevS);E.hist=keysToIdx(prevH);eMarksUI();
   if(E.cur>=items.length)E.cur=-1;
   $('dCount').textContent=items.length;
-  eLessons();
+  eLessons();eHistList();
 }
 const inLesson=o=>!E.sel.size||E.sel.has(E.lessons[o.les].name);
 const kindOf=o=>o.q?'q':o.s?'sent':'other';
 const fits=(o,f)=>f==='all'||(f.startsWith('t:')?o.tag===f.slice(2):kindOf(o)===f);
 const ePool=()=>E.items.map((_,i)=>i).filter(i=>inLesson(E.items[i])&&fits(E.items[i],E.filter));
 const eTexts=o=>{if(o.q)return{main:o.q,other:o.a};const m=(E.lang==='pl'&&o.pl)?o.pl:o.en;return{main:m,other:m===o.en?o.pl:o.en}};
+const FROM={all:()=>true,noOk:i=>E.items[i].st!=='ok',rev:i=>E.items[i].st==='rev',ok:i=>E.items[i].st==='ok',star:i=>E.stars.includes(i)};
+if(!FROM[E.from])E.from='all';
+const drawPool=()=>ePool().filter(FROM[E.from]||FROM.all);
 const segOn=(box,attr,val)=>[...box.children].forEach(x=>x.classList.toggle('on',x.dataset[attr]===val));
 
 /* filtry: rodzaje + tagi (z kolorową kropką); liczą tylko wybrane lekcje */
@@ -1664,7 +1814,7 @@ function eLessons(){
   $('lesAll').innerHTML=row(!E.sel.size,'','Wszystkie lekcje',E.items.length)+`<button class="dd-item" data-last="1">${ico('iskra')}<span>Tylko ostatnia lekcja</span></button>`;
   list.innerHTML=L.slice().reverse().map(l=>row(E.sel.has(l.name),l.name,esc(l.name),l.n)).join('');
   list.scrollTop=top;$('lesSearch').hidden=L.length<=8;lesFilter();
-  eFilters();eHistList();eMini();if(E.view==='browse')eBrowse();
+  eFilters();eMarksUI();eMini();if(E.view==='browse')eBrowse();
 }
 function lesFilter(){const q=$('lesSearch').value.trim().toLowerCase();[...$('lesList').children].forEach(b=>{b.hidden=!!q&&!b.dataset.n.toLowerCase().includes(q)})}
 function lesOpen(open){$('lesMenu').hidden=!open;$('lesDD').classList.toggle('open',open);$('lesBtn').setAttribute('aria-expanded',open);if(open&&!$('lesSearch').hidden)$('lesSearch').focus()}
@@ -1744,6 +1894,8 @@ function eMarksUI(){
   $('eRevCnt').textContent=E.items.filter(o=>o.st==='rev').length;
   $('eOkCnt').textContent=E.items.filter(o=>o.st==='ok').length;
   $('eRestore').disabled=!(E.last&&E.last.length);
+  const vis=ePool();$('eFromRev').textContent=vis.filter(FROM.rev).length;$('eFromOk').textContent=vis.filter(FROM.ok).length;$('eFromStar').textContent=vis.filter(FROM.star).length;
+  segOn($('eFrom'),'from',E.from);
   [['eOnlyStar','star'],['eOnlyRev','rev'],['eOnlyOk','ok']].forEach(([id,k])=>{$(id).classList.toggle('on',E.only===k);$(id).setAttribute('aria-pressed',E.only===k)});
 }
 /* „Usuń wszystkie gwiazdki” zapamiętuje je, żeby dało się je przywrócić */
@@ -1785,17 +1937,17 @@ function pickN(p,n){
   take.forEach(i=>E.used.add(i));return take;
 }
 async function eDraw(){
-  if(E.busy)return;const p=ePool();
-  if(!p.length){E.deck=null;E.cur=-1;eRender();$('eMain').textContent=E.items.length?'Brak wyrażeń w tym wyborze.':'Wklej wyrażenia i losuj.';return}
+  if(E.busy)return;const p=drawPool();
+  if(!p.length){E.deck=null;E.cur=-1;eRender();$('eMain').textContent=!E.items.length?'Wklej wyrażenia i losuj.':E.from!=='all'?'Nic nie pasuje do „Losuj z”.':'Brak wyrażeń w tym wyborze.';return}
   const n=Math.max(1,Math.min(parseInt($('eN').value,10)||1,p.length));$('eN').value=n;
   const take=pickN(p,n);
   E.hist=[...take,...E.hist.filter(i=>!take.includes(i))];E.cur=take[0];saveMarks();
-  if(n>1){E.deck=take;E.deal=Math.floor(Math.random()*PALETA.length);eRender();eDeck(true);eHistList();return}
+  if(n>1){E.deck=take;E.deal=Math.floor(Math.random()*PALETA.length);eRender();eDeck(true);eHistAdd(take);return}
   E.deck=null;$('eCard').hidden=false;$('eDeck').hidden=true;
   E.busy=true;$('eDraw').disabled=true;$('eKind').textContent='';$('eTrans').hidden=$('eReveal').hidden=$('eMk').hidden=true;
   const main=$('eMain');
   for(let k=0;k<13;k++){const o=E.items[p[Math.floor(Math.random()*p.length)]];main.className='e-main long';main.textContent=eTexts(o).main;if(k%5===0)eColor();await sleep(45+k*k*2.6)}
-  eRender(true);eHistList();
+  eRender(true);eHistAdd(take);
   E.busy=false;$('eDraw').disabled=false;
 }
 /* karty losowane naraz: wpadają jedna po drugiej, każda w innym kolorze */
@@ -1813,11 +1965,15 @@ function hRow(i){
   const o=E.items[i],[L,R]=answerHTML(o,E.cover.draw);
   return`<div class="b-row" data-i="${i}"><div><button class="h-show" title="Pokaż na karcie">${L}</button></div><div>${R}</div>${marks(i)}</div>`;
 }
-function eHistList(){
-  const ids=E.hist.filter(i=>E.items[i]);
-  $('eHistBox').hidden=!ids.length;$('eHistCnt').textContent=ids.length;
-  $('eHistList').innerHTML=ids.map(hRow).join('');
+function eHistMeta(){const n=E.hist.filter(i=>E.items[i]).length;$('eHistBox').hidden=!n;$('eHistCnt').textContent=n}
+function eHistList(){$('eHistList').innerHTML=E.hist.filter(i=>E.items[i]).map(hRow).join('');eHistMeta()}
+/* dopisuje nowe losowania na górze; starsze wiersze zostają razem z odsłoniętymi zasłonami */
+function eHistAdd(ids){
+  const list=$('eHistList');
+  ids.forEach(i=>{const r=list.querySelector(`.b-row[data-i="${i}"]`);if(r)r.remove()});
+  list.insertAdjacentHTML('afterbegin',ids.map(hRow).join(''));eHistMeta();
 }
+function eHistOpen(open){E.histOpen=open;$('eHistList').hidden=!open;$('eHistBox').classList.toggle('open',open);$('eHistTog').setAttribute('aria-expanded',open)}
 function eSetData(open){$('data').classList.toggle('open',open);$('dHead').setAttribute('aria-expanded',open)}
 
 /* ---------- przegląd ---------- */
@@ -1844,7 +2000,7 @@ function eCoverUI(){segOn($('eCover'),'c',E.cover.browse);segOn($('eDMode'),'c',
 function eMini(){
   const f=$('eFilter').querySelector('.on');
   $('eGear').title='Ustawienia: '+[E.view==='draw'?'Losowanie':'Przegląd',COVER_TXT[E.cover[E.view]],E.lang==='pl'?'PL → EN':'EN → PL',
-    $('lesDD').hidden?'':$('lesBtn').querySelector('span').textContent,f&&E.filter!=='all'?f.dataset.label:'',E.view==='browse'&&E.only?ONLY_TXT[E.only]:''].filter(Boolean).join(', ');
+    $('lesDD').hidden?'':$('lesBtn').querySelector('span').textContent,f&&E.filter!=='all'?f.dataset.label:'',E.view==='browse'&&E.only?ONLY_TXT[E.only]:'',E.view==='draw'&&E.from!=='all'?'losuj z: '+$('eFrom').querySelector('.on').textContent.replace(/\d+/,'').trim().toLowerCase():''].filter(Boolean).join(', ');
 }
 function eSetView(v){E.view=v;segOn($('eView'),'v',v);$('expr').classList.toggle('browse',v==='browse');store.set('ruletka-widok',v);eCoverUI();eMini();if(v==='browse')eBrowse()}
 function eFloat(on){
@@ -1912,12 +2068,18 @@ $('eDraw').addEventListener('click',eDraw);
 $('eN').addEventListener('keydown',e=>{if(e.key==='Enter')eDraw()});
 $('eReveal').addEventListener('click',()=>{$('eCard').querySelectorAll('.sc').forEach(sc=>scShow(sc,Infinity));$('eReveal').hidden=true});
 $('eHistClear').addEventListener('click',()=>{if(E.busy)return;E.used.clear();E.hist=[];saveMarks();eHistList()});
+$('eHistTog').addEventListener('click',()=>eHistOpen(!E.histOpen));
+$('eHistCover').addEventListener('click',eHistList);
+$('eFrom').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;E.from=b.dataset.from;store.set('ruletka-losuj-z',E.from);E.used.clear();eMarksUI();eMini()});
+const stepN=d=>{const t=$('eN');t.value=Math.max(1,Math.min(99,(parseInt(t.value,10)||1)+d))};
+$('eNUp').addEventListener('click',()=>stepN(1));
+$('eNDown').addEventListener('click',()=>stepN(-1));
 
 /* ---------- tryby ---------- */
-const HINT={wheel:'Kliknij koło albo przycisk, żeby zakręcić.',board:'Kliknij kafelek, żeby wybrać, albo wylosuj. Oko wyłącza zadanie z losowania.',expr:'Wklej wyrażenia, wybierz lekcje, a potem losuj albo przeglądaj.',mat:'Zadania, do których trzeba przygotować materiały.'};
-const MODE_BTN={wheel:'mWheel',board:'mBoard',expr:'mExpr',mat:'mMat'};
+const HINT={wheel:'Kliknij koło albo przycisk, żeby zakręcić.',board:'Kliknij kafelek, żeby wybrać, albo wylosuj. Oko wyłącza zadanie z losowania.',expr:'Wklej wyrażenia, wybierz lekcje, a potem losuj albo przeglądaj.',mat:'Zadania, do których trzeba przygotować materiały.',sch:'Szkielet lekcji, który można pokazać uczniowi.'};
+const MODE_BTN={wheel:'mWheel',board:'mBoard',expr:'mExpr',mat:'mMat',sch:'mSch'};
 function setMode(m){
-  mode=m;app.classList.toggle('bm',m==='board');app.classList.toggle('em',m==='expr');app.classList.toggle('mm',m==='mat');
+  mode=m;app.classList.toggle('bm',m==='board');app.classList.toggle('em',m==='expr');app.classList.toggle('mm',m==='mat');app.classList.toggle('sm',m==='sch');
   Object.entries(MODE_BTN).forEach(([k,id])=>$(id).classList.toggle('on',k===m));
   $('spinTxt').textContent=m==='wheel'?'Zakręć':'Losuj';
   $('hint').textContent=HINT[m];
@@ -1948,9 +2110,33 @@ $('reset').addEventListener('click',()=>{if(busy)return;used.clear();order=[];re
 $('mgrid').innerHTML=MT.map((m,j)=>`<button class="mtile" data-m="${j}" style="--c:${m.c};--d:${m.d};--l:${m.l};--m:${m.m}"><span class="mi">${ico(m.ikona)}</span><span><b>${m.nazwa}</b>${m.podtytul?`<small>${m.podtytul}</small>`:''}</span></button>`).join('');
 $('mgrid').addEventListener('click',e=>{const t=e.target.closest('.mtile');if(t&&!busy){const m=MT[+t.dataset.m];m.stop?openStop(m):showCard(m,ico(m.ikona),true)}});
 /* strony pogrupowane (pole „grupa”); nagłówki tylko przy więcej niż jednej grupie */
+const linkTile=(l,c)=>`<a class="ltile" href="${esc(l.url)}" target="_blank" rel="noopener" style="--c:${c}"><span class="mi">${ico('link')}</span><span><b>${esc(l.nazwa)}</b>${l.opis?`<small>${esc(l.opis)}</small>`:''}</span></a>`;
 const LG=new Map();STRONY.forEach(l=>{const g=l.grupa||'Ćwiczenia i lekcje';if(!LG.has(g))LG.set(g,[]);LG.get(g).push(l)});
 let lj=0;
-$('lgrid').innerHTML=[...LG].map(([g,ls])=>(LG.size>1?`<h3 class="l-sub">${esc(g)}</h3>`:'')+`<div class="lgrid">`+ls.map(l=>`<a class="ltile" href="${esc(l.url)}" target="_blank" rel="noopener" style="--c:${PALETA[(3+lj++)%PALETA.length]}"><span class="mi">${ico('link')}</span><span><b>${esc(l.nazwa)}</b>${l.opis?`<small>${esc(l.opis)}</small>`:''}</span></a>`).join('')+`</div>`).join('');
+$('lgrid').innerHTML=[...LG].map(([g,ls])=>(LG.size>1?`<h3 class="l-sub">${esc(g)}</h3>`:'')+`<div class="lgrid">${ls.map(l=>linkTile(l,PALETA[(3+lj++)%PALETA.length])).join('')}</div>`).join('');
+
+/* tekst z **pogrubieniem** i [linkami](adres) */
+const mdl=t=>md(t).replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+
+/* zakładka „Schemat lekcji” */
+$('schIntro').innerHTML=mdl(SCHEMAT.wstep||'');
+$('schNotesLead').innerHTML=mdl(SCHEMAT.notatkiWstep||'');
+$('schNotes').innerHTML=(SCHEMAT.notatki||[]).map(n=>{const t=tone(n,n.kolor||'#0b86d1');
+  return`<div class="sch-note" style="--c:${t.c};--d:${t.d};--l:${t.l};--m:${t.m}"><div class="sch-note-h"><span>${ico(n.ikona)}</span><b>${esc(n.nazwa)}</b></div><p>${mdl(n.opis)}</p></div>`}).join('');
+/* jeden krok: kółko (numer albo ikona) + karta z nagłówkiem, opisem, punktami albo ścieżkami */
+const schStep=(k,j,cls)=>{const t=tone(k,k.kolor||PALETA[j%PALETA.length]),head=k.nr&&k.nazwa;
+  return`<li class="sch-step${cls}" style="--c:${t.c};--d:${t.d};--l:${t.l};--m:${t.m};animation-delay:${j*90}ms"><span class="sch-num">${k.nr?esc(k.nr):ico(k.ikona)}</span><div class="sch-card">`+
+    (head?`<div class="sch-head">${ico(k.ikona)}<h3>${esc(k.nazwa)}</h3>${k.dopisek?`<span class="sch-tag">${esc(k.dopisek)}</span>`:''}</div>`:'')+
+    (k.opis?`<p>${mdl(k.opis)}</p>`:'')+
+    (k.punkty?`<ul>${k.punkty.map(x=>`<li>${mdl(x)}</li>`).join('')}</ul>`:'')+
+    (k.sciezki?`<div class="sch-paths">${k.sciezki.map(x=>`<div class="sch-path"><b>${esc(x.nazwa)}</b><p>${mdl(x.opis)}</p></div>`).join('')}</div>`:'')+
+  `</div></li>`};
+const P=SCHEMAT.proba,K=SCHEMAT.kroki||[];
+$('schTrialTitle').textContent=P?P.nazwa:'';
+$('schTrial').innerHTML=P?`<ul class="sch-steps">${schStep(P,0,' trial')}</ul>`:'';
+$('schMainTitle').textContent=SCHEMAT.zwykla||'';
+$('schSteps').innerHTML=K.map((k,j)=>schStep(k,j+1,'')).join('')+
+  (SCHEMAT.meta?`<li class="sch-step sch-end" style="animation-delay:${(K.length+1)*90}ms"><span class="sch-num">${ico('meta')}</span><b>${esc(SCHEMAT.meta)}</b></li>`:'');
 
 /* zakładka „Z materiałami” */
 const MA=MATERIALY.map((a,i)=>tone(a,a.kolor||PALETA[(i+2)%PALETA.length]));
