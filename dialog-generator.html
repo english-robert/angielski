@@ -7,15 +7,13 @@
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 
 :root{
   /* ── palette ── */
-  --bg:#e8eef2;
-  --bg-deep:#dbe5ea;
-  --surface:#ffffff;
+  --bg:#e6edf2;
   --ink:#132430;
   --ink-soft:#4d6373;
   --line:#c3d2da;
@@ -23,50 +21,49 @@
   --teal:#12676b;
   --teal-dk:#0a4144;
   --teal-lt:#e0f0ef;
-  --cover:#3ba3a6;
-  --cover-marked:#f0b53c;
-  --done-line:rgba(59,163,166,.55);
+  --cover:#2fa3a6;
+  --cover-edge:#1d7a7d;
+  --cover-marked:#f2b32e;
+  --cover-marked-edge:#b77d06;
+  --done-line:rgba(31,157,85,.6);
   --marked-line:rgba(227,148,0,.6);
   --rust:#c9452c;
   --rust-dk:#8d2c19;
   --amber:#e39400;
-  --amber-dk:#a86a00;
+  --gold:#f5b301;
+  --flame:#f0611d;
+  --green:#1f9d55;
   --blue:#2352b8;
   --blue-dk:#173a86;
 
-  /* ── type ── */
   --display:'Exo 2',sans-serif;
   --ui:'Exo 2',sans-serif;
   --read:'Exo 2',sans-serif;
 
-  /* ── rhythm ── */
   --gap-in:1.35rem;
-  --gap-out:3.4rem;
-
-  /* ── stage ── */
+  --gap-out:3.2rem;
   --stage-size:2rem;
 }
 
 html{scroll-behavior:smooth}
 body{
   font-family:var(--ui);
-  background:
-    radial-gradient(circle at 12% 0%,rgba(18,103,107,.10),transparent 45%),
-    radial-gradient(circle at 92% 8%,rgba(227,148,0,.12),transparent 42%),
-    var(--bg);
+  background-color:var(--bg);
+  background-image:
+    radial-gradient(circle at 12% 0%,rgba(18,103,107,.12),transparent 45%),
+    radial-gradient(circle at 92% 8%,rgba(245,179,1,.14),transparent 42%);
   background-attachment:fixed;
   color:var(--ink);
   font-size:17px;
   line-height:1.6;
 }
-body.bank-pad{padding-bottom:7rem}
 
 .wrap{max-width:1140px;margin:0 auto;padding:0 1.4rem}
 
 /* ══════════ HEADER ══════════ */
-header{padding:3.4rem 0 2.2rem;text-align:center}
+header{padding:3rem 0 2rem;text-align:center}
 h1{
-  font-family:var(--display);font-weight:800;
+  font-family:var(--display);font-weight:900;
   font-size:clamp(2.4rem,6.2vw,4.4rem);line-height:1.02;
   letter-spacing:-.03em;
 }
@@ -75,27 +72,19 @@ h1 .grad{
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;
 }
-.lede{
-  max-width:640px;margin:1.1rem auto 0;
-  font-size:1.12rem;color:var(--ink-soft);
-}
+.lede{max-width:640px;margin:1rem auto 0;font-size:1.12rem;color:var(--ink-soft)}
 
 /* ══════════ CARD ══════════ */
 .card{
-  background:linear-gradient(150deg,#fff 0%,#fff 55%,rgba(18,103,107,.07) 100%);
+  background-color:#fff;
   border-radius:22px;
-  padding:1.9rem;
+  padding:1.7rem 1.9rem;
   box-shadow:0 6px 20px rgba(19,36,48,.10);
 }
 section{margin-bottom:var(--gap-out)}
 
-.card-head{
-  display:flex;align-items:baseline;gap:.8rem;flex-wrap:wrap;
-  margin-bottom:var(--gap-in);
-}
-.card-head h2{
-  font-family:var(--display);font-weight:700;font-size:1.55rem;letter-spacing:-.02em;
-}
+.card-head{display:flex;align-items:baseline;gap:.8rem;flex-wrap:wrap;margin-bottom:var(--gap-in)}
+.card-head h2{font-family:var(--display);font-weight:800;font-size:1.55rem;letter-spacing:-.02em}
 .card-head p{font-size:.98rem;color:var(--ink-soft)}
 .card-head .btn.icon{margin-left:auto;align-self:center}
 .card.collapsed .card-head{margin-bottom:0}
@@ -106,114 +95,168 @@ section{margin-bottom:var(--gap-out)}
 textarea{
   width:100%;min-height:230px;resize:vertical;
   font-family:var(--read);font-size:1.15rem;line-height:1.65;
-  color:var(--ink);background:#f7fafb;
+  color:var(--ink);background:#f4f8fa;
   border:2px solid var(--line);border-radius:14px;
   padding:1.1rem 1.2rem;
 }
 textarea:focus{outline:none;border-color:var(--teal);background:#fff}
-
-.brace-tip{
-  margin-top:.9rem;font-size:.98rem;color:var(--ink-soft);
-}
+.brace-tip{margin-top:.9rem;font-size:.98rem;color:var(--ink-soft)}
 .brace-tip code{
-  font-family:var(--ui);font-weight:600;
+  font-family:var(--ui);font-weight:700;
   background:var(--amber);color:#2a1a00;
   padding:.1rem .45rem;border-radius:6px;
 }
-
 .editor-actions{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1.2rem}
 
 /* ══════════ BUTTONS ══════════ */
 .btn{
-  font-family:var(--ui);font-weight:600;font-size:1rem;
-  padding:.75rem 1.4rem;border:none;border-radius:12px;
+  --edge:#0b5a5e;
+  font-family:var(--ui);font-weight:700;font-size:1rem;
+  padding:.72rem 1.35rem;border:none;border-radius:12px;
   cursor:pointer;color:#fff;
   background-color:#17878b;
-  background-image:linear-gradient(125deg,#1a9490 0%,#137f8c 100%);
-  transition:transform .15s ease,background-image .15s ease,filter .15s ease;
+  background-image:linear-gradient(125deg,#22a5a1 0%,#14808b 100%);
+  transition:transform .12s ease,filter .15s ease;
+  position:relative;
 }
-.btn:hover{background-image:linear-gradient(125deg,#1fa39e 0%,#168d9a 100%);transform:scale(1.03)}
-.btn:active{transform:scale(.985);filter:brightness(.93)}
+.btn:hover{transform:scale(1.04);filter:brightness(1.06)}
+.btn:active{transform:scale(.97);filter:brightness(.94)}
 .btn:focus{outline:none}
 .btn:focus-visible{outline:3px solid var(--amber);outline-offset:3px}
 
-.btn.rust{background-color:#d2543a;background-image:linear-gradient(125deg,#e0663d 0%,#cb4038 100%)}
-.btn.rust:hover{background-image:linear-gradient(125deg,#ea7449 0%,#d84c43 100%)}
-
-.btn.blue{background-color:#3162cb;background-image:linear-gradient(125deg,#3f74d8 0%,#2a53bd 100%)}
-.btn.blue:hover{background-image:linear-gradient(125deg,#4c82e4 0%,#3461cc 100%)}
-
-.btn.amber{color:#31200a;background-color:#eba213;background-image:linear-gradient(125deg,#f2b02a 0%,#e28f08 100%)}
-.btn.amber:hover{background-image:linear-gradient(125deg,#f8bd3f 0%,#ef9c14 100%)}
-
+.btn.rust{--edge:#8d2c19;background-color:#d2543a;background-image:linear-gradient(125deg,#ea6b45 0%,#cb4038 100%)}
+.btn.blue{--edge:#173a86;background-color:#3162cb;background-image:linear-gradient(125deg,#4a80e0 0%,#2a53bd 100%)}
+.btn.amber{--edge:#a86a00;color:#31200a;background-color:#eba213;background-image:linear-gradient(125deg,#fbc23f 0%,#e8950b 100%)}
 .btn.ghost{
+  --edge:#b9cbd4;
   color:var(--ink);
-  background-color:#ffffff;
-  background-image:linear-gradient(125deg,#ffffff 0%,#eef4f7 100%);
+  background-color:#e3ecf1;
+  background-image:none;
 }
-.btn.ghost:hover{background-image:linear-gradient(125deg,#ffffff 0%,#f6fafc 100%)}
-.card-head .btn.icon,.editor-actions .btn.ghost{background-color:#d3e0e7;background-image:linear-gradient(125deg,#dceaf0 0%,#c6d7e0 100%)}
-.card-head .btn.icon:hover,.editor-actions .btn.ghost:hover{background-image:linear-gradient(125deg,#e6f2f7 0%,#cfe0e9 100%)}
 
-/* shine only on the key action buttons */
-.btn.shine{position:relative;overflow:hidden}
-.btn.shine::after{
-  content:'';position:absolute;top:0;left:-130%;width:60%;height:100%;
-  background:linear-gradient(100deg,transparent,rgba(255,255,255,.4),transparent);
-  transform:skewX(-18deg);
-}
-.btn.shine:hover::after{animation:sweep .45s ease-out}
-@keyframes sweep{to{left:150%}}
-
-/* przycisk z ikoną i podpisem */
-.btn.act{
-  display:inline-flex;align-items:center;gap:.55rem;
-  padding:.62rem 1rem;font-size:.97rem;
-}
+.btn.act{display:inline-flex;align-items:center;gap:.55rem;padding:.62rem 1rem;font-size:.97rem}
 .btn.act svg{width:1.25rem;height:1.25rem;flex:0 0 auto;display:block}
 
 .btn.icon{
-  padding:0;width:2.9rem;height:2.9rem;
+  padding:0;width:2.8rem;height:2.8rem;
   display:inline-flex;align-items:center;justify-content:center;
-  position:relative;
 }
-.btn.icon svg{width:1.35rem;height:1.35rem;display:block}
+.btn.icon svg{width:1.3rem;height:1.3rem;display:block}
 .btn.icon.flip svg{transition:transform .25s ease}
-.bank.collapsed .btn.icon.flip svg{transform:rotate(180deg)}
-.btn.icon::before{
+
+/* podpowiedzi (tooltipy) dla przycisków z samą ikoną */
+.btn.icon::before,
+.toolbar .btn.act::before,
+.tab::before{
   content:attr(data-tip);
-  position:absolute;top:calc(100% + .5rem);left:50%;transform:translateX(-50%);
-  white-space:nowrap;font-size:.85rem;font-weight:500;
+  position:absolute;top:calc(100% + .6rem);left:50%;transform:translateX(-50%);
+  white-space:nowrap;font-size:.85rem;font-weight:600;
   padding:.35rem .7rem;border-radius:8px;
   background-color:var(--ink);color:#fff;
   opacity:0;pointer-events:none;transition:opacity .15s ease;
   z-index:60;
 }
-.btn.icon:hover::before,.btn.icon:focus-visible::before{opacity:1}
-.bank .btn.icon::before{top:auto;bottom:calc(100% + .5rem)}
+.btn.icon:hover::before,.btn.icon:focus-visible::before,
+.toolbar .btn.act:hover::before,.toolbar .btn.act:focus-visible::before,
+.tab:hover::before,.tab:focus-visible::before{opacity:1}
 
-/* ══════════ PANEL ══════════ */
-.tool-title{font-family:var(--display);font-weight:700;font-size:1.3rem}
+/* ══════════ PASEK: HUD + ZAKŁADKI ══════════ */
+.toolbar{
+  position:sticky;top:.7rem;z-index:40;
+  background-color:#fff;
+  border-radius:20px;
+  box-shadow:0 6px 20px rgba(19,36,48,.10);
+  padding:.7rem .8rem;
+  margin-bottom:var(--gap-in);
+}
+.tool-top{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+.tabs{display:flex;gap:.35rem;flex:0 0 auto}
+.tab{
+  position:relative;
+  width:2.8rem;height:2.8rem;border:none;border-radius:12px;cursor:pointer;
+  display:grid;place-items:center;
+  background-color:var(--g-bg);color:var(--g-ink);
+  transition:transform .12s ease,background-color .15s ease,color .15s ease;
+}
+.tab svg{width:1.25rem;height:1.25rem}
+.tab:hover{transform:scale(1.06)}
+.tab:active{transform:scale(.96)}
+.tab.on{background-color:var(--g-ink);color:#fff}
+.tab:focus{outline:none}
+.tab:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+
+.divider{width:2px;height:2rem;background-color:#e1e9ee;border-radius:2px;margin:0 .15rem}
+
+.hud{display:flex;align-items:center;gap:.45rem;margin-left:auto;flex-wrap:wrap}
+.stat{
+  display:inline-flex;align-items:center;gap:.4rem;
+  padding:.38rem .72rem;border-radius:12px;
+  font-weight:800;font-size:1rem;font-variant-numeric:tabular-nums;
+  background-color:#eef3f6;color:var(--ink);
+  white-space:nowrap;
+}
+.stat svg{width:1.1rem;height:1.1rem;flex:0 0 auto}
+.stat.ok{background-color:#dcf3e5;color:#13643a}
+.stat.hint{background-color:#fff1cc;color:#7a4d00}
+.stat.bad{background-color:#fbe1dc;color:#9a2a16}
+.stat.time{color:var(--ink-soft)}
+body.no-time .stat.time,body.no-time .win-time{display:none}
+.stat.bump{animation:bump .32s ease}
+@keyframes bump{40%{transform:scale(1.18)}100%{transform:scale(1)}}
+
+.lvl{
+  --lv:0;
+  width:2.7rem;height:2.7rem;border-radius:50%;flex:0 0 auto;
+  display:grid;place-items:center;
+  background:conic-gradient(var(--teal) calc(var(--lv) * 1%),#d7e3e8 0);
+  cursor:default;
+}
+.lvl b{
+  width:2.05rem;height:2.05rem;border-radius:50%;
+  display:grid;place-items:center;
+  background-color:#fff;font-weight:900;font-size:.98rem;color:var(--teal-dk);
+}
+.lvl.up{animation:bump .5s ease}
+
+.prog{display:inline-flex;align-items:center;gap:.5rem}
+.bar{width:110px;height:12px;background-color:#dce6ea;border-radius:99px;overflow:hidden}
+.bar span{
+  display:block;height:100%;width:0;border-radius:99px;
+  background-image:linear-gradient(90deg,var(--teal),var(--green),var(--gold));
+  transition:width .35s ease;
+}
+.count-pill{
+  background-color:var(--ink);color:#fff;
+  padding:.32rem .75rem;border-radius:99px;
+  font-variant-numeric:tabular-nums;font-weight:700;font-size:.95rem;
+}
+
+.tool-top .btn.icon{flex:0 0 auto}
+.btn.icon.soft{color:var(--ink);background-color:#eaf1f4;background-image:none}
+.btn.icon.gear{--edge:#0b5a5e}
+.btn.icon.gear svg{transition:transform .35s ease}
+.btn.icon.gear:hover svg{transform:rotate(60deg)}
+.btn.icon.soft.muted{color:#9aaeb8}
+.toolbar.collapsed .btn.icon.flip svg{transform:rotate(180deg)}
 
 .paint-badge{
   display:none;align-items:center;gap:.45rem;
-  font-family:var(--ui);font-weight:600;font-size:.9rem;
-  padding:.35rem .8rem;border:none;border-radius:99px;cursor:pointer;
+  font-family:var(--ui);font-weight:700;font-size:.9rem;
+  padding:.38rem .8rem;border:none;border-radius:99px;cursor:pointer;
   background-color:var(--amber);color:#2a1a00;
 }
 .paint-badge svg{width:1rem;height:1rem}
 body.paint .paint-badge{display:inline-flex}
 
+/* ══════════ GRUPY OPCJI ══════════ */
 .tool-body{
-  margin-top:1rem;
   display:grid;gap:1rem;
   grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr));
 }
-
 .group{border-radius:16px;padding:1rem 1.1rem 1.15rem;background-color:var(--g-bg)}
 .group h3{
-  display:flex;align-items:center;gap:.65rem;
-  font-family:var(--display);font-size:1.12rem;font-weight:700;color:var(--g-ink);
+  display:flex;align-items:center;gap:.65rem;flex-wrap:wrap;
+  font-family:var(--display);font-size:1.12rem;font-weight:800;color:var(--g-ink);
   margin-bottom:.85rem;
 }
 .group h3 .gi{
@@ -222,24 +265,23 @@ body.paint .paint-badge{display:inline-flex}
   background-color:var(--g-ink);color:#fff;
 }
 .group h3 .gi svg{width:1.15rem;height:1.15rem}
-.group h3{flex-wrap:wrap}
 .group h3 small{font-family:var(--ui);font-weight:500;font-size:.88rem;color:var(--ink-soft);flex-basis:100%;margin-top:-.35rem;padding-left:2.75rem}
 
-.g-cover {--g-bg:#e1f1f0;--g-ink:var(--teal-dk)}
-.g-reveal{--g-bg:#fcefd9;--g-ink:#7a4d00}
-.g-rules {--g-bg:#e5ecfb;--g-ink:var(--blue-dk)}
-.g-view  {--g-bg:#f8e6e1;--g-ink:var(--rust-dk)}
+.g-cover {--g-bg:#dff1ef;--g-ink:var(--teal-dk);--g-deep:#05292b;--g-edge:#b5dcd8}
+.g-reveal{--g-bg:#fcefd6;--g-ink:#7a4d00;--g-deep:#4a2e00;--g-edge:#efd39b}
+.g-rules {--g-bg:#e3eafb;--g-ink:var(--blue-dk);--g-deep:#0d2457;--g-edge:#c2d0f2}
+.g-view  {--g-bg:#f8e3dd;--g-ink:var(--rust-dk);--g-deep:#5a1a0d;--g-edge:#ecc5ba}
 
 .row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
 .row + .row{margin-top:.75rem}
 .row.split{margin-top:.95rem;padding-top:.95rem;border-top:2px dashed rgba(10,65,68,.28)}
-.row-label{font-weight:600;font-size:.95rem;color:var(--g-ink);min-width:5.2rem}
-.act-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.55rem}
+.row-label{font-weight:700;font-size:.95rem;color:var(--g-ink);min-width:5.2rem}
+.act-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.6rem}
 .act-grid .btn.act{justify-content:flex-start}
 
-.seg{display:inline-flex;background:rgba(255,255,255,.75);border-radius:11px;padding:.25rem;gap:.2rem}
+.seg{display:inline-flex;background-color:rgba(255,255,255,.75);border-radius:11px;padding:.25rem;gap:.2rem}
 .seg button{
-  font-family:var(--ui);font-weight:600;font-size:.94rem;
+  font-family:var(--ui);font-weight:700;font-size:.94rem;
   padding:.42rem .9rem;border:none;border-radius:8px;
   background-color:transparent;color:var(--ink-soft);cursor:pointer;
   transition:background-color .15s ease,color .15s ease;
@@ -247,18 +289,16 @@ body.paint .paint-badge{display:inline-flex}
 .seg button:hover{background-color:#fff;color:var(--ink)}
 .seg button.on{color:#fff;background-color:var(--g-ink,var(--teal))}
 .seg button:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
-.font-val{font-weight:700;font-variant-numeric:tabular-nums;color:var(--g-ink);min-width:3.2rem;text-align:center}
+.font-val{font-weight:800;font-variant-numeric:tabular-nums;color:var(--g-ink);min-width:3.2rem;text-align:center}
 
 .numin{
-  width:4.6rem;font-family:var(--ui);font-weight:700;font-size:1.05rem;
-  text-align:center;
-  padding:.5rem .5rem;border-radius:10px;
+  width:4.6rem;font-family:var(--ui);font-weight:800;font-size:1.05rem;
+  text-align:center;padding:.5rem;border-radius:10px;
   border:2px solid #a9c2cb;background-color:#fff;color:var(--ink);
 }
-.numin::placeholder{color:#a9c2cb;font-weight:500}
+.numin::placeholder{color:#a9c2cb;font-weight:600}
 .numin:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(18,103,107,.15)}
 
-/* przełączniki: suwak + nazwa + jednozdaniowy opis */
 .opt{
   display:grid;grid-template-columns:auto 1fr;column-gap:.85rem;row-gap:.1rem;
   align-items:center;padding:.5rem .2rem;cursor:pointer;user-select:none;
@@ -278,70 +318,50 @@ body.paint .paint-badge{display:inline-flex}
 .opt input:checked{background-color:var(--g-ink)}
 .opt input:checked::after{transform:translateX(1.2rem)}
 .opt input:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
-.opt .t{font-weight:600;font-size:1rem;color:var(--ink);line-height:1.3}
+.opt .t{font-weight:700;font-size:1rem;color:var(--ink);line-height:1.3}
 .opt .d{grid-column:2;font-size:.88rem;color:var(--ink-soft);line-height:1.35}
 
-.counter{
-  margin-left:auto;display:flex;align-items:center;gap:.75rem;
-  font-weight:600;font-size:.98rem;
-}
-.count-pill{
-  background-color:var(--ink);color:#fff;
-  padding:.35rem .85rem;border-radius:99px;
-  font-variant-numeric:tabular-nums;font-weight:600;
-}
-.bar{width:140px;height:11px;background:#dce6ea;border-radius:99px;overflow:hidden}
-.bar span{
-  display:block;height:100%;width:0;border-radius:99px;
-  background:linear-gradient(90deg,var(--teal),var(--amber));
-  transition:width .35s ease;
-}
+/* w pasku: jedna grupa naraz, poziomo, same ikony */
+.toolbar .tool-body{display:block;margin-top:.7rem}
+.toolbar.collapsed .tool-body{display:none}
+.toolbar .group{display:none;padding:.65rem .8rem}
+.toolbar .group.active{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem 1.2rem}
+.toolbar .group h3{display:none}
+.toolbar .row + .row{margin-top:0}
+.toolbar .row.split{margin-top:0;padding-top:0;border-top:none}
+.toolbar .act-grid{display:flex;flex-wrap:wrap;gap:.55rem}
+.toolbar .btn.act{width:2.8rem;height:2.8rem;padding:0;justify-content:center}
+.toolbar .btn.act .lbl{display:none}
+.toolbar .g-cover .row-label{display:none}
+.toolbar .opt{padding:.2rem 0;column-gap:.6rem}
+.toolbar .opt + .opt{border-top:none}
+.toolbar .opt .d{display:none}
+.toolbar .opt input{grid-row:auto}
 
-/* ══════════ PRZYCISK W ROGU + PŁYWAJĄCY PANEL ══════════ */
-.fab{
-  position:fixed;top:1rem;right:1rem;z-index:80;
-  display:flex;align-items:center;gap:.55rem;
-}
-.fab .paint-badge{box-shadow:0 3px 10px rgba(19,36,48,.18)}
-.fab .count-pill{box-shadow:0 3px 10px rgba(19,36,48,.18)}
-.fab-btn{
-  width:3.5rem;height:3.5rem;border-radius:50%;border:none;cursor:pointer;
-  display:grid;place-items:center;color:#fff;
-  background-image:linear-gradient(135deg,#1fa39e 0%,#0e6c74 100%);
-  box-shadow:0 4px 12px rgba(10,65,68,.32),inset 0 -3px 0 rgba(0,0,0,.18),inset 0 2px 0 rgba(255,255,255,.25);
-  transition:transform .15s ease;
-}
-.fab-btn:hover{transform:scale(1.07)}
-.fab-btn:focus{outline:none}
-.fab-btn:focus-visible{outline:3px solid var(--amber);outline-offset:3px}
-.fab-btn svg{width:1.6rem;height:1.6rem;transition:transform .35s ease}
-.fab-btn[aria-expanded="true"] svg{transform:rotate(90deg)}
-body.paint .fab-btn{background-image:linear-gradient(135deg,#f2b02a 0%,#d98a05 100%);color:#2a1a00}
-
+/* ══════════ NAKŁADKA: WSZYSTKIE OPCJE ══════════ */
 .scrim{
   position:fixed;inset:0;z-index:78;
-  background-color:rgba(19,36,48,.42);
+  background-color:rgba(19,36,48,.45);
   opacity:0;pointer-events:none;transition:opacity .2s ease;
 }
 .scrim.open{opacity:1;pointer-events:auto}
 .float-panel{
-  position:fixed;top:5.4rem;left:50%;transform:translateX(-50%);z-index:79;
+  position:fixed;top:1.2rem;left:50%;transform:translateX(-50%);z-index:79;
   width:min(1140px,calc(100vw - 2rem));
-  max-height:calc(100vh - 6.6rem);overflow-y:auto;
-  background-color:#fff;border-radius:20px;
-  box-shadow:0 8px 24px rgba(19,36,48,.18);
+  max-height:calc(100vh - 2.4rem);overflow-y:auto;
+  background-color:#fff;border-radius:22px;
+  box-shadow:0 12px 28px rgba(19,36,48,.2);
   padding:1.2rem 1.3rem 1.3rem;
   display:none;
 }
 .float-panel.open{display:block}
-.float-head{display:flex;align-items:center;gap:.9rem;flex-wrap:wrap;margin-bottom:1rem}
-.float-head .counter{margin-left:auto}
-.float-panel .tool-body{margin-top:0}
+.float-head{display:flex;align-items:center;gap:.9rem;margin-bottom:1rem}
+.float-head .tool-title{font-family:var(--display);font-weight:800;font-size:1.3rem;margin-right:auto}
 
 /* ══════════ STAGE ══════════ */
 .stage{
   user-select:none;-webkit-user-select:none;
-  background:linear-gradient(160deg,#fff 0%,#fff 60%,rgba(35,82,184,.06) 100%);
+  background-color:#fff;
   border-radius:22px;padding:2.2rem 2rem;
   box-shadow:0 6px 20px rgba(19,36,48,.10);
   font-family:var(--read);
@@ -353,8 +373,8 @@ body.paint .fab-btn{background-image:linear-gradient(135deg,#f2b02a 0%,#d98a05 1
 .line{margin-bottom:1.15rem;display:flex;gap:.85rem;align-items:flex-start;flex-wrap:nowrap}
 .line.blank{height:.8rem;margin:0}
 .speaker{
-  flex:0 0 auto;
-  font-family:var(--ui);font-weight:700;
+  flex:0 0 auto;position:relative;
+  font-family:var(--ui);font-weight:800;
   font-size:.62em;letter-spacing:.01em;
   padding:.25em .7em;border-radius:9px;
   margin-top:.35em;white-space:nowrap;
@@ -363,13 +383,24 @@ body.paint .fab-btn{background-image:linear-gradient(135deg,#f2b02a 0%,#d98a05 1
 .sp1{background-color:#fdeedd;color:#8d4a10}
 .sp2{background-color:#e3ebfc;color:var(--blue-dk)}
 .sp3{background-color:#fbe4de;color:var(--rust-dk)}
-.line-text{flex:1 1 auto;min-width:0}
+.line-text{flex:1 1 auto;min-width:0;border-radius:.3em}
+.line-text.flash{animation:flash 1s ease}
+@keyframes flash{0%{background-color:rgba(31,157,85,.22)}100%{background-color:transparent}}
+.line.cleared .speaker::after{
+  content:'';position:absolute;top:-.45em;right:-.45em;width:1.05em;height:1.05em;border-radius:50%;
+  background-color:var(--green);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 13l4 4L19 7'/%3E%3C/svg%3E");
+  background-size:70%;background-position:center;background-repeat:no-repeat;
+  animation:bump .4s ease;
+}
 .other{white-space:pre-wrap}
 
 /* ── słowo i zasłona ── */
 .w{position:relative;display:inline-block;white-space:nowrap;line-height:1}
 .stage ::selection{background-color:transparent}
-.w .txt{position:relative;z-index:1}
+.w .txt{position:relative;z-index:1;display:inline-block}
+.w.pop .txt{animation:pop .4s ease}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.18)}100%{transform:scale(1)}}
 
 .w::after{
   content:'';position:absolute;z-index:3;
@@ -396,81 +427,92 @@ body.show-marked .w.marked:not(.covered)::after{background-color:var(--marked-li
 .w.covered.done .cover{opacity:0;pointer-events:none;transform:translateY(-115%)}
 .w.dragging .cover{transition:none}
 .w.quiet .cover{transition:none}
+.w.covered.done::after{background-color:rgba(227,148,0,.7)}
+.w.covered.done.perfect::after{background-color:var(--done-line)}
+.w.covered.done.wrong::after{background-color:var(--rust)}
+.w.covered.done.wrong .txt{color:var(--rust)}
+.w.covered.done{cursor:pointer}
 
 body.paint .w{cursor:cell}
 body.paint .w:hover{background-color:rgba(227,148,0,.2);border-radius:.18em}
 
-.w.covered.done::after{background-color:var(--done-line)}
+.stage-empty{text-align:center;color:var(--ink-soft);font-family:var(--ui);font-size:1.05rem;padding:2rem 0}
 
-.stage-empty{
-  text-align:center;color:var(--ink-soft);
-  font-family:var(--ui);font-size:1.05rem;padding:2rem 0;
-}
-
-/* ══════════ BANK SŁÓW ══════════ */
-.bank{
-  position:fixed;left:50%;bottom:1rem;transform:translateX(-50%);z-index:70;
-  width:min(860px,calc(100vw - 2rem));
-  display:none;
-}
-.bank.on{display:block}
-.bank-inner{
-  display:flex;align-items:center;gap:.8rem;
-  padding:.6rem .7rem .6rem 1rem;
-  border-radius:18px;
-  background-color:var(--teal-dk);
-  background-image:linear-gradient(120deg,#0d5458 0%,#173a86 100%);
-  box-shadow:0 4px 14px rgba(10,40,60,.35),inset 0 2px 0 rgba(255,255,255,.12);
-  color:#fff;
-}
-.bank-title{display:flex;flex-direction:column;line-height:1.2;flex:0 0 auto}
-.bank-title b{font-weight:700;font-size:1rem}
-.bank-title span{font-size:.82rem;color:#bfe3e1;white-space:nowrap}
-.bank-list{
-  flex:1 1 auto;min-width:0;
-  display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;
-  max-height:4.9rem;overflow-y:auto;
-}
-.bank.collapsed .bank-list{display:none}
-.bank.collapsed .bank-inner{gap:1rem}
-.bank-acts{display:flex;gap:.4rem;margin-left:auto;flex:0 0 auto}
-.bank .btn.icon{width:2.4rem;height:2.4rem;border-radius:10px;color:#fff;background-color:rgba(255,255,255,.16);background-image:none}
-.bank .btn.icon:hover{background-color:rgba(255,255,255,.26)}
-.bank .btn.icon svg{width:1.15rem;height:1.15rem}
-.chip{
-  font-size:1.02rem;font-weight:500;line-height:1.3;
-  padding:.24rem .75rem;border-radius:9px;
-  background-color:#ffffff;color:var(--teal-dk);font-weight:600;
-  box-shadow:inset 0 -2px 0 rgba(0,0,0,.12);
+/* punkty wylatujące nad słowem */
+.fx-pts{
+  position:fixed;z-index:95;pointer-events:none;
+  font-family:var(--display);font-weight:900;font-size:1.25rem;
+  color:var(--green);
+  text-shadow:0 0 6px #fff,0 0 3px #fff;
+  animation:rise 1s ease-out forwards;
   white-space:nowrap;
 }
-.chip.marked{background-color:#f6c14e;color:#3d2700}
-.bank-more{font-size:.88rem;font-weight:600;color:#bfe3e1;white-space:nowrap;padding:0 .3rem}
-.bank-empty{color:#d7eeed;font-size:.95rem}
+.fx-pts.amber{color:#c07a00}
+.fx-pts.red{color:var(--rust)}
+@keyframes rise{
+  0%{opacity:0;transform:translate(-50%,0) scale(.6)}
+  15%{opacity:1;transform:translate(-50%,-8px) scale(1.15)}
+  100%{opacity:0;transform:translate(-50%,-56px) scale(1)}
+}
 
 /* ══════════ HINT BAR ══════════ */
 .hintbar{
-  display:flex;flex-direction:column;align-items:center;text-align:center;gap:1rem;
   margin-top:var(--gap-in);
   padding:1rem 1.3rem;border-radius:16px;
-  background-color:#f2f7f9;
-  background-image:linear-gradient(160deg,rgba(255,255,255,.9),rgba(18,103,107,.07));
-  font-size:1rem;color:var(--ink-soft);
+  background-color:#d9e6ec;
+  font-size:1rem;color:var(--ink-soft);text-align:center;
 }
-.hintbar b{color:var(--ink);font-weight:600}
-.hintbar .sep{color:#a9c2cb}
-.hintbar .acts{display:flex;gap:.6rem;justify-content:center}
+.hintbar b{color:var(--ink);font-weight:700}
+.hintbar .sep{color:#94adb8}
 
 /* ══════════ FINISH ══════════ */
 .finish{text-align:center;padding:2.4rem 1.5rem}
-.finish h2{font-family:var(--display);font-weight:800;font-size:2rem;margin-bottom:.6rem}
+.finish h2{font-family:var(--display);font-weight:900;font-size:2rem;margin-bottom:.6rem}
 .finish p{color:var(--ink-soft);margin-bottom:1.4rem}
 #celebrate{font-size:1.2rem;padding:1rem 2.4rem}
 
+/* ══════════ KARTA WYNIKU ══════════ */
+.win{
+  position:fixed;left:50%;top:50%;z-index:90;
+  width:min(480px,calc(100vw - 2rem));
+  transform:translate(-50%,-50%) scale(.9);
+  background-color:#fff;border-radius:26px;
+  box-shadow:0 16px 34px rgba(19,36,48,.22);
+  padding:1.8rem 1.6rem 1.6rem;text-align:center;
+  opacity:0;pointer-events:none;
+  transition:opacity .25s ease,transform .3s cubic-bezier(.2,1.4,.4,1);
+}
+.win.open{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+.stars{display:flex;justify-content:center;gap:.4rem;margin-bottom:.6rem}
+.stars svg{width:3.4rem;height:3.4rem;color:#dbe4e9;transform:scale(0)}
+.stars svg.on{color:var(--gold)}
+.win.open .stars svg{animation:starIn .45s cubic-bezier(.2,1.6,.4,1) forwards}
+.win.open .stars svg:nth-child(2){animation-delay:.18s}
+.win.open .stars svg:nth-child(3){animation-delay:.36s}
+@keyframes starIn{to{transform:scale(1)}}
+.win h2{font-family:var(--display);font-weight:900;font-size:1.9rem;line-height:1.15}
+.win h2 .grad{
+  background:linear-gradient(105deg,var(--teal) 0%,var(--green) 50%,var(--amber) 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.win-sub{color:var(--ink-soft);margin-top:.3rem}
+.win-grid{display:grid;grid-template-columns:1fr 1.5fr 1fr;gap:.6rem;margin:1.3rem 0 1.1rem}
+.win-grid div{background-color:#eef3f6;border-radius:14px;padding:.65rem .4rem}
+.win-grid b{display:block;font-family:var(--display);font-weight:900;font-size:1.45rem;line-height:1.2;font-variant-numeric:tabular-nums}
+.win-grid span{font-size:.85rem;color:var(--ink-soft);font-weight:600}
+.win-grid i{font-style:normal}
+.c-ok{color:var(--green)}
+.c-hint{color:#c07a00}
+.c-bad{color:var(--rust)}
+body.no-time .win-grid{grid-template-columns:1fr 1.5fr}
+.win-note{font-size:.92rem;color:var(--ink-soft);margin:-.3rem 0 1rem}
+.win-best{font-weight:700;color:#7a4d00;background-color:#fff1cc;border-radius:12px;padding:.5rem .8rem;margin-bottom:1.2rem;display:none}
+.win-best.show{display:block}
+.win-acts{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap}
 
 .toast{
-  position:fixed;left:50%;top:1.2rem;transform:translateX(-50%) scale(.96);
-  background-color:var(--ink);color:#fff;font-weight:600;
+  position:fixed;left:50%;bottom:2rem;transform:translateX(-50%) scale(.96);
+  background-color:var(--ink);color:#fff;font-weight:700;
   padding:.8rem 1.5rem;border-radius:12px;
   box-shadow:0 6px 18px rgba(0,0,0,.22);
   opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;
@@ -478,13 +520,13 @@ body.paint .w:hover{background-color:rgba(227,148,0,.2);border-radius:.18em}
 }
 .toast.show{opacity:1;transform:translateX(-50%) scale(1)}
 
-@media (max-width:640px){
+@media (max-width:760px){
   :root{--stage-size:1.5rem;--gap-out:2.4rem}
   .card,.stage{padding:1.3rem}
   .line{flex-wrap:wrap;gap:.4rem}
-  .counter{margin-left:0;width:100%}
-  .bank-inner{flex-wrap:wrap}
-  .bank-list{order:3;flex-basis:100%}
+  .hud{margin-left:0;width:100%}
+  .divider{display:none}
+  .bar{width:70px}
 }
 </style>
 </head>
@@ -494,7 +536,7 @@ body.paint .w:hover{background-color:rgba(227,148,0,.2);border-radius:.18em}
 
   <header>
     <h1>Cover &amp; <span class="grad">Recall</span></h1>
-    <p class="lede">Wklej dowolny tekst: dialog, notatkę, listę zdań. Zakryj słowa i odsłaniaj je literka po literce.</p>
+    <p class="lede">Wklej dowolny tekst, zakryj słowa i odtwarzaj go z pamięci. Im mniej podglądasz, tym lepszy wynik.</p>
   </header>
 
   <section>
@@ -502,65 +544,49 @@ body.paint .w:hover{background-color:rgba(227,148,0,.2);border-radius:.18em}
       <div class="card-head">
         <h2>Twój tekst</h2>
         <p>Format <strong>Imię: kwestia</strong> zamienia się w oznaczone role, ale zwykły akapit też zadziała.</p>
-        <button class="btn ghost icon flip" id="toggleEditor" data-tip="Zwiń edytor" aria-label="Zwiń edytor" aria-expanded="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 15 6-6 6 6"/></svg></button>
+        <button class="btn ghost icon flip" id="toggleEditor" data-tip="Zwiń edytor" aria-label="Zwiń edytor" aria-expanded="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 15 6-6 6 6"/></svg></button>
       </div>
       <div class="editor-body">
-      <textarea id="input" spellcheck="false"></textarea>
-      <p class="brace-tip">Chcesz zakryć konkretne słowa? Owiń je w klamry: <code>{would you mind}</code>. Klamry nie pojawią się w tekście, a słowa zostaną zakryte dopiero po kliknięciu przycisku.</p>
-      <div class="editor-actions">
-        <button class="btn blue" id="apply">Wczytaj tekst</button>
-        <button class="btn ghost" id="sample">Wstaw przykładowy tekst</button>
-        <button class="btn ghost" id="clearText">Wyczyść</button>
-      </div>
+        <textarea id="input" spellcheck="false"></textarea>
+        <p class="brace-tip">Chcesz zakryć konkretne słowa? Owiń je w klamry: <code>{would you mind}</code>. Klamry nie pojawią się w tekście, a słowa zakryjesz przyciskiem „Zakryj słowa w {klamrach}”. Tekst wczytuje się sam, a postęp zapisuje się automatycznie.</p>
+        <div class="editor-actions">
+          <button class="btn ghost" id="sample">Wstaw przykładowy tekst</button>
+          <button class="btn ghost" id="clearText">Wyczyść</button>
+        </div>
       </div>
     </div>
   </section>
 
   <section>
-    <div class="stage" id="stage"></div>
+    <div class="toolbar" id="toolbar">
+      <div class="tool-top">
+        <div class="tabs" id="tabs" role="tablist" aria-label="Kategorie ustawień">
+          <button class="tab g-cover on" data-tab="cover" role="tab" data-tip="Zakrywanie" aria-label="Zakrywanie"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="7" width="18" height="10" rx="3"/></svg></button>
+          <button class="tab g-reveal" data-tab="reveal" role="tab" data-tip="Odsłanianie i powtórka" aria-label="Odsłanianie i powtórka"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          <button class="tab g-rules" data-tab="rules" role="tab" data-tip="Zasady losowania" aria-label="Zasady losowania"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h10"/><path d="M18 6h2"/><circle cx="16" cy="6" r="2"/><path d="M4 12h3"/><path d="M11 12h9"/><circle cx="9" cy="12" r="2"/><path d="M4 18h12"/><circle cx="18" cy="18" r="2"/></svg></button>
+          <button class="tab g-view" data-tab="view" role="tab" data-tip="Sterowanie i widok" aria-label="Sterowanie i widok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="6"/><path d="M12 6v4"/></svg></button>
+        </div>
+        <button class="paint-badge" data-paint-off title="Kliknij, żeby wyłączyć"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>Tryb zakrywania</button>
 
-    <div class="hintbar">
-      <span><b>Klik</b> odsłania jedną literę <span class="sep">·</span> <b>przeciągnięcie</b> kolejne <span class="sep">·</span> <b>dwuklik</b> całe słowo <span class="sep">·</span> <b>prawy przycisk</b> zakrywa z powrotem <span class="sep">·</span> strzałki <b>← →</b> litera po literze (można je wyłączyć w panelu)</span>
-      <span class="acts">
-        <button class="btn blue" id="save">Zapisz stan</button>
-        <button class="btn ghost" id="reset">Wyczyść zapis</button>
-      </span>
-    </div>
-  </section>
+        <div class="hud">
+          <div class="lvl" id="lvl" title="Poziom"><b id="lvlVal">1</b></div>
+          <span class="stat ok" id="okStat" title="Znane od razu: słowo odsłonięte jednym ruchem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg><span id="okVal">0</span></span>
+          <span class="stat hint" id="hintStat" title="Z podpowiedzią: wcześniej podejrzane litery"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg><span id="hintVal">0</span></span>
+          <span class="stat bad" id="badStat" title="Pomyłki: kliknij odsłonięte słowo, żeby je oznaczyć"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg><span id="badVal">0</span></span>
+          <span class="stat time" title="Czas rundy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2"/><path d="M9 2h6"/></svg><span id="timeVal">0:00</span></span>
+          <span class="prog"><span class="bar"><span id="barFill"></span></span><span class="count-pill" id="count">0 / 0</span></span>
+          <button class="btn icon amber" id="trophyBtn" data-tip="Wynik rundy" aria-label="Pokaż wynik rundy" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3"/><path d="M7 5H4v2a3 3 0 0 0 3 3"/></svg></button>
+          <span class="divider"></span>
+          <button class="btn icon soft" id="soundBtn" data-tip="Dźwięk" aria-label="Włącz lub wyłącz dźwięk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"/><path class="wave" d="M15.5 8.5a5 5 0 0 1 0 7"/><path class="wave" d="M18.5 5.5a9 9 0 0 1 0 13"/><path class="mute" d="m16 9 6 6" style="display:none"/><path class="mute" d="m22 9-6 6" style="display:none"/></svg></button>
+          <button class="btn icon gear" id="allOpts" data-tip="Wszystkie opcje" aria-label="Pokaż wszystkie opcje"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          <button class="btn icon soft flip" id="toolToggle" data-tip="Zwiń panel" aria-label="Zwiń panel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 15 6-6 6 6"/></svg></button>
+        </div>
+      </div>
 
-  <section>
-    <div class="card finish">
-      <h2>Cały tekst odtworzony?</h2>
-      <p>To zasługuje na porządny finał.</p>
-      <button class="btn amber shine" id="celebrate">Celebrate!</button>
-    </div>
-  </section>
-
-
-</div>
-
-<!-- przycisk w rogu otwiera panel -->
-<div class="fab" id="fab">
-  <button class="paint-badge" data-paint-off title="Kliknij, żeby wyłączyć"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>Tryb zakrywania</button>
-  <span class="count-pill" id="fabCount">0 / 0</span>
-  <button class="fab-btn" id="fabBtn" aria-label="Otwórz panel" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button>
-</div>
-<div class="scrim" id="scrim"></div>
-<div class="float-panel" id="floatPanel" role="dialog" aria-label="Panel">
-  <div class="float-head">
-    <span class="tool-title">Panel</span>
-    <button class="paint-badge" data-paint-off title="Kliknij, żeby wyłączyć"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>Tryb zakrywania włączony</button>
-    <div class="counter">
-      <div class="bar"><span id="barFill"></span></div>
-      <span class="count-pill" id="count">0 / 0</span>
-    </div>
-    <button class="btn ghost icon" id="floatClose" data-tip="Zamknij" aria-label="Zamknij panel" style="background-color:#e6eef2;background-image:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
-  </div>
-  <div id="floatBody">
       <div class="tool-body" id="toolBody">
 
         <!-- 1. ZAKRYWANIE -->
-        <div class="group g-cover">
+        <div class="group g-cover active" data-group="cover">
           <h3><span class="gi"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="7" width="18" height="10" rx="3"/></svg></span>Zakrywanie</h3>
           <div class="row">
             <span class="row-label">Losowo</span>
@@ -569,37 +595,36 @@ body.paint .w:hover{background-color:rgba(227,148,0,.2);border-radius:.18em}
               <button data-r="0.25" class="on">Średnio</button>
               <button data-r="0.45">Dużo</button>
             </div>
-            <button class="btn act shine" id="coverRandom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.3" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/></svg>Zakryj losowo</button>
+            <button class="btn act" id="coverRandom" data-tip="Zakryj losowo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.4" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.4" fill="currentColor"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/></svg><span class="lbl">Zakryj losowo</span></button>
           </div>
           <div class="row">
             <span class="row-label">Dokładnie</span>
-            <input type="number" min="1" max="999" id="coverN" class="numin" placeholder="8" aria-label="Liczba słów do zakrycia">
-            <span class="row-label" style="min-width:0;font-weight:500;color:var(--ink-soft)">słów</span>
-            <button class="btn act" id="coverNGo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16"/><path d="M4 15h16"/><path d="M10 3 8 21"/><path d="M16 3l-2 18"/></svg>Zakryj tyle</button>
+            <input type="number" min="1" max="999" id="coverN" class="numin" placeholder="ile?" title="Ile słów zakryć" aria-label="Liczba słów do zakrycia">
+            <button class="btn act" id="coverNGo" data-tip="Zakryj tyle słów"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16"/><path d="M4 15h16"/><path d="M10 3 8 21"/><path d="M16 3l-2 18"/></svg><span class="lbl">Zakryj tyle słów</span></button>
           </div>
           <div class="row split">
-            <button class="btn amber act shine" id="coverMarked"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5a2 2 0 0 0 2 2h1"/><path d="M16 3h1a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2 2 2 0 0 0-2 2v5a2 2 0 0 1-2 2h-1"/></svg>Zakryj słowa w {klamrach}</button>
-            <button class="btn ghost act" id="coverAll"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="5" width="9" height="6" rx="2"/><rect x="13" y="5" width="9" height="6" rx="2"/><rect x="2" y="13" width="9" height="6" rx="2"/><rect x="13" y="13" width="9" height="6" rx="2"/></svg>Zakryj wszystko</button>
+            <button class="btn amber act" id="coverMarked" data-tip="Zakryj słowa w {klamrach}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5a2 2 0 0 0 2 2h1"/><path d="M16 3h1a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2 2 2 0 0 0-2 2v5a2 2 0 0 1-2 2h-1"/></svg><span class="lbl">Zakryj słowa w {klamrach}</span></button>
+            <button class="btn ghost act" id="coverAll" data-tip="Zakryj wszystko"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="5" width="9" height="6" rx="2"/><rect x="13" y="5" width="9" height="6" rx="2"/><rect x="2" y="13" width="9" height="6" rx="2"/><rect x="13" y="13" width="9" height="6" rx="2"/></svg><span class="lbl">Zakryj wszystko</span></button>
           </div>
         </div>
 
         <!-- 2. ODSŁANIANIE -->
-        <div class="group g-reveal">
+        <div class="group g-reveal" data-group="reveal">
           <h3><span class="gi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span>Odsłanianie i powtórka</h3>
           <div class="act-grid">
-            <button class="btn ghost act" id="next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 14 5-5-5-5"/><path d="M20 9h-9a7 7 0 0 0-7 7v3"/></svg>Odsłoń następne</button>
-            <button class="btn ghost act" id="undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h9a7 7 0 0 1 7 7v3"/></svg>Cofnij ostatnie</button>
-            <button class="btn act" id="recover"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Zakryj od nowa</button>
-            <button class="btn rust act" id="revealAll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Pokaż wszystko</button>
+            <button class="btn ghost act" id="next" data-tip="Odsłoń następne słowo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 14 5-5-5-5"/><path d="M20 9h-9a7 7 0 0 0-7 7v3"/></svg><span class="lbl">Odsłoń następne</span></button>
+            <button class="btn ghost act" id="undo" data-tip="Cofnij ostatnie słowo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h9a7 7 0 0 1 7 7v3"/></svg><span class="lbl">Cofnij ostatnie</span></button>
+            <button class="btn act" id="recover" data-tip="Nowa runda z tymi samymi zasłonami"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg><span class="lbl">Zakryj od nowa</span></button>
+            <button class="btn rust act" id="revealAll" data-tip="Poddaję się: pokaż wszystko"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><span class="lbl">Pokaż wszystko</span></button>
           </div>
           <div class="row split" style="border-top-color:rgba(122,77,0,.3)">
-            <button class="btn ghost act" id="uncoverAll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>Usuń zasłony, wróć do czystego tekstu</button>
+            <button class="btn ghost act" id="uncoverAll" data-tip="Usuń zasłony, wróć do czystego tekstu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg><span class="lbl">Usuń zasłony, wróć do czystego tekstu</span></button>
           </div>
         </div>
 
         <!-- 3. ZASADY LOSOWANIA -->
-        <div class="group g-rules">
-          <h3><span class="gi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h10"/><path d="M18 6h2"/><circle cx="16" cy="6" r="2"/><path d="M4 12h3"/><path d="M11 12h9"/><circle cx="9" cy="12" r="2"/><path d="M4 18h12"/><path d="M20 18h0"/><circle cx="18" cy="18" r="2"/></svg></span>Zasady losowania<small>dotyczą „Zakryj losowo” i „Zakryj tyle”</small></h3>
+        <div class="group g-rules" data-group="rules">
+          <h3><span class="gi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h10"/><path d="M18 6h2"/><circle cx="16" cy="6" r="2"/><path d="M4 12h3"/><path d="M11 12h9"/><circle cx="9" cy="12" r="2"/><path d="M4 18h12"/><circle cx="18" cy="18" r="2"/></svg></span>Zasady losowania<small>dotyczą „Zakryj losowo” i „Zakryj tyle słów”</small></h3>
           <label class="opt"><input type="checkbox" id="skipOne" data-opt checked><span class="t">Pomijaj słowa jednoliterowe</span><span class="d">„I”, „a”, „w”, „z” zostają widoczne.</span></label>
           <label class="opt"><input type="checkbox" id="perPara" data-opt checked><span class="t">Coś zakryte w każdym akapicie</span><span class="d">Każda linia tekstu dostaje co najmniej jedno zakryte słowo.</span></label>
           <div class="row" style="margin-top:.6rem">
@@ -613,13 +638,14 @@ body.paint .w:hover{background-color:rgba(227,148,0,.2);border-radius:.18em}
         </div>
 
         <!-- 4. STEROWANIE I WIDOK -->
-        <div class="group g-view">
+        <div class="group g-view" data-group="view">
           <h3><span class="gi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="6"/><path d="M12 6v4"/></svg></span>Sterowanie i widok</h3>
           <label class="opt"><input type="checkbox" id="arrowKeys" data-opt checked><span class="t">Odsłanianie strzałkami ← →</span><span class="d">Strzałka w prawo odsłania literę, w lewo ją zakrywa.</span></label>
           <label class="opt"><input type="checkbox" id="wholeWord" data-opt><span class="t">Klik odsłania całe słowo</span><span class="d">Zamiast jednej litery naraz.</span></label>
           <label class="opt"><input type="checkbox" id="paintMode"><span class="t">Tryb zakrywania</span><span class="d">Klikasz lub przeciągasz po słowach, które mają zniknąć.</span></label>
           <label class="opt"><input type="checkbox" id="showMarked" data-opt checked><span class="t">Podkreślaj słowa w {klamrach}</span><span class="d">Pomarańczowa linia pod słowami, które jeszcze nie są zakryte.</span></label>
-          <label class="opt"><input type="checkbox" id="bankOn" data-opt><span class="t">Bank słów</span><span class="d">Pasek na dole z kilkoma najbliższymi zakrytymi słowami.</span></label>
+          <label class="opt"><input type="checkbox" id="showTime" data-opt checked><span class="t">Pokazuj czas rundy</span><span class="d">Stoper w pasku i na karcie wyniku.</span></label>
+          <label class="opt"><input type="checkbox" id="soundOn" data-opt checked><span class="t">Efekty dźwiękowe</span><span class="d">Ciche kliknięcia przy odsłanianiu i fanfara na koniec rundy.</span></label>
           <div class="row" style="margin-top:.6rem">
             <span class="row-label">Rozmiar tekstu</span>
             <div class="seg">
@@ -631,17 +657,54 @@ body.paint .w:hover{background-color:rgba(227,148,0,.2);border-radius:.18em}
         </div>
 
       </div>
-  </div>
+    </div>
+
+    <div class="stage" id="stage"></div>
+
+    <div class="hintbar">
+      <b>Klik</b> odsłania literę <span class="sep">·</span> <b>przeciągnięcie</b> kolejne <span class="sep">·</span> <b>dwuklik</b> całe słowo <span class="sep">·</span> <b>prawy przycisk</b> zakrywa z powrotem <span class="sep">·</span> <b>← →</b> litera po literze<br>Słowo odsłonięte jednym ruchem liczy się jako <b>znane</b>, po podejrzeniu liter jako <b>z podpowiedzią</b>. Pomyliłeś się? <b>Kliknij odsłonięte słowo</b>, żeby oznaczyć błąd.
+    </div>
+  </section>
+
+  <section>
+    <div class="card finish">
+      <h2>Cały tekst odtworzony?</h2>
+      <p>To zasługuje na porządny finał.</p>
+      <button class="btn amber" id="celebrate">Celebrate!</button>
+    </div>
+  </section>
+
 </div>
 
-<div class="bank" id="bank">
-  <div class="bank-inner">
-    <div class="bank-title"><b>Bank słów</b><span id="bankCount"></span></div>
-    <div class="bank-list" id="bankList"></div>
-    <span class="bank-acts">
-      <button class="btn ghost icon" id="bankShuffle" data-tip="Przetasuj" aria-label="Przetasuj"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3l4 4-4 4"/><path d="M3 7h18"/><path d="M7 21l-4-4 4-4"/><path d="M21 17H3"/></svg></button>
-      <button class="btn ghost icon flip" id="bankToggle" data-tip="Zwiń" aria-label="Zwiń lub rozwiń bank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
-    </span>
+<div class="scrim" id="scrim"></div>
+
+<div class="float-panel" id="floatPanel" role="dialog" aria-label="Wszystkie opcje">
+  <div class="float-head">
+    <span class="tool-title">Wszystkie opcje</span>
+    <button class="btn icon soft" id="floatClose" data-tip="Zamknij" aria-label="Zamknij"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+  </div>
+  <div id="floatBody"></div>
+</div>
+
+<div class="win" id="win" role="dialog" aria-label="Wynik rundy">
+  <div class="stars" id="stars">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.6 1.3 6.5L12 17.2 6.1 20.4l1.3-6.5L2.5 9.3l6.6-.8z"/></svg>
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.6 1.3 6.5L12 17.2 6.1 20.4l1.3-6.5L2.5 9.3l6.6-.8z"/></svg>
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.6 1.3 6.5L12 17.2 6.1 20.4l1.3-6.5L2.5 9.3l6.6-.8z"/></svg>
+  </div>
+  <h2 id="winTitle"><span class="grad">Runda ukończona!</span></h2>
+  <p class="win-sub" id="winSub"></p>
+  <div class="win-grid">
+    <div><b id="wAcc">0%</b><span>trafność</span></div>
+    <div><b id="wSplit">0 · 0 · 0</b><span>znane · podp. · błędy</span></div>
+    <div class="win-time"><b id="wTime">0:00</b><span>czas</span></div>
+  </div>
+  <p class="win-note">Pomyliłeś się gdzieś? Zamknij kartę i kliknij te słowa w tekście. Wynik przeliczy się sam.</p>
+  <div class="win-best" id="winBest"></div>
+  <div class="win-acts">
+    <button class="btn act" id="winAgain"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Jeszcze raz</button>
+    <button class="btn amber act" id="winNew"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.4" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.4" fill="currentColor"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/></svg>Nowe losowanie</button>
+    <button class="btn ghost act" id="winClose">Zamknij</button>
   </div>
 </div>
 
@@ -666,7 +729,7 @@ Tom: I'm thinking of going to the coast if the weather {holds up}.`;
 
 const STORE_KEY = 'coverRecall.v1';
 const OPTS_KEY = 'coverRecall.opts.v1';
-const BANK_LIMIT = 8;   // ile zakrytych jednostek naraz pokazuje bank
+const BEST_KEY = 'coverRecall.best.v1';
 
 let doc = [];          // sparsowane linie
 let speakers = [];     // kolejność ról
@@ -726,6 +789,61 @@ function wordsLabel(n){
   return n + ' słów';
 }
 
+function fmtTime(ms){
+  const s = Math.max(0, Math.floor(ms / 1000));
+  return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+}
+
+/* ═══════════════════════════════════════════
+   DŹWIĘK (syntezowany w przeglądarce, bez plików)
+   ═══════════════════════════════════════════ */
+
+let actx = null;
+function audio(){
+  if(!actx){
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if(!AC) return null;
+    actx = new AC();
+  }
+  if(actx.state === 'suspended') actx.resume();
+  return actx;
+}
+
+function tone(freq, dur, type = 'sine', vol = .12, when = 0, slideTo = 0){
+  const a = audio();
+  if(!a) return;
+  const t = a.currentTime + when;
+  const o = a.createOscillator(), g = a.createGain();
+  o.type = type;
+  o.frequency.setValueAtTime(freq, t);
+  if(slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t + dur);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(vol, t + 0.012);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g).connect(a.destination);
+  o.start(t);
+  o.stop(t + dur + 0.03);
+}
+
+const SFX = {
+  letter(){ tone(1250, .035, 'sine', .035); },
+  known(){ tone(660, .09, 'sine', .1); tone(990, .18, 'sine', .07, .05); },
+  hinted(){ tone(587, .14, 'sine', .07); },
+  wrong(){ tone(220, .16, 'triangle', .08, 0, 170); },
+  unwrong(){ tone(660, .08, 'sine', .06); },
+  cover(){ tone(300, .12, 'sine', .06, 0, 180); },
+  undo(){ tone(500, .1, 'sine', .05, 0, 300); },
+  line(){ [523, 659, 784].forEach((f, i) => tone(f, .16, 'sine', .07, .12 + i * .07)); },
+  win(){ [523, 659, 784, 1047].forEach((f, i) => tone(f, i === 3 ? .45 : .18, 'triangle', .09, i * .12)); },
+  level(){ [784, 988, 1175].forEach((f, i) => tone(f, .18, 'sine', .06, i * .09)); },
+  giveup(){ tone(392, .18, 'sine', .07); tone(311, .3, 'sine', .07, .14); }
+};
+
+function play(name, ...args){
+  if(!$('soundOn').checked) return;
+  try { SFX[name](...args); } catch(_) {}
+}
+
 /* ═══════════════════════════════════════════
    RENDER
    ═══════════════════════════════════════════ */
@@ -736,10 +854,9 @@ function render(){
   wordSeq = 0;
   stage.innerHTML = '';
   undoStack = [];
-  bankOrder = [];
   const hasContent = doc.some(l => !l.blank && l.tokens.length);
   if(!hasContent){
-    stage.innerHTML = '<p class="stage-empty">Wklej tekst powyżej i kliknij „Wczytaj tekst”.</p>';
+    stage.innerHTML = '<p class="stage-empty">Wklej tekst powyżej, wczyta się sam.</p>';
     updateProgress();
     return;
   }
@@ -790,6 +907,181 @@ function render(){
 }
 
 /* ═══════════════════════════════════════════
+   WYNIK: ZNANE / Z PODPOWIEDZIĄ / BŁĄD
+   Słowo odsłonięte jednym ruchem (dwuklik, jedno przeciągnięcie przez całe słowo,
+   „Odsłoń następne”) liczy się jako znane. Jeśli wcześniej podejrzałeś litery,
+   liczy się jako z podpowiedzią. Kliknięcie odsłoniętego słowa oznacza błąd.
+   Trafność = (znane + ½ podpowiedzi) / wszystkie zakryte.
+   XP = liczba słów znanych od razu, zbierana ze wszystkich rund.
+   ═══════════════════════════════════════════ */
+
+let roundStart = 0, roundEnd = 0, timerId = null, gaveUp = false;
+let xp = 0, roundXp = 0;
+
+function levelInfo(x){
+  const L = Math.floor(Math.sqrt(x / 25)) + 1;
+  const lo = 25 * (L - 1) * (L - 1), hi = 25 * L * L;
+  return { L, pct: (x - lo) / (hi - lo) * 100, toNext: hi - x };
+}
+
+function tally(){
+  const t = { ok:0, hint:0, bad:0, total:0 };
+  stage.querySelectorAll('.w.covered').forEach(w => {
+    t.total++;
+    if(!w.classList.contains('done') || !w.dataset.scored) return;
+    if(w.dataset.wrong) t.bad++;
+    else if(w.dataset.perfect) t.ok++;
+    else if(w.dataset.given) return;          // odsłonięte przez „Pokaż wszystko”
+    else t.hint++;
+  });
+  t.acc = t.total ? Math.round((t.ok + t.hint / 2) / t.total * 100) : 0;
+  return t;
+}
+
+function bump(el){
+  el.classList.remove('bump');
+  void el.offsetWidth;
+  el.classList.add('bump');
+}
+
+function setStat(id, val, animate){
+  const el = $(id + 'Val');
+  if(el.textContent === String(val)) return;
+  el.textContent = val;
+  if(animate) bump($(id + 'Stat'));
+}
+
+function refreshHud(animate){
+  const t = tally();
+  setStat('ok', t.ok, animate);
+  setStat('hint', t.hint, animate);
+  setStat('bad', t.bad, animate);
+  const lv = levelInfo(xp);
+  $('lvlVal').textContent = lv.L;
+  $('lvl').style.setProperty('--lv', lv.pct.toFixed(1));
+  $('lvl').title = 'Poziom ' + lv.L + ': ' + xp + ' XP (1 XP za każde słowo znane od razu). Do następnego poziomu: ' + lv.toNext;
+  $('trophyBtn').style.display = (roundEnd && !gaveUp) ? '' : 'none';
+  tickTimer();
+}
+
+function tickTimer(){
+  const ms = roundStart ? (roundEnd || Date.now()) - roundStart : 0;
+  $('timeVal').textContent = fmtTime(ms);
+}
+
+function startTimer(){
+  if(roundStart) return;
+  roundStart = Date.now();
+  roundEnd = 0;
+  clearInterval(timerId);
+  timerId = setInterval(tickTimer, 1000);
+}
+
+function resetRound(){
+  roundStart = 0; roundEnd = 0; gaveUp = false; roundXp = 0;
+  clearInterval(timerId);
+  refreshHud(false);
+}
+
+/* nowe zakrycie po skończonej rundzie zaczyna nową rundę */
+function newRoundIfFinished(){
+  if(roundEnd || gaveUp) resetRound();
+}
+
+function floatPts(w, text, cls){
+  const r = w.getBoundingClientRect();
+  const el = document.createElement('div');
+  el.className = 'fx-pts' + (cls ? ' ' + cls : '');
+  el.textContent = text;
+  el.style.left = (r.left + r.width / 2) + 'px';
+  el.style.top = (r.top - 10) + 'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1050);
+}
+
+function popWord(w){
+  w.classList.remove('pop');
+  void w.offsetWidth;
+  w.classList.add('pop');
+}
+
+/* ile liter słowa jest teraz odsłoniętych */
+function lettersShown(w){
+  const p = Number(w.dataset.p || 0);
+  if(p <= 0) return 0;
+  return letterStops(w).filter((s, i) => i > 0 && s <= p + 0.5).length;
+}
+
+/* zapamiętaj, że w słowo ktoś zajrzał, ale go nie skończył */
+function markHint(w){
+  if(!w.classList.contains('covered') || w.classList.contains('done')) return;
+  const n = lettersShown(w), prev = Number(w.dataset.h || 0);
+  if(n > prev){
+    w._hPrev = prev;          // na wypadek, gdyby to był pierwszy klik dwukliku
+    w._hintAt = Date.now();
+    w.dataset.h = n;
+  }
+}
+
+function finishWord(w){
+  if(w.dataset.scored) return;
+  w.dataset.scored = '1';
+  w._doneAt = Date.now();
+  startTimer();
+  if(!Number(w.dataset.h || 0)){
+    w.dataset.perfect = '1';
+    w.classList.add('perfect');
+    floatPts(w, '✓', '');
+    play('known');
+  } else {
+    floatPts(w, 'z podpowiedzią', 'amber');
+    play('hinted');
+  }
+  popWord(w);
+  refreshHud(true);
+  setTimeout(() => checkLine(w), 0);
+}
+
+/* klik w odsłonięte słowo: oznacz albo odznacz błąd */
+function toggleWrong(w){
+  if(w.dataset.wrong){
+    delete w.dataset.wrong;
+    w.classList.remove('wrong');
+    play('unwrong');
+  } else {
+    w.dataset.wrong = '1';
+    w.classList.add('wrong');
+    floatPts(w, '✗ błąd', 'red');
+    play('wrong');
+  }
+  refreshHud(true);
+  if($('win').classList.contains('open')) fillWin();
+  scheduleSave();
+}
+
+function checkLine(w){
+  const lt = w.closest('.line-text');
+  if(!lt) return;
+  const cov = lt.querySelectorAll('.w.covered');
+  if(!cov.length || lt.querySelectorAll('.w.covered:not(.done)').length) return;
+  const row = lt.closest('.line');
+  if(row.classList.contains('cleared')) return;
+  row.classList.add('cleared');
+  lt.classList.remove('flash'); void lt.offsetWidth; lt.classList.add('flash');
+  if(!wasComplete) play('line');
+}
+
+function syncCleared(){
+  stage.querySelectorAll('.line').forEach(row => {
+    const lt = row.querySelector('.line-text');
+    if(!lt){ return; }
+    const cov = lt.querySelectorAll('.w.covered').length;
+    const open = lt.querySelectorAll('.w.covered:not(.done)').length;
+    row.classList.toggle('cleared', cov > 0 && open === 0);
+  });
+}
+
+/* ═══════════════════════════════════════════
    ZAKRYWANIE / ODSŁANIANIE
    ═══════════════════════════════════════════ */
 
@@ -827,37 +1119,49 @@ function snapToLetter(w, x){
 function setProgress(w, px, snap = true){
   const cover = coverOf(w);
   const width = cover.getBoundingClientRect().width;
+  const before = Number(w.dataset.p || 0);
   let p = Math.max(0, Math.min(width, px));
   if(snap) p = snapToLetter(w, p);
   w.dataset.p = p;
   if(p >= width - 0.5){
     w.classList.add('quiet','done');
     cover.style.clipPath = '';
+    pushUndo(w);
+    finishWord(w);
   } else {
     w.classList.remove('done');
     cover.style.clipPath = 'inset(0 0 0 ' + p + 'px)';
+    if(p > before + 0.5){ play('letter'); startTimer(); }
   }
   updateProgress();
+}
+
+function clearMarks(w){
+  ['h','scored','perfect','wrong','given'].forEach(k => { delete w.dataset[k]; });
 }
 
 function coverWord(w, delay = 0){
   const cover = coverOf(w);
   w.classList.add('covered');
-  w.classList.remove('done','quiet');
+  w.classList.remove('done','quiet','perfect','pop','wrong');
   if(w.classList.contains('marked')) w.classList.add('was-marked');
   w.dataset.p = 0;
+  clearMarks(w);
+  const row = w.closest('.line');
+  if(row) row.classList.remove('cleared');
   cover.style.clipPath = 'inset(0 0 0 0)';
   cover.style.transitionDelay = delay + 'ms';
   setTimeout(() => { cover.style.transitionDelay = ''; }, delay + 340);
 }
 
 function uncoverWord(w){
-  w.classList.remove('covered','done','was-marked','quiet','cursor');
+  w.classList.remove('covered','done','was-marked','quiet','cursor','perfect','pop','wrong');
   w.dataset.p = 0;
+  clearMarks(w);
   coverOf(w).style.clipPath = '';
 }
 
-/* stos cofania: zapamiętuje kolejność ruszanych słów */
+/* stos cofania: zapamiętuje kolejność odsłanianych słów */
 let undoStack = [];
 
 function pushUndo(w){
@@ -866,11 +1170,13 @@ function pushUndo(w){
 }
 
 function revealWord(w){
+  if(w.classList.contains('done')) return;
   pushUndo(w);
   w.classList.remove('quiet');
   w.classList.add('done');
   coverOf(w).style.clipPath = '';
   w.dataset.p = coverOf(w).getBoundingClientRect().width;
+  finishWord(w);
   updateProgress();
 }
 
@@ -906,7 +1212,6 @@ function pickWords(n, strict){
   const picked = new Set();
   const isCov = w => w.classList.contains('covered') || picked.has(w);
 
-  /* długość ciągu zakrytych słów, gdyby dołożyć w */
   const runWith = w => {
     const [li, i] = pos.get(w), arr = groups[li];
     let len = 1;
@@ -933,25 +1238,27 @@ function pickWords(n, strict){
     }
   }
 
-  /* zakrywaj w kolejności czytania, żeby animacja szła od góry */
   return [...picked].sort((a, b) => Number(a.dataset.id.slice(1)) - Number(b.dataset.id.slice(1)));
 }
 
 function coverRandomWords(n, strict){
-  if(!stage.querySelector('.w')){ toast('Najpierw wczytaj tekst'); return; }
+  if(!stage.querySelector('.w')){ toast('Najpierw wklej tekst'); return; }
+  newRoundIfFinished();
   const list = pickWords(Math.max(1, n), strict);
   if(!list.length){ toast('Przy obecnych zasadach nie ma już czego zakryć'); return; }
   list.forEach((w, i) => coverWord(w, i * 30));
+  play('cover');
   updateProgress();
   let msg = 'Zakryto ' + wordsLabel(list.length);
   if(strict && list.length < n) msg += ' (więcej się nie da przy obecnych zasadach)';
   toast(msg);
 }
 
-$('coverRandom').addEventListener('click', () => {
+function coverRatio(){
   const eligible = [...stage.querySelectorAll('.w')].filter(canPick).length;
   coverRandomWords(Math.round(eligible * ratio), false);
-});
+}
+$('coverRandom').addEventListener('click', coverRatio);
 
 function coverExactCount(){
   const field = $('coverN');
@@ -969,50 +1276,67 @@ $('coverNGo').addEventListener('click', coverExactCount);
 $('coverMarked').addEventListener('click', () => {
   const list = [...stage.querySelectorAll('.w.marked:not(.covered)')];
   if(!list.length){ toast('Brak nowych słów w klamrach {…}'); return; }
+  newRoundIfFinished();
   list.forEach((w,i) => coverWord(w, i*35));
+  play('cover');
   updateProgress();
   toast('Zakryto ' + wordsLabel(list.length) + ' z klamer');
 });
 
 $('coverAll').addEventListener('click', () => {
   const list = [...stage.querySelectorAll('.w:not(.covered)')];
+  if(!list.length) return;
+  newRoundIfFinished();
   list.forEach((w,i) => coverWord(w, i*10));
+  play('cover');
   updateProgress();
 });
 
+/* Pokaż wszystko: odsłania resztę bez oceny, runda kończy się bez karty wyniku */
 $('revealAll').addEventListener('click', () => {
-  stage.querySelectorAll('.w.covered').forEach(w => {
+  const rest = [...stage.querySelectorAll('.w.covered:not(.done)')];
+  if(!rest.length){ toast('Nic nie jest zakryte'); return; }
+  gaveUp = true;
+  rest.forEach(w => {
     w.classList.add('done');
+    w.dataset.scored = '1';
+    w.dataset.given = '1';
     coverOf(w).style.clipPath = '';
     w.dataset.p = coverOf(w).getBoundingClientRect().width;
   });
+  play('giveup');
   updateProgress();
 });
 
-/* Cofnij: zakrywa z powrotem ostatnie ruszane słowo */
+/* Cofnij: zakrywa z powrotem ostatnie odsłonięte słowo */
 $('undo').addEventListener('click', () => {
   const w = undoStack.pop();
   if(!w || !w.isConnected){ toast('Nie ma czego cofać'); return; }
   coverWord(w);
+  play('undo');
   updateProgress();
 });
 
 $('next').addEventListener('click', revealNext);
 
-/* Zakryj od nowa: przywraca wszystkie zasłony, bez zmiany doboru słów */
-$('recover').addEventListener('click', () => {
+/* Zakryj od nowa: te same słowa, nowa runda */
+function replay(){
   const list = [...stage.querySelectorAll('.w.covered')];
   if(!list.length){ toast('Nic nie jest zakryte'); return; }
-  list.forEach(w => coverWord(w));
+  list.forEach((w, i) => coverWord(w, i * 12));
   undoStack = [];
+  resetRound();
+  play('cover');
   updateProgress();
-  toast('Przywrócono ' + list.length + ' zasłon');
-});
+}
+$('recover').addEventListener('click', replay);
 
 $('uncoverAll').addEventListener('click', () => {
   stage.querySelectorAll('.w').forEach(uncoverWord);
+  stage.querySelectorAll('.line.cleared').forEach(r => r.classList.remove('cleared'));
   undoStack = [];
   setCursorWord(null);
+  resetRound();
   updateProgress();
 });
 
@@ -1021,10 +1345,10 @@ $('uncoverAll').addEventListener('click', () => {
    ═══════════════════════════════════════════ */
 
 let dragging = false, painting = false, activeWord = null, downX = 0, downY = 0, dragRevealed = 0;
+const gesture = new Set();   // słowa dotknięte w jednym ruchu myszy/palca
 
 function paintOn(){ return $('paintMode').checked; }
 
-/* słowo wymaga zasłony, gdy nie jest zakryte albo gdy ktoś zdjął z niego choć kawałek */
 function needsCover(w){
   return !w.classList.contains('covered') || w.classList.contains('done') || Number(w.dataset.p || 0) > 0;
 }
@@ -1041,6 +1365,11 @@ function wordUnder(x, y){
   return el && el.closest ? el.closest('.w.covered') : null;
 }
 
+function endGesture(){
+  gesture.forEach(markHint);
+  gesture.clear();
+}
+
 stage.addEventListener('pointerdown', e => {
   if(e.button !== undefined && e.button !== 0 && !e.isPrimary) return;
 
@@ -1048,18 +1377,27 @@ stage.addEventListener('pointerdown', e => {
     const target = e.target.closest('.w');
     if(target && needsCover(target)){
       e.preventDefault();
+      newRoundIfFinished();
       painting = true;
       coverWord(target);
+      play('cover');
       updateProgress();
       try { stage.setPointerCapture(e.pointerId); } catch(_) {}
     }
     return;
   }
 
+  const done = e.target.closest('.w.covered.done');
+  if(done){
+    /* drugi klik dwukliku na właśnie odsłoniętym słowie nie jest oznaczeniem błędu */
+    if(done.dataset.scored && !done.dataset.given && Date.now() - (done._doneAt || 0) > 500) toggleWrong(done);
+    return;
+  }
   const w = e.target.closest('.w.covered');
-  if(!w || w.classList.contains('done')) return;
+  if(!w) return;
   e.preventDefault();
   dragging = true; dragRevealed = 0; activeWord = w;
+  gesture.clear(); gesture.add(w);
   setCursorWord(w);
   downX = e.clientX; downY = e.clientY;
   try { stage.setPointerCapture(e.pointerId); } catch(_) {}
@@ -1074,7 +1412,7 @@ stage.addEventListener('pointerdown', e => {
 stage.addEventListener('pointermove', e => {
   if(painting){
     const w = wordUnderAny(e.clientX, e.clientY);
-    if(w && needsCover(w)){ coverWord(w); updateProgress(); }
+    if(w && needsCover(w)){ coverWord(w); play('cover'); updateProgress(); }
     return;
   }
   if(!dragging) return;
@@ -1085,6 +1423,7 @@ stage.addEventListener('pointermove', e => {
   if(hit && hit !== activeWord && !hit.classList.contains('done')){
     if(activeWord) activeWord.classList.remove('dragging');
     activeWord = hit;
+    gesture.add(hit);
     setCursorWord(hit);
     dragRevealed++;
     if(wholeWordOn()){ revealWord(hit); return; }
@@ -1114,18 +1453,25 @@ stage.addEventListener('pointerup', e => {
   }
   if(activeWord) activeWord.classList.remove('dragging');
   activeWord = null;
+  endGesture();
 });
 
 stage.addEventListener('pointercancel', () => {
   dragging = false; painting = false;
   if(activeWord) activeWord.classList.remove('dragging');
   activeWord = null;
+  endGesture();
 });
 
 /* podwójne kliknięcie: odsłania całe słowo */
 stage.addEventListener('dblclick', e => {
-  const w = e.target.closest('.w.covered');
+  const w = wordUnder(e.clientX, e.clientY);   // przy przechwyceniu wskaźnika e.target to cała scena
   if(!w) return;
+  /* pierwszy klik dwukliku nie liczy się jako podglądanie */
+  if(w._hintAt && Date.now() - w._hintAt < 600){
+    if(w._hPrev) w.dataset.h = w._hPrev; else delete w.dataset.h;
+    w._hintAt = 0;
+  }
   revealWord(w);
 });
 
@@ -1134,12 +1480,14 @@ stage.addEventListener('contextmenu', e => {
   const w = e.target.closest('.w');
   if(!w) return;
   e.preventDefault();
+  newRoundIfFinished();
   coverWord(w);
+  play('cover');
   updateProgress();
 });
 
 /* ═══════════════════════════════════════════
-   STEROWANIE KLAWIATURĄ (tylko ← →, można wyłączyć)
+   STEROWANIE KLAWIATURĄ (← →, można wyłączyć)
    ═══════════════════════════════════════════ */
 
 let cursorWord = null;
@@ -1170,7 +1518,7 @@ function neighbourWord(dir){
   return list[i + dir] || null;
 }
 
-/* → jedna litera w prawo */
+/* → jedna litera w prawo (każde naciśnięcie przed końcem słowa to podgląd) */
 function letterForward(){
   const w = currentWord();
   if(!w) return;
@@ -1183,7 +1531,7 @@ function letterForward(){
   const p = Number(w.dataset.p || 0);
   const next = stops.find(s => s > p + 0.5);
   setProgress(w, next === undefined ? stops[stops.length - 1] : next, false);
-  if(w.classList.contains('done')) pushUndo(w);
+  markHint(w);
 }
 
 /* ← jedna litera w lewo */
@@ -1207,7 +1555,7 @@ function letterBack(){
 }
 
 document.addEventListener('keydown', e => {
-  if(e.key === 'Escape'){ closeFloat(); return; }
+  if(e.key === 'Escape'){ closeFloat(); closeWin(); return; }
   if(!$('arrowKeys').checked) return;
   const tag = (document.activeElement && document.activeElement.tagName) || '';
   if(tag === 'TEXTAREA' || tag === 'INPUT') return;
@@ -1222,99 +1570,7 @@ document.addEventListener('keydown', e => {
 });
 
 /* ═══════════════════════════════════════════
-   BANK SŁÓW
-   Pokazuje tylko kilka najbliższych (w kolejności czytania) zakrytych jednostek,
-   wymieszanych między sobą. Sąsiednie zakryte słowa tworzą jedną jednostkę.
-   Odgadnięte jednostki znikają, a na ich miejsce wchodzą kolejne.
-   ═══════════════════════════════════════════ */
-
-const bank = $('bank');
-const bankList = $('bankList');
-let bankOrder = [];
-let bankSig = '';
-
-function bankUnits(){
-  const units = [];
-  stage.querySelectorAll('.line-text').forEach(lt => {
-    let cur = null, joinable = false;
-    for(const el of lt.children){
-      const isW = el.classList.contains('w');
-      if(isW && el.classList.contains('covered')){
-        if(cur && joinable){ cur.words.push(el); cur.text += ' ' + el.dataset.text; }
-        else { cur = {key: el.dataset.id, words:[el], text: el.dataset.text}; units.push(cur); }
-        joinable = true;
-      } else if(isW || !/^\s+$/.test(el.textContent)){
-        joinable = false;
-      }
-    }
-  });
-  units.forEach(u => {
-    u.done = u.words.every(w => w.classList.contains('done'));
-    u.marked = u.words.some(w => w.classList.contains('marked'));
-  });
-  return units;
-}
-
-function buildBank(reshuffle){
-  const all = bankUnits();
-  const pending = all.filter(u => !u.done);
-  const visible = pending.slice(0, BANK_LIMIT);
-  const byKey = new Map(visible.map(u => [u.key, u]));
-  const keys = visible.map(u => u.key);
-
-  if(reshuffle){
-    bankOrder = shuffle(keys.slice());
-  } else {
-    bankOrder = bankOrder.filter(k => byKey.has(k));
-    keys.filter(k => !bankOrder.includes(k))
-        .forEach(k => bankOrder.splice(Math.floor(Math.random() * (bankOrder.length + 1)), 0, k));
-  }
-
-  const more = pending.length - visible.length;
-  const sig = bankOrder.map(k => k + ':' + byKey.get(k).text).join('|') + '#' + more + '#' + all.length;
-  $('bankCount').textContent = pending.length ? pending.length + ' do odgadnięcia' : '';
-  if(sig === bankSig && !reshuffle) return;
-  bankSig = sig;
-
-  bankList.innerHTML = '';
-  if(!all.length){
-    bankList.innerHTML = '<span class="bank-empty">Nic jeszcze nie jest zakryte.</span>';
-    return;
-  }
-  if(!pending.length){
-    bankList.innerHTML = '<span class="bank-empty">Wszystko odgadnięte.</span>';
-    return;
-  }
-  bankOrder.forEach(k => {
-    const u = byKey.get(k);
-    const chip = document.createElement('span');
-    chip.className = 'chip' + (u.marked ? ' marked' : '');
-    chip.textContent = u.text;
-    bankList.appendChild(chip);
-  });
-  if(more > 0){
-    const m = document.createElement('span');
-    m.className = 'bank-more';
-    m.textContent = '+ ' + more + ' dalej';
-    bankList.appendChild(m);
-  }
-}
-
-function setBank(on){
-  bank.classList.toggle('on', on);
-  document.body.classList.toggle('bank-pad', on);
-  if(on){ bankSig = ''; buildBank(true); }
-}
-
-$('bankOn').addEventListener('change', e => setBank(e.target.checked));
-$('bankShuffle').addEventListener('click', () => buildBank(true));
-$('bankToggle').addEventListener('click', e => {
-  const collapsed = bank.classList.toggle('collapsed');
-  e.currentTarget.dataset.tip = collapsed ? 'Rozwiń' : 'Zwiń';
-});
-
-/* ═══════════════════════════════════════════
-   POSTĘP
+   POSTĘP + KONIEC RUNDY
    ═══════════════════════════════════════════ */
 
 let wasComplete = false;
@@ -1322,36 +1578,118 @@ let wasComplete = false;
 function updateProgress(){
   const covered = stage.querySelectorAll('.w.covered').length;
   const done = stage.querySelectorAll('.w.covered.done').length;
-  const label = done + ' / ' + covered;
-  $('count').textContent = label;
-  $('fabCount').textContent = label;
+  $('count').textContent = done + ' / ' + covered;
   const pct = covered ? (done / covered) * 100 : 0;
   $('barFill').style.width = pct + '%';
-
-  if(bank.classList.contains('on')) buildBank(false);
+  refreshHud(false);
+  scheduleSave();
 
   if(covered > 0 && done === covered){
-    if(!wasComplete){ wasComplete = true; sectionShot(); }
+    if(!wasComplete){ wasComplete = true; roundComplete(); }
   } else {
     wasComplete = false;
   }
 }
 
+function textHash(str){
+  let h = 5381;
+  for(let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0;
+  return String(h >>> 0);
+}
+
+function roundComplete(){
+  roundEnd = Date.now();
+  clearInterval(timerId);
+  refreshHud(false);
+
+  if(gaveUp){
+    toast('Odsłonięte. Kliknij „Zakryj od nowa”, żeby spróbować jeszcze raz');
+    return;
+  }
+  play('win');
+  sectionShot();
+  setTimeout(openWin, 650);
+}
+
+/* karta wyniku liczy się na nowo przy każdym otwarciu i po każdej poprawce błędów */
+function fillWin(){
+  const t = tally();
+  const stars = t.acc >= 90 ? 3 : t.acc >= 70 ? 2 : 1;
+
+  const oldLevel = levelInfo(xp).L;
+  xp += t.ok - roundXp;
+  roundXp = t.ok;
+  saveOpts();
+  const newLevel = levelInfo(xp).L;
+  if(newLevel > oldLevel){
+    setTimeout(() => { play('level'); $('lvl').classList.remove('up'); void $('lvl').offsetWidth; $('lvl').classList.add('up'); }, 700);
+  }
+  refreshHud(false);
+
+  let bestMap = {};
+  try { bestMap = JSON.parse(localStorage.getItem(BEST_KEY) || '{}') || {}; } catch(_) {}
+  const key = textHash(input.value);
+  const prevBest = bestMap[key];
+  if(prevBest === undefined || t.acc > prevBest){
+    bestMap[key] = t.acc;
+    try { localStorage.setItem(BEST_KEY, JSON.stringify(bestMap)); } catch(_) {}
+  }
+
+  $('stars').querySelectorAll('svg').forEach((s, i) => s.classList.toggle('on', i < stars));
+  const titles = ['', 'Runda ukończona!', 'Dobra robota!', 'Świetnie!'];
+  $('winTitle').innerHTML = '<span class="grad">' + titles[stars] + '</span>';
+  $('winSub').textContent = newLevel > oldLevel
+    ? 'Nowy poziom: ' + newLevel + '!'
+    : '+' + t.ok + ' XP za słowa znane od razu';
+  $('wAcc').textContent = t.acc + '%';
+  $('wSplit').innerHTML = '<i class="c-ok">' + t.ok + '</i> · <i class="c-hint">' + t.hint + '</i> · <i class="c-bad">' + t.bad + '</i>';
+  $('wTime').textContent = fmtTime(roundStart ? roundEnd - roundStart : 0);
+  const best = $('winBest');
+  const record = prevBest !== undefined && t.acc > prevBest;
+  best.classList.toggle('show', prevBest !== undefined);
+  best.textContent = record ? 'Nowy rekord dla tego tekstu! Poprzednio ' + prevBest + '%.' : 'Rekord dla tego tekstu: ' + Math.max(prevBest || 0, t.acc) + '%.';
+}
+
+function openWin(){
+  fillWin();
+  const win = $('win');
+  win.classList.remove('open'); void win.offsetWidth;
+  win.classList.add('open');
+  $('scrim').classList.add('open');
+}
+function closeWin(){
+  if(!$('win').classList.contains('open')) return;
+  $('win').classList.remove('open');
+  if(!floatPanel.classList.contains('open')) $('scrim').classList.remove('open');
+}
+$('winClose').addEventListener('click', closeWin);
+$('trophyBtn').addEventListener('click', openWin);
+$('winAgain').addEventListener('click', () => { closeWin(); replay(); });
+$('winNew').addEventListener('click', () => {
+  closeWin();
+  stage.querySelectorAll('.w').forEach(uncoverWord);
+  stage.querySelectorAll('.line.cleared').forEach(r => r.classList.remove('cleared'));
+  undoStack = [];
+  resetRound();
+  coverRatio();
+});
+
 /* ═══════════════════════════════════════════
    CONFETTI
    ═══════════════════════════════════════════ */
 
-const PALETTE = ['#12676b','#c9452c','#e39400','#2352b8','#7fb7b3'];
+const PALETTE = ['#12676b','#c9452c','#e39400','#2352b8','#1f9d55','#f5b301'];
 
 function sectionShot(){
   if(typeof confetti !== 'function') return;
-  const defaults = { origin:{ y:0.62 }, colors: PALETTE };
+  const defaults = { origin:{ y:0.62 }, colors: PALETTE, zIndex: 120 };
   confetti(Object.assign({}, defaults, { spread:26, startVelocity:52, particleCount:36 }));
   confetti(Object.assign({}, defaults, { spread:70, particleCount:30 }));
   confetti(Object.assign({}, defaults, { spread:110, decay:0.91, scalar:0.85, particleCount:44 }));
 }
 
 $('celebrate').addEventListener('click', () => {
+  play('win');
   if(typeof confetti !== 'function') return;
   const end = Date.now() + 2600;
   (function frame(){
@@ -1372,54 +1710,137 @@ $('celebrate').addEventListener('click', () => {
 });
 
 /* ═══════════════════════════════════════════
-   PANEL: PRZYCISK W ROGU + NAKŁADKA
+   PANEL: ZAKŁADKI + WSZYSTKIE OPCJE
    ═══════════════════════════════════════════ */
 
-const fab = $('fab');
-const fabBtn = $('fabBtn');
+const toolbar = $('toolbar');
+const toolBody = $('toolBody');
 const floatPanel = $('floatPanel');
+const floatBody = $('floatBody');
 const scrim = $('scrim');
+let activeTab = 'cover';
+
+function setTab(name){
+  activeTab = name;
+  document.querySelectorAll('#tabs .tab').forEach(t => {
+    const on = t.dataset.tab === name;
+    t.classList.toggle('on', on);
+    t.setAttribute('aria-selected', String(on));
+  });
+  toolBody.querySelectorAll('.group').forEach(g => g.classList.toggle('active', g.dataset.group === name));
+}
+
+function setCollapsed(collapsed){
+  toolbar.classList.toggle('collapsed', collapsed);
+  const label = collapsed ? 'Rozwiń panel' : 'Zwiń panel';
+  $('toolToggle').dataset.tip = label;
+  $('toolToggle').setAttribute('aria-label', label);
+}
+
+/* klik w aktywną zakładkę zwija pasek, w inną przełącza i rozwija */
+$('tabs').addEventListener('click', e => {
+  const t = e.target.closest('.tab');
+  if(!t) return;
+  if(t.dataset.tab === activeTab && !toolbar.classList.contains('collapsed')){ setCollapsed(true); return; }
+  setTab(t.dataset.tab);
+  setCollapsed(false);
+});
+$('toolToggle').addEventListener('click', () => setCollapsed(!toolbar.classList.contains('collapsed')));
 
 function openFloat(){
+  floatBody.appendChild(toolBody);
   floatPanel.classList.add('open');
   scrim.classList.add('open');
-  fabBtn.setAttribute('aria-expanded','true');
-  fabBtn.setAttribute('aria-label','Zamknij panel');
 }
 
 function closeFloat(){
   if(!floatPanel.classList.contains('open')) return;
+  toolbar.appendChild(toolBody);
   floatPanel.classList.remove('open');
-  scrim.classList.remove('open');
-  fabBtn.setAttribute('aria-expanded','false');
-  fabBtn.setAttribute('aria-label','Otwórz panel');
+  if(!$('win').classList.contains('open')) scrim.classList.remove('open');
 }
 
-fabBtn.addEventListener('click', () => {
-  floatPanel.classList.contains('open') ? closeFloat() : openFloat();
-});
+$('allOpts').addEventListener('click', openFloat);
 $('floatClose').addEventListener('click', closeFloat);
-scrim.addEventListener('click', closeFloat);
+scrim.addEventListener('click', () => { closeFloat(); closeWin(); });
 
 /* ═══════════════════════════════════════════
    UI: EDYTOR, USTAWIENIA, ZAPIS
    ═══════════════════════════════════════════ */
 
-$('apply').addEventListener('click', () => {
+/* tekst wczytuje się sam chwilę po wklejeniu lub wpisaniu;
+   zasłony zostają na słowach, które się nie zmieniły */
+let parseTimer;
+input.addEventListener('input', () => {
+  clearTimeout(parseTimer);
+  parseTimer = setTimeout(loadText, 350);
+});
+
+function loadText(){
+  const old = snapshot();
   doc = parseText(input.value);
   render();
-  toast('Tekst wczytany');
-});
+  const words = [...stage.querySelectorAll('.w')];
+  let j = 0;
+  const mapped = words.map(w => {
+    for(let m = j; m < Math.min(old.length, j + 8); m++){
+      if(old[m].t === w.dataset.text){ j = m + 1; return old[m]; }
+    }
+    return null;
+  });
+  applyStates(mapped);
+}
+
+function snapshot(){
+  return [...stage.querySelectorAll('.w')].map(w => ({
+    t: w.dataset.text,
+    c: w.classList.contains('covered'),
+    d: w.classList.contains('done'),
+    p: Number(w.dataset.p || 0),
+    h: Number(w.dataset.h || 0),
+    k: w.dataset.perfect ? 1 : 0,
+    x: w.dataset.wrong ? 1 : 0,
+    g: w.dataset.given ? 1 : 0
+  }));
+}
+
+function applyStates(states){
+  const words = [...stage.querySelectorAll('.w')];
+  (states || []).forEach((s, i) => {
+    const w = words[i];
+    if(!w || !s || !s.c) return;
+    w.classList.add('covered');
+    if(w.classList.contains('marked')) w.classList.add('was-marked');
+    w.dataset.p = s.p || 0;
+    if(s.h) w.dataset.h = s.h;
+    if(s.d){
+      w.classList.add('done');
+      w.dataset.scored = '1';
+      if(s.k){ w.dataset.perfect = '1'; w.classList.add('perfect'); }
+      if(s.x){ w.dataset.wrong = '1'; w.classList.add('wrong'); }
+      if(s.g) w.dataset.given = '1';
+    } else if(s.p > 0){
+      coverOf(w).style.clipPath = 'inset(0 0 0 ' + s.p + 'px)';
+    } else {
+      coverOf(w).style.clipPath = 'inset(0 0 0 0)';
+    }
+  });
+  wasComplete = true;   // nie kończ rundy od razu po wczytaniu
+  syncCleared();
+  updateProgress();
+}
 
 $('sample').addEventListener('click', () => {
   input.value = SAMPLE;
   doc = parseText(SAMPLE);
+  resetRound();
   render();
 });
 
 $('clearText').addEventListener('click', () => {
   input.value = '';
   doc = [];
+  resetRound();
   render();
 });
 
@@ -1461,19 +1882,38 @@ $('arrowKeys').addEventListener('change', e => {
   toast(e.target.checked ? 'Strzałki ← → odsłaniają litery' : 'Strzałki znów przewijają stronę');
 });
 
+function syncSoundBtn(){
+  const on = $('soundOn').checked;
+  const b = $('soundBtn');
+  b.classList.toggle('muted', !on);
+  b.dataset.tip = on ? 'Wycisz' : 'Włącz dźwięk';
+  b.querySelectorAll('.wave').forEach(p => { p.style.display = on ? '' : 'none'; });
+  b.querySelectorAll('.mute').forEach(p => { p.style.display = on ? 'none' : ''; });
+}
+$('soundBtn').addEventListener('click', () => {
+  $('soundOn').checked = !$('soundOn').checked;
+  syncSoundBtn();
+  saveOpts();
+  play('known');
+});
+$('soundOn').addEventListener('change', syncSoundBtn);
+function syncTime(){ document.body.classList.toggle('no-time', !$('showTime').checked); }
+$('showTime').addEventListener('change', syncTime);
+
 let fontSize = 2;
 function setFont(v){
   fontSize = Math.min(3.4, Math.max(1.2, Math.round(v * 10) / 10));
   stage.querySelectorAll('.w').forEach(w => { w._stops = null; });
   document.documentElement.style.setProperty('--stage-size', fontSize.toFixed(2) + 'rem');
   $('fontVal').textContent = Math.round(fontSize / 2 * 100) + '%';
+  scheduleSave();
 }
 $('fontUp').addEventListener('click', () => setFont(fontSize + 0.2));
 $('fontDown').addEventListener('click', () => setFont(fontSize - 0.2));
 
-/* ustawienia panelu pamiętane w tej przeglądarce */
+/* ustawienia i XP pamiętane w tej przeglądarce */
 function saveOpts(){
-  const o = { ratio, maxRun };
+  const o = { ratio, maxRun, xpWords: xp };
   document.querySelectorAll('[data-opt]').forEach(i => { o[i.id] = i.checked; });
   try { localStorage.setItem(OPTS_KEY, JSON.stringify(o)); } catch(_) {}
 }
@@ -1492,60 +1932,37 @@ function loadOpts(){
     maxRun = o.maxRun;
     $('maxRun').querySelectorAll('button').forEach(b => b.classList.toggle('on', Number(b.dataset.n) === maxRun));
   }
+  if(typeof o.xpWords === 'number') xp = o.xpWords;
   document.body.classList.toggle('show-marked', $('showMarked').checked);
 }
 
-$('save').addEventListener('click', () => {
-  const state = {
-    text: input.value,
-    font: fontSize,
-    words: [...stage.querySelectorAll('.w')].map(w => ({
-      c: w.classList.contains('covered'),
-      d: w.classList.contains('done'),
-      p: Number(w.dataset.p || 0)
-    }))
-  };
-  try {
-    localStorage.setItem(STORE_KEY, JSON.stringify(state));
-    toast('Stan zapisany');
-  } catch(_) { toast('Nie udało się zapisać'); }
-});
-
-$('reset').addEventListener('click', () => {
-  try { localStorage.removeItem(STORE_KEY); } catch(_) {}
-  toast('Zapis wyczyszczony');
-});
+/* autozapis: tekst, zasłony, oceny słów i rozmiar czcionki, chwilę po każdej zmianie */
+let saveTimer, restoring = true;
+function scheduleSave(){
+  if(restoring) return;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveState, 400);
+}
+function saveState(){
+  const state = { text: input.value, font: fontSize, words: snapshot() };
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(_) {}
+}
+window.addEventListener('beforeunload', () => { if(!restoring) saveState(); });
 
 function restore(){
   let state = null;
   try { state = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch(_) {}
-  if(!state || !state.text){
+  if(!state){
     input.value = SAMPLE;
     doc = parseText(SAMPLE);
     render();
     return;
   }
-  input.value = state.text;
-  doc = parseText(state.text);
+  input.value = state.text || '';
+  doc = parseText(input.value);
   render();
   setFont(state.font || 2);
-  const words = [...stage.querySelectorAll('.w')];
-  (state.words || []).forEach((s, i) => {
-    const w = words[i];
-    if(!w || !s.c) return;
-    w.classList.add('covered');
-    if(w.classList.contains('marked')) w.classList.add('was-marked');
-    w.dataset.p = s.p || 0;
-    if(s.d){
-      w.classList.add('done');
-    } else if(s.p > 0){
-      coverOf(w).style.clipPath = 'inset(0 0 0 ' + s.p + 'px)';
-    } else {
-      coverOf(w).style.clipPath = 'inset(0 0 0 0)';
-    }
-  });
-  wasComplete = true;   // nie odpalaj confetti od razu po wczytaniu
-  updateProgress();
+  applyStates(state.words);
 }
 
 /* po zmianie szerokości okna granice liter trzeba przeliczyć od nowa */
@@ -1569,13 +1986,16 @@ function toast(msg){
   el.textContent = msg;
   el.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2400);
 }
 
 loadOpts();
+syncSoundBtn();
+syncTime();
 setFont(2);
 restore();
-setBank($('bankOn').checked);
+refreshHud(false);
+restoring = false;
 </script>
 </body>
 </html>
