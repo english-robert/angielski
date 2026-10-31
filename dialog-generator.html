@@ -120,6 +120,8 @@ textarea:focus{outline:none;border-color:var(--teal);background:#fff}
   position:relative;
 }
 .btn:hover{transform:scale(1.04);filter:brightness(1.06)}
+/* najechany przycisk i jego dymek nad sąsiadami */
+.btn:hover,.btn:focus-visible,.tab:hover,.tab:focus-visible{z-index:65}
 .btn:active{transform:scale(.97);filter:brightness(.94)}
 .btn:focus{outline:none}
 .btn:focus-visible{outline:3px solid var(--amber);outline-offset:3px}
@@ -196,6 +198,9 @@ textarea:focus{outline:none;border-color:var(--teal);background:#fff}
   white-space:nowrap;
 }
 .stat svg{width:1.1rem;height:1.1rem;flex:0 0 auto}
+.stat.streak{background-color:#ffe3d6;color:#a63a0b;transition:opacity .2s ease}
+.stat.streak svg{color:var(--flame)}
+.stat.streak.off{opacity:.45}
 .stat.ok{background-color:#dcf3e5;color:#13643a}
 .stat.hint{background-color:#fff1cc;color:#7a4d00}
 .stat.bad{background-color:#fbe1dc;color:#9a2a16}
@@ -239,14 +244,6 @@ body.no-time .stat.time,body.no-time .win-time{display:none}
 .btn.icon.soft.muted{color:#9aaeb8}
 .toolbar.collapsed .btn.icon.flip svg{transform:rotate(180deg)}
 
-.paint-badge{
-  display:none;align-items:center;gap:.45rem;
-  font-family:var(--ui);font-weight:700;font-size:.9rem;
-  padding:.38rem .8rem;border:none;border-radius:99px;cursor:pointer;
-  background-color:var(--amber);color:#2a1a00;
-}
-.paint-badge svg{width:1rem;height:1rem}
-body.paint .paint-badge{display:inline-flex}
 
 /* ══════════ GRUPY OPCJI ══════════ */
 .tool-body{
@@ -337,6 +334,7 @@ body.paint .paint-badge{display:inline-flex}
 .toolbar .opt + .opt{border-top:none}
 .toolbar .opt .d{display:none}
 .toolbar .opt input{grid-row:auto}
+.toolbar .g-cover .opt{margin-top:0 !important}
 
 /* ══════════ NAKŁADKA: WSZYSTKIE OPCJE ══════════ */
 .scrim{
@@ -429,12 +427,11 @@ body.show-marked .w.marked:not(.covered)::after{background-color:var(--marked-li
 .w.quiet .cover{transition:none}
 .w.covered.done::after{background-color:rgba(227,148,0,.7)}
 .w.covered.done.perfect::after{background-color:var(--done-line)}
+.w.covered.done.hinted::after{background-color:rgba(227,148,0,.8)}
 .w.covered.done.wrong::after{background-color:var(--rust)}
 .w.covered.done.wrong .txt{color:var(--rust)}
 .w.covered.done{cursor:pointer}
 
-body.paint .w{cursor:cell}
-body.paint .w:hover{background-color:rgba(227,148,0,.2);border-radius:.18em}
 
 .stage-empty{text-align:center;color:var(--ink-soft);font-family:var(--ui);font-size:1.05rem;padding:2rem 0}
 
@@ -459,7 +456,8 @@ body.paint .w:hover{background-color:rgba(227,148,0,.2);border-radius:.18em}
 .hintbar{
   margin-top:var(--gap-in);
   padding:1rem 1.3rem;border-radius:16px;
-  background-color:#d9e6ec;
+  background-color:#fff;
+  box-shadow:0 6px 20px rgba(19,36,48,.10);
   font-size:1rem;color:var(--ink-soft);text-align:center;
 }
 .hintbar b{color:var(--ink);font-weight:700}
@@ -566,13 +564,13 @@ body.no-time .win-grid{grid-template-columns:1fr 1.5fr}
           <button class="tab g-rules" data-tab="rules" role="tab" data-tip="Zasady losowania" aria-label="Zasady losowania"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h10"/><path d="M18 6h2"/><circle cx="16" cy="6" r="2"/><path d="M4 12h3"/><path d="M11 12h9"/><circle cx="9" cy="12" r="2"/><path d="M4 18h12"/><circle cx="18" cy="18" r="2"/></svg></button>
           <button class="tab g-view" data-tab="view" role="tab" data-tip="Sterowanie i widok" aria-label="Sterowanie i widok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="6"/><path d="M12 6v4"/></svg></button>
         </div>
-        <button class="paint-badge" data-paint-off title="Kliknij, żeby wyłączyć"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>Tryb zakrywania</button>
 
         <div class="hud">
           <div class="lvl" id="lvl" title="Poziom"><b id="lvlVal">1</b></div>
-          <span class="stat ok" id="okStat" title="Znane od razu: słowo odsłonięte jednym ruchem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg><span id="okVal">0</span></span>
-          <span class="stat hint" id="hintStat" title="Z podpowiedzią: wcześniej podejrzane litery"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg><span id="hintVal">0</span></span>
-          <span class="stat bad" id="badStat" title="Pomyłki: kliknij odsłonięte słowo, żeby je oznaczyć"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg><span id="badVal">0</span></span>
+          <span class="stat streak off" id="streakStat" title="Seria: słowa znane z rzędu. Przerywa ją podpowiedź (Spacja, dwuklik) i oznaczenie błędu"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c.6 3.2-1.4 5-3 6.8C7.4 10.6 6 12.4 6 15a6 6 0 0 0 12 0c0-2.2-1-4-2.2-5.4-.2 1.6-1 2.8-2.3 3.2.6-3.6-.4-7.6-1.5-10.8z"/></svg><span id="streakVal">0</span></span>
+          <span class="stat ok" id="okStat" title="Znane: odsłonięte bez naciskania „Nie wiem”"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg><span id="okVal">0</span></span>
+          <span class="stat hint" id="hintStat" title="Z podpowiedzią: odsłonięte Spacją, dwuklikiem albo przyciskiem „Nie wiem”"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg><span id="hintVal">0</span></span>
+          <span class="stat bad" id="badStat" title="Błędy: kliknij odsłonięte słowo, żeby zmienić jego ocenę"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg><span id="badVal">0</span></span>
           <span class="stat time" title="Czas rundy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2"/><path d="M9 2h6"/></svg><span id="timeVal">0:00</span></span>
           <span class="prog"><span class="bar"><span id="barFill"></span></span><span class="count-pill" id="count">0 / 0</span></span>
           <button class="btn icon amber" id="trophyBtn" data-tip="Wynik rundy" aria-label="Pokaż wynik rundy" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3"/><path d="M7 5H4v2a3 3 0 0 0 3 3"/></svg></button>
@@ -602,6 +600,7 @@ body.no-time .win-grid{grid-template-columns:1fr 1.5fr}
             <input type="number" min="1" max="999" id="coverN" class="numin" placeholder="ile?" title="Ile słów zakryć" aria-label="Liczba słów do zakrycia">
             <button class="btn act" id="coverNGo" data-tip="Zakryj tyle słów"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16"/><path d="M4 15h16"/><path d="M10 3 8 21"/><path d="M16 3l-2 18"/></svg><span class="lbl">Zakryj tyle słów</span></button>
           </div>
+          <label class="opt" style="margin-top:.6rem"><input type="checkbox" id="firstLetter" data-opt><span class="t">Pierwsza litera widoczna</span><span class="d">Ułatwienie: zasłona zaczyna się od drugiej litery.</span></label>
           <div class="row split">
             <button class="btn amber act" id="coverMarked" data-tip="Zakryj słowa w {klamrach}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5a2 2 0 0 0 2 2h1"/><path d="M16 3h1a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2 2 2 0 0 0-2 2v5a2 2 0 0 1-2 2h-1"/></svg><span class="lbl">Zakryj słowa w {klamrach}</span></button>
             <button class="btn ghost act" id="coverAll" data-tip="Zakryj wszystko"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="5" width="9" height="6" rx="2"/><rect x="13" y="5" width="9" height="6" rx="2"/><rect x="2" y="13" width="9" height="6" rx="2"/><rect x="13" y="13" width="9" height="6" rx="2"/></svg><span class="lbl">Zakryj wszystko</span></button>
@@ -612,6 +611,7 @@ body.no-time .win-grid{grid-template-columns:1fr 1.5fr}
         <div class="group g-reveal" data-group="reveal">
           <h3><span class="gi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span>Odsłanianie i powtórka</h3>
           <div class="act-grid">
+            <button class="btn amber act" id="hintBtn" data-tip="Nie wiem: pokaż całe słowo (Spacja, dwuklik)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg><span class="lbl">Nie wiem, pokaż słowo (Spacja)</span></button>
             <button class="btn ghost act" id="next" data-tip="Odsłoń następne słowo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 14 5-5-5-5"/><path d="M20 9h-9a7 7 0 0 0-7 7v3"/></svg><span class="lbl">Odsłoń następne</span></button>
             <button class="btn ghost act" id="undo" data-tip="Cofnij ostatnie słowo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h9a7 7 0 0 1 7 7v3"/></svg><span class="lbl">Cofnij ostatnie</span></button>
             <button class="btn act" id="recover" data-tip="Nowa runda z tymi samymi zasłonami"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg><span class="lbl">Zakryj od nowa</span></button>
@@ -642,10 +642,9 @@ body.no-time .win-grid{grid-template-columns:1fr 1.5fr}
           <h3><span class="gi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="6"/><path d="M12 6v4"/></svg></span>Sterowanie i widok</h3>
           <label class="opt"><input type="checkbox" id="arrowKeys" data-opt checked><span class="t">Odsłanianie strzałkami ← →</span><span class="d">Strzałka w prawo odsłania literę, w lewo ją zakrywa.</span></label>
           <label class="opt"><input type="checkbox" id="wholeWord" data-opt><span class="t">Klik odsłania całe słowo</span><span class="d">Zamiast jednej litery naraz.</span></label>
-          <label class="opt"><input type="checkbox" id="paintMode"><span class="t">Tryb zakrywania</span><span class="d">Klikasz lub przeciągasz po słowach, które mają zniknąć.</span></label>
           <label class="opt"><input type="checkbox" id="showMarked" data-opt checked><span class="t">Podkreślaj słowa w {klamrach}</span><span class="d">Pomarańczowa linia pod słowami, które jeszcze nie są zakryte.</span></label>
           <label class="opt"><input type="checkbox" id="showTime" data-opt checked><span class="t">Pokazuj czas rundy</span><span class="d">Stoper w pasku i na karcie wyniku.</span></label>
-          <label class="opt"><input type="checkbox" id="soundOn" data-opt checked><span class="t">Efekty dźwiękowe</span><span class="d">Ciche kliknięcia przy odsłanianiu i fanfara na koniec rundy.</span></label>
+          <input type="checkbox" id="soundOn" data-opt checked hidden>
           <div class="row" style="margin-top:.6rem">
             <span class="row-label">Rozmiar tekstu</span>
             <div class="seg">
@@ -662,7 +661,7 @@ body.no-time .win-grid{grid-template-columns:1fr 1.5fr}
     <div class="stage" id="stage"></div>
 
     <div class="hintbar">
-      <b>Klik</b> odsłania literę <span class="sep">·</span> <b>przeciągnięcie</b> kolejne <span class="sep">·</span> <b>dwuklik</b> całe słowo <span class="sep">·</span> <b>prawy przycisk</b> zakrywa z powrotem <span class="sep">·</span> <b>← →</b> litera po literze<br>Słowo odsłonięte jednym ruchem liczy się jako <b>znane</b>, po podejrzeniu liter jako <b>z podpowiedzią</b>. Pomyliłeś się? <b>Kliknij odsłonięte słowo</b>, żeby oznaczyć błąd.
+      <b>Klik</b> odsłania literę <span class="sep">·</span> <b>przeciągnięcie</b> kolejne <span class="sep">·</span> <b>prawy przycisk</b> zakrywa (także przeciągnięty po słowach) <span class="sep">·</span> <b>← →</b> litera po literze<br>Podglądanie liter jest w porządku. <b>Dwuklik</b> albo <b>Spacja</b> odsłania całe słowo jako <b>podpowiedź</b>. <b>Klik w odsłonięte słowo</b> zmienia ocenę: znane → podpowiedź → błąd.
     </div>
   </section>
 
@@ -699,7 +698,7 @@ body.no-time .win-grid{grid-template-columns:1fr 1.5fr}
     <div><b id="wSplit">0 · 0 · 0</b><span>znane · podp. · błędy</span></div>
     <div class="win-time"><b id="wTime">0:00</b><span>czas</span></div>
   </div>
-  <p class="win-note">Pomyliłeś się gdzieś? Zamknij kartę i kliknij te słowa w tekście. Wynik przeliczy się sam.</p>
+  <p class="win-note">Coś oceniłeś za wysoko? Zamknij kartę i kliknij słowo w tekście: znane → podpowiedź → błąd. Wynik przeliczy się sam.</p>
   <div class="win-best" id="winBest"></div>
   <div class="win-acts">
     <button class="btn act" id="winAgain"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Jeszcze raz</button>
@@ -908,15 +907,15 @@ function render(){
 
 /* ═══════════════════════════════════════════
    WYNIK: ZNANE / Z PODPOWIEDZIĄ / BŁĄD
-   Słowo odsłonięte jednym ruchem (dwuklik, jedno przeciągnięcie przez całe słowo,
-   „Odsłoń następne”) liczy się jako znane. Jeśli wcześniej podejrzałeś litery,
-   liczy się jako z podpowiedzią. Kliknięcie odsłoniętego słowa oznacza błąd.
+   Słowo odsłonięte samodzielnie liczy się jako znane, przyciskiem „Nie wiem”,
+   Spacją albo dwuklikiem jako z podpowiedzią. Kliknięcie odsłoniętego słowa oznacza błąd.
    Trafność = (znane + ½ podpowiedzi) / wszystkie zakryte.
-   XP = liczba słów znanych od razu, zbierana ze wszystkich rund.
+   XP = liczba słów znanych, zbierana ze wszystkich rund.
    ═══════════════════════════════════════════ */
 
 let roundStart = 0, roundEnd = 0, timerId = null, gaveUp = false;
 let xp = 0, roundXp = 0;
+let streak = 0, bestStreak = 0;
 
 function levelInfo(x){
   const L = Math.floor(Math.sqrt(x / 25)) + 1;
@@ -930,9 +929,8 @@ function tally(){
     t.total++;
     if(!w.classList.contains('done') || !w.dataset.scored) return;
     if(w.dataset.wrong) t.bad++;
+    else if(w.dataset.hinted) t.hint++;
     else if(w.dataset.perfect) t.ok++;
-    else if(w.dataset.given) return;          // odsłonięte przez „Pokaż wszystko”
-    else t.hint++;
   });
   t.acc = t.total ? Math.round((t.ok + t.hint / 2) / t.total * 100) : 0;
   return t;
@@ -956,10 +954,12 @@ function refreshHud(animate){
   setStat('ok', t.ok, animate);
   setStat('hint', t.hint, animate);
   setStat('bad', t.bad, animate);
+  setStat('streak', streak, animate && streak > 0);
+  $('streakStat').classList.toggle('off', streak < 2);
   const lv = levelInfo(xp);
   $('lvlVal').textContent = lv.L;
   $('lvl').style.setProperty('--lv', lv.pct.toFixed(1));
-  $('lvl').title = 'Poziom ' + lv.L + ': ' + xp + ' XP (1 XP za każde słowo znane od razu). Do następnego poziomu: ' + lv.toNext;
+  $('lvl').title = 'Poziom ' + lv.L + ': ' + xp + ' XP (1 XP za każde znane słowo). Do następnego poziomu: ' + lv.toNext;
   $('trophyBtn').style.display = (roundEnd && !gaveUp) ? '' : 'none';
   tickTimer();
 }
@@ -979,6 +979,7 @@ function startTimer(){
 
 function resetRound(){
   roundStart = 0; roundEnd = 0; gaveUp = false; roundXp = 0;
+  streak = 0; bestStreak = 0;
   clearInterval(timerId);
   refreshHud(false);
 }
@@ -1005,55 +1006,51 @@ function popWord(w){
   w.classList.add('pop');
 }
 
-/* ile liter słowa jest teraz odsłoniętych */
-function lettersShown(w){
-  const p = Number(w.dataset.p || 0);
-  if(p <= 0) return 0;
-  return letterStops(w).filter((s, i) => i > 0 && s <= p + 0.5).length;
-}
-
-/* zapamiętaj, że w słowo ktoś zajrzał, ale go nie skończył */
-function markHint(w){
-  if(!w.classList.contains('covered') || w.classList.contains('done')) return;
-  const n = lettersShown(w), prev = Number(w.dataset.h || 0);
-  if(n > prev){
-    w._hPrev = prev;          // na wypadek, gdyby to był pierwszy klik dwukliku
-    w._hintAt = Date.now();
-    w.dataset.h = n;
-  }
-}
-
-function finishWord(w){
+/* Słowo jest „znane”, jeśli odsłoniłeś je samodzielnie: klikaniem, przeciąganiem,
+   albo strzałkami. Podglądanie liter, żeby się domyślić, jest w porządku.
+   „Z podpowiedzią” liczy się dopiero wtedy, gdy poddasz słowo: „Nie wiem”, Spacja albo dwuklik. */
+function finishWord(w, hinted = false){
   if(w.dataset.scored) return;
   w.dataset.scored = '1';
   w._doneAt = Date.now();
   startTimer();
-  if(!Number(w.dataset.h || 0)){
-    w.dataset.perfect = '1';
-    w.classList.add('perfect');
-    floatPts(w, '✓', '');
-    play('known');
-  } else {
+  if(hinted){
+    w.dataset.hinted = '1';
+    w.classList.add('hinted');
+    streak = 0;
     floatPts(w, 'z podpowiedzią', 'amber');
     play('hinted');
+  } else {
+    w.dataset.perfect = '1';
+    w.classList.add('perfect');
+    w._bestBefore = bestStreak;
+    streak++;
+    bestStreak = Math.max(bestStreak, streak);
+    const milestone = streak >= 5 && streak % 5 === 0;
+    floatPts(w, milestone ? '✓ seria ' + streak + '!' : '✓', '');
+    play(milestone ? 'line' : 'known');
   }
   popWord(w);
   refreshHud(true);
   setTimeout(() => checkLine(w), 0);
 }
 
-/* klik w odsłonięte słowo: oznacz albo odznacz błąd */
-function toggleWrong(w){
-  if(w.dataset.wrong){
-    delete w.dataset.wrong;
-    w.classList.remove('wrong');
-    play('unwrong');
-  } else {
-    w.dataset.wrong = '1';
-    w.classList.add('wrong');
-    floatPts(w, '✗ błąd', 'red');
-    play('wrong');
-  }
+/* klik w odsłonięte słowo zmienia jego ocenę po kolei: znane → z podpowiedzią → błąd → znane */
+function setMark(w, mark){
+  w.classList.remove('perfect','hinted','wrong');
+  ['perfect','hinted','wrong'].forEach(k => { delete w.dataset[k]; });
+  const cls = { ok:'perfect', hint:'hinted', bad:'wrong' }[mark];
+  w.classList.add(cls);
+  w.dataset[cls] = '1';
+}
+
+function cycleMark(w){
+  const now = w.dataset.wrong ? 'bad' : w.dataset.hinted ? 'hint' : 'ok';
+  const next = { ok:'hint', hint:'bad', bad:'ok' }[now];
+  setMark(w, next);
+  if(next === 'hint'){ streak = 0; floatPts(w, 'z podpowiedzią', 'amber'); play('hinted'); }
+  if(next === 'bad'){ streak = 0; floatPts(w, '✗ błąd', 'red'); play('wrong'); }
+  if(next === 'ok'){ floatPts(w, '✓', ''); play('unwrong'); }
   refreshHud(true);
   if($('win').classList.contains('open')) fillWin();
   scheduleSave();
@@ -1130,32 +1127,43 @@ function setProgress(w, px, snap = true){
     finishWord(w);
   } else {
     w.classList.remove('done');
-    cover.style.clipPath = 'inset(0 0 0 ' + p + 'px)';
+    cover.style.clipPath = 'inset(0 0 0 ' + p + 'px round .3em)';
     if(p > before + 0.5){ play('letter'); startTimer(); }
   }
   updateProgress();
 }
 
+/* tryb „pierwsza litera widoczna”: szerokość pierwszej litery albo 0 */
+function firstStop(w){
+  if(!$('firstLetter').checked || Number(w.dataset.len) < 2) return 0;
+  return letterStops(w)[1] || 0;
+}
+
 function clearMarks(w){
-  ['h','scored','perfect','wrong','given'].forEach(k => { delete w.dataset[k]; });
+  ['scored','perfect','hinted','wrong','given'].forEach(k => { delete w.dataset[k]; });
 }
 
 function coverWord(w, delay = 0){
   const cover = coverOf(w);
   w.classList.add('covered');
-  w.classList.remove('done','quiet','perfect','pop','wrong');
+  w.classList.remove('done','quiet','perfect','hinted','pop','wrong');
   if(w.classList.contains('marked')) w.classList.add('was-marked');
   w.dataset.p = 0;
   clearMarks(w);
+  const first = firstStop(w);
+  if(first){
+    w.dataset.p = first;
+    cover.style.clipPath = 'inset(0 0 0 ' + first + 'px round .3em)';
+  }
   const row = w.closest('.line');
   if(row) row.classList.remove('cleared');
-  cover.style.clipPath = 'inset(0 0 0 0)';
+  if(!first) cover.style.clipPath = 'inset(0 0 0 0)';
   cover.style.transitionDelay = delay + 'ms';
   setTimeout(() => { cover.style.transitionDelay = ''; }, delay + 340);
 }
 
 function uncoverWord(w){
-  w.classList.remove('covered','done','was-marked','quiet','cursor','perfect','pop','wrong');
+  w.classList.remove('covered','done','was-marked','quiet','cursor','perfect','hinted','pop','wrong');
   w.dataset.p = 0;
   clearMarks(w);
   coverOf(w).style.clipPath = '';
@@ -1169,15 +1177,25 @@ function pushUndo(w){
   undoStack.push(w);
 }
 
-function revealWord(w){
+function revealWord(w, hinted = false){
   if(w.classList.contains('done')) return;
   pushUndo(w);
   w.classList.remove('quiet');
   w.classList.add('done');
   coverOf(w).style.clipPath = '';
   w.dataset.p = coverOf(w).getBoundingClientRect().width;
-  finishWord(w);
+  finishWord(w, hinted);
   updateProgress();
+}
+
+/* „Nie wiem”: odsłania słowo, nad którym pracujesz (albo pierwsze zakryte) i liczy je jako podpowiedź */
+function revealWithHint(){
+  const open = w => w && w.isConnected && w.classList.contains('covered') && !w.classList.contains('done');
+  let w = open(cursorWord) ? cursorWord : null;
+  if(!w) w = stage.querySelector('.w.covered:not(.done)');
+  if(!w){ toast('Nie ma już nic zakrytego'); return; }
+  setCursorWord(w);
+  revealWord(w, true);
 }
 
 function revealNext(){
@@ -1318,6 +1336,7 @@ $('undo').addEventListener('click', () => {
 });
 
 $('next').addEventListener('click', revealNext);
+$('hintBtn').addEventListener('click', revealWithHint);
 
 /* Zakryj od nowa: te same słowa, nowa runda */
 function replay(){
@@ -1345,9 +1364,7 @@ $('uncoverAll').addEventListener('click', () => {
    ═══════════════════════════════════════════ */
 
 let dragging = false, painting = false, activeWord = null, downX = 0, downY = 0, dragRevealed = 0;
-const gesture = new Set();   // słowa dotknięte w jednym ruchu myszy/palca
 
-function paintOn(){ return $('paintMode').checked; }
 
 function needsCover(w){
   return !w.classList.contains('covered') || w.classList.contains('done') || Number(w.dataset.p || 0) > 0;
@@ -1365,39 +1382,30 @@ function wordUnder(x, y){
   return el && el.closest ? el.closest('.w.covered') : null;
 }
 
-function endGesture(){
-  gesture.forEach(markHint);
-  gesture.clear();
-}
-
 stage.addEventListener('pointerdown', e => {
-  if(e.button !== undefined && e.button !== 0 && !e.isPrimary) return;
-
-  if(paintOn()){
-    const target = e.target.closest('.w');
-    if(target && needsCover(target)){
-      e.preventDefault();
-      newRoundIfFinished();
-      painting = true;
-      coverWord(target);
-      play('cover');
-      updateProgress();
-      try { stage.setPointerCapture(e.pointerId); } catch(_) {}
-    }
+  /* prawy przycisk: zakrywa słowo, a przeciągnięty zakrywa kolejne */
+  if(e.button === 2){
+    const target = wordUnderAny(e.clientX, e.clientY);
+    if(!target) return;
+    e.preventDefault();
+    newRoundIfFinished();
+    painting = true;
+    if(needsCover(target)){ coverWord(target); play('cover'); updateProgress(); }
+    try { stage.setPointerCapture(e.pointerId); } catch(_) {}
     return;
   }
+  if(e.button !== 0) return;
 
   const done = e.target.closest('.w.covered.done');
   if(done){
     /* drugi klik dwukliku na właśnie odsłoniętym słowie nie jest oznaczeniem błędu */
-    if(done.dataset.scored && !done.dataset.given && Date.now() - (done._doneAt || 0) > 500) toggleWrong(done);
+    if(done.dataset.scored && !done.dataset.given && Date.now() - (done._doneAt || 0) > 500) cycleMark(done);
     return;
   }
   const w = e.target.closest('.w.covered');
   if(!w) return;
   e.preventDefault();
   dragging = true; dragRevealed = 0; activeWord = w;
-  gesture.clear(); gesture.add(w);
   setCursorWord(w);
   downX = e.clientX; downY = e.clientY;
   try { stage.setPointerCapture(e.pointerId); } catch(_) {}
@@ -1423,7 +1431,6 @@ stage.addEventListener('pointermove', e => {
   if(hit && hit !== activeWord && !hit.classList.contains('done')){
     if(activeWord) activeWord.classList.remove('dragging');
     activeWord = hit;
-    gesture.add(hit);
     setCursorWord(hit);
     dragRevealed++;
     if(wholeWordOn()){ revealWord(hit); return; }
@@ -1453,37 +1460,39 @@ stage.addEventListener('pointerup', e => {
   }
   if(activeWord) activeWord.classList.remove('dragging');
   activeWord = null;
-  endGesture();
 });
 
 stage.addEventListener('pointercancel', () => {
   dragging = false; painting = false;
   if(activeWord) activeWord.classList.remove('dragging');
   activeWord = null;
-  endGesture();
 });
 
-/* podwójne kliknięcie: odsłania całe słowo */
+/* podwójne kliknięcie = „Nie wiem”: odsłania całe słowo jako podpowiedź (jak Spacja) */
 stage.addEventListener('dblclick', e => {
   const w = wordUnder(e.clientX, e.clientY);   // przy przechwyceniu wskaźnika e.target to cała scena
   if(!w) return;
-  /* pierwszy klik dwukliku nie liczy się jako podglądanie */
-  if(w._hintAt && Date.now() - w._hintAt < 600){
-    if(w._hPrev) w.dataset.h = w._hPrev; else delete w.dataset.h;
-    w._hintAt = 0;
+  /* pierwszy klik dwukliku mógł już dokończyć słowo jako znane: zamień to na podpowiedź */
+  if(w.classList.contains('done')){
+    if(w.dataset.perfect && Date.now() - (w._doneAt || 0) < 600){
+      setMark(w, 'hint');
+      streak = 0;
+      bestStreak = w._bestBefore || 0;
+      floatPts(w, 'z podpowiedzią', 'amber');
+      play('hinted');
+      refreshHud(true);
+      if($('win').classList.contains('open')) fillWin();
+      scheduleSave();
+    }
+    return;
   }
-  revealWord(w);
+  setCursorWord(w);
+  revealWord(w, true);
 });
 
-/* prawy przycisk myszy: zakrywa słowo z powrotem */
+/* menu kontekstowe wyłączone na tekście: prawy przycisk służy do zakrywania (patrz pointerdown) */
 stage.addEventListener('contextmenu', e => {
-  const w = e.target.closest('.w');
-  if(!w) return;
-  e.preventDefault();
-  newRoundIfFinished();
-  coverWord(w);
-  play('cover');
-  updateProgress();
+  if(wordUnderAny(e.clientX, e.clientY) || e.target.closest('.w')) e.preventDefault();
 });
 
 /* ═══════════════════════════════════════════
@@ -1518,7 +1527,7 @@ function neighbourWord(dir){
   return list[i + dir] || null;
 }
 
-/* → jedna litera w prawo (każde naciśnięcie przed końcem słowa to podgląd) */
+/* → jedna litera w prawo */
 function letterForward(){
   const w = currentWord();
   if(!w) return;
@@ -1531,7 +1540,6 @@ function letterForward(){
   const p = Number(w.dataset.p || 0);
   const next = stops.find(s => s > p + 0.5);
   setProgress(w, next === undefined ? stops[stops.length - 1] : next, false);
-  markHint(w);
 }
 
 /* ← jedna litera w lewo */
@@ -1556,10 +1564,16 @@ function letterBack(){
 
 document.addEventListener('keydown', e => {
   if(e.key === 'Escape'){ closeFloat(); closeWin(); return; }
-  if(!$('arrowKeys').checked) return;
   const tag = (document.activeElement && document.activeElement.tagName) || '';
   if(tag === 'TEXTAREA' || tag === 'INPUT') return;
   if(e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
+  if(e.key === ' ' && stage.querySelector('.w.covered:not(.done)') && !$('win').classList.contains('open') && !floatPanel.classList.contains('open')){
+    e.preventDefault();
+    if(tag === 'BUTTON') document.activeElement.blur();   // Spacja nie „klika” ostatniego przycisku
+    revealWithHint();
+    return;
+  }
+  if(!$('arrowKeys').checked) return;
 
   const map = { ArrowRight: letterForward, ArrowLeft: letterBack };
   const fn = map[e.key];
@@ -1614,7 +1628,7 @@ function roundComplete(){
 /* karta wyniku liczy się na nowo przy każdym otwarciu i po każdej poprawce błędów */
 function fillWin(){
   const t = tally();
-  const stars = t.acc >= 90 ? 3 : t.acc >= 70 ? 2 : 1;
+  const stars = t.acc >= 80 ? 3 : t.acc >= 55 ? 2 : 1;
 
   const oldLevel = levelInfo(xp).L;
   xp += t.ok - roundXp;
@@ -1638,9 +1652,8 @@ function fillWin(){
   $('stars').querySelectorAll('svg').forEach((s, i) => s.classList.toggle('on', i < stars));
   const titles = ['', 'Runda ukończona!', 'Dobra robota!', 'Świetnie!'];
   $('winTitle').innerHTML = '<span class="grad">' + titles[stars] + '</span>';
-  $('winSub').textContent = newLevel > oldLevel
-    ? 'Nowy poziom: ' + newLevel + '!'
-    : '+' + t.ok + ' XP za słowa znane od razu';
+  $('winSub').textContent = (newLevel > oldLevel ? 'Nowy poziom: ' + newLevel + '!' : '+' + t.ok + ' XP')
+    + ' · najdłuższa seria: ' + bestStreak;
   $('wAcc').textContent = t.acc + '%';
   $('wSplit').innerHTML = '<i class="c-ok">' + t.ok + '</i> · <i class="c-hint">' + t.hint + '</i> · <i class="c-bad">' + t.bad + '</i>';
   $('wTime').textContent = fmtTime(roundStart ? roundEnd - roundStart : 0);
@@ -1797,7 +1810,7 @@ function snapshot(){
     c: w.classList.contains('covered'),
     d: w.classList.contains('done'),
     p: Number(w.dataset.p || 0),
-    h: Number(w.dataset.h || 0),
+    n: w.dataset.hinted ? 1 : 0,
     k: w.dataset.perfect ? 1 : 0,
     x: w.dataset.wrong ? 1 : 0,
     g: w.dataset.given ? 1 : 0
@@ -1812,15 +1825,15 @@ function applyStates(states){
     w.classList.add('covered');
     if(w.classList.contains('marked')) w.classList.add('was-marked');
     w.dataset.p = s.p || 0;
-    if(s.h) w.dataset.h = s.h;
     if(s.d){
       w.classList.add('done');
       w.dataset.scored = '1';
-      if(s.k){ w.dataset.perfect = '1'; w.classList.add('perfect'); }
+      if(s.n){ w.dataset.hinted = '1'; w.classList.add('hinted'); }
+      else if(s.k){ w.dataset.perfect = '1'; w.classList.add('perfect'); }
       if(s.x){ w.dataset.wrong = '1'; w.classList.add('wrong'); }
       if(s.g) w.dataset.given = '1';
     } else if(s.p > 0){
-      coverOf(w).style.clipPath = 'inset(0 0 0 ' + s.p + 'px)';
+      coverOf(w).style.clipPath = 'inset(0 0 0 ' + s.p + 'px round .3em)';
     } else {
       coverOf(w).style.clipPath = 'inset(0 0 0 0)';
     }
@@ -1868,15 +1881,16 @@ $('showMarked').addEventListener('change', e => {
   document.body.classList.toggle('show-marked', e.target.checked);
 });
 
-function setPaint(on){
-  $('paintMode').checked = on;
-  document.body.classList.toggle('paint', on);
-}
-$('paintMode').addEventListener('change', e => {
-  setPaint(e.target.checked);
-  if(e.target.checked) toast('Tryb zakrywania: klikaj słowa, żeby je zasłonić');
+
+$('firstLetter').addEventListener('change', e => {
+  stage.querySelectorAll('.w.covered:not(.done)').forEach(w => {
+    const p = Number(w.dataset.p || 0);
+    const first = Number(w.dataset.len) >= 2 ? (letterStops(w)[1] || 0) : 0;
+    if(e.target.checked && p < first){ w.dataset.p = first; coverOf(w).style.clipPath = 'inset(0 0 0 ' + first + 'px round .3em)'; }
+    if(!e.target.checked && first && Math.abs(p - first) < 0.5){ w.dataset.p = 0; coverOf(w).style.clipPath = 'inset(0 0 0 0)'; }
+  });
+  scheduleSave();
 });
-document.querySelectorAll('[data-paint-off]').forEach(b => b.addEventListener('click', () => setPaint(false)));
 
 $('arrowKeys').addEventListener('change', e => {
   toast(e.target.checked ? 'Strzałki ← → odsłaniają litery' : 'Strzałki znów przewijają stronę');
@@ -1974,7 +1988,7 @@ window.addEventListener('resize', () => {
       w._stops = null;
       if(w.classList.contains('covered') && !w.classList.contains('done')){
         const p = Number(w.dataset.p || 0);
-        if(p > 0) coverOf(w).style.clipPath = 'inset(0 0 0 ' + p + 'px)';
+        if(p > 0) coverOf(w).style.clipPath = 'inset(0 0 0 ' + p + 'px round .3em)';
       }
     });
   }, 200);
