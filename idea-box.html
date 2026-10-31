@@ -31,7 +31,8 @@ h1{font-size:clamp(2.4rem,6vw,4.2rem);font-weight:800;line-height:1}
 .snd.mute .s-off{display:block}
 .snd.mute{background:var(--soft);color:var(--muted)}
 /* iskry przy wylosowaniu */
-.spark{position:fixed;z-index:70;width:var(--s);height:var(--s);margin:calc(var(--s) / -2) 0 0 calc(var(--s) / -2);pointer-events:none;animation:spark .9s cubic-bezier(.15,.7,.3,1) forwards}
+.sparks{position:absolute;left:0;top:0;z-index:70;width:100%;overflow:hidden;pointer-events:none}
+.spark{position:absolute;width:var(--s);height:var(--s);margin:calc(var(--s) / -2) 0 0 calc(var(--s) / -2);pointer-events:none;animation:spark .9s cubic-bezier(.15,.7,.3,1) forwards}
 @keyframes spark{0%{transform:translate(0,0) scale(.3) rotate(0)}60%{opacity:1}100%{transform:translate(var(--x),var(--y)) scale(1) rotate(var(--r));opacity:0}}
 h1 span{background:linear-gradient(90deg,#f26a1b,#d6336c 50%,#0b86d1);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .hint{font-size:1.15rem;color:var(--muted);margin:.7rem 0 1.1rem}
@@ -68,7 +69,7 @@ button:disabled{opacity:.6;cursor:default;transform:none}
 .d-btn{padding:.65rem 1.15rem;font-size:1.1rem}
 .dice{padding:.75rem 1.3rem;font-size:1.25rem}
 .go svg,.again svg,.back svg,.ico svg,.dice svg{width:28px;height:28px}
-.d-btn svg,.e-tools button svg{width:24px;height:24px}
+.d-btn svg{width:24px;height:24px}
 .btns{display:flex;gap:1rem}
 
 /* pole wyboru */
@@ -197,7 +198,7 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
 .app.sm .sch{display:block}
 .app.mm .mats{display:block}
 .data{border-radius:var(--r-m);overflow:hidden}
-.d-top{display:flex;align-items:center;gap:.8rem;padding-right:1rem}
+.d-top{display:flex;flex-wrap:wrap;align-items:center;gap:.8rem;padding-right:1rem}
 .d-head{flex:1;min-width:0;display:flex;align-items:center;gap:.8rem;padding:1rem 1.3rem;color:var(--ink);font-size:1.3rem;font-weight:700;text-align:left}
 .d-head>svg{width:28px;height:28px;flex:none}
 .d-count{padding:.15rem .75rem;background:var(--soft);font-weight:700}
@@ -210,9 +211,12 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
 .prof-b{width:44px;height:44px;display:grid;place-items:center;border-radius:10px;background:#fff;color:#0b5a2c}
 .prof-b svg{width:22px;height:22px}
 .prof-b:disabled{opacity:.4}
+.prof-sep{width:2px;align-self:stretch;margin:6px 2px;background:#b7e0c4}
+.toast{position:fixed;left:50%;bottom:24px;z-index:80;max-width:calc(100vw - 2rem);transform:translateX(-50%);padding:.9rem 1.4rem;border-radius:var(--r-m);background:#12a150;color:#fff;font-size:1.15rem;font-weight:700;box-shadow:0 6px 0 #0b6b35;animation:epop .4s cubic-bezier(.2,1.4,.4,1)}
+.toast.bad{background:var(--red);box-shadow:0 6px 0 var(--red-d)}
 .prof-edit{display:none;align-items:center;gap:6px}
 .prof.editing .prof-edit{display:flex}
-.prof.editing>.prof-sel,.prof.editing>.prof-b{display:none}
+.prof.editing>.prof-sel,.prof.editing>.prof-b,.prof.editing>.prof-sep{display:none}
 .prof-edit input{height:44px;width:230px;padding:0 .8rem;border:0;border-radius:10px;background:#fff;font:inherit;font-size:1.05rem;font-weight:600;color:var(--ink)}
 .prof-edit input:focus{outline:3px solid #12a150;outline-offset:1px}
 #profOk{background:#12a150;color:#fff}
@@ -238,10 +242,13 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
 .e-main.pop{animation:epop .55s cubic-bezier(.2,1.4,.4,1)}
 @keyframes epop{from{transform:scale(.6);opacity:0}}
 .e-trans{font-size:clamp(1.4rem,2.6vw,2rem);opacity:.95;overflow-wrap:anywhere}
-.e-tools{display:flex;flex-wrap:wrap;justify-content:center;gap:.8rem}
-.e-tools button{display:flex;align-items:center;gap:.5rem;padding:.6rem 1.15rem;border-radius:var(--r-s);background:var(--glass);font-size:1.15rem;font-weight:600}
+/* znikające przyciski zostawiają swoje miejsce, więc nic nie skacze */
+/* „Odsłoń” na karcie: ikona w lewym górnym rogu (naprzeciw oznaczeń), więc jej zniknięcie niczego nie przesuwa */
+/* „Odsłoń” obok „Losuj”: zawsze na miejscu, szary, gdy nie ma nic do odsłonięcia */
+.e-btns .ico{height:66px}
+#eReveal:disabled{--sb:#c8d3e0;--sd:#a7b5c7;opacity:1}
 .e-btns{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:1rem 1.2rem;max-width:1000px;margin:1.6rem auto 0}
-.e-btns .go{flex:1 1 240px;max-width:380px;padding:.95rem 1.5rem}
+.e-btns .go{flex:1 1 200px;max-width:290px;padding:.95rem 1.5rem}
 .e-count{display:flex;align-items:center;gap:.5rem;height:66px;padding:0 .55rem 0 1rem;border-radius:var(--r-m);background:#fde4ee;color:#a61e4d;cursor:text}
 .e-count svg{width:28px;height:28px;flex:none}
 .e-count input{width:76px;height:50px;border:0;border-radius:var(--r-s);background:#fff;color:#8a1c46;font:inherit;font-size:1.35rem;font-weight:700;text-align:center;-moz-appearance:textfield;appearance:textfield}
@@ -269,17 +276,16 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
 .h-toggle:hover{transform:none;background:rgba(29,53,87,.06)}
 .h-toggle .chev{width:28px;height:28px;transition:transform .2s}
 .h-toggle[aria-expanded="true"] .chev{transform:rotate(180deg)}
-.e-histbox:not(.open) .h-mode,.e-histbox:not(.open) #eHistCover,.e-histbox:not(.open) #eHistReveal{display:none}
+.e-histbox:not(.open) .h-mode{display:none}
 .h-mode{gap:5px;padding:5px;border-radius:var(--r-s);background:#e0f3f0}
-.h-mode button{width:44px;height:42px;display:grid;place-items:center;border-radius:10px;color:#06564f}
+.h-mode button{width:50px;height:44px;padding:0;display:grid;place-items:center;border-radius:10px;color:#06564f}
 .h-mode button.on{background:#0d8a7e;color:#fff}
 .h-mode svg{width:24px;height:24px}
 .e-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem}
 .e-pills .e-kind:empty{display:none}
-.deck-bar{display:flex;justify-content:flex-end;margin-top:1.4rem}
-.deck-bar+.b-deck{margin-top:.9rem}
 .e-lab{font-size:1.12rem;font-weight:700;color:var(--muted)}
 #eFrom{--a:var(--ink);--al:#e6ecf4;--ad:var(--ink)}
+#eFrom button{min-width:62px;justify-content:center}
 .e-step{display:flex;flex-direction:column;gap:3px}
 .e-step button{width:34px;height:23px;display:grid;place-items:center;border-radius:7px;background:#fff;color:#a61e4d}
 .e-step button:hover{transform:none;background:#ffd0e1}
@@ -307,8 +313,10 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
 .sv:empty{display:none}
 .sh{padding:0 .06em;border-radius:8px;background:var(--cover);color:transparent;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .sh:empty{display:none}
-.sc.act .sh{outline:2px dashed #1d3557;outline-offset:2px}
-.e-card .sc.act .sh{outline-color:#fff}
+.sc{--cover-on:rgba(255,255,255,.62)}
+/* zasłona, na którą działa strzałka →: delikatnie pulsuje jaśniejszym kolorem */
+.sc.act .sh{animation:scGlow 1.3s ease-in-out infinite}
+@keyframes scGlow{50%{background:var(--cover-on)}}
 
 /* panel ustawień wyrażeń: każda grupa ma swój kolor (--a = aktywny, --al = tło, --ad = tekst) */
 .e-pwrap{margin-top:1.3rem}
@@ -381,15 +389,15 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
 .b-card-h small{flex:1;min-width:0;font-size:1rem;font-weight:600;color:var(--d);opacity:.8}
 .bc-main{font-size:clamp(1.3rem,2vw,1.6rem);font-weight:700;line-height:1.3;overflow-wrap:anywhere}
 .bc-ans{font-size:clamp(1.15rem,1.8vw,1.4rem);line-height:1.35;color:var(--d);overflow-wrap:anywhere}
-.b-card .sc{--cover:color-mix(in srgb,var(--c) 24%,#fff);--shown:var(--d)}
+.b-card .sc{--cover:color-mix(in srgb,var(--c) 24%,#fff);--cover-on:color-mix(in srgb,var(--c) 50%,#fff);--shown:var(--d)}
 
 .b-from{display:block;margin-top:.1rem;font-size:.95rem;font-weight:600;color:var(--muted)}
 .b-row:nth-child(even){background:#f5f8fc}
 .b-row>div:first-child{font-weight:600}
 .b-row.tagged{background:var(--tl)}
 .b-row.tagged>div:first-child{color:var(--td)}
-.b-row .sc{--cover:#cdd9e8;--shown:var(--focus)}
-.b-row.tagged .sc{--cover:rgba(29,53,87,.16)}
+.b-row .sc{--cover:#cdd9e8;--cover-on:#9fb8d8;--shown:var(--focus)}
+.b-row.tagged .sc{--cover:rgba(29,53,87,.16);--cover-on:rgba(29,53,87,.34)}
 .b-star{width:42px;height:42px;display:grid;place-items:center;color:#a9b8cc}
 .b-star svg{width:30px;height:30px}
 .b-star.on{color:#f0b400}
@@ -621,7 +629,7 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
   .dd-btn>span{flex:1;text-align:left}
   .e-panel.float{max-height:calc(100vh - 100px);overflow:auto}
 }
-@media(max-width:600px){.snd{position:static;margin:0 auto 1rem}}
+@media(max-width:600px){.snd{position:static;margin:0 auto 1rem}.prof{flex-wrap:wrap;max-width:calc(100% - 1.3rem);margin:0 0 1rem 1.3rem}.prof-sel{flex:1 1 100%}.prof select{max-width:none;flex:1}.prof-sep{display:none}}
 @media(prefers-reduced-motion:reduce){.ov::before,.stop::before,.deco svg{animation:none}}
 </style>
 </head>
@@ -677,6 +685,10 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
           <button class="prof-b" id="profAdd" title="Nowy uczeń" aria-label="Nowy uczeń"><i data-ico="plus"></i></button>
           <button class="prof-b" id="profRen" title="Zmień nazwę ucznia" aria-label="Zmień nazwę ucznia"><i data-ico="olowek"></i></button>
           <button class="prof-b" id="profDel" title="Usuń ucznia" aria-label="Usuń ucznia"><i data-ico="kosz"></i><span class="ask-t">Usunąć?</span></button>
+          <span class="prof-sep"></span>
+          <button class="prof-b" id="profExp" title="Zapisz wszystkich uczniów do arkusza (.xlsx)" aria-label="Zapisz wszystkich uczniów do arkusza"><i data-ico="pobierz"></i></button>
+          <button class="prof-b" id="profImp" title="Wczytaj uczniów z arkusza (.xlsx)" aria-label="Wczytaj uczniów z arkusza"><i data-ico="wczytaj"></i></button>
+          <input type="file" id="profFile" accept=".xlsx,.xls,.ods,.csv,.tsv" hidden>
           <div class="prof-edit"><input id="profName" maxlength="40" aria-label="Nazwa ucznia"><button class="prof-b" id="profOk" title="Zapisz" aria-label="Zapisz"><i data-ico="ptaszek"></i></button><button class="prof-b" id="profNo" title="Anuluj" aria-label="Anuluj"><i data-ico="zamknij"></i></button></div>
         </div>
       </div>
@@ -727,11 +739,11 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
         <div class="e-row d-only">
           <span class="e-lab">Losuj z:</span>
           <div class="seg3" id="eFrom">
-            <button data-from="all">Wszystkie</button>
-            <button data-from="noOk">Bez opanowanych</button>
-            <button data-from="rev"><i data-ico="powtorz"></i>Do powtórki <small id="eFromRev">0</small></button>
-            <button data-from="ok"><i data-ico="zaznaczone"></i>Opanowane <small id="eFromOk">0</small></button>
-            <button data-from="star"><i data-ico="gwiazdka"></i>Z gwiazdką <small id="eFromStar">0</small></button>
+            <button data-from="all" title="Wszystkie" aria-label="Wszystkie"><i data-ico="warstwy"></i><small id="eFromAll">0</small></button>
+            <button data-from="noOk" title="Bez opanowanych" aria-label="Bez opanowanych"><i data-ico="bez_opanowanych"></i><small id="eFromNoOk">0</small></button>
+            <button data-from="rev" title="Do powtórki" aria-label="Do powtórki"><i data-ico="powtorz"></i><small id="eFromRev">0</small></button>
+            <button data-from="ok" title="Opanowane" aria-label="Opanowane"><i data-ico="zaznaczone"></i><small id="eFromOk">0</small></button>
+            <button data-from="star" title="Z gwiazdką" aria-label="Z gwiazdką"><i data-ico="gwiazdka"></i><small id="eFromStar">0</small></button>
           </div>
         </div>
         <div class="e-row">
@@ -747,6 +759,7 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
       </div>
       <div class="e-count" title="Ile wyrażeń wylosować"><i data-ico="kostka"></i><input type="number" id="eN" min="1" max="99" value="1" inputmode="numeric" aria-label="Ile wyrażeń wylosować"><span class="e-step"><button id="eNUp" title="Więcej" aria-label="Więcej"><i data-ico="gora"></i></button><button id="eNDown" title="Mniej" aria-label="Mniej"><i data-ico="dol"></i></button></span></div>
       <button id="eDraw" class="go"><i data-ico="losuj"></i>Losuj</button>
+      <button id="eReveal" class="ico" title="Odsłoń wszystko" aria-label="Odsłoń wszystko" disabled><i data-ico="oko"></i></button>
       <label class="tg" id="nrEBox"><input type="checkbox" id="nrE" checked><span class="bx"><i data-ico="ptaszek"></i></span>Nie powtarzaj</label>
     </div>
     <div class="e-card d-only" id="eCard">
@@ -754,11 +767,7 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
       <div class="e-pills"><span class="e-kind" id="eKind"></span><span class="e-kind e-les" id="eLes"></span></div>
       <p class="e-main" id="eMain">Wklej wyrażenia i losuj.</p>
       <p class="e-trans" id="eTrans" hidden></p>
-      <div class="e-tools">
-        <button id="eReveal" hidden><i data-ico="oko"></i><span>Odsłoń</span></button>
-      </div>
     </div>
-    <div class="deck-bar d-only" id="eDeckBar" hidden><button class="d-btn" id="eDeckReveal"><i data-ico="oko"></i>Odsłoń wszystkie</button></div>
     <div class="b-deck d-only" id="eDeck" hidden></div>
     <section class="e-histbox d-only" id="eHistBox" hidden>
       <div class="h-head">
@@ -768,8 +777,6 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
           <button data-c="gap" title="Luka" aria-label="Luka"><i data-ico="luka"></i></button>
           <button data-c="all" title="Zasłonięte" aria-label="Zasłonięte"><i data-ico="oko_off"></i></button>
         </div>
-        <button class="sq" id="eHistReveal" title="Odsłoń wszystkie" aria-label="Odsłoń wszystkie"><i data-ico="oko"></i></button>
-        <button class="sq" id="eHistCover" title="Zasłoń od nowa" aria-label="Zasłoń od nowa"><i data-ico="reset"></i></button>
         <button class="sq h-clear" id="eHistClear" title="Wyczyść historię" aria-label="Wyczyść historię"><i data-ico="kosz"></i></button>
       </div>
       <div class="b-rows" id="eHistList" hidden></div>
@@ -834,6 +841,8 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
     </footer>
   </div>
 </div>
+
+<div class="toast" id="toast" role="status" hidden></div>
 
 <div class="stop" id="stopOv" hidden>
   <div class="stop-in" role="dialog" aria-modal="true" aria-labelledby="stopTitle">
@@ -1638,6 +1647,10 @@ const ICONS={
   mieszaj:'<path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/>',
   serce:'<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
   glosnik:'<path d="M4 9.5h3.5L13 5v14l-5.5-4.5H4z"/><path d="M16.5 9a4.5 4.5 0 0 1 0 6M19.5 6.5a8 8 0 0 1 0 11"/>',
+  pobierz:'<path d="M12 4v11M7 10l5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>',
+  wczytaj:'<path d="M12 15V4M7 9l5-5 5 5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>',
+  warstwy:'<path d="M12 3 2 8l10 5 10-5z"/><path d="M2 12.5l10 5 10-5"/><path d="M2 17l10 5 10-5"/>',
+  bez_opanowanych:'<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.8 2.8L16.5 9.5"/><path d="M4.5 4.5l15 15"/>',
   glosnik_off:'<path d="M4 9.5h3.5L13 5v14l-5.5-4.5H4z"/><path d="M17 9.5l5 5M22 9.5l-5 5"/>'};
 /* emotki OpenMoji (openmoji.org, licencja CC BY-SA 4.0), używane jako {nazwa} na początku wariantu */
 const EMOJI={szept:'<g><circle cx="36" cy="35.8" r="23" fill="none" stroke="#FCEA2B" stroke-miterlimit="10" stroke-width="1.8"/><path fill="#FCEA2B" d="M46.8,56.3c11.3-6,15.7-20.2,9.7-31.5s-20-15.5-31.3-9.5s-15.5,20-9.5,31.3c2.3,4.2,5.8,7.7,10.1,9.8 c0,1.6,0.7,3.2,1.8,4.4c1.4,1.6,8.5,3.3,12.2-0.2C40.9,59.6,47.1,56.4,46.8,56.3z"/></g><g><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M51.5,52.8c9.4-8.6,10.1-23.1,1.5-32.5s-23.1-10.1-32.5-1.5S10.4,41.9,19,51.3c0.9,0.9,1.8,1.8,2.8,2.6"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21.4,23.6c0.7-1.4,1.9-2.4,3.3-2.9c1.3-0.7,2.9-0.8,4.3-0.4"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M50.7,23.6c-1.5-2.7-4.6-4-7.6-3.3"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M34,41.5c-1.4-0.2-2.8-0.7-4-1.5"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M42.1,40c-1.3,0.7-2.7,1.2-4.2,1.5"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M37.8,38.6c0-1-0.9-1.9-1.9-1.9S34,37.6,34,38.6"/><line x1="34" x2="34" y1="47.4" y2="38.6" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/><line x1="37.8" x2="37.8" y1="38.6" y2="47.5" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/><path fill="none" stroke="#000" stroke-miterlimit="10" stroke-width="2" d="M37.2,47.4c1.7,0,3,1.3,3,3l0,0c0,0.6,0,1.8,0,1.8c0.3,0,3,0,4.1,0c1.3-0.1,2.5,0.7,2.8,2s-0.3,2.6-1.4,3.2 c-0.5,0.3-1.1,0.6-1.6,0.9c-2,1.1-4.1,2.2-6.2,3.3c-1.9,1-4,1.4-6.1,1c-3.6-0.6-6-4-5.4-7.7c0.2-1.5,0.5-3,1-4.4 c0.6-1.8,2.3-3.1,4.2-3.1H37.2z"/><path d="M30,27.8c0,1.7-1.3,3-3,3s-3-1.3-3-3s1.3-3,3-3l0,0c1.6,0,3,1.3,3,2.9C30,27.7,30,27.8,30,27.8"/><path d="M48,27.8c0,1.7-1.3,3-3,3s-3-1.3-3-3s1.3-3,3-3l0,0c1.6,0,3,1.3,3,2.9C48,27.7,48,27.8,48,27.8"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M36.2,51.8c-1.3,0-2,0.7-2.5,1.5c-0.6,0.9,0,2.2,1,2.2H39c0.7,0,1.2-0.6,1.2-1.4v-1.8v-0.1"/></g>',radosc:'<g><circle cx="36.0001" cy="36" r="24" fill="#FCEA2B"/><polygon fill="#F1B31C" points="25.0424,21.2371 33.0285,20.0364 29.1238,27.1056 32.7335,34.3298 24.8037,32.8007 19.0485,38.4662 18.0524,30.452 10.8857,26.7292 18.1999,23.3052 19.5258,15.3389"/><polygon fill="#F1B31C" points="46.8821,21.2371 38.896,20.0364 42.8007,27.1056 39.191,34.3298 47.1208,32.8007 52.876,38.4662 53.8721,30.452 61.0388,26.7292 53.7246,23.3052 52.3987,15.3389"/><path fill="#EA5A47" d="M49.7371,46.356c-1.79,4.27-6.35,7.23-13.7,7.23c-7.41,0-12.03-3.03-13.8-7.36 C24.2671,46.686,37.2171,49.3959,49.7371,46.356z"/><path fill="#FFFFFF" d="M50.6071,41.866c0,1.6-0.29,3.11-0.87,4.49c-12.52,3.04-25.47,0.33-27.5-0.13 c-0.55-1.35-0.83-2.82-0.83-4.36h0.11c0,0,14.81,3.59,28.89,0.07L50.6071,41.866z"/></g><g><path fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M50.6071,41.866c0,1.6-0.29,3.11-0.87,4.49c-12.52,3.04-25.47,0.33-27.5-0.13c-0.55-1.35-0.83-2.82-0.83-4.36h0.11 c0,0,14.81,3.59,28.89,0.07L50.6071,41.866z"/><path fill="none" stroke="#000000" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M49.7371,46.356 c-1.79,4.27-6.35,7.23-13.7,7.23c-7.41,0-12.03-3.03-13.8-7.36C24.2671,46.686,37.2171,49.3959,49.7371,46.356z"/><path fill="none" stroke="#000000" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M50.2271,46.236 c-0.16,0.04-0.33,0.08-0.49,0.12"/><path fill="none" stroke="#000000" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M22.2371,46.226 c-0.19-0.05-0.28-0.07-0.28-0.07"/><path fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M46.5542,15.5591C43.3932,13.9237,39.8045,13,36,13c-3.9546,0-7.676,0.9979-10.9261,2.7556 c-0.0502,0.0271-0.1002,0.0544-0.1501,0.0819"/><path fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M13.1945,32.9954c-0.1283,0.9833-0.1944,1.9862-0.1944,3.0046c0,12.7022,10.2969,23,23,23c12.7022,0,23-10.2978,23-23 c0-1.0073-0.0648-1.9995-0.1903-2.9726"/><polygon fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" points="25.1179,21.2371 33.104,20.0364 29.1993,27.1056 32.809,34.3298 24.8792,32.8007 19.124,38.4662 18.1279,30.452 10.9612,26.7292 18.2754,23.3052 19.6013,15.3389"/><polygon fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" points="46.8821,21.2371 38.896,20.0364 42.8007,27.1056 39.191,34.3298 47.1208,32.8007 52.876,38.4662 53.8721,30.452 61.0388,26.7292 53.7246,23.3052 52.3987,15.3389"/></g>',zlosc:'<g><path fill="#E27022" d="M36,13c-12.6823,0-23,10.3177-23,23c0,12.6822,10.3177,23,23,23c12.6822,0,23-10.3178,23-23 C59,23.3177,48.6822,13,36,13z"/></g><g><circle cx="36" cy="36" r="23" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="2"/><path fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M28,46c1.5805-2.5575,4.9043-4.1349,8.4211-4.0038C39.6499,42.1166,42.5622,43.6595,44,46"/><path d="M30,32.9252c0,1.6567-1.3448,3-3,3c-1.6553,0-3-1.3433-3-3c0-1.6553,1.3447-3,3-3C28.6552,29.9252,30,31.27,30,32.9252"/><path d="M48,32.9252c0,1.6567-1.3447,3-3,3s-3-1.3433-3-3c0-1.6553,1.3447-3,3-3S48,31.27,48,32.9252"/><line x1="23" x2="30" y1="24" y2="28" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2"/><line x1="49" x2="42" y1="24" y2="28" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2"/></g>',zdziwienie:'<g><circle cx="36" cy="36" r="23" fill="#fcea2b"/><path fill-rule="evenodd" d="m35.93 51.58c-2.461 0-4.742-2.368-4.742-4.987s2.444-4.66 4.905-4.66 4.701 2.205 4.701 4.823-2.403 4.823-4.864 4.823z"/><path fill="#fff" d="m31.37 45.29c2.025 1.288 7.318 1.288 9.26 0l-4.63-4.005z"/></g><g><circle cx="36" cy="36" r="23" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="m20.695 27.2c0.7207-1.3857 1.9278-2.4541 3.3907-3 1.4052-0.7002 3.0205-0.8486 4.5302-0.4209"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="m51.305 27.2c-1.582-2.7724-4.8037-4.1699-7.9092-3.4306"/><path d="m30 35c0 1.6568-1.3448 3-3 3-1.6553 0-3-1.3433-3-3 0-1.6552 1.3447-3 3-3 1.6552 0 3 1.3448 3 3"/><path d="m48 35c0 1.6568-1.3447 3-3 3s-3-1.3433-3-3c0-1.6552 1.3447-3 3-3s3 1.3448 3 3"/><circle cx="36" cy="46.6" r="4.759" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></g>',sarkazm:'<g><circle cx="36" cy="36" r="23" fill="#FCEA2B"/><circle cx="46" cy="32" r="6.5" fill="#FFFFFF"/><circle cx="26" cy="32" r="6.5" fill="#FFFFFF"/></g><g><circle cx="46.0556" cy="28" r="2.5556"/><circle cx="26.0556" cy="28" r="2.5556"/><circle cx="36" cy="36" r="23" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2"/><circle cx="46" cy="32" r="6.5" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="2"/><circle cx="26" cy="32" r="6.5" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="2"/><line x1="31" x2="41" y1="49.4967" y2="49.4967" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2"/></g>',smutek:'<g><path fill="#FCEA2B" d="M36.2002,13.3163c-12.5719,0-22.7998,10.2279-22.7998,22.7998c0,12.5718,10.2279,22.7998,22.7998,22.7998 C48.772,58.9159,59,48.6879,59,36.1161C59,23.5442,48.772,13.3163,36.2002,13.3163z"/><path fill="#92D3F5" d="M22.7747,33.8245c-1.0767,1.1019-3.115,3.4878-3.2924,5.9164c-0.1111,1.521,1.1185,2.9431,2.6365,3.0534 c1.5693,0.1143,2.9388-1.0681,3.0546-2.6364l0,0C25.3503,37.7287,23.6798,35.0718,22.7747,33.8245z"/></g><g><circle cx="36" cy="36" r="23" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="2"/><path fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M26.5,48c1.8768-3.8326,5.8239-6.1965,10-6c3.8343,0.1804,7.2926,2.4926,9,6"/><path fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="2" d="M20.3869,41.6299 c-0.5326-0.5326-0.8258-1.2405-0.8256-1.9936c0-2.4789,2.3433-4.8508,2.443-4.9505c0.2074-0.2074,0.5431-0.2072,0.7503,0 c0.0998,0.0998,2.4432,2.4718,2.4437,4.9512l0.0002,0.0002c-0.0007,1.5535-1.2653,2.8177-2.8189,2.8175 C21.6273,42.4556,20.9195,42.1624,20.3869,41.6299z"/><path d="M30,31c0,1.6568-1.3448,3-3,3c-1.6553,0-3-1.3433-3-3c0-1.6552,1.3447-3,3-3C28.6552,28,30,29.3448,30,31"/><path d="M48,31c0,1.6568-1.3447,3-3,3s-3-1.3433-3-3c0-1.6552,1.3447-3,3-3S48,29.3448,48,31"/></g>',nuda:'<g><path d="M35.9772,30.4187A10.9345,10.9345,0,0,0,25.0986,43.074a2.5,2.5,0,0,1,1.3786-.4414,2.5356,2.5356,0,0,1,2.3448,1.4746,39.3435,39.3435,0,0,1,2.6435-5.2178,3.39,3.39,0,0,1,2.6651-1.9629,2.4872,2.4872,0,0,1,1.4521.4073c1.2295-1.5811,2.6338-1.69,3.6338-1.1846a3.3452,3.3452,0,0,1,1.7051,2.76,2.554,2.554,0,0,1,.83.2011,2.3206,2.3206,0,0,1,1.4755,2.2735,5.8368,5.8368,0,0,1-.6005,2.5029,2.6279,2.6279,0,0,1,.6005.77,4.0262,4.0262,0,0,1-.12,3.6875l-.8525,1.6123c-.0711.2164-.1292.4324-.19.6486a11.01,11.01,0,0,0-6.0874-20.1867Z"/></g><g><circle cx="36.0043" cy="35.3184" r="23.9004" fill="#fcea2b"/><path fill="#fcea2b" d="M35.6039,66.3682c-.0225,0-.0459-.001-.0684-.003l-9.6992-.6992a.95.95,0,0,1-.8633-1.1338c.5381-2.6924.9893-4.709,1.23-5.792l.001-.0019c-.1533-.3145-.3066-.6406-.46-.9658-.1963-.418-.3925-.836-.59-1.23-.2061-.4112-.6358-1.2686-1.2969-8.64-.2021-2.0176-.1514-3.48.7246-4.5029a2.4611,2.4611,0,0,1,1.9219-.9326,2.5354,2.5354,0,0,1,2.3447,1.4746,39.3438,39.3438,0,0,1,2.6436-5.2178,3.39,3.39,0,0,1,2.665-1.9629,2.4882,2.4882,0,0,1,1.4522.4072c1.23-1.581,2.6338-1.69,3.6338-1.1845a3.345,3.345,0,0,1,1.705,2.76,2.5531,2.5531,0,0,1,.83.2012,2.32,2.32,0,0,1,1.4756,2.2735,5.8357,5.8357,0,0,1-.6006,2.5029,2.6265,2.6265,0,0,1,.6006.77,4.0262,4.0262,0,0,1-.12,3.6875l-.8526,1.6123c-.2158.6582-.3769,1.3184-.5332,1.959l-.122.498a21.71,21.71,0,0,1-2.39,6.5274,5.8081,5.8081,0,0,1-1.625,1.9775c-.0683.0664-.1338.1279-.1953.1865a1.7238,1.7238,0,0,0-.29.3076l-.0723.4434a36.5458,36.5458,0,0,0-.5019,3.7861.95.95,0,0,1-.9483.8907Z"/><path d="M35.9772,30.4187A10.9345,10.9345,0,0,0,25.0986,43.074a2.5,2.5,0,0,1,1.3786-.4414,2.5356,2.5356,0,0,1,2.3448,1.4746,39.3435,39.3435,0,0,1,2.6435-5.2178,3.39,3.39,0,0,1,2.6651-1.9629,2.4872,2.4872,0,0,1,1.4521.4073c1.2295-1.5811,2.6338-1.69,3.6338-1.1846a3.3452,3.3452,0,0,1,1.7051,2.76,2.554,2.554,0,0,1,.83.2011,2.3206,2.3206,0,0,1,1.4755,2.2735,5.8368,5.8368,0,0,1-.6005,2.5029,2.6279,2.6279,0,0,1,.6005.77,4.0262,4.0262,0,0,1-.12,3.6875l-.8525,1.6123c-.0711.2164-.1292.4324-.19.6486a11.01,11.01,0,0,0-6.0874-20.1867Z"/></g><g><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M42.8042,57.3184a22.9792,22.9792,0,1,0-28.8-15.2,23.7912,23.7912,0,0,0,7.1,10.8"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M23.1042,26.0684c4.4-.1,7.9-1.4,8.8-3.1"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M48.9042,26.0684c-4.4-.1-7.9-1.4-8.8-3.1"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M25.9042,64.7184c.6-3,1.1-5.2,1.3-6.1-.4-.8-.8-1.7-1.2-2.5-.2-.4-.6-1.6-1.2-8.3-.2-2-.1-3.1.5-3.8a1.5628,1.5628,0,0,1,1.2-.6c1.3,0,1.7,1.2,2,2.4l.1.3.2.6a39.4783,39.4783,0,0,1,3.5-7.5c1.8-3,3.5-.6,3.5-.6,2.2-4.1,5-.8,4,1.3a1.9811,1.9811,0,0,1,1.6-.1,1.4158,1.4158,0,0,1,.9,1.4,5.2848,5.2848,0,0,1-.9,2.8,2.1889,2.1889,0,0,1,1,.9,3.0777,3.0777,0,0,1-.1,2.8l-.9,1.7c-.3.9-.5,1.8-.7,2.6a20.7835,20.7835,0,0,1-2.3,6.3,4.7436,4.7436,0,0,1-1.4,1.7c-.4.4-.7.6-.8,1a42.7765,42.7765,0,0,0-.6,4.4"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M26.2418,43.4453a10.001,10.001,0,1,1,15.0545,6.31"/></g>',ucho:'<g><path fill="#d0cfce" d="M46.0938,29.8141a8.0935,8.0935,0,0,0,1.231-5.1156c-.3322-8.5131-6.5889-10.9008-9.5933-13.4778,4.1911,5.4922,5.9607,10.7559,2.6157,20.8539C40.3472,32.0746,43.68,33.5811,46.0938,29.8141Z"/></g><g><path fill="#fcea2b" d="M15.2237,17.3624C19.8487-.1792,51.1166,4.6141,39.8279,33.2791c-14.5919,35.7917-32.7917,24.6771-29.7292,13"/></g><g><path fill="#f1b31c" d="M35.5248,33.6662c3.6637-21.8775-14.5625-17.2394-16.0056-11.6769C23.4935,6.1143,43.6107,12.3969,35.5248,33.6662Z"/><path fill="#f1b31c" d="M24,25.6855c4.4385,7,8.3371,13.9079,2.3371,16.6163-1.3969.5735-2.8765.4132-4.3824,1.1735-1.5343.7223-1.8192,1.3265-3.6385,3.2848-2.5625,2.0625-5.7708-1.5465-3.9583-3.6875,3.0729-3.3958,6.4479-3.9271,4.6667-7.2083-1.2187-2.2047.4957-5.0277,4.402-3.9027Z"/></g><g><g><path fill="none" stroke="#000" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M50.45,18.001a20.3132,20.3132,0,0,1,1.2748,9.7546,13.6741,13.6741,0,0,1-.5124,2.2184"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M54.6652,15.0123a27.8846,27.8846,0,0,1,1.6739,13.0089,18.6581,18.6581,0,0,1-.6573,2.9564"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M58.9094,13.9284a32.3379,32.3379,0,0,1,1.868,14.7126,21.5331,21.5331,0,0,1-.7184,3.3416"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M46.0938,29.8141a8.0935,8.0935,0,0,0,1.231-5.1156c-.3322-8.5131-6.5889-10.9008-9.5933-13.4778,4.1911,5.4922,5.9607,10.7559,2.6157,20.8539C40.3472,32.0746,43.68,33.5811,46.0938,29.8141Z"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5192,21.9893c3.9744-15.875,24.8326-10.2582,15.24,11.1183"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.7123,47.333C7.65,59.01,24.9329,69.8018,39.5248,34.01,50.8373,5.9268,20.5873.1351,15.9623,17.6768c0,0-2.7758,9.8921,5.3911,14.0507"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M24.8373,26.0518c4.4386,7,7.5,13.5417,1.5,16.25-1.3969.5735-2.8765.4132-4.3824,1.1735-1.5343.7223-1.8192,1.3265-3.6385,3.2848-2.5625,2.0625-5.7708-1.5465-3.9583-3.6875"/><circle cx="20.0281" cy="35.5516" r="4.0484" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></g></g><g><circle cx="20.01" cy="35.494" r="3.0542" fill="#d0cfce"/></g>',seria:'<g><path fill="#d22f27" d="m5.8542,50.6944s-.4373,4.3055,1.1458,4.3055,13.5313-.0625,13.5313-.0625h40.083l1.8339-2h3.5872v-9.4375s0-7.5417,0-7.5417l-7.5598-.0331c-.7323-.0466-1.466.0649-2.1514.3269h0c-1.0873.4157-1.8217,1.4401-1.8662,2.6034h0s5.2285,5.0625,5.2285,5.0625l-3.9052.0195s-.9391-1.4902-3.0821-2.584c-6.5703-3.3535-11.167-2.417-11.167-2.417l-.5322,5.8888s-10.9347-.2853-14.3498.1747c-1.9697.2656-6.0826,1.0238-10.3648,2.0189-3.2286.75-6.1623,1.959-9.2854,2.9795l-1.1458.6961Z"/><path fill="#ea5a47" d="m10.2197,53.376s-5.7822,1.084-4.2197-.292c0,0,3.9688-2.6465,13.6123-2.8965l-2.7998,3.3906-4.0195,1.2158-2.5733-1.4179Z"/><path fill="#ea5a47" d="m41.5625,43.6875l.4375-3.836,3.9629.6226c3.2865.5163,6.3508,1.9807,8.8169,4.2135l.3451.3125h-9.5l-4.0625-1.3125Z"/><polygon fill="#ea5a47" points="55.8818 35.7701 55.7168 38 66.2768 38 66.1118 35.6982 55.8818 35.7701"/><circle cx="58.75" cy="52" r="2.8281" fill="#d0cfce"/><circle cx="21.5" cy="52" r="2.8281" fill="#d0cfce"/></g><g><circle cx="22" cy="52" r="3" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/><circle cx="39" cy="42" r="3"/><circle cx="59" cy="52" r="3" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/><polyline fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" points="65.625 52 67 52 67 35 55 35 55 38 58.1875 41.1084"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16,53l-1,1H5v-4s13-6,26-6h20"/><line x1="29" x2="53" y1="54" y2="54" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m41,43v-4s10,0,14,5"/></g>'};
@@ -1712,14 +1725,20 @@ const SND=(()=>{
 
 /* iskry (gwiazdki) wylatujące z punktu x, y */
 const SPARK_C=['#ffd23f','#ffffff','#ff8fab','#7dd3fc','#a3e635','#ff9f1c'];
+/* warstwa na całą wysokość strony: gwiazdki zostają przy elemencie, także podczas przewijania */
+function sparkLayer(){
+  let l=$('sparks');if(!l){l=document.createElement('div');l.id='sparks';l.className='sparks';document.body.appendChild(l)}
+  l.style.height=document.documentElement.scrollHeight+'px';return l;
+}
 function burst(x,y,n=16){
   if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const layer=sparkLayer();x+=scrollX;y+=scrollY;
   for(let k=0;k<n;k++){
     const el=document.createElement('div'),a=Math.random()*Math.PI*2,d=90+Math.random()*140;
     el.className='spark';
     el.style.cssText=`left:${x}px;top:${y}px;--s:${16+Math.random()*20}px;--x:${Math.cos(a)*d}px;--y:${Math.sin(a)*d}px;--r:${Math.random()*360-180}deg`;
     el.innerHTML=`<svg viewBox="0 0 24 24" width="100%" height="100%"><path d="${ICONS.gwiazdka.match(/d="([^"]+)"/)[1]}" fill="${SPARK_C[k%SPARK_C.length]}" stroke="rgba(0,0,0,.3)" stroke-width="1.4" stroke-linejoin="round"/></svg>`;
-    document.body.appendChild(el);setTimeout(()=>el.remove(),950);
+    layer.appendChild(el);setTimeout(()=>el.remove(),950);
   }
 }
 const burstEl=(el,n)=>{const r=el.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,n)};
@@ -1947,7 +1966,8 @@ const loadJSON=(k,d)=>{try{return JSON.parse(store.get(k))||d}catch(e){return d}
 /* profile uczniów: każdy ma własną listę, gwiazdki, historię i wybór lekcji (pierwszy profil używa starych kluczy) */
 let PROFS=loadJSON('ruletka-profile',[{id:'p1',name:'Uczeń 1'}]),PROF=store.get('ruletka-profil')||'p1';
 if(!PROFS.some(p=>p.id===PROF))PROF=PROFS[0].id;
-const PK=k=>PROF==='p1'?k:k+'@'+PROF;
+const KEYFOR=(id,k)=>id==='p1'?k:k+'@'+id;
+const PK=k=>KEYFOR(PROF,k);
 const PROF_KEYS=['ruletka-wyrazenia','ruletka-gwiazdki','ruletka-gwiazdki-poprz','ruletka-wylosowane','ruletka-lekcje'];
 const E={items:[],lessons:[],tags:[],sel:new Set(loadJSON(PK('ruletka-lekcje'),[])),filter:'all',
   lang:store.get('ruletka-kierunek')==='en'?'en':'pl',view:'draw',
@@ -1960,7 +1980,7 @@ const keysOf=a=>a.map(i=>keyOf(E.items[i]));
 const keysToIdx=ks=>{const m=new Map(E.items.map((o,i)=>[keyOf(o),i]));return ks.map(k=>m.get(k)).filter(i=>i!==undefined)};
 const saveMarks=()=>{store.set(PK('ruletka-gwiazdki'),JSON.stringify(keysOf(E.stars)));store.set(PK('ruletka-gwiazdki-poprz'),JSON.stringify(E.last||[]));store.set(PK('ruletka-wylosowane'),JSON.stringify(keysOf(E.hist)))};
 const isSentence=s=>{const t=s.replace(/^[\s"„“'(]+/,'');const c=t.charAt(0);return c!==c.toLowerCase()&&/[.?!…]["”'’)]*$/.test(s.trim())};
-const HEADER=/^(pl|polski|polish|en|eng|ang|angielski|english|tag|tagi|typ|stan|status)$/i;
+const HEADER=/^(pl|polski|polish|en|eng|ang|angielski|english|tag|tagi|typ|stan|status|gwiazdka)$/i;
 const QTAG=/^(q|pytanie|pytania|question)$/i;
 const ST_REV=/^(do powt[oó]rki|powt[oó]rka|review)$/i,ST_OK=/^(opanowane|opanowany|opanowana|mastered|ok)$/i;
 const ST_TXT={rev:'do powtórki',ok:'opanowane'};
@@ -2070,23 +2090,20 @@ function scShow(sc,k,quiet){
 /* przyciski „Odsłoń” znikają, gdy nie ma już nic zasłoniętego */
 const hasCover=el=>[...el.querySelectorAll('.sc')].some(x=>!scDone(x));
 function scSync(){
-  $('eReveal').hidden=!hasCover($('eCard'));
-  if(E.deck)$('eDeckBar').hidden=!hasCover($('eDeck'));
+  $('eReveal').disabled=E.busy||!hasCover(E.deck?$('eDeck'):$('eCard'));
 }
-/* odsłanianie z klawiatury: → jedna litera, ↓ całe słowo.
+/* odsłanianie z klawiatury: → jedna litera.
    Działa na zasłonie klikniętej ostatnio myszką, a bez tego na pierwszej zasłoniętej na ekranie */
 let scAct=null;
 const setAct=sc=>{if(scAct)scAct.classList.remove('act');scAct=sc;if(sc)sc.classList.add('act')};
 const nextSc=sc=>{const box=sc.closest('#eCard,#eDeck,#eHistList,#eList');if(!box)return null;const all=[...box.querySelectorAll('.sc')];return all.slice(all.indexOf(sc)+1).find(x=>!scDone(x))||all.find(x=>!scDone(x))||null};
 document.addEventListener('keydown',e=>{
-  if((e.key!=='ArrowRight'&&e.key!=='ArrowDown')||e.ctrlKey||e.metaKey||e.altKey||mode!=='expr'||!ov.hidden||e.target.closest('input,textarea,select'))return;
+  if(e.key!=='ArrowRight'||e.ctrlKey||e.metaKey||e.altKey||mode!=='expr'||!ov.hidden||e.target.closest('input,textarea,select'))return;
   let sc=scAct&&document.contains(scAct)&&!scDone(scAct)?scAct:null;
   if(!sc){const box=E.view==='browse'?$('eList'):E.deck?$('eDeck'):$('eCard');sc=[...box.querySelectorAll('.sc')].find(x=>!scDone(x))}
   if(!sc)return;
   e.preventDefault();setAct(sc);
-  const t=sc.dataset.t;let n=(+sc.dataset.k||0)+1;
-  if(e.key==='ArrowDown'){n--;while(n<t.length&&/\s/.test(t[n]))n++;while(n<t.length&&!/\s/.test(t[n]))n++}
-  scShow(sc,n);
+  scShow(sc,(+sc.dataset.k||0)+1);
   if(scDone(sc))setAct(nextSc(sc));else SND.scratch();
 });
 let scr=null;
@@ -2128,7 +2145,7 @@ function eMarksUI(){
   $('eRevCnt').textContent=E.items.filter(o=>o.st==='rev').length;
   $('eOkCnt').textContent=E.items.filter(o=>o.st==='ok').length;
   $('eRestore').disabled=!(E.last&&E.last.length);
-  const vis=ePool();$('eFromRev').textContent=vis.filter(FROM.rev).length;$('eFromOk').textContent=vis.filter(FROM.ok).length;$('eFromStar').textContent=vis.filter(FROM.star).length;
+  const vis=ePool();$('eFromAll').textContent=vis.length;$('eFromNoOk').textContent=vis.filter(FROM.noOk).length;$('eFromRev').textContent=vis.filter(FROM.rev).length;$('eFromOk').textContent=vis.filter(FROM.ok).length;$('eFromStar').textContent=vis.filter(FROM.star).length;
   segOn($('eFrom'),'from',E.from);
   [['eOnlyStar','star'],['eOnlyRev','rev'],['eOnlyOk','ok']].forEach(([id,k])=>{$(id).classList.toggle('on',E.only===k);$(id).setAttribute('aria-pressed',E.only===k)});
 }
@@ -2151,9 +2168,9 @@ function eNote(){
 }
 function eRender(pop){
   const card=$('eCard'),main=$('eMain'),tr=$('eTrans'),o=E.items[E.cur];
-  eNote();card.hidden=!!E.deck;$('eDeck').hidden=$('eDeckBar').hidden=!E.deck;
+  eNote();card.hidden=!!E.deck;$('eDeck').hidden=!E.deck;
   if(E.deck)return eDeck(false);
-  if(!o){delete card.dataset.i;main.className='e-main';main.textContent=E.items.length?'Kliknij „Losuj”.':'Wklej wyrażenia i losuj.';$('eKind').textContent=$('eLes').textContent='';tr.hidden=$('eReveal').hidden=$('eMk').hidden=true;return}
+  if(!o){delete card.dataset.i;main.className='e-main';main.textContent=E.items.length?'Kliknij „Losuj”.':'Wklej wyrażenia i losuj.';$('eKind').textContent=$('eLes').textContent='';tr.hidden=$('eMk').hidden=true;scSync();return}
   card.dataset.i=E.cur;$('eMk').hidden=false;$('eMk').innerHTML=marksInner(E.cur);
   const[L,R]=answerHTML(o,E.cover.draw);
   $('eKind').textContent=o.q?'Pytanie':o.tag?cap(o.tag):(o.s?'Zdanie':'Wyrażenie');
@@ -2161,7 +2178,7 @@ function eRender(pop){
   main.className='e-main'+(eTexts(o).main.length>55?' long':'');
   main.innerHTML=L;tr.innerHTML=R;tr.hidden=!R;
   if(pop){main.offsetWidth;main.classList.add('pop')}
-  $('eReveal').hidden=!card.querySelector('.sc');
+  scSync();
 }
 function eColor(){const c=PALETA[E.col++%PALETA.length];$('eCard').style.setProperty('--ec',c);$('eCard').style.setProperty('--ed',mix(c,'#000000',.32))}
 /* wybiera n wyrażeń; z „Nie powtarzaj” najpierw te, których jeszcze nie było, a gdy zabraknie, zaczyna nową rundę */
@@ -2177,14 +2194,13 @@ async function eDraw(){
   const n=Math.max(1,Math.min(parseInt($('eN').value,10)||1,p.length));$('eN').value=n;
   const take=pickN(p,n);
   E.hist=[...take,...E.hist.filter(i=>!take.includes(i))];E.cur=take[0];saveMarks();
-  if(n>1){E.deck=take;E.deal=Math.floor(Math.random()*PALETA.length);eRender();eDeck(true);eHistAdd(take);take.slice(0,12).forEach((_,k)=>SND.deal(k));
-    [...$('eDeck').children].slice(0,12).forEach((c,k)=>setTimeout(()=>burstEl(c,10),k*110+300));return}
+  if(n>1){E.deck=take;E.deal=Math.floor(Math.random()*PALETA.length);eRender();eDeck(true);eHistAdd(take);take.slice(0,12).forEach((_,k)=>SND.deal(k));return}
   E.deck=null;$('eCard').hidden=false;$('eDeck').hidden=true;
-  E.busy=true;$('eDraw').disabled=true;$('eKind').textContent=$('eLes').textContent='';$('eTrans').hidden=$('eReveal').hidden=$('eMk').hidden=true;
+  E.busy=true;$('eDraw').disabled=true;$('eKind').textContent=$('eLes').textContent='';$('eTrans').hidden=$('eMk').hidden=true;$('eReveal').disabled=true;
   const main=$('eMain');
   for(let k=0;k<13;k++){const o=E.items[p[Math.floor(Math.random()*p.length)]];main.className='e-main long';main.textContent=eTexts(o).main;if(k%5===0)eColor();SND.tick(1.2);await sleep(45+k*k*2.6)}
   eRender(true);eHistAdd(take);SND.ding();burstEl($('eMain'));
-  E.busy=false;$('eDraw').disabled=false;
+  E.busy=false;$('eDraw').disabled=false;scSync();
 }
 /* karty losowane naraz: wpadają jedna po drugiej, każda w innym kolorze */
 function bCard(i,k,anim){
@@ -2236,7 +2252,7 @@ function eCoverUI(){segOn($('eCover'),'c',E.cover.browse);segOn($('eDMode'),'c',
 function eMini(){
   const f=$('eFilter').querySelector('.on');
   $('eGear').title='Ustawienia: '+[E.view==='draw'?'Losowanie':'Przegląd',COVER_TXT[E.cover[E.view]],E.lang==='pl'?'PL → EN':'EN → PL',
-    $('lesDD').hidden?'':$('lesBtn').querySelector('span').textContent,f&&E.filter!=='all'?f.dataset.label:'',E.view==='browse'&&E.only?ONLY_TXT[E.only]:'',E.view==='draw'&&E.from!=='all'?'losuj z: '+$('eFrom').querySelector('.on').textContent.replace(/\d+/,'').trim().toLowerCase():''].filter(Boolean).join(', ');
+    $('lesDD').hidden?'':$('lesBtn').querySelector('span').textContent,f&&E.filter!=='all'?f.dataset.label:'',E.view==='browse'&&E.only?ONLY_TXT[E.only]:'',E.view==='draw'&&E.from!=='all'?'losuj z: '+$('eFrom').querySelector('.on').title.replace(/\d+/,'').trim().toLowerCase():''].filter(Boolean).join(', ');
 }
 function eSetView(v){E.view=v;segOn($('eView'),'v',v);$('expr').classList.toggle('browse',v==='browse');store.set('ruletka-widok',v);eCoverUI();eMini();if(v==='browse')eBrowse()}
 function eFloat(on){
@@ -2288,8 +2304,6 @@ $('eCover').addEventListener('click',e=>{const b=e.target.closest('button');if(!
 $('eDMode').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;setCover('draw',b.dataset.c);eRender()});
 $('eHMode').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;setCover('hist',b.dataset.c);eHistList()});
 const revealIn=el=>{if(hasCover(el))SND.reveal();el.querySelectorAll('.sc').forEach(sc=>scShow(sc,Infinity,true))};
-$('eHistReveal').addEventListener('click',()=>revealIn($('eHistList')));
-$('eDeckReveal').addEventListener('click',()=>revealIn($('eDeck')));
 $('eRecover').addEventListener('click',eBrowse);
 document.addEventListener('click',e=>{
   const m=e.target.closest('.mk');if(m){const h=m.closest('[data-i]');if(h&&E.items[+h.dataset.i])eMark(+h.dataset.i,m.dataset.mk);return}
@@ -2310,10 +2324,9 @@ document.addEventListener('pointerdown',e=>{
 document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!$('lesMenu').hidden)lesOpen(false);else if($('ePanel').classList.contains('float'))eFloat(false)});
 $('eDraw').addEventListener('click',eDraw);
 $('eN').addEventListener('keydown',e=>{if(e.key==='Enter')eDraw()});
-$('eReveal').addEventListener('click',()=>revealIn($('eCard')));
+$('eReveal').addEventListener('click',()=>revealIn(E.deck?$('eDeck'):$('eCard')));
 $('eHistClear').addEventListener('click',()=>{if(E.busy)return;E.used.clear();E.hist=[];saveMarks();eHistList()});
 $('eHistTog').addEventListener('click',()=>eHistOpen(!E.histOpen));
-$('eHistCover').addEventListener('click',eHistList);
 $('eFrom').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;E.from=b.dataset.from;store.set('ruletka-losuj-z',E.from);E.used.clear();eMarksUI();eMini()});
 const stepN=d=>{const t=$('eN');t.value=Math.max(1,Math.min(99,(parseInt(t.value,10)||1)+d))};
 $('eNUp').addEventListener('click',()=>stepN(1));
@@ -2355,8 +2368,73 @@ $('profDel').addEventListener('click',e=>{
     PROFS=PROFS.filter(x=>x.id!==id);setProfile(PROFS[0].id);
   });
 });
+/* ---------- arkusz: wszyscy uczniowie w jednym pliku .xlsx (jedna zakładka = jeden uczeń) ----------
+   Kolumny: polski, angielski, tag, stan, gwiazdka (★). Plik otwiera się w Google Sheets i Excelu.
+   Wczytanie: uczeń o tej samej nazwie dostaje dane z pliku, nowi uczniowie są dopisywani, nikt nie jest usuwany. */
+const XLSX_URL='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+let xlsxP=null;
+const loadXLSX=()=>xlsxP||(xlsxP=new Promise((ok,no)=>{
+  if(window.XLSX)return ok(window.XLSX);
+  const sc=document.createElement('script');sc.src=XLSX_URL;sc.onload=()=>ok(window.XLSX);sc.onerror=()=>{xlsxP=null;no()};document.head.appendChild(sc);
+}));
+const SHEET_HEAD=['polski','angielski','tag','stan','gwiazdka'];
+/* klucz wiersza liczony tak samo jak keyOf, żeby gwiazdki trafiły do właściwych wyrażeń */
+const rowKey=r=>QTAG.test(r[2]||'')?'Q\t'+r[0]:r[1]?r[0]+'\t'+r[1]:'\t'+r[0];
+const sheetName=n=>n.replace(/[\\\/?*\[\]:]/g,' ').replace(/^'+|'+$/g,'').trim().slice(0,31);
+function toast(msg,bad){const t=$('toast');t.textContent=msg;t.classList.toggle('bad',!!bad);t.hidden=false;clearTimeout(t._t);t._t=setTimeout(()=>{t.hidden=true},3800)}
+const NO_XLSX='Nie udało się wczytać modułu arkuszy. Sprawdź połączenie z internetem.';
+async function profExport(){
+  let X;try{X=await loadXLSX()}catch(e){toast(NO_XLSX,true);return}
+  const wb=X.utils.book_new(),used=new Set();
+  PROFS.forEach(p=>{
+    const text=p.id===PROF?$('dText').value:(store.get(KEYFOR(p.id,'ruletka-wyrazenia'))||'');
+    const stars=new Set(p.id===PROF?keysOf(E.stars):loadJSON(KEYFOR(p.id,'ruletka-gwiazdki'),[]));
+    const rows=[SHEET_HEAD];
+    text.split(/\r?\n/).forEach(line=>{
+      const r=line.split('\t').map(x=>x.trim()).slice(0,4);while(r.length<4)r.push('');
+      rows.push([...r,!r[0].startsWith('#')&&(r[0]||r[1])&&stars.has(rowKey(r))?'★':'']);
+    });
+    let name=sheetName(p.name)||'Uczeń',base=name,n=2;
+    while(used.has(name.toLowerCase())){const suf=` (${n++})`;name=base.slice(0,31-suf.length)+suf}
+    used.add(name.toLowerCase());
+    const ws=X.utils.aoa_to_sheet(rows);ws['!cols']=[{wch:42},{wch:42},{wch:14},{wch:14},{wch:10}];
+    X.utils.book_append_sheet(wb,ws,name);
+  });
+  X.writeFile(wb,`Idea Box, uczniowie ${new Date().toISOString().slice(0,10)}.xlsx`);
+  SND.ding();toast(`Zapisano plik: ${PROFS.length} ${PROFS.length===1?'uczeń':'uczniów'}.`);
+}
+async function profImport(file){
+  let X;try{X=await loadXLSX()}catch(e){toast(NO_XLSX,true);return}
+  let wb;try{wb=X.read(await file.arrayBuffer(),{type:'array'})}catch(e){toast('Nie da się odczytać tego pliku.',true);return}
+  let added=0,updated=0;
+  wb.SheetNames.forEach((sn,si)=>{
+    const rows=X.utils.sheet_to_json(wb.Sheets[sn],{header:1,raw:false,defval:''}).map(r=>r.map(c=>String(c).trim()));
+    if(rows.length&&rows[0].some(Boolean)&&rows[0].every(c=>!c||HEADER.test(c)))rows.shift();
+    const lines=[],stars=[];
+    rows.forEach(r=>{
+      const c=r.slice(0,4);while(c.length&&!c[c.length-1])c.pop();
+      lines.push(c.join('\t'));
+      if(r[4]&&c.length&&!c[0].startsWith('#'))stars.push(rowKey(c));
+    });
+    while(lines.length&&!lines[lines.length-1])lines.pop();
+    if(!lines.length)return;
+    /* pojedynczy arkusz bez własnej nazwy (np. CSV): uczeń dostaje nazwę pliku */
+    const name=(wb.SheetNames.length===1&&/^(sheet|arkusz)\s*\d*$/i.test(sn)?file.name.replace(/\.[^.]+$/,''):sn).slice(0,40);
+    let p=PROFS.find(x=>sheetName(x.name).toLowerCase()===sheetName(name).toLowerCase());
+    if(p)updated++;else{p={id:'p'+Date.now().toString(36)+si,name};PROFS.push(p);added++}
+    store.set(KEYFOR(p.id,'ruletka-wyrazenia'),lines.join('\n'));
+    store.set(KEYFOR(p.id,'ruletka-gwiazdki'),JSON.stringify(stars));
+  });
+  if(!added&&!updated){toast('W pliku nie ma żadnych wyrażeń.',true);return}
+  saveProfs();setProfile(PROF);
+  SND.ding();toast(`Wczytano: ${updated} ${updated===1?'uczeń zaktualizowany':'zaktualizowanych'}, ${added} ${added===1?'nowy':'nowych'}.`);
+}
+$('profExp').addEventListener('click',profExport);
+$('profImp').addEventListener('click',()=>$('profFile').click());
+$('profFile').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(f)profImport(f)});
+
 /* ---------- tryby ---------- */
-const HINT={wheel:'Kliknij koło albo przycisk, żeby zakręcić.',board:'Kliknij kafelek, żeby wybrać, albo wylosuj. Oko wyłącza zadanie z losowania.',expr:'Wklej wyrażenia, wybierz lekcje, a potem losuj albo przeglądaj. Zasłonę odkrywasz myszką albo klawiszami → (litera) i ↓ (słowo).',mat:'Zadania, do których trzeba przygotować materiały.',sch:'Szkielet lekcji, który można pokazać uczniowi.'};
+const HINT={wheel:'Kliknij koło albo przycisk, żeby zakręcić.',board:'Kliknij kafelek, żeby wybrać, albo wylosuj. Oko wyłącza zadanie z losowania.',expr:'Wklej wyrażenia, wybierz lekcje, a potem losuj albo przeglądaj. Zasłonę odkrywasz myszką albo strzałką →.',mat:'Zadania, do których trzeba przygotować materiały.',sch:'Szkielet lekcji, który można pokazać uczniowi.'};
 const MODE_BTN={wheel:'mWheel',board:'mBoard',expr:'mExpr',mat:'mMat',sch:'mSch'};
 function setMode(m){
   mode=m;app.classList.toggle('bm',m==='board');app.classList.toggle('em',m==='expr');app.classList.toggle('mm',m==='mat');app.classList.toggle('sm',m==='sch');
