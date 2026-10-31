@@ -26,7 +26,7 @@
   --cover-marked:#f2b32e;
   --cover-marked-edge:#b77d06;
   --done-line:rgba(31,157,85,.6);
-  --marked-line:rgba(227,148,0,.6);
+  --marked-line:rgba(35,82,184,.7);
   --rust:#c9452c;
   --rust-dk:#8d2c19;
   --amber:#e39400;
@@ -208,20 +208,6 @@ textarea:focus{outline:none;border-color:var(--teal);background:#fff}
 body.no-time .stat.time,body.no-time .win-time{display:none}
 .stat.bump{animation:bump .32s ease}
 @keyframes bump{40%{transform:scale(1.18)}100%{transform:scale(1)}}
-
-.lvl{
-  --lv:0;
-  width:2.7rem;height:2.7rem;border-radius:50%;flex:0 0 auto;
-  display:grid;place-items:center;
-  background:conic-gradient(var(--teal) calc(var(--lv) * 1%),#d7e3e8 0);
-  cursor:default;
-}
-.lvl b{
-  width:2.05rem;height:2.05rem;border-radius:50%;
-  display:grid;place-items:center;
-  background-color:#fff;font-weight:900;font-size:.98rem;color:var(--teal-dk);
-}
-.lvl.up{animation:bump .5s ease}
 
 .prog{display:inline-flex;align-items:center;gap:.5rem}
 .bar{width:110px;height:12px;background-color:#dce6ea;border-radius:99px;overflow:hidden}
@@ -504,8 +490,6 @@ body.show-marked .w.marked:not(.covered)::after{background-color:var(--marked-li
 .c-bad{color:var(--rust)}
 body.no-time .win-grid{grid-template-columns:1fr 1.5fr}
 .win-note{font-size:.92rem;color:var(--ink-soft);margin:-.3rem 0 1rem}
-.win-best{font-weight:700;color:#7a4d00;background-color:#fff1cc;border-radius:12px;padding:.5rem .8rem;margin-bottom:1.2rem;display:none}
-.win-best.show{display:block}
 .win-acts{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap}
 
 .toast{
@@ -566,7 +550,6 @@ body.no-time .win-grid{grid-template-columns:1fr 1.5fr}
         </div>
 
         <div class="hud">
-          <div class="lvl" id="lvl" title="Poziom"><b id="lvlVal">1</b></div>
           <span class="stat streak off" id="streakStat" title="Seria: słowa znane z rzędu. Przerywa ją podpowiedź (Spacja, dwuklik) i oznaczenie błędu"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c.6 3.2-1.4 5-3 6.8C7.4 10.6 6 12.4 6 15a6 6 0 0 0 12 0c0-2.2-1-4-2.2-5.4-.2 1.6-1 2.8-2.3 3.2.6-3.6-.4-7.6-1.5-10.8z"/></svg><span id="streakVal">0</span></span>
           <span class="stat ok" id="okStat" title="Znane: odsłonięte bez naciskania „Nie wiem”"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg><span id="okVal">0</span></span>
           <span class="stat hint" id="hintStat" title="Z podpowiedzią: odsłonięte Spacją, dwuklikiem albo przyciskiem „Nie wiem”"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg><span id="hintVal">0</span></span>
@@ -641,8 +624,7 @@ body.no-time .win-grid{grid-template-columns:1fr 1.5fr}
         <div class="group g-view" data-group="view">
           <h3><span class="gi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="6"/><path d="M12 6v4"/></svg></span>Sterowanie i widok</h3>
           <label class="opt"><input type="checkbox" id="arrowKeys" data-opt checked><span class="t">Odsłanianie strzałkami ← →</span><span class="d">Strzałka w prawo odsłania literę, w lewo ją zakrywa.</span></label>
-          <label class="opt"><input type="checkbox" id="wholeWord" data-opt><span class="t">Klik odsłania całe słowo</span><span class="d">Zamiast jednej litery naraz.</span></label>
-          <label class="opt"><input type="checkbox" id="showMarked" data-opt checked><span class="t">Podkreślaj słowa w {klamrach}</span><span class="d">Pomarańczowa linia pod słowami, które jeszcze nie są zakryte.</span></label>
+          <label class="opt"><input type="checkbox" id="showMarked" data-opt checked><span class="t">Podkreślaj słowa w {klamrach}</span><span class="d">Niebieska linia pod słowami, które jeszcze nie są zakryte.</span></label>
           <label class="opt"><input type="checkbox" id="showTime" data-opt checked><span class="t">Pokazuj czas rundy</span><span class="d">Stoper w pasku i na karcie wyniku.</span></label>
           <input type="checkbox" id="soundOn" data-opt checked hidden>
           <div class="row" style="margin-top:.6rem">
@@ -699,7 +681,6 @@ body.no-time .win-grid{grid-template-columns:1fr 1.5fr}
     <div class="win-time"><b id="wTime">0:00</b><span>czas</span></div>
   </div>
   <p class="win-note">Coś oceniłeś za wysoko? Zamknij kartę i kliknij słowo w tekście: znane → podpowiedź → błąd. Wynik przeliczy się sam.</p>
-  <div class="win-best" id="winBest"></div>
   <div class="win-acts">
     <button class="btn act" id="winAgain"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Jeszcze raz</button>
     <button class="btn amber act" id="winNew"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.4" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.4" fill="currentColor"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/></svg>Nowe losowanie</button>
@@ -728,7 +709,6 @@ Tom: I'm thinking of going to the coast if the weather {holds up}.`;
 
 const STORE_KEY = 'coverRecall.v1';
 const OPTS_KEY = 'coverRecall.opts.v1';
-const BEST_KEY = 'coverRecall.best.v1';
 
 let doc = [];          // sparsowane linie
 let speakers = [];     // kolejność ról
@@ -834,7 +814,6 @@ const SFX = {
   undo(){ tone(500, .1, 'sine', .05, 0, 300); },
   line(){ [523, 659, 784].forEach((f, i) => tone(f, .16, 'sine', .07, .12 + i * .07)); },
   win(){ [523, 659, 784, 1047].forEach((f, i) => tone(f, i === 3 ? .45 : .18, 'triangle', .09, i * .12)); },
-  level(){ [784, 988, 1175].forEach((f, i) => tone(f, .18, 'sine', .06, i * .09)); },
   giveup(){ tone(392, .18, 'sine', .07); tone(311, .3, 'sine', .07, .14); }
 };
 
@@ -910,18 +889,10 @@ function render(){
    Słowo odsłonięte samodzielnie liczy się jako znane, przyciskiem „Nie wiem”,
    Spacją albo dwuklikiem jako z podpowiedzią. Kliknięcie odsłoniętego słowa oznacza błąd.
    Trafność = (znane + ½ podpowiedzi) / wszystkie zakryte.
-   XP = liczba słów znanych, zbierana ze wszystkich rund.
    ═══════════════════════════════════════════ */
 
 let roundStart = 0, roundEnd = 0, timerId = null, gaveUp = false;
-let xp = 0, roundXp = 0;
 let streak = 0, bestStreak = 0;
-
-function levelInfo(x){
-  const L = Math.floor(Math.sqrt(x / 25)) + 1;
-  const lo = 25 * (L - 1) * (L - 1), hi = 25 * L * L;
-  return { L, pct: (x - lo) / (hi - lo) * 100, toNext: hi - x };
-}
 
 function tally(){
   const t = { ok:0, hint:0, bad:0, total:0 };
@@ -956,10 +927,6 @@ function refreshHud(animate){
   setStat('bad', t.bad, animate);
   setStat('streak', streak, animate && streak > 0);
   $('streakStat').classList.toggle('off', streak < 2);
-  const lv = levelInfo(xp);
-  $('lvlVal').textContent = lv.L;
-  $('lvl').style.setProperty('--lv', lv.pct.toFixed(1));
-  $('lvl').title = 'Poziom ' + lv.L + ': ' + xp + ' XP (1 XP za każde znane słowo). Do następnego poziomu: ' + lv.toNext;
   $('trophyBtn').style.display = (roundEnd && !gaveUp) ? '' : 'none';
   tickTimer();
 }
@@ -978,7 +945,7 @@ function startTimer(){
 }
 
 function resetRound(){
-  roundStart = 0; roundEnd = 0; gaveUp = false; roundXp = 0;
+  roundStart = 0; roundEnd = 0; gaveUp = false;
   streak = 0; bestStreak = 0;
   clearInterval(timerId);
   refreshHud(false);
@@ -1370,7 +1337,6 @@ function needsCover(w){
   return !w.classList.contains('covered') || w.classList.contains('done') || Number(w.dataset.p || 0) > 0;
 }
 
-function wholeWordOn(){ return $('wholeWord').checked; }
 
 function wordUnderAny(x, y){
   const el = document.elementFromPoint(x, y);
@@ -1410,11 +1376,7 @@ stage.addEventListener('pointerdown', e => {
   downX = e.clientX; downY = e.clientY;
   try { stage.setPointerCapture(e.pointerId); } catch(_) {}
 
-  if(wholeWordOn()){
-    revealWord(w);
-  } else {
-    w.classList.add('dragging');
-  }
+  w.classList.add('dragging');
 });
 
 stage.addEventListener('pointermove', e => {
@@ -1433,11 +1395,10 @@ stage.addEventListener('pointermove', e => {
     activeWord = hit;
     setCursorWord(hit);
     dragRevealed++;
-    if(wholeWordOn()){ revealWord(hit); return; }
     hit.classList.add('dragging');
   }
 
-  if(wholeWordOn() || !activeWord) return;
+  if(!activeWord) return;
 
   const cover = coverOf(activeWord);
   const x = e.clientX - cover.getBoundingClientRect().left;
@@ -1454,7 +1415,7 @@ stage.addEventListener('pointerup', e => {
   try { stage.releasePointerCapture(e.pointerId); } catch(_) {}
 
   const dist = Math.hypot(e.clientX - downX, e.clientY - downY);
-  if(dist < 8 && dragRevealed === 0 && activeWord && !wholeWordOn()){
+  if(dist < 8 && dragRevealed === 0 && activeWord){
     const cover = coverOf(activeWord);
     setProgress(activeWord, e.clientX - cover.getBoundingClientRect().left);
   }
@@ -1605,12 +1566,6 @@ function updateProgress(){
   }
 }
 
-function textHash(str){
-  let h = 5381;
-  for(let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0;
-  return String(h >>> 0);
-}
-
 function roundComplete(){
   roundEnd = Date.now();
   clearInterval(timerId);
@@ -1630,37 +1585,13 @@ function fillWin(){
   const t = tally();
   const stars = t.acc >= 80 ? 3 : t.acc >= 55 ? 2 : 1;
 
-  const oldLevel = levelInfo(xp).L;
-  xp += t.ok - roundXp;
-  roundXp = t.ok;
-  saveOpts();
-  const newLevel = levelInfo(xp).L;
-  if(newLevel > oldLevel){
-    setTimeout(() => { play('level'); $('lvl').classList.remove('up'); void $('lvl').offsetWidth; $('lvl').classList.add('up'); }, 700);
-  }
-  refreshHud(false);
-
-  let bestMap = {};
-  try { bestMap = JSON.parse(localStorage.getItem(BEST_KEY) || '{}') || {}; } catch(_) {}
-  const key = textHash(input.value);
-  const prevBest = bestMap[key];
-  if(prevBest === undefined || t.acc > prevBest){
-    bestMap[key] = t.acc;
-    try { localStorage.setItem(BEST_KEY, JSON.stringify(bestMap)); } catch(_) {}
-  }
-
   $('stars').querySelectorAll('svg').forEach((s, i) => s.classList.toggle('on', i < stars));
   const titles = ['', 'Runda ukończona!', 'Dobra robota!', 'Świetnie!'];
   $('winTitle').innerHTML = '<span class="grad">' + titles[stars] + '</span>';
-  $('winSub').textContent = (newLevel > oldLevel ? 'Nowy poziom: ' + newLevel + '!' : '+' + t.ok + ' XP')
-    + ' · najdłuższa seria: ' + bestStreak;
+  $('winSub').textContent = 'Najdłuższa seria: ' + bestStreak;
   $('wAcc').textContent = t.acc + '%';
   $('wSplit').innerHTML = '<i class="c-ok">' + t.ok + '</i> · <i class="c-hint">' + t.hint + '</i> · <i class="c-bad">' + t.bad + '</i>';
   $('wTime').textContent = fmtTime(roundStart ? roundEnd - roundStart : 0);
-  const best = $('winBest');
-  const record = prevBest !== undefined && t.acc > prevBest;
-  best.classList.toggle('show', prevBest !== undefined);
-  best.textContent = record ? 'Nowy rekord dla tego tekstu! Poprzednio ' + prevBest + '%.' : 'Rekord dla tego tekstu: ' + Math.max(prevBest || 0, t.acc) + '%.';
 }
 
 function openWin(){
@@ -1925,9 +1856,9 @@ function setFont(v){
 $('fontUp').addEventListener('click', () => setFont(fontSize + 0.2));
 $('fontDown').addEventListener('click', () => setFont(fontSize - 0.2));
 
-/* ustawienia i XP pamiętane w tej przeglądarce */
+/* ustawienia pamiętane w tej przeglądarce */
 function saveOpts(){
-  const o = { ratio, maxRun, xpWords: xp };
+  const o = { ratio, maxRun };
   document.querySelectorAll('[data-opt]').forEach(i => { o[i.id] = i.checked; });
   try { localStorage.setItem(OPTS_KEY, JSON.stringify(o)); } catch(_) {}
 }
@@ -1946,7 +1877,6 @@ function loadOpts(){
     maxRun = o.maxRun;
     $('maxRun').querySelectorAll('button').forEach(b => b.classList.toggle('on', Number(b.dataset.n) === maxRun));
   }
-  if(typeof o.xpWords === 'number') xp = o.xpWords;
   document.body.classList.toggle('show-marked', $('showMarked').checked);
 }
 
@@ -2003,6 +1933,7 @@ function toast(msg){
   toastTimer = setTimeout(() => el.classList.remove('show'), 2400);
 }
 
+try { localStorage.removeItem('coverRecall.best.v1'); } catch(_) {}   // rekordy z wcześniejszej wersji
 loadOpts();
 syncSoundBtn();
 syncTime();
