@@ -86,7 +86,8 @@ details.cheat { background: var(--soft); border-radius: 10px; padding: .7rem 1re
 details.cheat summary { cursor: pointer; font-weight: 600; }
 .cheat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-top: .8rem; font-size: .9rem; }
 .cheat-grid h3 { font-size: .98rem; margin-bottom: .4rem; }
-.cheat-grid pre { font-family: var(--mono); font-size: .8rem; background: #fff; border-radius: 8px; padding: .7rem .8rem; overflow-x: auto; line-height: 1.5; }
+.cheat-grid > div { min-width: 0; }
+.cheat-grid pre { font-family: var(--mono); font-size: .8rem; background: #fff; border-radius: 8px; padding: .7rem .8rem; overflow-x: auto; line-height: 1.5; tab-size: 4; }
 .cheat-grid li { margin: .2rem 0 .2rem 1.1rem; }
 @media (max-width: 760px) { .cheat-grid { grid-template-columns: 1fr; } }
 
@@ -134,6 +135,9 @@ details.cheat summary { cursor: pointer; font-weight: 600; }
 .slider output { min-width: 4rem; text-align: right; font-weight: 600; font-size: .9rem; color: var(--dim); }
 .img-preview { border-radius: 10px; overflow: hidden; background: #fff; max-width: 520px; }
 .img-preview img { display: block; width: 100%; }
+.deco-preview { height: 84px; padding: .4rem; background: #fff; border-radius: 10px; }
+.deco-preview svg { display: block; height: 100%; width: auto; max-width: 100%; }
+.deco-preview.is-bad { height: auto; color: var(--bad); background: var(--bad-bg); font-size: .9rem; }
 
 /* Wyglad */
 .swatches { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
@@ -148,6 +152,15 @@ details.cheat summary { cursor: pointer; font-weight: 600; }
 .bgc:hover { border-color: var(--line); }
 .bgc.is-sel { border-color: var(--text); color: var(--text); }
 .bgc i { display: block; height: 58px; border-radius: 8px; background: #fff; }
+/* Miniatury stylow */
+.stc i { position: relative; overflow: hidden; }
+.stc i::before, .stc i::after { content: ''; position: absolute; }
+.stc-clean i { background: #eef3fd; }
+.stc-clean i::before { left: 12px; right: 12px; top: 12px; bottom: 0; background: #fff; border-radius: 9px 9px 0 0; box-shadow: 0 2px 6px rgba(16, 24, 40, .12); }
+.stc-clean i::after { left: 21px; top: 21px; width: 18px; height: 18px; border-radius: 6px; background: linear-gradient(115deg, #2563eb, #0e7490); }
+.stc-notebook i { background: #f6f1e7; }
+.stc-notebook i::before { left: 12px; right: 12px; top: 12px; bottom: 0; background: linear-gradient(90deg, transparent 16px, rgba(224, 49, 49, .5) 16px 17.5px, transparent 17.5px), repeating-linear-gradient(transparent 0 9px, rgba(77, 140, 214, .3) 9px 10px), #fffdf8; }
+.stc-notebook i::after { left: 50%; top: 6px; width: 34px; height: 11px; transform: translateX(-50%) rotate(-4deg); background: #ffd8a8; opacity: .9; }
 .preview-box { border-radius: 12px; padding: 1rem 1.2rem; display: grid; gap: .3rem; }
 
 .bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; background: rgba(255, 255, 255, .96); box-shadow: 0 -1px 0 var(--line); }
@@ -170,13 +183,12 @@ details.cheat summary { cursor: pointer; font-weight: 600; }
         <div><label class="label" for="subtitle">Podtytuł</label><input class="input" id="subtitle" placeholder="np. Unit 5 · Food and drinks"></div>
       </div>
       <div>
-        <label class="label" for="data">Dane w Markdown albo TSV (format rozpoznaje się sam)</label>
-        <textarea class="area data" id="data" spellcheck="false" placeholder="# Tytuł&#10;&#10;## Matching&#10;- kot = cat&#10;- pies = dog"></textarea>
+        <label class="label" for="data">Dane TSV (kolumny oddzielone tabulatorem)</label>
+        <textarea class="area data" id="data" spellcheck="false" placeholder="pl&#9;en&#9;tasks&#10;kot&#9;cat&#9;m&#10;pies&#9;dog&#9;m"></textarea>
       </div>
       <div class="btn-row">
         <button class="btn" id="aiPrompt" type="button"></button>
-        <button class="btn" id="exMd" type="button">Przykład Markdown</button>
-        <button class="btn" id="exTsv" type="button">Przykład TSV</button>
+        <button class="btn" id="exTsv" type="button">Przykład</button>
         <button class="btn btn-ghost push" id="clearData" type="button">Wyczyść dane</button>
       </div>
       <div class="status" id="status"></div>
@@ -184,50 +196,39 @@ details.cheat summary { cursor: pointer; font-weight: 600; }
         <summary>Ściąga składni</summary>
         <div class="cheat-grid">
           <div>
-            <h3>Markdown</h3>
-<pre># Tytuł karty
-Podtytuł (opcjonalnie)
-
-## Matching
-- kot = cat
-- ryba = fish
-  ~ fishing | finish
-  > informacja po rozwiązaniu
-  > 💬 albo pytanie do rozmowy
-
-## Gap Fill: Present Simple
-Własna instrukcja (opcjonalnie)
-- Idę. = I {go} to school.
-
-## Categorize
-- Countable = apple, chair
-- Uncountable = water, advice</pre>
-            <ul>
-              <li><code>## Typ</code> albo <code>## Typ: tytuł</code> zaczyna sekcję, kolejność nagłówków = kolejność na karcie.</li>
-              <li>Typy: Zdrapki, Matching, Word Scramble, Quiz, Sentence Unscramble, Gap Fill, Correct the Mistake, Translate, Writing, Categorize, Linki (oraz Flashcards, patrz niżej).</li>
-              <li><code>## Zdrapki</code>: <code>- pytanie albo słowo = odpowiedź</code>. Uczeń widzi lewą stronę, prawą zdrapuje (może zdrapać kawałek jako podpowiedź). Stara nazwa <code>## Pytania</code> nadal działa.</li>
-              <li>Emoji na początku lewej strony zdrapki pokazuje się duże jak obrazek: <code>- 🍎 jabłko = apple</code> albo samo <code>- 🍎 = apple</code>.</li>
-              <li><strong>Flashcards są niezalecane:</strong> nie da się w nich dać podpowiedzi, a uczeń tylko odwraca kartę. Do słówek i zwrotów używaj Zdrapek. Flashcards zostają na razie tylko dla zgodności ze starymi danymi.</li>
-              <li><code>(bez instrukcji)</code> pod nagłówkiem ukrywa instrukcję, <code>![](url)</code> dodaje obrazek nad sekcją.</li>
-              <li>Notatka <code>&gt;</code> pokazuje się dopiero po rozwiązaniu, więc nie wpisuj w niej poleceń. Polecenia idą do akapitu pod nagłówkiem.</li>
-            </ul>
-          </div>
-          <div>
-            <h3>TSV</h3>
+            <h3>Wiersze danych</h3>
 <pre>pl	en	tasks	distractors	note
+☀️ słońce	sun	c
 kot	cat	m
 ryba	fish	m	fishing | finish	linia 1\nlinia 2
 Idę.	I {go} to school.	g</pre>
             <ul>
               <li>Kolumny: <code>pl</code>, <code>en</code> (obowiązkowe), <code>tasks</code>, <code>distractors</code>, <code>note</code>, <code>level</code>.</li>
-              <li>Tagi: c (zdrapki), m, s, q, u, g, e, t, w, k (kategorie), l (linki), f (fiszki, niezalecane). Druga sekcja tego samego typu: <code>m2</code>.</li>
-              <li>Enter w notatce: <code>\n</code>. Wiersz bez tagu trafia do zadań podstawowych.</li>
+              <li>Tagi: c (zdrapki), m, s, q, u, g, e, t, w, k (kategorie), l (linki). Druga sekcja tego samego typu: <code>m2</code>. Kilka tagów: <code>m, q</code>.</li>
+              <li>Enter w notatce: <code>\n</code>. Notatka pokazuje się dopiero po rozwiązaniu, więc nie wpisuj w niej poleceń.</li>
+              <li>Emoji na początku <code>pl</code> w zdrapce pokazuje się duże jak obrazek. Samo emoji też działa.</li>
+              <li><strong>Flashcards (f) są niezalecane:</strong> nie da się w nich dać podpowiedzi. Do słówek używaj zdrapek.</li>
             </ul>
-            <h3 style="margin-top:.8rem">W obu formatach</h3>
+          </div>
+          <div>
+            <h3>Linie ustawień (na początku)</h3>
+<pre>#title	🍣 Food and drinks
+#subtitle	Unit 5
+#section	g	Present Simple	Uzupełnij zdania.
+#section	q		-
+#deco	g	&lt;svg viewBox="0 0 120 80"&gt;…&lt;/svg&gt;
+#order	c, m, q, g</pre>
+            <ul>
+              <li><code>#section</code>: tag, własny tytuł, własna instrukcja. Puste pole = domyślne, <code>-</code> = bez instrukcji.</li>
+              <li><code>#deco</code>: ilustracja SVG w nagłówku sekcji, cały kod w jednej linii.</li>
+              <li><code>#order</code>: kolejność sekcji.</li>
+            </ul>
+            <h3 style="margin-top:.8rem">Zapisy w kolumnie en</h3>
             <ul>
               <li>Quiz z własnymi opcjami: <code>ship | sheep | shop</code>, pierwsza poprawna.</li>
               <li>Luka: <code>I {go}</code>, kilka dobrych odpowiedzi: <code>{go/walk}</code>.</li>
               <li>Błąd: <code>She {don't/doesn't} like it</code> (błędne / poprawne).</li>
+              <li>Kategorie: <code>pl</code> = nazwa kategorii, <code>en</code> = <code>apple, chair</code>.</li>
             </ul>
           </div>
         </div>
@@ -251,11 +252,17 @@ Idę.	I {go} to school.	g</pre>
     <summary><span class="num">3</span><h2>Wygląd</h2><span class="chev">▾</span></summary>
     <div class="panel-body">
       <div>
+        <span class="label">Styl karty</span>
+        <div class="bgs" id="styles"></div>
+        <p class="hint" id="styleHint" style="margin-top:.4rem"></p>
+        <label class="chk" id="styleAccentRow" style="margin-top:.6rem"><input type="checkbox" id="styleAccent"><span class="box"></span><span>Użyj mojego koloru przewodniego zamiast palety stylu</span></label>
+      </div>
+      <div id="swatchBox">
         <span class="label">Kolor przewodni</span>
         <div class="swatches" id="swatches"></div>
         <p class="hint" style="margin-top:.4rem">Cała paleta karty wylicza się z tego jednego koloru.</p>
       </div>
-      <div>
+      <div id="bgBlock">
         <span class="label">Tło</span>
         <div class="bgs" id="bgs"></div>
         <div id="svgBox" class="panel-body" hidden>
@@ -579,6 +586,8 @@ button:disabled { cursor: default; }
   background: var(--tint-2); color: var(--ink);
   font-size: .85rem; font-weight: 600; white-space: nowrap;
 }
+.sec-deco { margin-left: auto; height: 78px; max-width: 40%; flex-shrink: 0; display: flex; align-items: center; }
+.sec-deco svg { display: block; height: 100%; width: auto; max-width: 100%; }
 .sec-instr { color: var(--dim); font-size: 1.02rem; margin: .8rem 0 1.4rem; max-width: 48rem; }
 .sec-head + .sec-body { margin-top: 1.3rem; }
 .sec-foot { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .8rem; margin-top: 1.4rem; }
@@ -662,6 +671,13 @@ button:disabled { cursor: default; }
 .pill-btn svg { width: 1.15em; height: 1.15em; }
 .pill-btn:hover { transform: scale(1.03); border-color: var(--accent); }
 .pill-btn:active { transform: scale(.97); }
+/* Przytrzymanie przycisku odpowiedzi: pasek wypelnia sie przez 0,7 s. */
+.holdable { position: relative; overflow: hidden; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+.holdable::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: currentColor; opacity: .22; transform: scaleX(0); transform-origin: left;
+}
+.holdable.is-holding::before { transform: scaleX(1); transition: transform .7s linear; }
 .pill-btn.is-primary { background: var(--solid); border-color: var(--solid); color: #fff; }
 
 /* Pola tekstowe */
@@ -1179,6 +1195,62 @@ body.diff-hidden .rv-rate, body.diff-hidden .rv-print-level { display: none !imp
 body.is-rater::before { content: ''; position: fixed; top: 0; left: 0; right: 0; height: 6px; background: var(--solid); z-index: 99; }
 body.review-only .legend { margin-bottom: .8rem; }
 
+/* =====================================================================
+   STYLE KARTY (body.style-notebook)
+   Styl zmienia glownie zmienne, a reguly dopisuje tylko tam, gdzie trzeba.
+   Kolory stylu (--nb-*, --g-*) wstawia generator.
+   ===================================================================== */
+
+/* ---------- Zeszyt ---------- */
+body.style-notebook {
+  --page: #f6f1e7; --white: #fffdf8; --tint: #fbf7ee; --tint-2: #f3ecdc;
+  --r-xl: 8px; --r-lg: 10px; --r: 9px; --nb-m: 2.4rem;
+  --shadow: 0 1px 0 rgba(90, 70, 30, .06), 0 14px 28px -16px rgba(90, 70, 30, .4);
+  --font-display: 'Caveat', 'Segoe Print', 'Comic Sans MS', cursive;
+}
+.style-notebook .bg-fx { display: none; }
+.style-notebook .title { font-size: clamp(2.7rem, 6.6vw, 3.9rem); letter-spacing: 0; line-height: 1.05; }
+.style-notebook .title .grad {
+  background: linear-gradient(transparent 58%, var(--nb-mark) 58%, var(--nb-mark) 90%, transparent 90%);
+  -webkit-background-clip: border-box; background-clip: border-box;
+  -webkit-text-fill-color: var(--ink); color: var(--ink);
+  -webkit-box-decoration-break: clone; box-decoration-break: clone; padding: 0 .08em;
+}
+.style-notebook .sec {
+  background-color: var(--white);
+  background-image:
+    linear-gradient(90deg, transparent var(--nb-m), var(--nb-margin-soft) var(--nb-m), var(--nb-margin-soft) calc(var(--nb-m) + 2px), transparent calc(var(--nb-m) + 2px)),
+    repeating-linear-gradient(to bottom, transparent 0, transparent 31px, var(--nb-line) 31px, var(--nb-line) 32px);
+  padding-left: calc(var(--nb-m) + clamp(.9rem, 2vw, 1.4rem));
+  margin-top: 1.9rem;
+}
+.style-notebook .sec::after {
+  content: ''; position: absolute; top: -12px; left: 50%; width: 120px; height: 26px;
+  transform: translateX(-50%) rotate(-2.5deg);
+  background-color: var(--nb-tape-1);
+  background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, .35) 0 6px, transparent 6px 12px);
+  opacity: .88; box-shadow: 0 1px 2px rgba(0, 0, 0, .08);
+}
+.style-notebook section.sec:nth-of-type(3n+2)::after { left: 22%; background-color: var(--nb-tape-2); transform: translateX(-50%) rotate(3deg); }
+.style-notebook section.sec:nth-of-type(3n)::after { left: 78%; background-color: var(--nb-tape-3); transform: translateX(-50%) rotate(-4deg); }
+.style-notebook .sec-title { font-size: clamp(1.9rem, 3.6vw, 2.35rem); letter-spacing: 0; line-height: 1.1; }
+.style-notebook .sec-num {
+  background: transparent; color: var(--nb-margin); box-shadow: none;
+  border: 2.5px solid var(--nb-margin);
+  border-radius: 52% 48% 55% 45% / 48% 55% 45% 52%;
+  transform: rotate(-6deg); font-family: var(--font-body);
+}
+.style-notebook .sec.is-done .sec-num { background: var(--ok); border-color: var(--ok); box-shadow: none; }
+.style-notebook .sc-answer-text, .style-notebook .xp strong, .style-notebook .stat strong,
+.style-notebook .xp-float, .style-notebook .medal { font-family: var(--font-body); }
+.style-notebook .item, .style-notebook .rv-item, .style-notebook .cat-pool, .style-notebook .link-card {
+  background: rgba(255, 255, 255, .86); box-shadow: inset 0 0 0 1.5px var(--line-2);
+}
+.style-notebook .act { background: var(--nb-mark); box-shadow: 0 2px 0 rgba(90, 70, 30, .22); }
+.style-notebook .act-clear { background: transparent; box-shadow: none; }
+.style-notebook .progress-fill { background: var(--nb-margin); }
+.style-notebook .cat-name, .style-notebook .review-title, .style-notebook .finale-title { font-size: 1.5em; }
+
 /* ---------- Waskie ekrany ---------- */
 @media (max-width: 640px) {
   .top { gap: 1rem; }
@@ -1203,6 +1275,9 @@ body.review-only .legend { margin-bottom: .8rem; }
   .sec-actions { margin-left: 0; }
   .streak-label { display: none; }
   .xp-secs { display: none; }
+  body.style-notebook { --nb-m: 1rem; }
+  .style-notebook .sec-title { font-size: 1.75rem; }
+  .sec-deco { height: 54px; }
   .progress-label { gap: .15rem .7rem; }
   .xp strong { font-size: 1.15rem; }
   .medal { width: 24px; height: 24px; }
@@ -1229,6 +1304,7 @@ body.review-only .legend { margin-bottom: .8rem; }
   .diff-row:not(:has(.is-sel)) { display: none; }
   .diff-btn.is-sel { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .field::placeholder, .gap::placeholder { color: transparent; }
+  .style-notebook .sec::after { display: none; }
   .sc-canvas, .sc-foot, .medals, .streak, .xp-float, .xp-tag, .stars, .badge-pop, .spark-box { display: none !important; }
   .item.sc .sc-after { display: block; }
   .field-area { display: none !important; }
@@ -1256,13 +1332,13 @@ body.review-only .legend { margin-bottom: .8rem; }
   body.print-review .review { break-before: auto; }
 }
 </script>
-<script type="text/plain" id="rt-js">/* =====================================================================
+<script type="text/plain" id="rt-core">/* =====================================================================
    SHARED CORE
    Wspolne dla generatora i dla wygenerowanej karty. Jedno zrodlo prawdy:
-   lista typow zadan, parsery danych (TSV i Markdown) i drobne narzedzia.
+   lista typow zadan, parser danych TSV i drobne narzedzia.
    ===================================================================== */
 
-const WS_VERSION = '6.1';
+const WS_VERSION = '6.5';
 
 /* ---------- Rejestr typow zadan ----------
    Kolejnosc tablicy = domyslna kolejnosc sekcji na karcie.
@@ -1465,17 +1541,16 @@ function minRows(type) {
 
 /* ---------- Model danych ----------
    doc = {
-     format: 'tsv' | 'md',
      title, subtitle,
      rows: [{ pl, en, opts[], distractors[], note, level, tasks[], extra{} }],
      extraCols: [],           // nieznane kolumny TSV, odsylane przy eksporcie
      order: [keys] | null,    // jawna kolejnosc sekcji
-     sectionMeta: { key: { title, instr, instrOff, image } },
+     sectionMeta: { key: { title, instr, instrOff, image, deco } },
      meta: { accent, bgsvg, images[], extra, progress },
      warnings: [], error: ''
    } */
-function emptyDoc(format) {
-  return { format, title: '', subtitle: '', rows: [], extraCols: [], order: null,
+function emptyDoc() {
+  return { title: '', subtitle: '', rows: [], extraCols: [], order: null,
     sectionMeta: {}, meta: { images: [] }, warnings: [], error: '' };
 }
 
@@ -1514,21 +1589,9 @@ function cleanNote(s) {
     .trim();
 }
 
-/* ---------- Wykrywanie formatu ---------- */
-function detectFormat(text) {
-  const t = String(text || '');
-  if (/^\s*#{1,3}\s+\S/m.test(t)) return 'md';
-  if (/^\s*[-*+]\s+.+\s(=|::)\s/m.test(t) && !t.includes('\t')) return 'md';
-  return 'tsv';
-}
-
-function parseData(text) {
-  return detectFormat(text) === 'md' ? parseMarkdown(text) : parseTSV(text);
-}
-
 /* ---------- TSV (zgodny ze starymi plikami) ---------- */
 function parseTSV(text) {
-  const doc = emptyDoc('tsv');
+  const doc = emptyDoc();
   const lines = String(text || '').replace(/\r/g, '').split('\n').filter(l => l.trim());
   const data = [];
   let inOrder = false;
@@ -1553,6 +1616,19 @@ function parseTSV(text) {
       else if (key === 'img' && val && cells[2]) doc.meta.images.push({ key: val.toLowerCase(), url: cells[2], h: cells[3], y: cells[4], fit: cells[5] });
       else if (key === 'progress' && val) { try { doc.meta.progress = JSON.parse(decodeURIComponent(val)); } catch (e) { /* uszkodzony */ } }
       else if (key === 'extra' && val) { try { doc.meta.extra = JSON.parse(decodeURIComponent(val)); } catch (e) { /* uszkodzony */ } }
+      else if (key === 'section' || key === 'deco') {
+        /* #section  tag  tytul  instrukcja ("-" = bez instrukcji)
+           #deco     tag  <svg>…</svg> (w jednej linii) */
+        const k = parseTags(val.replace(':', ''))[0];
+        if (!k) { doc.warnings.push('Linia #' + key + ': nieznany tag sekcji „' + val + '”.'); return; }
+        const m = (doc.sectionMeta[k] = doc.sectionMeta[k] || {});
+        if (key === 'deco') m.deco = cells.slice(2).join(' ').trim();
+        else {
+          if (cells[2]) m.title = cells[2];
+          if (cells[3] === '-') m.instrOff = true;
+          else if (cells[3]) m.instr = cells[3];
+        }
+      }
       return;
     }
     if (inOrder && !t.includes('\t') && /^[a-z]+\d*(:\d+)?$/i.test(t)) {
@@ -1621,104 +1697,24 @@ function parseTSV(text) {
   return doc;
 }
 
-/* ---------- Markdown ----------
-   # Tytuł karty
-   Podtytuł (zwykły akapit pod tytułem)
-   ## Typ: Własny tytuł sekcji
-   Własna instrukcja (zwykły akapit pod nagłówkiem sekcji)
-   - polski = angielski
-     ~ atrapa | atrapa        (słowa-atrapy)
-     > notatka, może mieć
-     > kilka linijek                                                   */
-function parseMarkdown(text) {
-  const doc = emptyDoc('md');
-  const lines = String(text || '').replace(/\r/g, '').split('\n');
-  const counts = {};
-  let sec = null;        // biezaca sekcja { key }
-  let row = null;        // ostatni wiersz (do notatek i atrap)
-  let beforeSections = true;
-  let skipping = false;  // nieznana sekcja: jej wiersze pomijamy
-
-  const meta = k => (doc.sectionMeta[k] = doc.sectionMeta[k] || {});
-
-  lines.forEach((raw, idx) => {
-    if (/^\s*```/.test(raw)) return;                       // ogrodzenia bloku kodu od AI
-    const line = raw.replace(/\s+$/, '');
-    if (!line.trim()) return;
-    const indented = /^(\t| {2,})/.test(line) && !/^\s{0,1}[-*+]\s/.test(line);
-    const t = line.trim();
-
-    let m = t.match(/^#\s+(.+)$/);
-    if (m && !line.match(/^\s/)) { if (!doc.title) doc.title = m[1].trim(); return; }
-
-    m = t.match(/^#{2,3}\s+(.+)$/);
-    if (m) {
-      beforeSections = false;
-      row = null;
-      const head = m[1].trim();
-      const colon = head.indexOf(':');
-      const typeName = (colon < 0 ? head : head.slice(0, colon)).replace(/^[^\p{L}]+/u, '').trim().toLowerCase();
-      const base = TYPE_BY_ALIAS[typeName];
-      if (!base) {
-        doc.warnings.push('Nieznany typ sekcji „' + head + '” (linia ' + (idx + 1) + '). Jej wiersze pominięto.');
-        sec = null; skipping = true;
-        return;
-      }
-      skipping = false;
-      counts[base] = (counts[base] || 0) + 1;
-      sec = { key: makeKey(base, counts[base]) };
-      (doc.order = doc.order || []).push(sec.key);
-      if (colon >= 0 && head.slice(colon + 1).trim()) meta(sec.key).title = head.slice(colon + 1).trim();
-      return;
-    }
-
-    /* Notatki i atrapy: wciete linie pod pozycja listy. */
-    if (row && (indented || /^>/.test(t))) {
-      const d = t.match(/^(~|atrapy:|distractors:)\s*(.*)$/i);
-      if (d) { row.distractors = uniqCI(row.distractors.concat(splitList(d[2].replace(/,/g, '|'))), [row.en]); return; }
-      if (indented || /^>/.test(t)) {
-        const noteLine = t.replace(/^>\s?/, '');
-        row.note = row.note ? row.note + '\n' + noteLine : noteLine;
-        return;
-      }
-    }
-
-    m = t.match(/^(?:[-*+]|\d+[.)])\s+(.*)$/);
-    if (m && !indented) {
-      if (skipping) { row = null; return; }
-      if (!sec) {
-        doc.warnings.push('Linia ' + (idx + 1) + ' stoi przed pierwszym nagłówkiem „## …”, pominięto ją.');
-        row = null;
-        return;
-      }
-      const body = m[1].replace(/\*\*|__|`/g, '').trim();
-      let pl = body, en = '';
-      const sepAt = body.indexOf(' :: ') >= 0 ? [body.indexOf(' :: '), 4] : (body.indexOf(' = ') >= 0 ? [body.indexOf(' = '), 3] : null);
-      if (sepAt) { pl = body.slice(0, sepAt[0]); en = body.slice(sepAt[0] + sepAt[1]); }
-      const base = keyBase(sec.key);
-      if (!sepAt && base === 'links') { en = pl; pl = ''; }
-      row = makeRow(pl, en);
-      row.tasks = [sec.key];
-      doc.rows.push(row);
-      return;
-    }
-
-    /* Zwykly akapit: podtytul karty albo instrukcja sekcji. */
-    row = null;
-    if (beforeSections) {
-      if (doc.title && !doc.subtitle) doc.subtitle = t.replace(/^>\s?/, '');
-      return;
-    }
-    if (!sec) return;
-    const img = t.match(/^!\[[^\]]*\]\(([^)\s]+)\)$/);
-    if (img) { meta(sec.key).image = img[1]; return; }
-    if (/^\((bez instrukcji|no instructions?)\)$/i.test(t) || t === '-') { meta(sec.key).instrOff = true; return; }
-    const mm = meta(sec.key);
-    mm.instr = mm.instr ? mm.instr + ' ' + t : t;
-  });
-
-  if (!doc.rows.length && !doc.error) doc.error = 'Nie znaleziono żadnych pozycji listy („- polski = angielski”) pod nagłówkami „## Typ”.';
-  return doc;
+/* ---------- Ilustracje SVG ----------
+   Zostawia sam rysunek: bez skryptow, zdarzen i odnosnikow javascript:.
+   Zly kod daje pusty napis (sekcja jest wtedy bez ilustracji). */
+function cleanSvg(code) {
+  const t = String(code || '').trim();
+  if (!/^<svg[\s>]/i.test(t) || typeof DOMParser === 'undefined') return '';
+  let doc;
+  try { doc = new DOMParser().parseFromString(t, 'image/svg+xml'); } catch (e) { return ''; }
+  const svg = doc.documentElement;
+  if (!svg || svg.nodeName.toLowerCase() !== 'svg' || doc.getElementsByTagName('parsererror').length) return '';
+  Array.from(svg.querySelectorAll('script, foreignObject, iframe, object, embed')).forEach(n => n.remove());
+  [svg].concat(Array.from(svg.querySelectorAll('*'))).forEach(n => Array.from(n.attributes).forEach(a => {
+    if (/^on/i.test(a.name) || (/href$/i.test(a.name) && /^\s*javascript:/i.test(a.value))) n.removeAttribute(a.name);
+  }));
+  const w = parseFloat(svg.getAttribute('width')), hh = parseFloat(svg.getAttribute('height'));
+  if (!svg.getAttribute('viewBox') && w && hh) svg.setAttribute('viewBox', '0 0 ' + w + ' ' + hh);
+  svg.removeAttribute('width'); svg.removeAttribute('height');
+  return new XMLSerializer().serializeToString(svg);
 }
 
 /* ---------- Ktore sekcje istnieja w danych ----------
@@ -1773,8 +1769,8 @@ function orphanReport(doc, available) {
   });
   return problems;
 }
-
-/* =====================================================================
+</script>
+<script type="text/plain" id="rt-js">/* =====================================================================
    WORKSHEET RUNTIME: CORE
    Karta jest budowana w przegladarce z danych WS_DATA. Caly postep siedzi
    w jednym obiekcie ST; kazdy typ zadania czyta z niego i do niego pisze.
@@ -1848,12 +1844,47 @@ const LEVELS = {
 const FLAG_PL = '<svg viewBox="0 0 30 20" preserveAspectRatio="none" aria-label="PL"><rect width="30" height="10" fill="#fff"/><rect y="10" width="30" height="10" fill="#d22f27"/></svg>';
 const FLAG_EN = '<svg viewBox="5 17 62 38" preserveAspectRatio="none" aria-label="EN"><rect x="5" y="17" width="62" height="38" fill="#1e50a0"/><path fill="#fff" d="M40 28.9V32h10.2L67 21.7V17h-7.7zM59.3 55H67v-4.7L50.2 40H40v3.1zM32 43.1V40H21.8L5 50.3V55h7.7zM12.7 17H5v4.7L21.8 32H32v-3.1z"/><path fill="#d22f27" d="M67 17h-3.8L40 31.2v.8h3.5L67 17.6zM67 55v-2.3L46.4 40h-4.8L66 55zM5 55h3.8L32 40.8V40h-3.5L5 54.4zM5 17v2.3L25.6 32h4.8L6 17z"/><rect x="5" y="31" width="62" height="10" fill="#fff"/><rect x="31" y="17" width="10" height="38" fill="#fff"/><rect x="5" y="33" width="62" height="6" fill="#d22f27"/><rect x="33" y="17" width="6" height="38" fill="#d22f27"/></svg>';
 
+/* Przyciski odpowiedzi: klikniecie = "umiem, pokaz i zalicz jako poprawne",
+   przytrzymanie przez HOLD_MS = "pokaz z pomoca" (mniej gwiazdek, koniec serii).
+   Dziala mysza, palcem i klawiatura (Enter = klikniecie). */
+const HOLD_MS = 700;
+const HOLD_TIP = 'Kliknij: pokaż i zalicz jako poprawne. Przytrzymaj: pokaż z pomocą.';
+function holdable(btn, run) {
+  let timer = null, fired = false;
+  const stop = () => { clearTimeout(timer); timer = null; btn.classList.remove('is-holding'); };
+  btn.classList.add('holdable');
+  btn.addEventListener('pointerdown', e => {
+    if (e.button !== 0 || btn.disabled) return;
+    fired = false;
+    btn.classList.add('is-holding');
+    timer = setTimeout(() => {
+      stop();
+      fired = true;
+      try { if (navigator.vibrate) navigator.vibrate(25); } catch (x) { /* brak wibracji */ }
+      run(true);
+    }, HOLD_MS);
+  });
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach(n => btn.addEventListener(n, stop));
+  btn.addEventListener('contextmenu', e => e.preventDefault());
+  btn.addEventListener('click', e => {
+    if (fired) { fired = false; e.preventDefault(); return; }
+    run(false);
+  });
+  return btn;
+}
+
 function iconBtn(kind, title, onclick, extra) {
-  /* Podejrzenie odpowiedzi konczy serie i jej nie nabija. */
-  const fn = kind === 'solve' ? e => { penalize('p'); solving = true; streakBreak(); try { onclick(e); } finally { solving = false; } }
-    : kind === 'hint' ? e => { if (!e.currentTarget.disabled) penalize('h'); onclick(e); }
-    : onclick;
-  return h('button', { type: 'button', class: 'ibtn ibtn-' + kind + (extra ? ' ' + extra : ''), title: title, 'aria-label': title, html: ICO[kind], onclick: fn });
+  const b = h('button', { type: 'button', class: 'ibtn ibtn-' + kind + (extra ? ' ' + extra : ''), title: title, 'aria-label': title, html: ICO[kind] });
+  if (kind === 'solve') {
+    b.title = title + '. ' + HOLD_TIP;
+    /* Z pomoca: kara do gwiazdek i koniec serii. Bez pomocy: liczy sie jak dobra odpowiedz. */
+    return holdable(b, help => {
+      if (help) { penalize('p'); streakBreak(); solving = true; }
+      try { onclick({ currentTarget: b }); } finally { solving = false; }
+    });
+  }
+  b.addEventListener('click', kind === 'hint' ? e => { if (!e.currentTarget.disabled) penalize('h'); onclick(e); } : onclick);
+  return b;
 }
 function ttsBtn(text, extra) {
   if (!D.tts.enabled) return null;
@@ -2057,12 +2088,13 @@ let solving = false;   // przycisk odpowiedzi nie nabija serii
 function streakHit() {
   if (solving || RATER) return;
   streak.now++;
-  if (streak.now > (ST.best || 0)) { ST.best = streak.now; save(); }
+  const best = bests(), k = activeKey || '*';
+  if (streak.now > (best[k] || 0)) { best[k] = streak.now; save(); }
   paintStreak(true);
   sparkle();
   if (streak.now >= 3 && streak.now % 5 === 0) setTimeout(() => playNow('streak'), 260);
-  if (streak.now >= 5) award('streak5');
-  if (streak.now >= 10) award('streak10');
+  if (streak.now >= 5) award('streak5', activeKey);
+  if (streak.now >= 10) award('streak10', activeKey);
 }
 function streakBreak() {
   if (!streak.now) return;
@@ -2167,13 +2199,42 @@ function availableBadges() {
   badgeList = BADGES.filter(b => ok[b.id]);
   return badgeList;
 }
+/* Stan odznak: { id: klucz sekcji, z ktorej pochodzi, albo '*' }. Dzieki temu
+   "Wyczysc sekcje" odbiera to, co ta sekcja dala. Starsze zapisy (tablica, liczba)
+   zamieniamy przy pierwszym uzyciu. */
+function badges() {
+  if (Array.isArray(ST.badges)) ST.badges = ST.badges.reduce((o, id) => { o[id] = '*'; return o; }, {});
+  return (ST.badges = ST.badges || {});
+}
+function bests() {
+  if (typeof ST.best === 'number') ST.best = { '*': ST.best };
+  return (ST.best = ST.best || {});
+}
+function bestStreak() { return Math.max.apply(null, [0].concat(Object.values(bests()))); }
+function scratchCount() { return UNITS.filter(u => u.type === 'cornell').reduce((n, u) => n + (((ST.s[u.key] || {}).hand) || []).length, 0); }
+
+/* Odbiera odznaki, ktorych warunek przestal byc spelniony. key: wyczyszczona sekcja. */
+function revokeBadges(key) {
+  const B = badges();
+  if (key) {
+    Object.keys(B).forEach(id => { if (B[id] === key) delete B[id]; });
+    delete bests()[key];
+  }
+  const n = COUNTED.filter(isDone).length;
+  if (!n) delete B.first;
+  if (n * 2 < COUNTED.length) delete B.half;
+  if (scratchCount() < 5) delete B.scratch;
+  if (n < COUNTED.length) { delete B.allstars; delete B.solo; }
+  paintBadges();
+}
+
 const badgeQueue = [];
-function award(id) {
+function award(id, src) {
   if (RATER || D.reviewOnly) return;
-  ST.badges = ST.badges || [];
+  const B = badges();
   const b = availableBadges().find(x => x.id === id);
-  if (!b || ST.badges.includes(id)) return;
-  ST.badges.push(id);
+  if (!b || B[id]) return;
+  B[id] = src || '*';
   save();
   paintBadges();
   badgeQueue.push(b);
@@ -2194,13 +2255,13 @@ function showBadge() {
   }, 2400);
 }
 function badgeGrid() {
-  const got = ST.badges || [];
+  const got = Object.keys(badges());
   return h('div', { class: 'badge-grid' }, availableBadges().map(b => h('div', { class: 'bdg' + (got.includes(b.id) ? ' is-got' : ''), title: b.desc },
     h('span', { class: 'bdg-ico', text: b.ico }), h('strong', { text: b.name }), h('span', { text: b.desc }))));
 }
 function paintBadges() {
   const c = $('#badgeCount');
-  if (c) c.textContent = (ST.badges || []).filter(id => availableBadges().some(b => b.id === id)).length + '/' + availableBadges().length;
+  if (c) c.textContent = availableBadges().filter(b => badges()[b.id]).length + '/' + availableBadges().length;
   const panel = $('#badgePanel');
   if (panel && !panel.hidden) { panel.innerHTML = ''; panel.appendChild(badgeGrid()); }
 }
@@ -2435,7 +2496,7 @@ function sectionEl(u, num) {
   const sec = u.sec;
   const actions = [];
   if (u.type !== 'links') {
-    if (u.type !== 'writing') actions.push(h('button', { type: 'button', class: 'act act-solve', html: ICO.solve + '<span>' + solveLabel(u.type) + '</span>', onclick: () => solveUnit(u) }));
+    if (u.type !== 'writing') actions.push(holdable(h('button', { type: 'button', class: 'act act-solve', title: HOLD_TIP, html: ICO.solve + '<span>' + solveLabel(u.type) + '</span>' }), help => solveUnit(u, help)));
     actions.push(h('button', { type: 'button', class: 'act act-clear', title: 'Wyczyść odpowiedzi w tej sekcji (oceny zostają)', 'aria-label': 'Wyczyść sekcję', html: ICO.undo, onclick: () => clearUnit(u) }));
   }
   u.body = h('div', { class: 'sec-body' });
@@ -2444,7 +2505,8 @@ function sectionEl(u, num) {
     h('header', { class: 'sec-head' },
       h('span', { class: 'sec-num', text: u.num }),
       h('h2', { class: 'sec-title' }, /^\p{Extended_Pictographic}/u.test(sec.title) ? null : h('span', { class: 'sec-emoji', text: T.emoji }), sec.title),
-      u.parts > 1 ? h('span', { class: 'sec-part', text: 'część ' + u.part + ' z ' + u.parts }) : null),
+      u.parts > 1 ? h('span', { class: 'sec-part', text: 'część ' + u.part + ' z ' + u.parts }) : null,
+      sec.deco ? h('span', { class: 'sec-deco', 'aria-hidden': 'true', html: sec.deco }) : null),
     sec.instr ? h('p', { class: 'sec-instr', text: sec.instr }) : null,
     u.body,
     u.type === 'links' ? null : h('div', { class: 'sec-foot' }, u.fb, h('div', { class: 'sec-actions' }, actions)));
@@ -2506,7 +2568,7 @@ function complete(u, how) {
     const n = COUNTED.filter(isDone).length;
     if (TYPE[u.type].counted) award('first');
     if (n * 2 >= COUNTED.length) award('half');
-    if (how === 'user' && graded(u) && ST.stars[u.key] === 3) award('perfect');
+    if (how === 'user' && graded(u) && ST.stars[u.key] === 3) award('perfect', u.key);
   }
   progress();
   save();
@@ -2515,6 +2577,7 @@ function complete(u, how) {
 function uncomplete(u) {
   if (!isDone(u)) return;
   removeVal(ST.done, u.key);
+  revokeBadges();
   paintDone(u);
   endShown = false;
   const fin = $('#finale');
@@ -2526,13 +2589,17 @@ function uncomplete(u) {
 function checkCount(u, n, total) {
   if (n >= (total == null ? u.rows.length : total)) complete(u, 'user');
 }
-function solveUnit(u) {
+/* help: odpowiedzi pokazane z pomoca (1 gwiazdka). Bez tego sekcja liczy sie
+   tak, jakby uczen zrobil ja sam (gwiazdki wg bledow i podpowiedzi do tej pory). */
+function solveUnit(u, help) {
+  const wasDone = isDone(u);
   solving = true;
   playNow('reveal');
   MOD[u.type].solve(u, S(u));
   draw(u);
-  complete(u, 'solve');
+  complete(u, help ? 'solve' : 'user');
   solving = false;
+  if (help && !wasDone) toast('Pokazano z pomocą');
   save();
 }
 function clearUnit(u) {
@@ -2540,6 +2607,8 @@ function clearUnit(u) {
   if (ST.stars) delete ST.stars[u.key];
   if (ST.pen) delete ST.pen[u.key];
   if (ST.via) delete ST.via[u.key];
+  revokeBadges(u.key);
+  streakBreak();
   uncomplete(u);
   draw(u);
   sound('tap');
@@ -2613,7 +2682,7 @@ function finaleStats() {
   append(box, [
     stat('⚡', COUNTED.filter(isDone).length * XP_PER + ' XP', 'zdobyte punkty'),
     stat('⭐', COUNTED.reduce((a, u) => a + (isDone(u) ? stars(u) : 0), 0) + ' / ' + COUNTED.length * 3, 'gwiazdki'),
-    ST.best ? stat('🔥', ST.best, 'najdłuższa seria') : null
+    bestStreak() ? stat('🔥', bestStreak(), 'najdłuższa seria') : null
   ]);
   const bx = $('#finaleBadges');
   if (bx) { bx.innerHTML = ''; if (availableBadges().length) append(bx, [h('h3', { class: 'finale-sub', text: '🏅 Odznaki' }), badgeGrid()]); }
@@ -3310,9 +3379,9 @@ MOD.cornell = {
       const card = scratchCard(zone, {
         onReveal(byScratch) {
           playNow('reveal');
-          if (byScratch && !st.open.includes(gi) && !RATER) {
-            ST.scr = (ST.scr || 0) + 1;
-            if (ST.scr >= 5) award('scratch');
+          if (byScratch && !RATER) {
+            addOnce(st.hand = st.hand || [], gi);
+            if (scratchCount() >= 5) award('scratch');
           }
           item.classList.add('is-revealed');
           addOnce(st.open, gi);
@@ -4344,523 +4413,13 @@ function boot() {
 boot();
 </script>
 <script>
-/* =====================================================================
-   SHARED CORE
-   Wspolne dla generatora i dla wygenerowanej karty. Jedno zrodlo prawdy:
-   lista typow zadan, parsery danych (TSV i Markdown) i drobne narzedzia.
-   ===================================================================== */
-
-const WS_VERSION = '6.1';
-
-/* ---------- Rejestr typow zadan ----------
-   Kolejnosc tablicy = domyslna kolejnosc sekcji na karcie.
-   untagged: czy wiersz bez tagow trafia do tego typu (zgodnosc ze starym TSV).
-   review:   czy wiersze tego typu trafiaja do szybkiej powtorki.
-   diff:     czy przy wierszach sa przyciski oceny.
-   counted:  czy sekcja liczy sie do paska postepu.                       */
-const TYPES = [
-  { key: 'flashcards', tag: 'f', name: 'Flashcards', emoji: '🃏', untagged: true, review: true, diff: true, counted: true,
-    aliases: ['flashcard', 'flashcards', 'fiszki', 'fiszka', 'karty'],
-    desc: 'Fiszki do odwracania (niezalecane: lepiej Zdrapki)',
-    instr: 'Kliknij kartę, żeby odsłonić tłumaczenie. Najpierw spróbuj zgadnąć w głowie.',
-    doneMsg: 'Wszystkie fiszki przejrzane' },
-  { key: 'matching', tag: 'm', name: 'Matching', emoji: '🔗', untagged: true, review: true, diff: true, counted: true,
-    aliases: ['match', 'matching', 'łączenie', 'laczenie', 'dopasuj', 'dopasowanie', 'pary', 'połącz', 'polacz'],
-    desc: 'Łączenie w pary (po 8 na część)',
-    instr: 'Kliknij słowo z lewej kolumny, a potem jego tłumaczenie z prawej.',
-    doneMsg: 'Wszystkie pary połączone' },
-  { key: 'scramble', tag: 's', name: 'Word Scramble', emoji: '🔤', untagged: true, review: true, diff: true, counted: true,
-    aliases: ['scramble', 'word scramble', 'litery', 'rozsypanka liter'],
-    desc: 'Słowo z rozsypanych liter',
-    instr: 'Ułóż słowo z rozsypanych liter: klikaj kafelki albo wpisz odpowiedź (Enter sprawdza).',
-    doneMsg: 'Wszystkie słowa ułożone' },
-  { key: 'quiz', tag: 'q', name: 'Quiz', emoji: '✅', untagged: true, review: true, diff: true, counted: true,
-    aliases: ['quiz', 'test', 'abcd', 'wybór', 'wybor'],
-    desc: 'Wybór jednej odpowiedzi',
-    instr: 'Wybierz poprawne tłumaczenie. Tylko jedna odpowiedź jest dobra.',
-    doneMsg: 'Quiz ukończony' },
-  { key: 'unscramble', tag: 'u', name: 'Sentence Unscramble', emoji: '📝', untagged: true, review: true, diff: true, counted: true,
-    aliases: ['unscramble', 'sentence', 'sentence unscramble', 'ułóż zdanie', 'uloz zdanie', 'rozsypanka', 'szyk'],
-    desc: 'Zdanie z rozsypanych słów',
-    instr: 'Odsłoń słowa i ułóż je w dobrej kolejności. Możesz klikać albo przeciągać.',
-    doneMsg: 'Wszystkie zdania ułożone' },
-  { key: 'cornell', tag: 'c', name: 'Zdrapki', emoji: '🪙', untagged: true, review: true, diff: true, counted: true,
-    aliases: ['cornell', 'zdrapki', 'zdrapka', 'scratch', 'scratch cards', 'scratch card', 'scratchcards', 'q&a', 'qa', 'pytania', 'pytania i odpowiedzi', 'questions'],
-    desc: 'Pytanie albo słowo, pod spodem odpowiedź do zdrapania',
-    instr: 'Najpierw odpowiedz sam: w myślach albo na piśmie. Potem zdrap odpowiedź. Możesz zdrapać tylko kawałek jako podpowiedź.',
-    doneMsg: 'Wszystkie zdrapki odkryte' },
-  { key: 'gapfill', tag: 'g', name: 'Gap Fill', emoji: '🧩', untagged: true, review: true, diff: true, counted: true,
-    aliases: ['gap', 'gapfill', 'gap fill', 'fill', 'luki', 'uzupełnij', 'uzupelnij'],
-    desc: 'Luki w zdaniu, w EN: I {go} to school',
-    instr: 'Wpisz brakujące słowa (Enter sprawdza). Przycisk z listą pokazuje słowa do wyboru.',
-    doneMsg: 'Wszystkie luki uzupełnione' },
-  { key: 'error', tag: 'e', name: 'Correct the Mistake', emoji: '🔎', untagged: false, review: true, diff: true, counted: true,
-    aliases: ['error', 'errors', 'mistake', 'correct', 'correct the mistake', 'błąd', 'blad', 'błędy', 'znajdź błąd', 'znajdz blad'],
-    desc: 'Znajdź błąd, w EN: She {don\'t/doesn\'t} like it',
-    instr: 'W każdym zdaniu jest jeden błąd. Kliknij słowo, które jest błędne.',
-    doneMsg: 'Wszystkie błędy znalezione' },
-  { key: 'translate', tag: 't', name: 'Translate', emoji: '🌐', untagged: true, review: true, diff: true, counted: true,
-    aliases: ['translate', 'translation', 'tłumaczenie', 'tlumaczenie', 'przetłumacz', 'przetlumacz'],
-    desc: 'Tłumaczenie całego zdania',
-    instr: 'Przetłumacz na angielski (Enter sprawdza). Wielkość liter i kropka na końcu nie mają znaczenia.',
-    doneMsg: 'Wszystko przetłumaczone' },
-  { key: 'writing', tag: 'w', name: 'Writing', emoji: '✍️', untagged: true, review: true, diff: true, counted: true,
-    aliases: ['write', 'writing', 'wypracowanie', 'pisanie'],
-    desc: 'Własny tekst według polecenia',
-    instr: 'Napisz odpowiedź według polecenia i kliknij „Gotowe”.',
-    doneMsg: 'Wszystko zapisane' },
-  { key: 'categorize', tag: 'k', name: 'Categorize', emoji: '🗂️', untagged: false, review: false, diff: false, counted: true,
-    aliases: ['categorize', 'categorise', 'categories', 'category', 'sort', 'kategorie', 'kategoryzacja', 'sortowanie', 'grupy'],
-    desc: 'Rozdziel słowa do kategorii, w EN: apple, chair, idea',
-    instr: 'Kliknij słowo, a potem kategorię, do której pasuje. Możesz też przeciągać.',
-    doneMsg: 'Wszystko na swoim miejscu' },
-  { key: 'links', tag: 'l', name: 'Materiały', emoji: '📎', untagged: false, review: false, diff: false, counted: false,
-    aliases: ['link', 'links', 'linki', 'materiały', 'materialy', 'materials'],
-    desc: 'Odnośniki jako przyciski',
-    instr: '',
-    doneMsg: '' }
-];
-
-const TYPE = {};
-const TYPE_BY_ALIAS = {};
-TYPES.forEach(t => {
-  TYPE[t.key] = t;
-  [t.key, t.tag, t.name.toLowerCase()].concat(t.aliases).forEach(a => { TYPE_BY_ALIAS[a.toLowerCase()] = t.key; });
-});
-
-/* Klucz sekcji: 'matching' albo 'matching:2' dla drugiej sekcji tego samego typu. */
-function keyBase(key) { const i = key.indexOf(':'); return i < 0 ? key : key.slice(0, i); }
-function keyNum(key) { const i = key.indexOf(':'); return i < 0 ? 1 : (parseInt(key.slice(i + 1), 10) || 1); }
-function makeKey(base, num) { return num > 1 ? base + ':' + num : base; }
-function keyTag(key) { const n = keyNum(key); return TYPE[keyBase(key)].tag + (n > 1 ? n : ''); }
-
-/* Tagi z kolumny "tasks": "f, m2, quiz" -> ['flashcards', 'matching:2', 'quiz'] */
-function parseTags(s) {
-  const out = [];
-  String(s || '').split(/[,;|]/).forEach(raw => {
-    const m = raw.trim().toLowerCase().match(/^([a-ząćęłńóśźż& ]+?)\s*(\d+)?$/);
-    if (!m) return;
-    const base = TYPE_BY_ALIAS[m[1].trim()];
-    if (!base) return;
-    const key = makeKey(base, m[2] ? parseInt(m[2], 10) : 1);
-    if (!out.includes(key)) out.push(key);
-  });
-  return out;
-}
-
-/* ---------- Narzedzia tekstowe ---------- */
-function esc(s) {
-  return String(s == null ? '' : s)
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-}
-
-/* Klamry poza Gap Fill i Correct the Mistake: {go} -> go, {don't/doesn't} -> doesn't */
-function stripBraces(s) {
-  return String(s || '').replace(/\{([^}]*)\}/g, (m, inner) => {
-    const i = inner.indexOf('/');
-    return (i < 0 ? inner : inner.slice(i + 1)).trim();
-  });
-}
-function hasBraces(s) { return /\{[^}]+\}/.test(String(s || '')); }
-
-/* Lekkie formatowanie notatek: **pogrubienie**, *kursywa*, entery. Bez HTML. */
-function noteToHtml(s) {
-  return esc(String(s || '').trim())
-    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-    .replace(/(^|[^*])\*([^*\s][^*]*)\*/g, '$1<em>$2</em>')
-    .replace(/\n/g, '<br>');
-}
-
-/* Porownywanie odpowiedzi wpisywanych z klawiatury. */
-function normAnswer(s) {
-  return String(s || '').toLowerCase()
-    .replace(/[\u2018\u2019\u02bc`]/g, "'").replace(/[\u201c\u201d\u201e]/g, '"')
-    .replace(/\s+/g, ' ').trim();
-}
-
-function splitList(s) {
-  const t = String(s || '');
-  return (t.includes('|') ? t.split('|') : t.split(',')).map(x => x.trim()).filter(Boolean);
-}
-
-function uniqCI(list, exclude) {
-  const seen = new Set((exclude || []).map(x => String(x).toLowerCase()));
-  return list.filter(x => {
-    const k = String(x).toLowerCase();
-    if (!k || seen.has(k)) return false;
-    seen.add(k);
-    return true;
-  });
-}
-
-function hashStr(s) {
-  let h = 0;
-  for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
-  return Math.abs(h);
-}
-
-/* Deterministyczne losowanie: ta sama karta zawsze tasuje sie tak samo,
-   wiec po odswiezeniu uklad sie nie zmienia. */
-function makeRng(seed) {
-  let a = seed >>> 0;
-  return function () {
-    a = (a + 0x6D2B79F5) >>> 0;
-    let t = a;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-function shuffled(arr, rng) {
-  const a = arr.slice();
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(rng() * (i + 1));
-    const t = a[i]; a[i] = a[j]; a[j] = t;
-  }
-  return a;
-}
-/* Tasowanie, ktore na pewno zmienia kolejnosc (o ile sie da). */
-function shuffledDifferent(arr, rng) {
-  if (arr.length < 2) return arr.slice();
-  const same = a => a.every((x, i) => String(x).toLowerCase() === String(arr[i]).toLowerCase());
-  let out = arr;
-  for (let k = 0; k < 8; k++) { out = shuffled(arr, rng); if (!same(out)) return out; }
-  out = arr.slice(); const t = out[0]; out[0] = out[out.length - 1]; out[out.length - 1] = t;
-  return out;
-}
-
-/* ---------- Ktore wiersze pasuja do danego typu ---------- */
-function rowFits(type, r) {
-  const pl = (r.pl || '').trim(), en = (r.en || '').trim();
-  switch (type) {
-    case 'links': return !!(en || pl);
-    case 'writing': return !!(pl || en);
-    case 'gapfill': return !!pl && hasBraces(en);
-    case 'error': return !!pl && hasBraces(en);
-    case 'unscramble': return !!pl && stripBraces(en).split(/\s+/).filter(Boolean).length >= 2;
-    case 'scramble': return !!pl && stripBraces(en).replace(/\s/g, '').length >= 2;
-    case 'categorize': return !!pl && splitList(en).length >= 1;
-    default: return !!pl && !!en;
-  }
-}
-
-/* Najmniejsza liczba wierszy, przy ktorej sekcja ma sens. */
-function minRows(type) {
-  if (type === 'matching' || type === 'categorize') return 2;
-  return 1;
-}
-
-/* ---------- Model danych ----------
-   doc = {
-     format: 'tsv' | 'md',
-     title, subtitle,
-     rows: [{ pl, en, opts[], distractors[], note, level, tasks[], extra{} }],
-     extraCols: [],           // nieznane kolumny TSV, odsylane przy eksporcie
-     order: [keys] | null,    // jawna kolejnosc sekcji
-     sectionMeta: { key: { title, instr, instrOff, image } },
-     meta: { accent, bgsvg, images[], extra, progress },
-     warnings: [], error: ''
-   } */
-function emptyDoc(format) {
-  return { format, title: '', subtitle: '', rows: [], extraCols: [], order: null,
-    sectionMeta: {}, meta: { images: [] }, warnings: [], error: '' };
-}
-
-function makeRow(pl, en, extra) {
-  const r = { pl: String(pl || '').trim(), en: String(en || '').trim(), opts: [], distractors: [], note: '', level: 0, tasks: [], extra: extra || {} };
-  if (r.en.includes('|')) {
-    const parts = r.en.split('|').map(x => x.trim()).filter(Boolean);
-    r.en = parts[0] || '';
-    r.opts = uniqCI(parts.slice(1), [r.en]);
-  }
-  return r;
-}
-
-/* Stare oceny 0-4 (kolumna "difficulty") -> nowe 1-3. */
-function levelFromOld(v) {
-  const s = String(v == null ? '' : v).trim();
-  if (s === 'new' || s === '0' || s === '1' || s === '2') return 1;
-  if (s === '3') return 2;
-  if (s === '4') return 3;
-  return 0;
-}
-function levelFromNew(v) {
-  const n = parseInt(String(v == null ? '' : v).trim(), 10);
-  return (n >= 1 && n <= 3) ? n : 0;
-}
-
-/* Stara notatka mogla miec HTML: zamieniamy <br> na enter, reszte znacznikow zdejmujemy. */
-function cleanNote(s) {
-  return String(s || '')
-    .replace(/\\n/g, '\n')
-    .replace(/<br\s*\/?>/gi, '\n')
-    .replace(/<\/(p|div|li)>/gi, '\n')
-    .replace(/<[^>]+>/g, '')
-    .replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')
-    .replace(/\n{3,}/g, '\n\n')
-    .trim();
-}
-
-/* ---------- Wykrywanie formatu ---------- */
-function detectFormat(text) {
-  const t = String(text || '');
-  if (/^\s*#{1,3}\s+\S/m.test(t)) return 'md';
-  if (/^\s*[-*+]\s+.+\s(=|::)\s/m.test(t) && !t.includes('\t')) return 'md';
-  return 'tsv';
-}
-
-function parseData(text) {
-  return detectFormat(text) === 'md' ? parseMarkdown(text) : parseTSV(text);
-}
-
-/* ---------- TSV (zgodny ze starymi plikami) ---------- */
-function parseTSV(text) {
-  const doc = emptyDoc('tsv');
-  const lines = String(text || '').replace(/\r/g, '').split('\n').filter(l => l.trim());
-  const data = [];
-  let inOrder = false;
-
-  lines.forEach(line => {
-    const t = line.trim();
-    if (/^#order\b/i.test(t)) {
-      inOrder = true;
-      doc.order = doc.order || [];
-      const rest = t.replace(/^#order/i, '').trim();
-      if (rest) doc.order.push(...parseTags(rest.replace(/[\t;]/g, ',')));
-      return;
-    }
-    if (t[0] === '#') {
-      inOrder = false;
-      const cells = t.split('\t').map(c => c.trim());
-      const key = cells[0].toLowerCase().slice(1);
-      const val = cells[1] || '';
-      if (key === 'title' || key === 'subtitle') doc[key] = cells.slice(1).join(' ').trim();
-      else if (key === 'accent' && /^#[0-9a-f]{6}$/i.test(val)) doc.meta.accent = val;
-      else if (key === 'bgsvg' && val) doc.meta.bgsvg = { uri: val, size: cells[2], opacity: cells[3] };
-      else if (key === 'img' && val && cells[2]) doc.meta.images.push({ key: val.toLowerCase(), url: cells[2], h: cells[3], y: cells[4], fit: cells[5] });
-      else if (key === 'progress' && val) { try { doc.meta.progress = JSON.parse(decodeURIComponent(val)); } catch (e) { /* uszkodzony */ } }
-      else if (key === 'extra' && val) { try { doc.meta.extra = JSON.parse(decodeURIComponent(val)); } catch (e) { /* uszkodzony */ } }
-      return;
-    }
-    if (inOrder && !t.includes('\t') && /^[a-z]+\d*(:\d+)?$/i.test(t)) {
-      doc.order.push(...parseTags(t.replace(':', '')));
-      return;
-    }
-    inOrder = false;
-    data.push(line);
-  });
-
-  if (data.length < 2) { doc.error = 'Potrzebny jest wiersz nagłówka (np. pl⇥en) i co najmniej jeden wiersz danych.'; return doc; }
-
-  let sep = '\t';
-  if (!data[0].includes('\t')) sep = data[0].includes(';') ? ';' : (data[0].includes(',') ? ',' : '\t');
-  const headers = data[0].split(sep).map(h => h.trim().toLowerCase());
-  if (!headers.includes('pl') || !headers.includes('en')) {
-    doc.error = 'Pierwszy wiersz musi być nagłówkiem z kolumnami „pl” i „en”.';
-    return doc;
-  }
-  const known = ['pl', 'en', 'tasks', 'distractors', 'note', 'level', 'difficulty'];
-  doc.extraCols = headers.filter(h => h && !known.includes(h));
-
-  for (let i = 1; i < data.length; i++) {
-    const cells = data[i].split(sep).map(c => c.trim());
-    const get = h => { const k = headers.indexOf(h); return k < 0 ? '' : (cells[k] || ''); };
-    if (!get('pl') && !get('en')) continue;
-    const extra = {};
-    doc.extraCols.forEach(h => { extra[h] = get(h); });
-    const r = makeRow(get('pl'), get('en'), extra);
-    r.tasks = parseTags(get('tasks'));
-    r.distractors = uniqCI(splitList(get('distractors').includes('|') ? get('distractors') : get('distractors').replace(/,/g, '|')), [r.en]);
-    r.note = cleanNote(get('note'));
-    r.level = headers.includes('level') ? levelFromNew(get('level')) : levelFromOld(get('difficulty'));
-    if (get('difficulty') && !headers.includes('level') && !/^(new|[0-4])$/.test(get('difficulty'))) {
-      doc.warnings.push('Wiersz ' + (i + 1) + ': nieznana ocena „' + get('difficulty') + '” w kolumnie difficulty, pominięta.');
-    }
-    doc.rows.push(r);
-  }
-  if (!doc.rows.length) doc.error = 'Nie znaleziono żadnych wierszy z danymi.';
-
-  /* Ustawienia zapisane przez stara karte w #extra traktujemy jak dane dokumentu. */
-  const ex = doc.meta.extra;
-  if (ex && typeof ex === 'object') {
-    const put = (k, f, v) => { (doc.sectionMeta[k] = doc.sectionMeta[k] || {})[f] = v; };
-    Object.entries(ex.titles || {}).forEach(([k, v]) => {
-      const d = TYPE[keyBase(k)];
-      const oldName = keyBase(k) === 'cornell' ? 'Pytania i odpowiedzi' : null;
-      const isDef = n => v === n || (v.startsWith(n + ' ') && /\d+$/.test(v));
-      if (d && v && !isDef(d.name) && !(oldName && isDef(oldName))) put(k, 'title', v);
-    });
-    Object.entries(ex.instrs || {}).forEach(([k, v]) => { if (TYPE[keyBase(k)] && v) put(k, 'instr', v); });
-    Object.entries(ex.instrOn || {}).forEach(([k, v]) => { if (TYPE[keyBase(k)] && v === false) put(k, 'instrOff', true); });
-    /* Dawna "sekcja z linkami" byla ustawieniem, teraz to zwykle wiersze danych. */
-    (ex.customs || []).forEach((c, n) => {
-      if (!c || c.kind !== 'links' || !c.body) return;
-      const key = makeKey('links', n + 1);
-      c.body.split(/\r?\n/).map(l => l.trim()).filter(Boolean).forEach(l => {
-        const bar = l.indexOf('|');
-        const r = makeRow(bar < 0 ? '' : l.slice(0, bar), bar < 0 ? l : l.slice(bar + 1));
-        r.tasks = [key];
-        doc.rows.push(r);
-      });
-      if (c.title) put(key, 'title', c.title);
-    });
-  }
-  return doc;
-}
-
-/* ---------- Markdown ----------
-   # Tytuł karty
-   Podtytuł (zwykły akapit pod tytułem)
-   ## Typ: Własny tytuł sekcji
-   Własna instrukcja (zwykły akapit pod nagłówkiem sekcji)
-   - polski = angielski
-     ~ atrapa | atrapa        (słowa-atrapy)
-     > notatka, może mieć
-     > kilka linijek                                                   */
-function parseMarkdown(text) {
-  const doc = emptyDoc('md');
-  const lines = String(text || '').replace(/\r/g, '').split('\n');
-  const counts = {};
-  let sec = null;        // biezaca sekcja { key }
-  let row = null;        // ostatni wiersz (do notatek i atrap)
-  let beforeSections = true;
-  let skipping = false;  // nieznana sekcja: jej wiersze pomijamy
-
-  const meta = k => (doc.sectionMeta[k] = doc.sectionMeta[k] || {});
-
-  lines.forEach((raw, idx) => {
-    if (/^\s*```/.test(raw)) return;                       // ogrodzenia bloku kodu od AI
-    const line = raw.replace(/\s+$/, '');
-    if (!line.trim()) return;
-    const indented = /^(\t| {2,})/.test(line) && !/^\s{0,1}[-*+]\s/.test(line);
-    const t = line.trim();
-
-    let m = t.match(/^#\s+(.+)$/);
-    if (m && !line.match(/^\s/)) { if (!doc.title) doc.title = m[1].trim(); return; }
-
-    m = t.match(/^#{2,3}\s+(.+)$/);
-    if (m) {
-      beforeSections = false;
-      row = null;
-      const head = m[1].trim();
-      const colon = head.indexOf(':');
-      const typeName = (colon < 0 ? head : head.slice(0, colon)).replace(/^[^\p{L}]+/u, '').trim().toLowerCase();
-      const base = TYPE_BY_ALIAS[typeName];
-      if (!base) {
-        doc.warnings.push('Nieznany typ sekcji „' + head + '” (linia ' + (idx + 1) + '). Jej wiersze pominięto.');
-        sec = null; skipping = true;
-        return;
-      }
-      skipping = false;
-      counts[base] = (counts[base] || 0) + 1;
-      sec = { key: makeKey(base, counts[base]) };
-      (doc.order = doc.order || []).push(sec.key);
-      if (colon >= 0 && head.slice(colon + 1).trim()) meta(sec.key).title = head.slice(colon + 1).trim();
-      return;
-    }
-
-    /* Notatki i atrapy: wciete linie pod pozycja listy. */
-    if (row && (indented || /^>/.test(t))) {
-      const d = t.match(/^(~|atrapy:|distractors:)\s*(.*)$/i);
-      if (d) { row.distractors = uniqCI(row.distractors.concat(splitList(d[2].replace(/,/g, '|'))), [row.en]); return; }
-      if (indented || /^>/.test(t)) {
-        const noteLine = t.replace(/^>\s?/, '');
-        row.note = row.note ? row.note + '\n' + noteLine : noteLine;
-        return;
-      }
-    }
-
-    m = t.match(/^(?:[-*+]|\d+[.)])\s+(.*)$/);
-    if (m && !indented) {
-      if (skipping) { row = null; return; }
-      if (!sec) {
-        doc.warnings.push('Linia ' + (idx + 1) + ' stoi przed pierwszym nagłówkiem „## …”, pominięto ją.');
-        row = null;
-        return;
-      }
-      const body = m[1].replace(/\*\*|__|`/g, '').trim();
-      let pl = body, en = '';
-      const sepAt = body.indexOf(' :: ') >= 0 ? [body.indexOf(' :: '), 4] : (body.indexOf(' = ') >= 0 ? [body.indexOf(' = '), 3] : null);
-      if (sepAt) { pl = body.slice(0, sepAt[0]); en = body.slice(sepAt[0] + sepAt[1]); }
-      const base = keyBase(sec.key);
-      if (!sepAt && base === 'links') { en = pl; pl = ''; }
-      row = makeRow(pl, en);
-      row.tasks = [sec.key];
-      doc.rows.push(row);
-      return;
-    }
-
-    /* Zwykly akapit: podtytul karty albo instrukcja sekcji. */
-    row = null;
-    if (beforeSections) {
-      if (doc.title && !doc.subtitle) doc.subtitle = t.replace(/^>\s?/, '');
-      return;
-    }
-    if (!sec) return;
-    const img = t.match(/^!\[[^\]]*\]\(([^)\s]+)\)$/);
-    if (img) { meta(sec.key).image = img[1]; return; }
-    if (/^\((bez instrukcji|no instructions?)\)$/i.test(t) || t === '-') { meta(sec.key).instrOff = true; return; }
-    const mm = meta(sec.key);
-    mm.instr = mm.instr ? mm.instr + ' ' + t : t;
-  });
-
-  if (!doc.rows.length && !doc.error) doc.error = 'Nie znaleziono żadnych pozycji listy („- polski = angielski”) pod nagłówkami „## Typ”.';
-  return doc;
-}
-
-/* ---------- Ktore sekcje istnieja w danych ----------
-   Zwraca { key: [indeksy wierszy] } dla kazdej sekcji, ktora ma sens. */
-function detectSections(doc) {
-  const out = {};
-  const tagged = new Set();
-  doc.rows.forEach(r => r.tasks.forEach(k => tagged.add(k)));
-  const hasUntagged = doc.rows.some(r => !r.tasks.length);
-  const keys = Array.from(tagged);
-  if (hasUntagged) TYPES.forEach(t => { if (t.untagged && !keys.includes(t.key)) keys.push(t.key); });
-
-  keys.forEach(key => {
-    const base = keyBase(key);
-    const idx = [];
-    doc.rows.forEach((r, i) => {
-      const inSec = r.tasks.length ? r.tasks.includes(key) : (TYPE[base].untagged && keyNum(key) === 1);
-      if (inSec && rowFits(base, r)) idx.push(i);
-    });
-    if (idx.length >= minRows(base)) out[key] = idx;
-  });
-  return out;
-}
-
-/* Kolejnosc: jawna z danych, potem kolejnosc pierwszego wystapienia tagu, potem rejestr. */
-function defaultOrder(doc, available) {
-  const keys = Object.keys(available);
-  const out = [];
-  const add = k => { if (keys.includes(k) && !out.includes(k)) out.push(k); };
-  (doc.order || []).forEach(add);
-  doc.rows.forEach(r => r.tasks.forEach(add));
-  TYPES.forEach(t => keys.filter(k => keyBase(k) === t.key).sort((a, b) => keyNum(a) - keyNum(b)).forEach(add));
-  return out;
-}
-
-/* Wiersze otagowane typem, ktorego nie da sie zbudowac (np. luka bez klamr). */
-function orphanReport(doc, available) {
-  const problems = [];
-  doc.rows.forEach((r, i) => {
-    if (!r.tasks.length) return;
-    const lost = r.tasks.filter(k => !(available[k] || []).includes(i));
-    if (lost.length === r.tasks.length) {
-      const why = lost.map(k => {
-        const b = keyBase(k);
-        if ((b === 'gapfill' || b === 'error') && !hasBraces(r.en)) return TYPE[b].name + ': brak klamr {…}';
-        if (b === 'unscramble') return TYPE[b].name + ': zdanie musi mieć co najmniej 2 słowa';
-        if (available[k] === undefined) return TYPE[b].name + ': za mało wierszy w sekcji';
-        return TYPE[b].name + ': brak polskiej lub angielskiej części';
-      });
-      problems.push('Wiersz „' + (r.pl || r.en).slice(0, 40) + '” nie trafi na kartę (' + why.join('; ') + ').');
-    }
-  });
-  return problems;
-}
+/* Wspolny rdzen (typy zadan, parser TSV, narzedzia) jest w pliku tylko raz,
+   w bloku rt-core. Generator uruchamia go tutaj, a do karty trafia ten sam tekst. */
+(function () {
+  const sc = document.createElement('script');
+  sc.textContent = document.getElementById('rt-core').textContent;
+  document.head.appendChild(sc);
+})();
 
 /* =====================================================================
    GENERATOR
@@ -4874,137 +4433,107 @@ const SWATCHES = ['#2563eb', '#0e7490', '#0f766e', '#15803d', '#a16207', '#c2410
 const BACKGROUNDS = [['blobs', 'Plamy'], ['dots', 'Kropki'], ['grid', 'Siatka'], ['none', 'Brak'], ['svg', 'Wzorek SVG']];
 const GEN_KEY = 'wsgen-v3';
 
+/* Style karty. Czysty bierze kolory z koloru przewodniego. Inne style maja
+   wlasna palete (accent, vars), chyba ze zaznaczono "uzyj mojego koloru".
+   vars(th, own): dodatkowe kolory stylu. Wyglad stylu siedzi w CSS karty
+   pod body.style-<klucz>. ownBg: styl ma wlasne tlo (wybor tla sie chowa). */
+const STYLES = {
+  clean: { name: 'Czysty', hint: 'Jasne karty, cała paleta wylicza się z koloru przewodniego.' },
+  notebook: { name: 'Zeszyt', accent: '#2f4a8a', font: 'Caveat:wght@600;700', ownBg: true,
+    hint: 'Kartki w linie z marginesem, taśma, odręczne nagłówki (czcionka Caveat). Styl ma własne, papierowe tło.',
+    vars: (th, own) => ({
+      'nb-margin': own ? '#e03131' : th.accent2,
+      'nb-margin-soft': own ? 'rgba(224,49,49,.45)' : rgba(th.accent2, 0.45),
+      'nb-line': own ? 'rgba(77,140,214,.2)' : rgba(th.accent, 0.16),
+      'nb-mark': own ? '#ffe066' : mix('#ffffff', th.accent, 0.32),
+      'nb-tape-1': own ? '#ffd8a8' : mix('#ffffff', th.accent, 0.4),
+      'nb-tape-2': own ? '#b2f2bb' : mix('#ffffff', th.accent2, 0.4),
+      'nb-tape-3': own ? '#a5d8ff' : mix('#ffffff', hueShift(th.accent, 70), 0.4)
+    }) }
+};
+function lookStyle() { return STYLES[S.style] ? S.style : 'clean'; }
+function lookAccent() { const st = STYLES[lookStyle()]; return st.accent && !S.styleAccent ? st.accent : S.accent; }
+
 const AI_PROMPT = [
-  'Przygotuj dane do mojego generatora kart pracy w formacie Markdown. Odpowiedz wyłącznie jednym blokiem kodu ```markdown, bez komentarzy przed nim i po nim.',
+  'Przygotuj dane do mojego generatora kart pracy w formacie TSV. Odpowiedz wyłącznie jednym blokiem kodu, bez komentarzy przed nim i po nim. Kolumny oddzielaj znakiem tabulacji (nie spacjami).',
   '',
-  'ZASADY',
-  '1. Pierwsza linia: "# Tytuł karty". Pod nią możesz dać jedną linię podtytułu.',
-  '2. Każda sekcja zaczyna się od nagłówka "## Typ" albo "## Typ: własny tytuł". Dozwolone typy (dokładnie te nazwy): Zdrapki, Matching, Word Scramble, Quiz, Sentence Unscramble, Gap Fill, Correct the Mistake, Translate, Writing, Categorize, Linki. Ten sam typ może wystąpić kilka razy. NIE używaj typu Flashcards: do szybkiego sprawdzania słówek, zwrotów i pytań służą Zdrapki.',
-  '3. Pod nagłówkiem możesz dać jeden zwykły akapit: to będzie własna instrukcja (polecenie) dla ucznia do całej sekcji. Bez akapitu zostaje instrukcja domyślna. Tylko tutaj umieszczaj polecenia typu „odpowiedz pełnym zdaniem” czy „użyj Past Simple”.',
-  '4. Każda pozycja to jedna linia listy w formie "- polski = angielski" (spacja, znak =, spacja). Po lewej zawsze polski, po prawej angielski.',
-  '5. Zapisy specjalne:',
-  '   - Quiz z własnymi odpowiedziami: "- statek = ship | sheep | shop | chip" (pierwsza jest poprawna). Bez kresek quiz sam dobierze złe odpowiedzi z innych pozycji.',
-  '   - Gap Fill: luki w klamrach po stronie angielskiej, np. "- Idę do szkoły. = I {go} to school." Kilka akceptowanych odpowiedzi: "{go/walk}".',
-  '   - Correct the Mistake: w klamrach słowo błędne, po ukośniku poprawne, np. "- Ona tego nie lubi. = She {don\'t/doesn\'t} like it." Dokładnie jeden błąd w zdaniu.',
-  '   - Sentence Unscramble i Translate: całe zdania.',
-  '   - Zdrapki: "- słowo, zwrot albo pytanie po polsku = odpowiedź po angielsku". Uczeń widzi lewą stronę, a odpowiedź zdrapuje (może zdrapać tylko kawałek jako podpowiedź). Dobre do słówek, zwrotów i krótkich pytań z wzorcową odpowiedzią.',
-  '   - Zdrapki z obrazkiem: przy konkretnych słowach (rzeczy, zwierzęta, jedzenie, pogoda, czynności) daj jedno pasujące emoji na początku lewej strony, np. "- 🍎 jabłko = apple". Karta pokaże je duże jak obrazek. Przy pojęciach abstrakcyjnych pomiń emoji, jeśli nie pomaga zapamiętać. Samo emoji bez słowa też działa: "- 🍎 = apple".',
-  '   - Writing: "- polecenie po polsku = to samo polecenie po angielsku".',
-  '   - Categorize: "- nazwa kategorii = słowo, słowo, słowo" (co najmniej 2 kategorie w sekcji).',
-  '   - Linki: "- Tytuł = https://adres".',
-  '6. Pod pozycją, z wcięciem dwóch spacji, możesz dodać:',
-  '   - "~ słowo | słowo" czyli atrapy (słowa-pułapki) w Matching, Quiz, Sentence Unscramble i Gap Fill,',
-  '   - "> notatka" (zasady w części NOTATKI). Każdą linię notatki zaczynaj od "> ", sam ">" robi pustą linię. Wolno użyć **pogrubienia**.',
-  '7. Nie używaj tabel ani numerowanych list. Nie formatuj pozycji (bez pogrubień w "- polski = angielski").',
-  '8. Tłumaczenia mają być w pełni poprawne i naturalne.',
+  'LINIE USTAWIEŃ (na samym początku, każda zaczyna się od #)',
+  '#title⇥Tytuł karty',
+  '#subtitle⇥Podtytuł (opcjonalnie)',
+  '#section⇥tag⇥Własny tytuł sekcji⇥Własna instrukcja dla ucznia. Puste pole = domyślne, "-" w miejscu instrukcji = bez instrukcji. Tylko tutaj umieszczaj polecenia typu „odpowiedz pełnym zdaniem” czy „użyj Past Simple”.',
+  '#deco⇥tag⇥<svg …>…</svg> (opcjonalna ilustracja w nagłówku sekcji, cały kod SVG w jednej linii, z viewBox, prosty i czytelny)',
+  '#order⇥c, m, q, g (kolejność sekcji: od rozgrzewki i rozpoznawania do przypominania i samodzielnego tworzenia)',
+  '',
+  'WIERSZE DANYCH',
+  'Nagłówek: pl⇥en⇥tasks⇥distractors⇥note. Po lewej (pl) zawsze polski, po prawej (en) angielski.',
+  'Tagi w kolumnie tasks: c = Zdrapki, m = Matching, s = Word Scramble, q = Quiz, u = Sentence Unscramble, g = Gap Fill, e = Correct the Mistake, t = Translate, w = Writing, k = Categorize, l = Linki. Druga sekcja tego samego typu: g2. Wiersz może trafić do kilku sekcji: "m, q". Zawsze podawaj tag. NIE używaj tagu f (Flashcards): do słówek, zwrotów i pytań służą Zdrapki.',
+  '',
+  'ZAPISY SPECJALNE',
+  '- Zdrapki (c): słowo, zwrot albo pytanie po polsku ⇥ odpowiedź po angielsku. Uczeń widzi lewą stronę, a odpowiedź zdrapuje. Przy konkretnych słowach (rzeczy, zwierzęta, jedzenie, pogoda, czynności) daj jedno pasujące emoji na początku pl, np. "🍎 jabłko". Karta pokaże je duże jak obrazek. Przy pojęciach abstrakcyjnych pomiń emoji.',
+  '- Quiz z własnymi odpowiedziami: en = "ship | sheep | shop | chip" (pierwsza poprawna). Bez kresek quiz sam dobierze złe odpowiedzi z innych wierszy.',
+  '- Gap Fill: luki w klamrach w en, np. "I {go} to school." Kilka akceptowanych odpowiedzi: "{go/walk}".',
+  '- Correct the Mistake: w klamrach słowo błędne, po ukośniku poprawne: "She {don\'t/doesn\'t} like it." Dokładnie jeden błąd w zdaniu.',
+  '- Sentence Unscramble i Translate: całe zdania.',
+  '- Writing: pl = polecenie po polsku, en = to samo polecenie po angielsku.',
+  '- Categorize: pl = nazwa kategorii, en = "słowo, słowo, słowo" (co najmniej 2 kategorie w sekcji).',
+  '- Linki: pl = tytuł, en = adres https.',
+  '- distractors: słowa-pułapki oddzielone " | " (Matching, Quiz, Sentence Unscramble, Gap Fill).',
+  '- note: notatka, nowa linia jako \\n, wolno użyć **pogrubienia**. Bez tabulatorów w środku komórek.',
+  '- Tłumaczenia mają być w pełni poprawne i naturalne.',
   '',
   'NOTATKI',
   '- Uczeń widzi notatkę dopiero PO rozwiązaniu pozycji (w Matching pod sekcją, po ukończeniu całej sekcji; w Zdrapkach po zdrapaniu). Notatka trafia też do szybkiej powtórki.',
-  '- Dlatego notatka NIGDY nie zawiera polecenia ani podpowiedzi do zadania (np. „odpowiedz pełnym zdaniem”, „użyj czasu przeszłego”). Polecenia idą do akapitu pod nagłówkiem sekcji.',
+  '- Dlatego notatka NIGDY nie zawiera polecenia ani podpowiedzi do zadania. Polecenia idą do instrukcji w #section.',
   '- Notatka nie powtarza tłumaczenia ani odpowiedzi.',
   '- Dozwolone są dwa rodzaje notatek, każda krótka (1-2 zdania):',
-  '   a) informacja, która coś wnosi po rozwiązaniu: reguła, wyjątek, kolokacja, różnica znaczeń, fałszywy przyjaciel. Tylko tam, gdzie naprawdę jest potrzebna, nie przy każdej pozycji.',
-  '   b) pytanie do rozmowy, czyli krótkie pytanie po angielsku do ucznia, nawiązujące do pozycji, żeby od razu użył języka. Zaczynaj je od "💬 ". Najwyżej jedno takie pytanie na sekcję i nie w każdej sekcji.',
+  '   a) informacja, która coś wnosi po rozwiązaniu: reguła, wyjątek, kolokacja, różnica znaczeń, fałszywy przyjaciel. Tylko tam, gdzie naprawdę jest potrzebna.',
+  '   b) pytanie do rozmowy po angielsku, nawiązujące do pozycji. Zaczynaj je od "💬 ". Najwyżej jedno na sekcję i nie w każdej sekcji.',
   '',
-  'PRZYKŁAD',
-  '```markdown',
-  '# Food and drinks',
-  'Unit 5',
-  '',
-  '## Matching',
-  '- jabłko = apple',
-  '- chleb = bread',
-  '  ~ brad | bred',
-  '',
-  '## Gap Fill: Present Simple',
-  'Uzupełnij zdania czasownikami w Present Simple.',
-  '- Ona pije kawę rano. = She {drinks} coffee in the morning.',
-  '  > **3. osoba** liczby pojedynczej: końcówka -s.',
-  '- Nie jem mięsa. = I {don\'t eat} meat.',
-  '  > 💬 What do you usually eat for breakfast?',
-  '',
-  '## Categorize: Countable or uncountable?',
-  '- Countable = apple, egg, sandwich',
-  '- Uncountable = bread, water, rice',
-  '```'
+  'PRZYKŁAD (⇥ oznacza tabulator)',
+  '#title⇥Food and drinks',
+  '#section⇥g⇥Present Simple⇥Uzupełnij zdania czasownikami w Present Simple.',
+  '#order⇥c, m, g',
+  'pl⇥en⇥tasks⇥distractors⇥note',
+  '🍎 jabłko⇥apple⇥c',
+  'chleb⇥bread⇥m⇥brad | bred',
+  'Ona pije kawę rano.⇥She {drinks} coffee in the morning.⇥g⇥⇥**3. osoba** liczby pojedynczej: końcówka -s.'
 ].join('\n');
 
-const EXAMPLE_MD = `# 🍣 Food and drinks
-Unit 5 · Przykładowa karta
-
-## Zdrapki: Słówka na rozgrzewkę
-- ☀️ słońce = sun
-- 🌙 księżyc = moon
-  > **a full moon** = pełnia
-- Smacznego! = Enjoy your meal!
-
-## Matching
-- kot = cat
-- pies = dog
-- ryba = fish
-  ~ fishing | finish
-
-## Word Scramble
-- dziękuję = thank you
-- przepraszam = sorry
-
-## Quiz
-- statek = ship | sheep | shop | chip
-- jabłko = apple
-- lato = summer
-- zima = winter
-
-## Sentence Unscramble
-- Lubię uczyć się angielskiego. = I like learning English.
-- Gdzie jest najbliższa stacja? = Where is the nearest station?
-  ~ train | bus
-
-## Gap Fill: Present Simple
-- Idę do szkoły o ósmej. = I {go} to school at eight.
-- Ona pije kawę każdego ranka. = She {drinks} coffee every morning.
-  ~ drink | drank
-  > **3. osoba** liczby pojedynczej: końcówka -s.
-  >
-  > 💬 What do you usually drink in the morning?
-
-## Correct the Mistake
-- Ona tego nie lubi. = She {don't/doesn't} like it.
-- Mam dwa koty. = I have two {cat/cats}.
-
-## Categorize: Countable or uncountable?
-- Countable = apple, chair, idea
-- Uncountable = water, advice, money
-
-## Translate
-- Do zobaczenia jutro. = See you tomorrow.
-
-## Zdrapki: Pytania
-- Co lubisz robić w wolnym czasie? = I like reading books and listening to music.
-
-## Writing
-- Opisz swój idealny dzień. = Describe your perfect day in 5-8 sentences.
-
-## Linki
-- British Council: gramatyka = https://learnenglish.britishcouncil.org/grammar
-`;
-
 const EXAMPLE_TSV = [
+  '#title\t🍣 Food and drinks',
+  '#subtitle\tUnit 5 · Przykładowa karta',
+  '#section\tc\tSłówka na rozgrzewkę',
+  '#section\tc2\tPytania\tOdpowiedz pełnym zdaniem, zanim zdrapiesz.',
+  '#section\tg\tPresent Simple\tUzupełnij zdania czasownikami w Present Simple.',
+  '#section\tk\tCountable or uncountable?',
+  '#deco\tc\t<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 80"><ellipse cx="70" cy="68" rx="64" ry="9" fill="#e7ecf5"/><rect x="18" y="36" width="50" height="28" rx="10" fill="#fff" stroke="#2b2d42" stroke-width="2.5"/><rect x="15" y="25" width="56" height="16" rx="8" fill="#ff8a5b" stroke="#2b2d42" stroke-width="2.5"/><path d="M25 29l7 8M38 29l7 8M51 29l7 8" stroke="#ffc9b0" stroke-width="2.5" stroke-linecap="round"/><rect x="37" y="23" width="12" height="41" rx="2" fill="#2f3e46"/><circle cx="100" cy="47" r="18" fill="#2f3e46" stroke="#2b2d42" stroke-width="2.5"/><circle cx="100" cy="47" r="12" fill="#fff"/><circle cx="100" cy="47" r="5.5" fill="#ff8a5b"/><path d="M78 10l56 24M74 17l58 22" stroke="#c08552" stroke-width="3.5" stroke-linecap="round"/></svg>',
+  '#order\tc, m, s, q, u, g, e, k, t, c2, w, l',
   'pl\ten\ttasks\tdistractors\tnote',
+  '☀️ słońce\tsun\tc\t\t',
+  '🌙 księżyc\tmoon\tc\t\t**a full moon** = pełnia',
+  'Smacznego!\tEnjoy your meal!\tc\t\t',
+  '🍎\tapple\tc\t\t',
   'kot\tcat\tm\t\t',
   'pies\tdog\tm\t\t',
   'ryba\tfish\tm\tfishing | finish\t**fish** w liczbie mnogiej zwykle też fish.',
-  'słońce\tsun\tc\t\t',
-  'księżyc\tmoon\tc\t\t**a full moon** = pełnia\\n💬 Do you like looking at the moon?',
+  'dziękuję\tthank you\ts\t\t',
+  'przepraszam\tsorry\ts\t\t',
   'statek\tship | sheep | shop | chip\tq\t\t',
   'jabłko\tapple\tq\t\t',
   'lato\tsummer\tq\t\t',
+  'zima\twinter\tq\t\t',
   'Lubię uczyć się angielskiego.\tI like learning English.\tu\t\t',
+  'Gdzie jest najbliższa stacja?\tWhere is the nearest station?\tu\ttrain | bus\t',
   'Idę do szkoły o ósmej.\tI {go} to school at eight.\tg\t\t',
+  'Ona pije kawę każdego ranka.\tShe {drinks} coffee every morning.\tg\tdrink | drank\t**3. osoba** liczby pojedynczej: końcówka -s.\\n\\n💬 What do you usually drink in the morning?',
   'Ona tego nie lubi.\tShe {don\'t/doesn\'t} like it.\te\t\t',
+  'Mam dwa koty.\tI have two {cat/cats}.\te\t\t',
   'Countable\tapple, chair, idea\tk\t\t',
   'Uncountable\twater, advice, money\tk\t\t',
   'Do zobaczenia jutro.\tSee you tomorrow.\tt\t\t',
-  'Opisz swój idealny dzień.\tDescribe your perfect day.\tw\t\t'
+  'Co lubisz robić w wolnym czasie?\tI like reading books and listening to music.\tc2\t\t',
+  'Opisz swój idealny dzień.\tDescribe your perfect day in 5-8 sentences.\tw\t\t',
+  'British Council: gramatyka\thttps://learnenglish.britishcouncil.org/grammar\tl\t\t'
 ].join('\n');
 
 /* ---------- Male narzedzia ---------- */
@@ -5154,7 +4683,7 @@ function defaults() {
   return {
     text: '', title: '', subtitle: '',
     sec: {}, order: [], reordered: false, quizOptions: 4,
-    accent: '#2563eb', bg: 'blobs', svg: { code: '', size: null, opacity: 1 },
+    accent: '#2563eb', style: 'clean', styleAccent: false, bg: 'blobs', svg: { code: '', size: null, opacity: 1 },
     fonts: { url: DEFAULT_FONT_LINK, body: 'Onest', display: 'Bricolage Grotesque' },
     tts: { enabled: true, lang: 'en-GB', voice: '', rate: 0.8 },
     diffVisible: true, reviewOnly: false, metaSig: ''
@@ -5190,7 +4719,7 @@ function persist() {
 }
 function sec(key) { return (S.sec[key] = S.sec[key] || {}); }
 
-let DOC = emptyDoc('tsv');
+let DOC = emptyDoc();
 let AVAIL = {};
 let ORDER = [];
 
@@ -5214,6 +4743,7 @@ function secConf(key) {
     instrText, instrOn,
     defaultInstr: m.instr || T.instr,
     image: url ? { url, fit: img.fit === 'full' ? 'full' : 'cover', h: img.h || 150, y: img.y == null ? 50 : img.y } : null,
+    deco: (o.deco || '').trim() || m.deco || '',
     flagPL: o.flagPL !== false,
     flagEN: o.flagEN !== false
   };
@@ -5223,9 +4753,9 @@ function secConf(key) {
 function onData() {
   S.text = el('data').value;
   if (S.text.trim()) {
-    DOC = parseData(S.text);
+    DOC = parseTSV(S.text);
   } else {
-    DOC = emptyDoc('tsv');
+    DOC = emptyDoc();
   }
   AVAIL = DOC.error ? {} : detectSections(DOC);
   applyDocMeta();
@@ -5282,12 +4812,12 @@ function renderStatus() {
   }
   if (DOC.error) {
     box.classList.add('is-bad');
-    box.appendChild(hh('span', { html: '<span class="badge">' + (DOC.format === 'md' ? 'Markdown' : 'TSV') + '</span>' }, DOC.error));
+    box.appendChild(hh('span', { text: DOC.error }));
     return;
   }
   box.classList.add('is-ok');
   const n = Object.keys(AVAIL).length;
-  box.appendChild(hh('div', { html: '<span class="badge">' + (DOC.format === 'md' ? 'Markdown' : 'TSV') + '</span>' },
+  box.appendChild(hh('div', null,
     DOC.rows.length + ' ' + plural(DOC.rows.length, 'wiersz', 'wiersze', 'wierszy') + ', ' + n + ' ' + plural(n, 'sekcja', 'sekcje', 'sekcji') + '.'));
   const warns = DOC.warnings.concat(orphanReport(DOC, AVAIL));
   if (warns.length) box.appendChild(hh('ul', { class: 'warn' }, warns.slice(0, 8).map(w => hh('li', { text: w })), warns.length > 8 ? hh('li', { text: 'i ' + (warns.length - 8) + ' więcej' }) : null));
@@ -5366,6 +4896,9 @@ function makeSecRow(key) {
   r.y = hh('input', { type: 'range', min: '0', max: '100', step: '1' });
   r.yVal = hh('output');
   r.y.addEventListener('input', () => { (sec(key).img = sec(key).img || {}).y = +r.y.value; paintImage(key); persist(); });
+  r.deco = hh('textarea', { class: 'area', rows: '3', spellcheck: 'false', style: 'font-family:var(--mono);font-size:.8rem' });
+  r.deco.addEventListener('input', () => { sec(key).deco = r.deco.value; paintDeco(key); persist(); });
+  r.decoPrev = hh('div', { class: 'deco-preview' });
   r.preview = hh('img', { alt: '' });
   r.previewBox = hh('div', { class: 'img-preview' }, r.preview);
   r.cropRows = [hh('div', { class: 'f-row' }, hh('span', { class: 'label', text: 'Wysokość' }), hh('div', { class: 'slider' }, r.h, r.hVal)),
@@ -5377,7 +4910,8 @@ function makeSecRow(key) {
   const fields = [
     hh('div', { class: 'f-row' }, hh('span', { class: 'label', text: 'Tytuł' }), r.title),
     hh('div', { class: 'f-row' }, hh('span', { class: 'label', text: 'Instrukcja' }), hh('div', { style: 'display:grid;gap:.45rem' }, r.instr, r.instrOn)),
-    hh('div', { class: 'f-row' }, hh('span', { class: 'label', text: 'Obrazek nad sekcją' }), hh('div', null, r.img, r.imgExtra))
+    hh('div', { class: 'f-row' }, hh('span', { class: 'label', text: 'Obrazek nad sekcją' }), hh('div', null, r.img, r.imgExtra)),
+    hh('div', { class: 'f-row' }, hh('span', { class: 'label', text: 'Ilustracja SVG w nagłówku' }), hh('div', { style: 'display:grid;gap:.45rem' }, r.deco, r.decoPrev))
   ];
   if (['gapfill', 'error', 'translate', 'writing'].includes(base)) {
     const flags = hh('div', { style: 'display:grid;gap:.4rem;padding-top:.45rem' },
@@ -5404,6 +4938,7 @@ function makeSecRow(key) {
   r.title.value = o.title || '';
   r.instr.value = o.instr || '';
   r.img.value = (o.img && o.img.url) || '';
+  r.deco.value = o.deco || '';
   return r;
 }
 
@@ -5416,6 +4951,7 @@ function refreshMeta(key) {
   if (!c.instrOn) notes.push('bez instrukcji');
   else if ((S.sec[key] || {}).instr || (DOC.sectionMeta[key] || {}).instr) notes.push('własna instrukcja');
   if (c.image) notes.push('obrazek');
+  if (c.deco) notes.push('ilustracja');
   r.meta.textContent = '· ' + notes.join(' · ');
   r.name.textContent = TYPE[keyBase(key)].emoji + ' ' + c.title;
 }
@@ -5433,8 +4969,22 @@ function updateRow(key, r, i) {
   r.instr.disabled = !c.instrOn;
   r.instrOn.querySelector('input').checked = c.instrOn;
   r.img.placeholder = (DOC.sectionMeta[key] || {}).image || 'https://… (puste = bez obrazka)';
+  r.deco.placeholder = (DOC.sectionMeta[key] || {}).deco ? 'Ilustracja z danych (#deco). Wklej własny kod <svg>, żeby ją podmienić.' : '<svg viewBox="…">…</svg> (puste = bez ilustracji)';
   refreshMeta(key);
   paintImage(key);
+  paintDeco(key);
+}
+
+function paintDeco(key) {
+  const r = ROW_EL[key];
+  if (!r) return;
+  const c = secConf(key);
+  const svg = cleanSvg(c.deco);
+  r.decoPrev.innerHTML = svg;
+  r.decoPrev.hidden = !c.deco;
+  r.decoPrev.classList.toggle('is-bad', !!c.deco && !svg);
+  if (c.deco && !svg) r.decoPrev.textContent = 'Nieprawidłowy kod SVG, ta ilustracja się nie pokaże.';
+  refreshMeta(key);
 }
 
 function paintImage(key) {
@@ -5467,7 +5017,18 @@ function syncLook() {
 
   const bgs = el('bgs');
   bgs.innerHTML = '';
-  const th = theme(S.accent);
+  const stl = el('styles');
+  stl.innerHTML = '';
+  Object.keys(STYLES).forEach(k => stl.appendChild(hh('button', { type: 'button', class: 'bgc stc stc-' + k + (lookStyle() === k ? ' is-sel' : ''),
+    onclick: () => { S.style = k; syncLook(); persist(); } }, hh('i'), STYLES[k].name)));
+  el('styleHint').textContent = STYLES[lookStyle()].hint;
+  const ownPalette = !!STYLES[lookStyle()].accent;
+  el('styleAccentRow').hidden = !ownPalette;
+  el('styleAccent').checked = !!S.styleAccent;
+  el('swatchBox').hidden = ownPalette && !S.styleAccent;
+  el('bgBlock').hidden = !!STYLES[lookStyle()].ownBg;
+
+  const th = theme(lookAccent());
   const thumbs = {
     blobs: 'radial-gradient(circle at 15% 20%,' + rgba(th.accent, 0.45) + ',transparent 55%),radial-gradient(circle at 85% 80%,' + rgba(th.accent2, 0.4) + ',transparent 55%),' + th.page,
     dots: 'radial-gradient(' + rgba(th.solid, 0.4) + ' 1.4px,transparent 1.6px) 0 0/10px 10px,' + th.page,
@@ -5498,7 +5059,7 @@ function paintFontPreview() {
   let link = el('fontLink');
   if (!link) { link = hh('link', { rel: 'stylesheet', id: 'fontLink' }); document.head.appendChild(link); }
   if (link.getAttribute('href') !== S.fonts.url) link.setAttribute('href', S.fonts.url);
-  const f = fonts(), th = theme(S.accent);
+  const f = fonts(), th = theme(lookAccent());
   el('fpDisplay').style.fontFamily = f.display;
   el('fpDisplay').style.color = th.ink;
   el('fpBody').style.fontFamily = f.body;
@@ -5528,9 +5089,10 @@ function buildWorksheet() {
   const keys = ORDER.filter(k => secConf(k).on);
   const sections = keys.map(k => {
     const c = secConf(k);
-    return { key: k, type: keyBase(k), title: c.title, showEmoji: c.showEmoji, instr: c.instr, image: c.image, flagPL: c.flagPL, flagEN: c.flagEN, rows: AVAIL[k] };
+    return { key: k, type: keyBase(k), title: c.title, showEmoji: c.showEmoji, instr: c.instr, image: c.image, deco: cleanSvg(c.deco), flagPL: c.flagPL, flagEN: c.flagEN, rows: AVAIL[k] };
   });
-  const th = theme(S.accent);
+  const st = STYLES[lookStyle()];
+  const th = theme(lookAccent());
   const f = fonts();
   const title = el('title').value.trim() || DOC.title || 'Vocabulary Practice';
   const subtitle = el('subtitle').value.trim();
@@ -5544,12 +5106,13 @@ function buildWorksheet() {
   if (subtitle) meta.push('#subtitle\t' + subtitle);
   meta.push('#accent\t' + S.accent);
   if (S.bg === 'svg' && normalizeSvg(S.svg.code)) meta.push('#bgsvg\t' + svgUri(normalizeSvg(S.svg.code)) + '\t' + (S.svg.size || '') + '\t' + S.svg.opacity);
-  const extra = { titles: {}, instrs: {}, instrOn: {}, flags: {}, flagsUK: {}, fonts: { url: S.fonts.url, family: S.fonts.body, displayFamily: S.fonts.display }, quizOptions: S.quizOptions };
+  const extra = { flags: {}, flagsUK: {}, fonts: { url: S.fonts.url, family: S.fonts.body, displayFamily: S.fonts.display }, quizOptions: S.quizOptions };
   ORDER.forEach(k => {
     const c = secConf(k);
-    if (!c.showEmoji) extra.titles[k] = c.title;
-    if (c.instrText !== TYPE[keyBase(k)].instr) extra.instrs[k] = c.instrText;
-    if (!c.instrOn) extra.instrOn[k] = false;
+    const one = t => String(t).replace(/[\t\r\n]+/g, ' ').trim();
+    const instr = !c.instrOn ? '-' : (c.instrText !== TYPE[keyBase(k)].instr ? one(c.instrText) : '');
+    if (!c.showEmoji || instr) meta.push(('#section\t' + keyTag(k) + '\t' + (c.showEmoji ? '' : one(c.title)) + '\t' + instr).replace(/\t+$/, ''));
+    if (c.deco) meta.push('#deco\t' + keyTag(k) + '\t' + one(c.deco));
     if (!c.flagPL) extra.flags[k] = false;
     if (!c.flagEN) extra.flagsUK[k] = false;
     if (c.image) meta.push('#img\t' + k + '\t' + c.image.url + '\t' + c.image.h + '\t' + c.image.y + '\t' + c.image.fit);
@@ -5577,9 +5140,11 @@ function buildWorksheet() {
     exportMeta: meta,
     confetti: [th.solid, th.accent2, mix(th.accent, '#ffffff', 0.35), '#f59f00', '#37b24d', '#f06595']
   };
+  const sv = st.vars ? st.vars(th, !S.styleAccent) : {};
   const vars = ':root{--accent:' + th.accent + ';--solid:' + th.solid + ';--ink:' + th.ink + ';--accent-2:' + th.accent2 +
     ';--page:' + th.page + ';--tint:' + th.tint + ';--tint-2:' + th.tint2 + ';--line:' + th.line + ';--line-2:' + th.line2 +
-    ';--dash:' + th.dash + ';--cover:' + th.cover + ';--font-display:' + f.display + ';--font-body:' + f.body + '}';
+    ';--dash:' + th.dash + ';--cover:' + th.cover + ';--font-display:' + f.display + ';--font-body:' + f.body +
+    Object.keys(sv).map(k => ';--' + k + ':' + sv[k]).join('') + '}';
   const json = JSON.stringify(data).replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
   const esc2 = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 
@@ -5587,11 +5152,12 @@ function buildWorksheet() {
     '<title>' + esc2(title) + '</title>\n' +
     '<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n' +
     '<link href="' + esc2(f.url) + '" rel="stylesheet">\n' +
+    (st.font ? '<link href="https://fonts.googleapis.com/css2?family=' + st.font + '&display=swap" rel="stylesheet">\n' : '') +
     '<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"><\/script>\n' +
-    '<style>\n' + vars + '\n' + el('rt-css').textContent + '\n' + bgCss(th) + '\n</style>\n</head>\n<body>\n' +
+    '<style>\n' + vars + '\n' + el('rt-css').textContent + '\n' + (st.ownBg ? '' : bgCss(th)) + '\n</style>\n</head>\n<body class="style-' + lookStyle() + '">\n' +
     '<div class="bg-fx" aria-hidden="true"></div>\n<main class="app" id="app"></main>\n' +
     '<script>window.WS_DATA = ' + json + ';<\/script>\n' +
-    '<script>\n(function () {\n\'use strict\';\n' + el('rt-js').textContent + '\n})();\n<\/script>\n</body>\n</html>\n';
+    '<script>\n(function () {\n\'use strict\';\n' + el('rt-core').textContent + '\n' + el('rt-js').textContent + '\n})();\n<\/script>\n</body>\n</html>\n';
 }
 
 function canBuild() {
@@ -5641,8 +5207,8 @@ function bind() {
     el('data').value = text;
     onData();
   };
-  el('exMd').addEventListener('click', () => load(EXAMPLE_MD));
   el('exTsv').addEventListener('click', () => load(EXAMPLE_TSV));
+  el('styleAccent').addEventListener('change', e => { S.styleAccent = e.target.checked; syncLook(); persist(); });
   el('clearData').addEventListener('click', () => {
     if (S.text.trim() && !confirm('Wyczyścić dane, tytuł i ustawienia sekcji? Wygląd zostaje.')) return;
     S.sec = {}; S.order = []; S.reordered = false; S.metaSig = ''; S.title = ''; S.subtitle = '';
