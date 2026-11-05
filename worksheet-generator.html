@@ -189,6 +189,8 @@ details.cheat summary { cursor: pointer; font-weight: 600; }
       <div class="btn-row">
         <button class="btn" id="aiPrompt" type="button"></button>
         <button class="btn" id="exTsv" type="button">Przykład</button>
+        <button class="btn" id="loadFile" type="button">Wczytaj plik</button>
+        <input type="file" id="fileIn" accept=".tsv,.txt,.csv,text/plain,text/tab-separated-values" hidden>
         <button class="btn btn-ghost push" id="clearData" type="button">Wyczyść dane</button>
       </div>
       <div class="status" id="status"></div>
@@ -319,7 +321,8 @@ Idę.	I {go} to school.	g</pre>
     <summary><span class="num">5</span><h2>Oceny i powtórka</h2><span class="chev">▾</span></summary>
     <div class="panel-body">
       <label class="chk"><input type="checkbox" id="diffVisible"><span class="box"></span><span>Oceny widoczne od razu (uczeń może je też włączyć ikoną oka na karcie)</span></label>
-      <p class="hint">Trzy poziomy: do powtórki, prawie, opanowane. W TSV kolumna <code>level</code> to 1, 2 albo 3. Stare pliki z kolumną <code>difficulty</code> (0-4) wczytują się same.</p>
+      <p class="hint">Cztery poziomy: nowe, do powtórki, prawie, opanowane. W TSV kolumna <code>level</code>: 4 = nowe, 1 = do powtórki, 2 = prawie, 3 = opanowane. Stare pliki z kolumną <code>difficulty</code> (0-4) wczytują się same.</p>
+      <label class="chk"><input type="checkbox" id="student"><span class="box"></span><span>Karta dla ucznia: pokazanie odpowiedzi (przycisk pod sekcją i kluczyk przy pozycji) zawsze liczy się jako z pomocą, bez przytrzymywania</span></label>
       <label class="chk"><input type="checkbox" id="reviewOnly"><span class="box"></span><span>Karta tylko z szybką powtórką, bez zadań</span></label>
     </div>
   </details>
@@ -434,6 +437,9 @@ button:disabled { cursor: default; }
 .badge-btn b { color: var(--ink); }
 .badge-btn:hover, .badge-btn[aria-expanded="true"] { background: var(--tint-2); }
 .badge-panel { margin-top: .7rem; max-height: 50vh; overflow: auto; }
+.badge-help { margin-top: .7rem; color: var(--dim); font-size: .82rem; line-height: 1.5; }
+.badge-help summary { cursor: pointer; font-weight: 600; color: var(--ink); width: fit-content; }
+.badge-help p { margin-top: .35rem; }
 .badge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 170px), 1fr)); gap: .5rem; }
 .bdg {
   display: grid; grid-template-columns: auto 1fr; column-gap: .55rem; align-items: center; text-align: left;
@@ -572,6 +578,7 @@ button:disabled { cursor: default; }
   70% { transform: translateY(-30px) scale(1); opacity: 1; }
   100% { transform: translateY(-46px) scale(.95); opacity: 0; }
 }
+.fb-score { display: inline-flex; align-items: center; white-space: nowrap; }
 .xp-tag { margin-left: .35rem; padding: .08rem .5rem; border-radius: 999px; background: var(--ok-bg); box-shadow: inset 0 0 0 1.5px var(--ok-line); font-size: .85rem; }
 .sec-title {
   flex: 1; min-width: 0;
@@ -591,7 +598,7 @@ button:disabled { cursor: default; }
 .sec-instr { color: var(--dim); font-size: 1.02rem; margin: .8rem 0 1.4rem; max-width: 48rem; }
 .sec-head + .sec-body { margin-top: 1.3rem; }
 .sec-foot { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .8rem; margin-top: 1.4rem; }
-.sec-fb { display: inline-flex; align-items: center; gap: .45rem; color: var(--ok); font-weight: 600; min-height: 1px; }
+.sec-fb { display: inline-flex; align-items: center; flex-wrap: wrap; gap: .3rem .45rem; color: var(--ok); font-weight: 600; min-height: 1px; }
 .sec-fb svg { width: 1.2em; height: 1.2em; }
 .sec-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-left: auto; }
 .act {
@@ -792,6 +799,7 @@ button:disabled { cursor: default; }
 .diff[data-sel] .diff-btn:not(.is-sel) { opacity: .35; }
 .diff[data-sel] .diff-btn:not(.is-sel):hover { opacity: 1; }
 .diff-row { display: flex; justify-content: flex-end; margin-top: .8rem; }
+.diff.is-moved { display: flex; width: 100%; justify-content: flex-end; margin: .7rem 0 0; }
 .diff-row.is-center { justify-content: center; margin: 0; }
 .lv-badge {
   width: 44px; flex-shrink: 0; align-self: stretch; cursor: default; opacity: .55;
@@ -1278,9 +1286,34 @@ body.style-notebook {
   body.style-notebook { --nb-m: 1rem; }
   .style-notebook .sec-title { font-size: 1.75rem; }
   .sec-deco { height: 54px; }
-  .progress-label { gap: .15rem .7rem; }
-  .xp strong { font-size: 1.15rem; }
-  .medal { width: 24px; height: 24px; }
+  /* Mniejsza skala: wszystko w rem maleje razem. */
+  html { font-size: 16px; }
+  .app { padding-left: .75rem; padding-right: .75rem; }
+  .sec { padding: 1.1rem 1rem 1.2rem; }
+  .item { padding: .9rem .85rem; }
+  .sec-num { width: 40px; height: 40px; border-radius: 12px; font-size: .95rem; }
+  .sec-title { font-size: 1.35rem; }
+  .ibtn:not(.ibtn-side) { width: 40px; height: 40px; }
+  .ibtn svg { width: 20px; height: 20px; }
+  .ibtn-sm { width: 34px; height: 34px; }
+  .diff-btn { width: 32px; height: 32px; }
+  /* Polskie zdanie zostaje obok flagi, oceny schodza pod spod. */
+  .pl-strip > span:not(.flag):not(.grow), .item-head > .item-prompt { flex: 1 1 calc(100% - 3rem); }
+  .legend { font-size: .85rem; gap: .3rem .8rem; margin-bottom: 1.2rem; }
+  /* Pasek postepu w jednej linii. Kolka sekcji tylko na wiekszym ekranie. */
+  .progress { top: .4rem; padding: .5rem .7rem .6rem; }
+  .progress-top { gap: .5rem; }
+  .progress-label { flex: 1; gap: .1rem .7rem; font-size: .82rem; white-space: nowrap; min-width: 0; }
+  .xp { flex-basis: 100%; }
+  .tools { gap: .3rem; }
+  .tools .ibtn-sm { width: 32px; height: 32px; }
+  .xp strong { font-size: 1.05rem; }
+  .xp-max { font-size: .78rem; }
+  .xp-star { font-size: .95rem; }
+  .badge-btn { padding: .1rem .45rem; font-size: .8rem; }
+  .badge-word { display: none; }
+  .progress-track { margin-top: .4rem; height: 8px; }
+  .medals { display: none; }
 }
 
 /* ---------- Druk i PDF ---------- */
@@ -1334,11 +1367,11 @@ body.style-notebook {
 </script>
 <script type="text/plain" id="rt-core">/* =====================================================================
    SHARED CORE
-   Wspolne dla generatora i dla wygenerowanej karty. Jedno zrodlo prawdy:
-   lista typow zadan, parser danych TSV i drobne narzedzia.
+   Wspolne dla generatora i dla wygenerowanej karty: lista typow zadan
+   i drobne narzedzia tekstowe oraz losujace. Parser danych jest w generatorze.
    ===================================================================== */
 
-const WS_VERSION = '6.5';
+const WS_VERSION = '6.8';
 
 /* ---------- Rejestr typow zadan ----------
    Kolejnosc tablicy = domyslna kolejnosc sekcji na karcie.
@@ -1415,26 +1448,6 @@ TYPES.forEach(t => {
   TYPE[t.key] = t;
   [t.key, t.tag, t.name.toLowerCase()].concat(t.aliases).forEach(a => { TYPE_BY_ALIAS[a.toLowerCase()] = t.key; });
 });
-
-/* Klucz sekcji: 'matching' albo 'matching:2' dla drugiej sekcji tego samego typu. */
-function keyBase(key) { const i = key.indexOf(':'); return i < 0 ? key : key.slice(0, i); }
-function keyNum(key) { const i = key.indexOf(':'); return i < 0 ? 1 : (parseInt(key.slice(i + 1), 10) || 1); }
-function makeKey(base, num) { return num > 1 ? base + ':' + num : base; }
-function keyTag(key) { const n = keyNum(key); return TYPE[keyBase(key)].tag + (n > 1 ? n : ''); }
-
-/* Tagi z kolumny "tasks": "f, m2, quiz" -> ['flashcards', 'matching:2', 'quiz'] */
-function parseTags(s) {
-  const out = [];
-  String(s || '').split(/[,;|]/).forEach(raw => {
-    const m = raw.trim().toLowerCase().match(/^([a-ząćęłńóśźż& ]+?)\s*(\d+)?$/);
-    if (!m) return;
-    const base = TYPE_BY_ALIAS[m[1].trim()];
-    if (!base) return;
-    const key = makeKey(base, m[2] ? parseInt(m[2], 10) : 1);
-    if (!out.includes(key)) out.push(key);
-  });
-  return out;
-}
 
 /* ---------- Narzedzia tekstowe ---------- */
 function esc(s) {
@@ -1517,258 +1530,6 @@ function shuffledDifferent(arr, rng) {
   out = arr.slice(); const t = out[0]; out[0] = out[out.length - 1]; out[out.length - 1] = t;
   return out;
 }
-
-/* ---------- Ktore wiersze pasuja do danego typu ---------- */
-function rowFits(type, r) {
-  const pl = (r.pl || '').trim(), en = (r.en || '').trim();
-  switch (type) {
-    case 'links': return !!(en || pl);
-    case 'writing': return !!(pl || en);
-    case 'gapfill': return !!pl && hasBraces(en);
-    case 'error': return !!pl && hasBraces(en);
-    case 'unscramble': return !!pl && stripBraces(en).split(/\s+/).filter(Boolean).length >= 2;
-    case 'scramble': return !!pl && stripBraces(en).replace(/\s/g, '').length >= 2;
-    case 'categorize': return !!pl && splitList(en).length >= 1;
-    default: return !!pl && !!en;
-  }
-}
-
-/* Najmniejsza liczba wierszy, przy ktorej sekcja ma sens. */
-function minRows(type) {
-  if (type === 'matching' || type === 'categorize') return 2;
-  return 1;
-}
-
-/* ---------- Model danych ----------
-   doc = {
-     title, subtitle,
-     rows: [{ pl, en, opts[], distractors[], note, level, tasks[], extra{} }],
-     extraCols: [],           // nieznane kolumny TSV, odsylane przy eksporcie
-     order: [keys] | null,    // jawna kolejnosc sekcji
-     sectionMeta: { key: { title, instr, instrOff, image, deco } },
-     meta: { accent, bgsvg, images[], extra, progress },
-     warnings: [], error: ''
-   } */
-function emptyDoc() {
-  return { title: '', subtitle: '', rows: [], extraCols: [], order: null,
-    sectionMeta: {}, meta: { images: [] }, warnings: [], error: '' };
-}
-
-function makeRow(pl, en, extra) {
-  const r = { pl: String(pl || '').trim(), en: String(en || '').trim(), opts: [], distractors: [], note: '', level: 0, tasks: [], extra: extra || {} };
-  if (r.en.includes('|')) {
-    const parts = r.en.split('|').map(x => x.trim()).filter(Boolean);
-    r.en = parts[0] || '';
-    r.opts = uniqCI(parts.slice(1), [r.en]);
-  }
-  return r;
-}
-
-/* Stare oceny 0-4 (kolumna "difficulty") -> nowe 1-3. */
-function levelFromOld(v) {
-  const s = String(v == null ? '' : v).trim();
-  if (s === 'new' || s === '0' || s === '1' || s === '2') return 1;
-  if (s === '3') return 2;
-  if (s === '4') return 3;
-  return 0;
-}
-function levelFromNew(v) {
-  const n = parseInt(String(v == null ? '' : v).trim(), 10);
-  return (n >= 1 && n <= 3) ? n : 0;
-}
-
-/* Stara notatka mogla miec HTML: zamieniamy <br> na enter, reszte znacznikow zdejmujemy. */
-function cleanNote(s) {
-  return String(s || '')
-    .replace(/\\n/g, '\n')
-    .replace(/<br\s*\/?>/gi, '\n')
-    .replace(/<\/(p|div|li)>/gi, '\n')
-    .replace(/<[^>]+>/g, '')
-    .replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')
-    .replace(/\n{3,}/g, '\n\n')
-    .trim();
-}
-
-/* ---------- TSV (zgodny ze starymi plikami) ---------- */
-function parseTSV(text) {
-  const doc = emptyDoc();
-  const lines = String(text || '').replace(/\r/g, '').split('\n').filter(l => l.trim());
-  const data = [];
-  let inOrder = false;
-
-  lines.forEach(line => {
-    const t = line.trim();
-    if (/^#order\b/i.test(t)) {
-      inOrder = true;
-      doc.order = doc.order || [];
-      const rest = t.replace(/^#order/i, '').trim();
-      if (rest) doc.order.push(...parseTags(rest.replace(/[\t;]/g, ',')));
-      return;
-    }
-    if (t[0] === '#') {
-      inOrder = false;
-      const cells = t.split('\t').map(c => c.trim());
-      const key = cells[0].toLowerCase().slice(1);
-      const val = cells[1] || '';
-      if (key === 'title' || key === 'subtitle') doc[key] = cells.slice(1).join(' ').trim();
-      else if (key === 'accent' && /^#[0-9a-f]{6}$/i.test(val)) doc.meta.accent = val;
-      else if (key === 'bgsvg' && val) doc.meta.bgsvg = { uri: val, size: cells[2], opacity: cells[3] };
-      else if (key === 'img' && val && cells[2]) doc.meta.images.push({ key: val.toLowerCase(), url: cells[2], h: cells[3], y: cells[4], fit: cells[5] });
-      else if (key === 'progress' && val) { try { doc.meta.progress = JSON.parse(decodeURIComponent(val)); } catch (e) { /* uszkodzony */ } }
-      else if (key === 'extra' && val) { try { doc.meta.extra = JSON.parse(decodeURIComponent(val)); } catch (e) { /* uszkodzony */ } }
-      else if (key === 'section' || key === 'deco') {
-        /* #section  tag  tytul  instrukcja ("-" = bez instrukcji)
-           #deco     tag  <svg>…</svg> (w jednej linii) */
-        const k = parseTags(val.replace(':', ''))[0];
-        if (!k) { doc.warnings.push('Linia #' + key + ': nieznany tag sekcji „' + val + '”.'); return; }
-        const m = (doc.sectionMeta[k] = doc.sectionMeta[k] || {});
-        if (key === 'deco') m.deco = cells.slice(2).join(' ').trim();
-        else {
-          if (cells[2]) m.title = cells[2];
-          if (cells[3] === '-') m.instrOff = true;
-          else if (cells[3]) m.instr = cells[3];
-        }
-      }
-      return;
-    }
-    if (inOrder && !t.includes('\t') && /^[a-z]+\d*(:\d+)?$/i.test(t)) {
-      doc.order.push(...parseTags(t.replace(':', '')));
-      return;
-    }
-    inOrder = false;
-    data.push(line);
-  });
-
-  if (data.length < 2) { doc.error = 'Potrzebny jest wiersz nagłówka (np. pl⇥en) i co najmniej jeden wiersz danych.'; return doc; }
-
-  let sep = '\t';
-  if (!data[0].includes('\t')) sep = data[0].includes(';') ? ';' : (data[0].includes(',') ? ',' : '\t');
-  const headers = data[0].split(sep).map(h => h.trim().toLowerCase());
-  if (!headers.includes('pl') || !headers.includes('en')) {
-    doc.error = 'Pierwszy wiersz musi być nagłówkiem z kolumnami „pl” i „en”.';
-    return doc;
-  }
-  const known = ['pl', 'en', 'tasks', 'distractors', 'note', 'level', 'difficulty'];
-  doc.extraCols = headers.filter(h => h && !known.includes(h));
-
-  for (let i = 1; i < data.length; i++) {
-    const cells = data[i].split(sep).map(c => c.trim());
-    const get = h => { const k = headers.indexOf(h); return k < 0 ? '' : (cells[k] || ''); };
-    if (!get('pl') && !get('en')) continue;
-    const extra = {};
-    doc.extraCols.forEach(h => { extra[h] = get(h); });
-    const r = makeRow(get('pl'), get('en'), extra);
-    r.tasks = parseTags(get('tasks'));
-    r.distractors = uniqCI(splitList(get('distractors').includes('|') ? get('distractors') : get('distractors').replace(/,/g, '|')), [r.en]);
-    r.note = cleanNote(get('note'));
-    r.level = headers.includes('level') ? levelFromNew(get('level')) : levelFromOld(get('difficulty'));
-    if (get('difficulty') && !headers.includes('level') && !/^(new|[0-4])$/.test(get('difficulty'))) {
-      doc.warnings.push('Wiersz ' + (i + 1) + ': nieznana ocena „' + get('difficulty') + '” w kolumnie difficulty, pominięta.');
-    }
-    doc.rows.push(r);
-  }
-  if (!doc.rows.length) doc.error = 'Nie znaleziono żadnych wierszy z danymi.';
-
-  /* Ustawienia zapisane przez stara karte w #extra traktujemy jak dane dokumentu. */
-  const ex = doc.meta.extra;
-  if (ex && typeof ex === 'object') {
-    const put = (k, f, v) => { (doc.sectionMeta[k] = doc.sectionMeta[k] || {})[f] = v; };
-    Object.entries(ex.titles || {}).forEach(([k, v]) => {
-      const d = TYPE[keyBase(k)];
-      const oldName = keyBase(k) === 'cornell' ? 'Pytania i odpowiedzi' : null;
-      const isDef = n => v === n || (v.startsWith(n + ' ') && /\d+$/.test(v));
-      if (d && v && !isDef(d.name) && !(oldName && isDef(oldName))) put(k, 'title', v);
-    });
-    Object.entries(ex.instrs || {}).forEach(([k, v]) => { if (TYPE[keyBase(k)] && v) put(k, 'instr', v); });
-    Object.entries(ex.instrOn || {}).forEach(([k, v]) => { if (TYPE[keyBase(k)] && v === false) put(k, 'instrOff', true); });
-    /* Dawna "sekcja z linkami" byla ustawieniem, teraz to zwykle wiersze danych. */
-    (ex.customs || []).forEach((c, n) => {
-      if (!c || c.kind !== 'links' || !c.body) return;
-      const key = makeKey('links', n + 1);
-      c.body.split(/\r?\n/).map(l => l.trim()).filter(Boolean).forEach(l => {
-        const bar = l.indexOf('|');
-        const r = makeRow(bar < 0 ? '' : l.slice(0, bar), bar < 0 ? l : l.slice(bar + 1));
-        r.tasks = [key];
-        doc.rows.push(r);
-      });
-      if (c.title) put(key, 'title', c.title);
-    });
-  }
-  return doc;
-}
-
-/* ---------- Ilustracje SVG ----------
-   Zostawia sam rysunek: bez skryptow, zdarzen i odnosnikow javascript:.
-   Zly kod daje pusty napis (sekcja jest wtedy bez ilustracji). */
-function cleanSvg(code) {
-  const t = String(code || '').trim();
-  if (!/^<svg[\s>]/i.test(t) || typeof DOMParser === 'undefined') return '';
-  let doc;
-  try { doc = new DOMParser().parseFromString(t, 'image/svg+xml'); } catch (e) { return ''; }
-  const svg = doc.documentElement;
-  if (!svg || svg.nodeName.toLowerCase() !== 'svg' || doc.getElementsByTagName('parsererror').length) return '';
-  Array.from(svg.querySelectorAll('script, foreignObject, iframe, object, embed')).forEach(n => n.remove());
-  [svg].concat(Array.from(svg.querySelectorAll('*'))).forEach(n => Array.from(n.attributes).forEach(a => {
-    if (/^on/i.test(a.name) || (/href$/i.test(a.name) && /^\s*javascript:/i.test(a.value))) n.removeAttribute(a.name);
-  }));
-  const w = parseFloat(svg.getAttribute('width')), hh = parseFloat(svg.getAttribute('height'));
-  if (!svg.getAttribute('viewBox') && w && hh) svg.setAttribute('viewBox', '0 0 ' + w + ' ' + hh);
-  svg.removeAttribute('width'); svg.removeAttribute('height');
-  return new XMLSerializer().serializeToString(svg);
-}
-
-/* ---------- Ktore sekcje istnieja w danych ----------
-   Zwraca { key: [indeksy wierszy] } dla kazdej sekcji, ktora ma sens. */
-function detectSections(doc) {
-  const out = {};
-  const tagged = new Set();
-  doc.rows.forEach(r => r.tasks.forEach(k => tagged.add(k)));
-  const hasUntagged = doc.rows.some(r => !r.tasks.length);
-  const keys = Array.from(tagged);
-  if (hasUntagged) TYPES.forEach(t => { if (t.untagged && !keys.includes(t.key)) keys.push(t.key); });
-
-  keys.forEach(key => {
-    const base = keyBase(key);
-    const idx = [];
-    doc.rows.forEach((r, i) => {
-      const inSec = r.tasks.length ? r.tasks.includes(key) : (TYPE[base].untagged && keyNum(key) === 1);
-      if (inSec && rowFits(base, r)) idx.push(i);
-    });
-    if (idx.length >= minRows(base)) out[key] = idx;
-  });
-  return out;
-}
-
-/* Kolejnosc: jawna z danych, potem kolejnosc pierwszego wystapienia tagu, potem rejestr. */
-function defaultOrder(doc, available) {
-  const keys = Object.keys(available);
-  const out = [];
-  const add = k => { if (keys.includes(k) && !out.includes(k)) out.push(k); };
-  (doc.order || []).forEach(add);
-  doc.rows.forEach(r => r.tasks.forEach(add));
-  TYPES.forEach(t => keys.filter(k => keyBase(k) === t.key).sort((a, b) => keyNum(a) - keyNum(b)).forEach(add));
-  return out;
-}
-
-/* Wiersze otagowane typem, ktorego nie da sie zbudowac (np. luka bez klamr). */
-function orphanReport(doc, available) {
-  const problems = [];
-  doc.rows.forEach((r, i) => {
-    if (!r.tasks.length) return;
-    const lost = r.tasks.filter(k => !(available[k] || []).includes(i));
-    if (lost.length === r.tasks.length) {
-      const why = lost.map(k => {
-        const b = keyBase(k);
-        if ((b === 'gapfill' || b === 'error') && !hasBraces(r.en)) return TYPE[b].name + ': brak klamr {…}';
-        if (b === 'unscramble') return TYPE[b].name + ': zdanie musi mieć co najmniej 2 słowa';
-        if (available[k] === undefined) return TYPE[b].name + ': za mało wierszy w sekcji';
-        return TYPE[b].name + ': brak polskiej lub angielskiej części';
-      });
-      problems.push('Wiersz „' + (r.pl || r.en).slice(0, 40) + '” nie trafi na kartę (' + why.join('; ') + ').');
-    }
-  });
-  return problems;
-}
 </script>
 <script type="text/plain" id="rt-js">/* =====================================================================
    WORKSHEET RUNTIME: CORE
@@ -1821,8 +1582,8 @@ const ICO = {
   print: SVG('<path d="M7 8.5V3.5h10v5"/><path d="M7 17.5H4.5v-6A2.5 2.5 0 017 9h10a2.5 2.5 0 012.5 2.5v6H17"/><rect x="7" y="14.5" width="10" height="6" rx="1"/>'),
   back: SVG('<path d="M21 5.5H9.2L3 12l6.2 6.5H21z"/><path d="M12.5 9.5l5 5"/><path d="M17.5 9.5l-5 5"/>'),
   pen: SVG('<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>'),
-  close: SVG('<path d="M6 6l12 12"/><path d="M18 6L6 18"/>'),
   list: SVG('<path d="M9 6h11"/><path d="M9 12h11"/><path d="M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/>'),
+  download: SVG('<path d="M12 4v11"/><path d="M7 10.5l5 5 5-5"/><path d="M5 20h14"/>'),
   copy: SVG('<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5.5A1.5 1.5 0 0014.5 4h-9A1.5 1.5 0 004 5.5v9A1.5 1.5 0 005.5 16H8"/>'),
   flag: SVG('<path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/>'),
   link: SVG('<path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/>'),
@@ -1834,12 +1595,15 @@ const ICO = {
    (pary w Matching, litery w Quizie, kategorie). */
 const PALETTE = ['#7048e8', '#0c8599', '#e8590c', '#2b8a3e', '#c2255c', '#1971c2', '#a35c00', '#5c7cfa'];
 
-/* Trzy poziomy oceny. Rozroznialne po ksztalcie, nie tylko po kolorze. */
+/* Poziomy oceny. Rozroznialne po ksztalcie, nie tylko po kolorze.
+   Klucze to wartosci w danych (kolumna level), LEVEL_ORDER to kolejnosc na karcie. */
 const LEVELS = {
+  4: { name: 'nowe', color: '#6b7280', ico: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.5c.7 5 3.9 8.3 9.5 9.5-5.6 1.2-8.8 4.5-9.5 9.5-.7-5-3.9-8.3-9.5-9.5 5.6-1.2 8.8-4.5 9.5-9.5z"/></svg>' },
   1: { name: 'do powtórki', color: '#9b4dea', ico: SVG('<path d="M4 12a8 8 0 0113.7-5.6L20 8.5"/><path d="M20 4v4.5h-4.5"/><path d="M20 12a8 8 0 01-13.7 5.6L4 15.5"/><path d="M4 20v-4.5h4.5"/>') },
   2: { name: 'prawie', color: '#f06b0a', ico: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M12 4a8 8 0 010 16z" fill="currentColor"/></svg>' },
   3: { name: 'opanowane', color: '#2563eb', ico: SVG('<path d="M5 12.5l4.5 4.5L19 7.5"/>') }
 };
+const LEVEL_ORDER = [4, 1, 2, 3];
 
 const FLAG_PL = '<svg viewBox="0 0 30 20" preserveAspectRatio="none" aria-label="PL"><rect width="30" height="10" fill="#fff"/><rect y="10" width="30" height="10" fill="#d22f27"/></svg>';
 const FLAG_EN = '<svg viewBox="5 17 62 38" preserveAspectRatio="none" aria-label="EN"><rect x="5" y="17" width="62" height="38" fill="#1e50a0"/><path fill="#fff" d="M40 28.9V32h10.2L67 21.7V17h-7.7zM59.3 55H67v-4.7L50.2 40H40v3.1zM32 43.1V40H21.8L5 50.3V55h7.7zM12.7 17H5v4.7L21.8 32H32v-3.1z"/><path fill="#d22f27" d="M67 17h-3.8L40 31.2v.8h3.5L67 17.6zM67 55v-2.3L46.4 40h-4.8L66 55zM5 55h3.8L32 40.8V40h-3.5L5 54.4zM5 17v2.3L25.6 32h4.8L6 17z"/><rect x="5" y="31" width="62" height="10" fill="#fff"/><rect x="31" y="17" width="10" height="38" fill="#fff"/><rect x="5" y="33" width="62" height="6" fill="#d22f27"/><rect x="33" y="17" width="6" height="38" fill="#d22f27"/></svg>';
@@ -1849,7 +1613,10 @@ const FLAG_EN = '<svg viewBox="5 17 62 38" preserveAspectRatio="none" aria-label
    Dziala mysza, palcem i klawiatura (Enter = klikniecie). */
 const HOLD_MS = 700;
 const HOLD_TIP = 'Kliknij: pokaż i zalicz jako poprawne. Przytrzymaj: pokaż z pomocą.';
-function holdable(btn, run) {
+/* Karta dla ucznia (D.student): pokazanie odpowiedzi zawsze liczy sie jako pomoc. */
+function holdable(btn, run, label) {
+  btn.title = D.student ? label + ' (liczy się jako z pomocą)' : label + '. ' + HOLD_TIP;
+  if (D.student) { btn.addEventListener('click', () => run(true)); return btn; }
   let timer = null, fired = false;
   const stop = () => { clearTimeout(timer); timer = null; btn.classList.remove('is-holding'); };
   btn.classList.add('holdable');
@@ -1876,12 +1643,11 @@ function holdable(btn, run) {
 function iconBtn(kind, title, onclick, extra) {
   const b = h('button', { type: 'button', class: 'ibtn ibtn-' + kind + (extra ? ' ' + extra : ''), title: title, 'aria-label': title, html: ICO[kind] });
   if (kind === 'solve') {
-    b.title = title + '. ' + HOLD_TIP;
     /* Z pomoca: kara do gwiazdek i koniec serii. Bez pomocy: liczy sie jak dobra odpowiedz. */
     return holdable(b, help => {
       if (help) { penalize('p'); streakBreak(); solving = true; }
       try { onclick({ currentTarget: b }); } finally { solving = false; }
-    });
+    }, title);
   }
   b.addEventListener('click', kind === 'hint' ? e => { if (!e.currentTarget.disabled) penalize('h'); onclick(e); } : onclick);
   return b;
@@ -2126,13 +1892,31 @@ function track(e) {
   activeKey = sec ? sec.dataset.key : null;
 }
 ['pointerdown', 'keydown', 'focusin'].forEach(n => document.addEventListener(n, track, true));
-function pen(key) { ST.pen = ST.pen || {}; return (ST.pen[key] = ST.pen[key] || { e: 0, h: 0, p: 0 }); }
-/* e: bledna odpowiedz, h: podpowiedz, p: podejrzana odpowiedz przy pozycji */
+/* Pomoc w sekcji: ids = pozycje, przy ktorych byl blad, podpowiedz albo podejrzenie
+   (kazda liczy sie raz), help = czy w ogole uzyto podpowiedzi lub podejrzenia. */
+function pen(key) {
+  ST.pen = ST.pen || {};
+  const p = ST.pen[key];
+  if (!p || !Array.isArray(p.ids)) ST.pen[key] = { ids: [], help: !!(p && (p.h || p.p)) };
+  return ST.pen[key];
+}
+/* Ktorej pozycji dotyczy akcja: numer .item w sekcji, w Matching i Categorize tekst kafelka. */
+function itemId(sec) {
+  const t = lastTarget;
+  if (!t || !t.closest) return '?';
+  const item = t.closest('.item');
+  if (item && sec.contains(item)) return 'i' + $$('.item', sec).indexOf(item);
+  const tile = t.closest('.mt-row, .mt-item, .chip');
+  return tile ? 't' + tile.textContent.trim() : '?';
+}
+/* kind: 'e' bledna odpowiedz, 'h' podpowiedz, 'p' podejrzenie odpowiedzi */
 function penalize(kind) {
   if (RATER || !activeKey) return;
   const u = UNITS.find(x => x.key === activeKey);
   if (!u || isDone(u)) return;
-  pen(u.key)[kind]++;
+  const p = pen(u.key);
+  addOnce(p.ids, itemId(u.el));
+  if (kind !== 'e') p.help = true;
   save();
 }
 
@@ -2158,22 +1942,24 @@ function sparkle() {
 }
 
 /* ---------- Gwiazdki za sekcje ----------
-   3: bez bledow, podpowiedzi i podgladania. 2: troche pomocy. 1: duzo pomocy
-   albo sekcja rozwiazana przyciskiem odpowiedzi. Typy bez sprawdzania
-   (zdrapki, fiszki, pisanie) daja 3 za samodzielne ukonczenie. */
+   Liczy sie, przy ilu pozycjach byla pomoc (blad, podpowiedz, podejrzenie):
+   3 = przy zadnej, 2 = najwyzej przy polowie, 1 = przy wiecej niz polowie albo
+   odpowiedzi pokazane z pomoca. Typy bez sprawdzania (zdrapki, fiszki, pisanie)
+   daja 3 za samodzielne ukonczenie. */
 const UNGRADED = ['cornell', 'flashcards', 'writing', 'links'];
 function graded(u) { return !UNGRADED.includes(u.type); }
 function starsFor(u, how) {
   if (how === 'solve') return 1;
   if (!graded(u)) return 3;
-  const p = pen(u.key);
-  const score = p.e + p.h + 2 * p.p;
-  if (score === 0) return 3;
-  return score <= Math.max(2, Math.round(u.rows.length / 3)) ? 2 : 1;
+  const helped = pen(u.key).ids.length;
+  if (!helped) return 3;
+  const size = u.type === 'categorize' ? u.rows.reduce((n, gi) => n + splitList(ROWS[gi].en).length, 0) : u.rows.length;
+  return helped * 2 <= size ? 2 : 1;
 }
 function stars(u) { return (ST.stars && ST.stars[u.key]) || (isDone(u) ? 3 : 0); }
 function starsHtml(n) { return [1, 2, 3].map(i => '<i class="st' + (i <= n ? ' is-on' : '') + '" style="--i:' + i + '">★</i>').join(''); }
-const STAR_INFO = '3 gwiazdki: bez błędów i podpowiedzi. 2: trochę pomocy. 1: dużo pomocy albo „Pokaż odpowiedzi”.';
+const STAR_INFO = '3 gwiazdki: wszystko samodzielnie. 2: pomoc najwyżej przy połowie pozycji. 1: przy więcej niż połowie albo odpowiedzi pokazane z pomocą.';
+const STAR_HELP = 'Gwiazdki za sekcję zależą od tego, przy ilu pozycjach była pomoc: zła odpowiedź, podpowiedź albo podejrzenie odpowiedzi. Każda pozycja liczy się raz, niezależnie od liczby kliknięć. Bez pomocy = 3 gwiazdki, pomoc najwyżej przy połowie pozycji = 2, przy więcej niż połowie = 1. Odpowiedzi pokazane z pomocą pod sekcją = 1 gwiazdka. Kółka sekcji w pasku: złote = 3, srebrne = 2, brązowe = 1.';
 
 /* ---------- Odznaki ---------- */
 const BADGES = [
@@ -2263,7 +2049,7 @@ function paintBadges() {
   const c = $('#badgeCount');
   if (c) c.textContent = availableBadges().filter(b => badges()[b.id]).length + '/' + availableBadges().length;
   const panel = $('#badgePanel');
-  if (panel && !panel.hidden) { panel.innerHTML = ''; panel.appendChild(badgeGrid()); }
+  if (panel && !panel.hidden) { panel.innerHTML = ''; append(panel, [badgeGrid(), h('details', { class: 'badge-help' }, h('summary', { text: 'Jak liczą się gwiazdki?' }), h('p', { text: STAR_HELP }))]); }
 }
 function toggleBadgePanel() {
   const panel = $('#badgePanel');
@@ -2391,7 +2177,7 @@ function level(gi) { return ST.level[gi] || 0; }
 
 function diffWidget(gi) {
   const w = h('div', { class: 'diff', 'data-row': gi, role: 'group', 'aria-label': 'Jak dobrze to umiesz?' });
-  [1, 2, 3].forEach(L => {
+  LEVEL_ORDER.forEach(L => {
     w.appendChild(h('button', { type: 'button', class: 'diff-btn', 'data-l': L, style: '--lc:' + LEVELS[L].color,
       title: LEVELS[L].name, 'aria-label': LEVELS[L].name, html: LEVELS[L].ico,
       onclick: e => { e.stopPropagation(); setLevel(gi, L); } }));
@@ -2496,7 +2282,7 @@ function sectionEl(u, num) {
   const sec = u.sec;
   const actions = [];
   if (u.type !== 'links') {
-    if (u.type !== 'writing') actions.push(holdable(h('button', { type: 'button', class: 'act act-solve', title: HOLD_TIP, html: ICO.solve + '<span>' + solveLabel(u.type) + '</span>' }), help => solveUnit(u, help)));
+    if (u.type !== 'writing') actions.push(holdable(h('button', { type: 'button', class: 'act act-solve', html: ICO.solve + '<span>' + solveLabel(u.type) + '</span>' }), help => solveUnit(u, help), solveLabel(u.type)));
     actions.push(h('button', { type: 'button', class: 'act act-clear', title: 'Wyczyść odpowiedzi w tej sekcji (oceny zostają)', 'aria-label': 'Wyczyść sekcję', html: ICO.undo, onclick: () => clearUnit(u) }));
   }
   u.body = h('div', { class: 'sec-body' });
@@ -2516,7 +2302,30 @@ function sectionEl(u, num) {
 function draw(u) {
   u.body.innerHTML = '';
   MOD[u.type].build(u, S(u), u.body);
+  placeRatings(u.body);
   paintDone(u);
+}
+
+/* Telefon: ocena idzie nad przyciski zadania (ocenia sie po zrobieniu).
+   Na szerszym ekranie wraca do naglowka pozycji. */
+const NARROW = window.matchMedia ? window.matchMedia('(max-width: 640px)') : null;
+function placeRatings(root) {
+  const narrow = !!(NARROW && NARROW.matches);
+  $$('.item-head > .diff, .pl-strip > .diff, .diff.is-moved', root).forEach(d => {
+    if (!d._home) d._home = d.parentNode;
+    const btns = $$('.btns', d.closest('.item')).pop();
+    if (narrow && btns && btns.parentNode !== d._home && !d.classList.contains('is-moved')) {
+      btns.parentNode.insertBefore(d, btns);
+      d.classList.add('is-moved');
+    } else if (!narrow && d.classList.contains('is-moved')) {
+      d._home.appendChild(d);
+      d.classList.remove('is-moved');
+    }
+  });
+}
+if (NARROW) {
+  const onNarrow = () => placeRatings(document);
+  if (NARROW.addEventListener) NARROW.addEventListener('change', onNarrow); else NARROW.addListener(onNarrow);
 }
 
 function isDone(u) { return ST.done.includes(u.key); }
@@ -2526,7 +2335,7 @@ function paintDone(u) {
   const cnt = TYPE[u.type].counted;
   const n = done ? stars(u) : 0;
   if (u.fb) u.fb.innerHTML = done ? ICO.check + '<span>' + TYPE[u.type].doneMsg + '</span>' +
-    (cnt ? '<span class="stars" title="' + STAR_INFO + '">' + starsHtml(n) + '</span><span class="xp-tag">+' + XP_PER + ' XP</span>' : '') : '';
+    (cnt ? '<span class="fb-score"><span class="stars" title="' + STAR_INFO + '">' + starsHtml(n) + '</span><span class="xp-tag">+' + XP_PER + ' XP</span></span>' : '') : '';
   const m = u.medal;
   if (m) {
     m.classList.toggle('is-done', done);
@@ -2665,7 +2474,7 @@ function checkAllDone() {
   endShown = true;
   if (COUNTED.every(u => stars(u) === 3)) award('allstars');
   const p = ST.pen || {};
-  if (!Object.keys(ST.via || {}).length && Object.keys(p).every(k => !p[k].h && !p[k].p)) award('solo');
+  if (!Object.keys(ST.via || {}).length && Object.keys(p).every(k => !pen(k).help)) award('solo');
   const prompt = $('#reviewPrompt');
   if (prompt && !diffHidden && ratedRows().length) {
     prompt.hidden = false;
@@ -3276,13 +3085,6 @@ function scratchCard(zone, opts) {
     }
     ctx.strokeStyle = 'rgba(255,255,255,.18)'; ctx.lineWidth = 1;
     for (let x = -hgt; x < w; x += 9) { ctx.beginPath(); ctx.moveTo(x, hgt); ctx.lineTo(x + hgt, 0); ctx.stroke(); }
-    /* Napis na srodku. */
-    ctx.fillStyle = mixRgb(dark, acc, 0.55);
-    ctx.globalAlpha = 0.75;
-    ctx.font = '700 15px ' + (cssVar('--font-body', 'sans-serif'));
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText('✦  zdrap  ✦', w / 2, hgt / 2);
-    ctx.globalAlpha = 1;
     dirty = false;
   }
   function brush() { return Math.max(14, Math.min(24, hgt * 0.32)); }
@@ -3945,7 +3747,7 @@ function reviewItems() {
     out.push(i);
   });
   if (reviewSort === 'level') {
-    const rank = i => (level(i) || 9);
+    const rank = i => (level(i) ? LEVEL_ORDER.indexOf(level(i)) : 9);
     out.sort((a, b) => rank(a) - rank(b) || a - b);
   }
   return out;
@@ -4249,6 +4051,17 @@ function copyTSV() {
   else fallback();
 }
 
+/* Ten sam tekst co "Kopiuj TSV", ale jako plik: latwiej go wyslac. */
+function downloadTSV() {
+  const base = String(D.title || '').replace(EMOJI_RE, '').replace(/[\\/:*?"<>|]+/g, '').replace(/\s+/g, ' ').trim() || 'karta';
+  const url = URL.createObjectURL(new Blob([buildTSV()], { type: 'text/tab-separated-values;charset=utf-8' }));
+  const a = h('a', { href: url, download: base + ' - wyniki.tsv' });
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 1500);
+  toast('Pobrano plik z wynikami');
+}
+
 /* ---------- Reset ---------- */
 function resetAll() {
   if (RATER) {
@@ -4299,7 +4112,7 @@ function titleNodes(t) {
 function legendEl() {
   return h('div', { class: 'legend' },
     h('span', { class: 'legend-title', text: 'Oceniaj, jak dobrze umiesz:' }),
-    [1, 2, 3].map(L => h('span', { class: 'legend-item' }, h('span', { class: 'lv-chip', style: '--lc:' + LEVELS[L].color, html: LEVELS[L].ico }), LEVELS[L].name)));
+    LEVEL_ORDER.map(L => h('span', { class: 'legend-item' }, h('span', { class: 'lv-chip', style: '--lc:' + LEVELS[L].color, html: LEVELS[L].ico }), LEVELS[L].name)));
 }
 
 function reviewEl() {
@@ -4322,7 +4135,7 @@ function reviewEl() {
       h('div', { class: 'review-body', id: 'rvBody', hidden: true },
         h('div', { class: 'rv-levels diff-only' },
           lvBox('0', 'bez oceny', null, null, D.reviewOnly),
-          [1, 2, 3].map(L => lvBox(String(L), LEVELS[L].name, LEVELS[L].ico, LEVELS[L].color, L < 3))),
+          LEVEL_ORDER.map(L => lvBox(String(L), LEVELS[L].name, LEVELS[L].ico, LEVELS[L].color, L !== 3))),
         h('div', { class: 'rv-toolbar' },
           h('div', { class: 'rv-sort diff-only' }, h('span', { text: 'Kolejność:' }),
             h('button', { type: 'button', class: 'is-sel', 'data-sort': 'level', text: 'wg oceny', onclick: () => setReviewSort('level') }),
@@ -4331,7 +4144,7 @@ function reviewEl() {
             h('button', { type: 'button', class: 'pill-btn', id: 'rvRevealAll', hidden: true, html: ICO.eye + '<span>Pokaż wszystkie</span>', onclick: revealAll }),
             h('button', { type: 'button', class: 'pill-btn', html: ICO.print + '<span>Drukuj powtórkę</span>', onclick: printReview }))),
         h('p', { class: 'rv-hint', text: 'Kliknij odpowiedź, żeby odsłonić ją do tego miejsca, albo przeciągnij po niej. Strzałki ← → odsłaniają po literze.' }),
-        h('div', { class: 'rv-print-legend' }, [1, 2, 3].map(L => h('span', { class: 'legend-item' }, h('span', { class: 'lv-chip', style: '--lc:' + LEVELS[L].color, html: LEVELS[L].ico }), LEVELS[L].name))),
+        h('div', { class: 'rv-print-legend' }, LEVEL_ORDER.map(L => h('span', { class: 'legend-item' }, h('span', { class: 'lv-chip', style: '--lc:' + LEVELS[L].color, html: LEVELS[L].ico }), LEVELS[L].name))),
         h('div', { id: 'rvResult' }),
         h('div', { class: 'rv-finish', id: 'rvFinish', hidden: true },
           h('button', { type: 'button', class: 'pill-btn is-primary', html: ICO.check + '<span>Gotowe, świętujmy</span>', onclick: () => { $('#rvFinish').hidden = true; showFinale(); } })))));
@@ -4363,7 +4176,7 @@ function boot() {
             h('span', { class: 'xp-stars', title: STAR_INFO }, h('i', { text: '★' }), ' ', h('b', { id: 'starCount' })),
             h('span', { class: 'xp-secs' }, 'sekcje ', h('b', { id: 'progressSecs' })),
             availableBadges().length && !RATER ? h('button', { type: 'button', class: 'badge-btn', id: 'badgeBtn', 'aria-expanded': 'false', title: 'Odznaki', onclick: toggleBadgePanel },
-              '🏅 ', h('b', { id: 'badgeCount' })) : null),
+              '🏅 ', h('span', { class: 'badge-word', text: 'odznaki ' }), h('b', { id: 'badgeCount' })) : null),
         D.reviewOnly ? null : h('span', { class: 'streak', id: 'streak', hidden: true, title: 'Dobre odpowiedzi z rzędu' }, '🔥 ', h('b', { text: '0' }), h('span', { class: 'streak-label', text: ' z rzędu' })),
         tools),
       D.reviewOnly ? null : h('div', { class: 'progress-track' }, h('div', { class: 'progress-fill', id: 'progressFill' })),
@@ -4395,6 +4208,7 @@ function boot() {
       h('div', { class: 'foot-btns' },
         D.reviewOnly || RATER ? null : h('button', { type: 'button', class: 'pill-btn', text: '🎉 Zakończ wcześniej', onclick: finishEarly }),
         h('button', { type: 'button', class: 'pill-btn', html: ICO.undo + '<span>' + (RATER ? 'Zdejmij oceny' : 'Reset') + '</span>', onclick: resetAll }),
+        h('button', { type: 'button', class: 'pill-btn', title: 'Plik z danymi, ocenami i postępem. Można go wysłać nauczycielowi.', html: ICO.download + '<span>Pobierz TSV</span>', onclick: downloadTSV }),
         h('button', { type: 'button', class: 'pill-btn', title: 'Skopiuj dane z ocenami i postępem', html: ICO.copy + '<span>Kopiuj TSV</span>', onclick: copyTSV })),
       h('span', { class: 'foot-ver', text: 'Worksheet v' + WS_VERSION }))
   ]);
@@ -4413,13 +4227,291 @@ function boot() {
 boot();
 </script>
 <script>
-/* Wspolny rdzen (typy zadan, parser TSV, narzedzia) jest w pliku tylko raz,
-   w bloku rt-core. Generator uruchamia go tutaj, a do karty trafia ten sam tekst. */
+/* Wspolny rdzen (typy zadan, narzedzia) jest w pliku tylko raz, w bloku
+   rt-core. Generator uruchamia go tutaj, a do karty trafia ten sam tekst. */
 (function () {
   const sc = document.createElement('script');
   sc.textContent = document.getElementById('rt-core').textContent;
   document.head.appendChild(sc);
 })();
+
+/* =====================================================================
+   DANE: klucze sekcji, parser TSV, wykrywanie sekcji
+   Potrzebne tylko generatorowi, wiec nie trafiaja do karty.
+   ===================================================================== */
+
+/* Klucz sekcji: 'matching' albo 'matching:2' dla drugiej sekcji tego samego typu. */
+function keyBase(key) { const i = key.indexOf(':'); return i < 0 ? key : key.slice(0, i); }
+function keyNum(key) { const i = key.indexOf(':'); return i < 0 ? 1 : (parseInt(key.slice(i + 1), 10) || 1); }
+function makeKey(base, num) { return num > 1 ? base + ':' + num : base; }
+function keyTag(key) { const n = keyNum(key); return TYPE[keyBase(key)].tag + (n > 1 ? n : ''); }
+
+/* Tagi z kolumny "tasks": "f, m2, quiz" -> ['flashcards', 'matching:2', 'quiz'] */
+function parseTags(s) {
+  const out = [];
+  String(s || '').split(/[,;|]/).forEach(raw => {
+    const m = raw.trim().toLowerCase().match(/^([a-ząćęłńóśźż& ]+?)\s*(\d+)?$/);
+    if (!m) return;
+    const base = TYPE_BY_ALIAS[m[1].trim()];
+    if (!base) return;
+    const key = makeKey(base, m[2] ? parseInt(m[2], 10) : 1);
+    if (!out.includes(key)) out.push(key);
+  });
+  return out;
+}
+
+/* ---------- Ktore wiersze pasuja do danego typu ---------- */
+function rowFits(type, r) {
+  const pl = (r.pl || '').trim(), en = (r.en || '').trim();
+  switch (type) {
+    case 'links': return !!(en || pl);
+    case 'writing': return !!(pl || en);
+    case 'gapfill': return !!pl && hasBraces(en);
+    case 'error': return !!pl && hasBraces(en);
+    case 'unscramble': return !!pl && stripBraces(en).split(/\s+/).filter(Boolean).length >= 2;
+    case 'scramble': return !!pl && stripBraces(en).replace(/\s/g, '').length >= 2;
+    case 'categorize': return !!pl && splitList(en).length >= 1;
+    default: return !!pl && !!en;
+  }
+}
+
+/* Najmniejsza liczba wierszy, przy ktorej sekcja ma sens. */
+function minRows(type) {
+  if (type === 'matching' || type === 'categorize') return 2;
+  return 1;
+}
+
+/* ---------- Model danych ----------
+   doc = {
+     title, subtitle,
+     rows: [{ pl, en, opts[], distractors[], note, level, tasks[], extra{} }],
+     extraCols: [],           // nieznane kolumny TSV, odsylane przy eksporcie
+     order: [keys] | null,    // jawna kolejnosc sekcji
+     sectionMeta: { key: { title, instr, instrOff, image, deco } },
+     meta: { accent, bgsvg, images[], extra, progress },
+     warnings: [], error: ''
+   } */
+function emptyDoc() {
+  return { title: '', subtitle: '', rows: [], extraCols: [], order: null,
+    sectionMeta: {}, meta: { images: [] }, warnings: [], error: '' };
+}
+
+function makeRow(pl, en, extra) {
+  const r = { pl: String(pl || '').trim(), en: String(en || '').trim(), opts: [], distractors: [], note: '', level: 0, tasks: [], extra: extra || {} };
+  if (r.en.includes('|')) {
+    const parts = r.en.split('|').map(x => x.trim()).filter(Boolean);
+    r.en = parts[0] || '';
+    r.opts = uniqCI(parts.slice(1), [r.en]);
+  }
+  return r;
+}
+
+/* Stare oceny (kolumna "difficulty": new, 0-4) -> obecne poziomy. */
+function levelFromOld(v) {
+  const s = String(v == null ? '' : v).trim();
+  if (s === 'new') return 4;
+  if (s === '0' || s === '1' || s === '2') return 1;
+  if (s === '3') return 2;
+  if (s === '4') return 3;
+  return 0;
+}
+function levelFromNew(v) {
+  const n = parseInt(String(v == null ? '' : v).trim(), 10);
+  return (n >= 1 && n <= 4) ? n : 0;   // 4 nowe, 1 do powtorki, 2 prawie, 3 opanowane
+}
+
+/* Stara notatka mogla miec HTML: zamieniamy <br> na enter, reszte znacznikow zdejmujemy. */
+function cleanNote(s) {
+  return String(s || '')
+    .replace(/\\n/g, '\n')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/(p|div|li)>/gi, '\n')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+/* ---------- TSV (zgodny ze starymi plikami) ---------- */
+function parseTSV(text) {
+  const doc = emptyDoc();
+  const lines = String(text || '').replace(/\r/g, '').split('\n').filter(l => l.trim());
+  const data = [];
+  let inOrder = false;
+
+  lines.forEach(line => {
+    const t = line.trim();
+    if (/^#order\b/i.test(t)) {
+      inOrder = true;
+      doc.order = doc.order || [];
+      const rest = t.replace(/^#order/i, '').trim();
+      if (rest) doc.order.push(...parseTags(rest.replace(/[\t;]/g, ',')));
+      return;
+    }
+    if (t[0] === '#') {
+      inOrder = false;
+      const cells = t.split('\t').map(c => c.trim());
+      const key = cells[0].toLowerCase().slice(1);
+      const val = cells[1] || '';
+      if (key === 'title' || key === 'subtitle') doc[key] = cells.slice(1).join(' ').trim();
+      else if (key === 'accent' && /^#[0-9a-f]{6}$/i.test(val)) doc.meta.accent = val;
+      else if (key === 'bgsvg' && val) doc.meta.bgsvg = { uri: val, size: cells[2], opacity: cells[3] };
+      else if (key === 'img' && val && cells[2]) doc.meta.images.push({ key: val.toLowerCase(), url: cells[2], h: cells[3], y: cells[4], fit: cells[5] });
+      else if (key === 'progress' && val) { try { doc.meta.progress = JSON.parse(decodeURIComponent(val)); } catch (e) { /* uszkodzony */ } }
+      else if (key === 'extra' && val) { try { doc.meta.extra = JSON.parse(decodeURIComponent(val)); } catch (e) { /* uszkodzony */ } }
+      else if (key === 'section' || key === 'deco') {
+        /* #section  tag  tytul  instrukcja ("-" = bez instrukcji)
+           #deco     tag  <svg>…</svg> (w jednej linii) */
+        const k = parseTags(val.replace(':', ''))[0];
+        if (!k) { doc.warnings.push('Linia #' + key + ': nieznany tag sekcji „' + val + '”.'); return; }
+        const m = (doc.sectionMeta[k] = doc.sectionMeta[k] || {});
+        if (key === 'deco') m.deco = cells.slice(2).join(' ').trim();
+        else {
+          if (cells[2]) m.title = cells[2];
+          if (cells[3] === '-') m.instrOff = true;
+          else if (cells[3]) m.instr = cells[3];
+        }
+      }
+      return;
+    }
+    if (inOrder && !t.includes('\t') && /^[a-z]+\d*(:\d+)?$/i.test(t)) {
+      doc.order.push(...parseTags(t.replace(':', '')));
+      return;
+    }
+    inOrder = false;
+    data.push(line);
+  });
+
+  if (data.length < 2) { doc.error = 'Potrzebny jest wiersz nagłówka (np. pl⇥en) i co najmniej jeden wiersz danych.'; return doc; }
+
+  let sep = '\t';
+  if (!data[0].includes('\t')) sep = data[0].includes(';') ? ';' : (data[0].includes(',') ? ',' : '\t');
+  const headers = data[0].split(sep).map(h => h.trim().toLowerCase());
+  if (!headers.includes('pl') || !headers.includes('en')) {
+    doc.error = 'Pierwszy wiersz musi być nagłówkiem z kolumnami „pl” i „en”.';
+    return doc;
+  }
+  const known = ['pl', 'en', 'tasks', 'distractors', 'note', 'level', 'difficulty'];
+  doc.extraCols = headers.filter(h => h && !known.includes(h));
+
+  for (let i = 1; i < data.length; i++) {
+    const cells = data[i].split(sep).map(c => c.trim());
+    const get = h => { const k = headers.indexOf(h); return k < 0 ? '' : (cells[k] || ''); };
+    if (!get('pl') && !get('en')) continue;
+    const extra = {};
+    doc.extraCols.forEach(h => { extra[h] = get(h); });
+    const r = makeRow(get('pl'), get('en'), extra);
+    r.tasks = parseTags(get('tasks'));
+    r.distractors = uniqCI(splitList(get('distractors').includes('|') ? get('distractors') : get('distractors').replace(/,/g, '|')), [r.en]);
+    r.note = cleanNote(get('note'));
+    r.level = headers.includes('level') ? levelFromNew(get('level')) : levelFromOld(get('difficulty'));
+    if (get('difficulty') && !headers.includes('level') && !/^(new|[0-4])$/.test(get('difficulty'))) {
+      doc.warnings.push('Wiersz ' + (i + 1) + ': nieznana ocena „' + get('difficulty') + '” w kolumnie difficulty, pominięta.');
+    }
+    doc.rows.push(r);
+  }
+  if (!doc.rows.length) doc.error = 'Nie znaleziono żadnych wierszy z danymi.';
+
+  /* Ustawienia zapisane przez stara karte w #extra traktujemy jak dane dokumentu. */
+  const ex = doc.meta.extra;
+  if (ex && typeof ex === 'object') {
+    const put = (k, f, v) => { (doc.sectionMeta[k] = doc.sectionMeta[k] || {})[f] = v; };
+    Object.entries(ex.titles || {}).forEach(([k, v]) => {
+      const d = TYPE[keyBase(k)];
+      const oldName = keyBase(k) === 'cornell' ? 'Pytania i odpowiedzi' : null;
+      const isDef = n => v === n || (v.startsWith(n + ' ') && /\d+$/.test(v));
+      if (d && v && !isDef(d.name) && !(oldName && isDef(oldName))) put(k, 'title', v);
+    });
+    Object.entries(ex.instrs || {}).forEach(([k, v]) => { if (TYPE[keyBase(k)] && v) put(k, 'instr', v); });
+    Object.entries(ex.instrOn || {}).forEach(([k, v]) => { if (TYPE[keyBase(k)] && v === false) put(k, 'instrOff', true); });
+    /* Dawna "sekcja z linkami" byla ustawieniem, teraz to zwykle wiersze danych. */
+    (ex.customs || []).forEach((c, n) => {
+      if (!c || c.kind !== 'links' || !c.body) return;
+      const key = makeKey('links', n + 1);
+      c.body.split(/\r?\n/).map(l => l.trim()).filter(Boolean).forEach(l => {
+        const bar = l.indexOf('|');
+        const r = makeRow(bar < 0 ? '' : l.slice(0, bar), bar < 0 ? l : l.slice(bar + 1));
+        r.tasks = [key];
+        doc.rows.push(r);
+      });
+      if (c.title) put(key, 'title', c.title);
+    });
+  }
+  return doc;
+}
+
+/* ---------- Ilustracje SVG ----------
+   Zostawia sam rysunek: bez skryptow, zdarzen i odnosnikow javascript:.
+   Zly kod daje pusty napis (sekcja jest wtedy bez ilustracji). */
+function cleanSvg(code) {
+  const t = String(code || '').trim();
+  if (!/^<svg[\s>]/i.test(t) || typeof DOMParser === 'undefined') return '';
+  let doc;
+  try { doc = new DOMParser().parseFromString(t, 'image/svg+xml'); } catch (e) { return ''; }
+  const svg = doc.documentElement;
+  if (!svg || svg.nodeName.toLowerCase() !== 'svg' || doc.getElementsByTagName('parsererror').length) return '';
+  Array.from(svg.querySelectorAll('script, foreignObject, iframe, object, embed')).forEach(n => n.remove());
+  [svg].concat(Array.from(svg.querySelectorAll('*'))).forEach(n => Array.from(n.attributes).forEach(a => {
+    if (/^on/i.test(a.name) || (/href$/i.test(a.name) && /^\s*javascript:/i.test(a.value))) n.removeAttribute(a.name);
+  }));
+  const w = parseFloat(svg.getAttribute('width')), hh = parseFloat(svg.getAttribute('height'));
+  if (!svg.getAttribute('viewBox') && w && hh) svg.setAttribute('viewBox', '0 0 ' + w + ' ' + hh);
+  svg.removeAttribute('width'); svg.removeAttribute('height');
+  return new XMLSerializer().serializeToString(svg);
+}
+
+/* ---------- Ktore sekcje istnieja w danych ----------
+   Zwraca { key: [indeksy wierszy] } dla kazdej sekcji, ktora ma sens. */
+function detectSections(doc) {
+  const out = {};
+  const tagged = new Set();
+  doc.rows.forEach(r => r.tasks.forEach(k => tagged.add(k)));
+  const hasUntagged = doc.rows.some(r => !r.tasks.length);
+  const keys = Array.from(tagged);
+  if (hasUntagged) TYPES.forEach(t => { if (t.untagged && !keys.includes(t.key)) keys.push(t.key); });
+
+  keys.forEach(key => {
+    const base = keyBase(key);
+    const idx = [];
+    doc.rows.forEach((r, i) => {
+      const inSec = r.tasks.length ? r.tasks.includes(key) : (TYPE[base].untagged && keyNum(key) === 1);
+      if (inSec && rowFits(base, r)) idx.push(i);
+    });
+    if (idx.length >= minRows(base)) out[key] = idx;
+  });
+  return out;
+}
+
+/* Kolejnosc: jawna z danych, potem kolejnosc pierwszego wystapienia tagu, potem rejestr. */
+function defaultOrder(doc, available) {
+  const keys = Object.keys(available);
+  const out = [];
+  const add = k => { if (keys.includes(k) && !out.includes(k)) out.push(k); };
+  (doc.order || []).forEach(add);
+  doc.rows.forEach(r => r.tasks.forEach(add));
+  TYPES.forEach(t => keys.filter(k => keyBase(k) === t.key).sort((a, b) => keyNum(a) - keyNum(b)).forEach(add));
+  return out;
+}
+
+/* Wiersze otagowane typem, ktorego nie da sie zbudowac (np. luka bez klamr). */
+function orphanReport(doc, available) {
+  const problems = [];
+  doc.rows.forEach((r, i) => {
+    if (!r.tasks.length) return;
+    const lost = r.tasks.filter(k => !(available[k] || []).includes(i));
+    if (lost.length === r.tasks.length) {
+      const why = lost.map(k => {
+        const b = keyBase(k);
+        if ((b === 'gapfill' || b === 'error') && !hasBraces(r.en)) return TYPE[b].name + ': brak klamr {…}';
+        if (b === 'unscramble') return TYPE[b].name + ': zdanie musi mieć co najmniej 2 słowa';
+        if (available[k] === undefined) return TYPE[b].name + ': za mało wierszy w sekcji';
+        return TYPE[b].name + ': brak polskiej lub angielskiej części';
+      });
+      problems.push('Wiersz „' + (r.pl || r.en).slice(0, 40) + '” nie trafi na kartę (' + why.join('; ') + ').');
+    }
+  });
+  return problems;
+}
 
 /* =====================================================================
    GENERATOR
@@ -4686,7 +4778,7 @@ function defaults() {
     accent: '#2563eb', style: 'clean', styleAccent: false, bg: 'blobs', svg: { code: '', size: null, opacity: 1 },
     fonts: { url: DEFAULT_FONT_LINK, body: 'Onest', display: 'Bricolage Grotesque' },
     tts: { enabled: true, lang: 'en-GB', voice: '', rate: 0.8 },
-    diffVisible: true, reviewOnly: false, metaSig: ''
+    diffVisible: true, reviewOnly: false, student: false, metaSig: ''
   };
 }
 function loadSettings() {
@@ -5136,6 +5228,7 @@ function buildWorksheet() {
     tts: { enabled: S.tts.enabled, lang: S.tts.lang, voice: S.tts.voice, rate: S.tts.rate },
     diffHidden: !S.diffVisible,
     reviewOnly: S.reviewOnly,
+    student: S.student,
     importedProgress: imported || null,
     exportMeta: meta,
     confetti: [th.solid, th.accent2, mix(th.accent, '#ffffff', 0.35), '#f59f00', '#37b24d', '#f06595']
@@ -5200,14 +5293,21 @@ function bind() {
   el('title').addEventListener('input', () => { S.title = el('title').value; persist(); });
   el('subtitle').addEventListener('input', () => { S.subtitle = el('subtitle').value; persist(); });
 
-  const load = text => {
-    if (S.text.trim() && !confirm('Zastąpić obecne dane przykładem?')) return;
+  const load = (text, what) => {
+    if (S.text.trim() && !confirm('Zastąpić obecne dane ' + what + '?')) return;
     S.sec = {}; S.order = []; S.reordered = false; S.metaSig = '';
     Object.keys(ROW_EL).forEach(k => { ROW_EL[k].root.remove(); delete ROW_EL[k]; });
     el('data').value = text;
     onData();
   };
-  el('exTsv').addEventListener('click', () => load(EXAMPLE_TSV));
+  el('exTsv').addEventListener('click', () => load(EXAMPLE_TSV, 'przykładem'));
+  el('loadFile').addEventListener('click', () => el('fileIn').click());
+  el('fileIn').addEventListener('change', e => {
+    const f = e.target.files[0];
+    if (!f) return;
+    f.text().then(t => load(t.replace(/^\uFEFF/, ''), 'plikiem „' + f.name + '”')).catch(() => alert('Nie udało się odczytać pliku.'));
+    e.target.value = '';
+  });
   el('styleAccent').addEventListener('change', e => { S.styleAccent = e.target.checked; syncLook(); persist(); });
   el('clearData').addEventListener('click', () => {
     if (S.text.trim() && !confirm('Wyczyścić dane, tytuł i ustawienia sekcji? Wygląd zostaje.')) return;
@@ -5271,6 +5371,9 @@ function bind() {
   const ro = el('reviewOnly');
   ro.checked = S.reviewOnly;
   ro.addEventListener('change', () => { S.reviewOnly = ro.checked; renderBar(); persist(); });
+  const stu = el('student');
+  stu.checked = S.student;
+  stu.addEventListener('change', () => { S.student = stu.checked; persist(); });
   /* Wlasne pola wyboru dla statycznych checkboxow w HTML. */
   document.querySelectorAll('label.chk > input + .box:empty').forEach(b => { b.innerHTML = CHECK_SVG; });
 
