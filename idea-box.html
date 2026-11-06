@@ -268,19 +268,6 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
 .e-card .mk-star.on{color:var(--gold)}
 .e-card .mk-rev.on{background:#7048e8;color:#fff}
 .e-card .mk-ok.on{background:#12a150;color:#fff}
-/* historia losowania */
-.e-histbox{margin-top:2rem}
-.h-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:.8rem}
-.h-head .b-les{margin:0}
-.h-toggle{display:flex;align-items:center;gap:.6rem;margin-right:auto;padding:.3rem .4rem;border-radius:var(--r-s);color:var(--ink)}
-.h-toggle:hover{transform:none;background:rgba(29,53,87,.06)}
-.h-toggle .chev{width:28px;height:28px;transition:transform .2s}
-.h-toggle[aria-expanded="true"] .chev{transform:rotate(180deg)}
-.e-histbox:not(.open) .h-mode{display:none}
-.h-mode{gap:5px;padding:5px;border-radius:var(--r-s);background:#e0f3f0}
-.h-mode button{width:50px;height:44px;padding:0;display:grid;place-items:center;border-radius:10px;color:#06564f}
-.h-mode button.on{background:#0d8a7e;color:#fff}
-.h-mode svg{width:24px;height:24px}
 .e-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem}
 .e-pills .e-kind:empty{display:none}
 .e-lab{font-size:1.12rem;font-weight:700;color:var(--muted)}
@@ -290,8 +277,6 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
 .e-step button{width:34px;height:23px;display:grid;place-items:center;border-radius:7px;background:#fff;color:#a61e4d}
 .e-step button:hover{transform:none;background:#ffd0e1}
 .e-step svg{width:20px;height:20px}
-.h-show{padding:0;background:none;color:inherit;font:inherit;font-weight:600!important;text-align:left;cursor:pointer}
-.h-show:hover{transform:none;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px}
 
 /* tryb odpowiedzi w losowaniu: wybierany przed losowaniem */
 .e-dmode{gap:6px;padding:6px;border-radius:var(--r-m);background:#e0f3f0;box-shadow:none;border:0}
@@ -380,17 +365,27 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
 .b-les{display:flex;align-items:center;gap:.7rem;margin-bottom:.8rem;font-size:clamp(1.4rem,2.4vw,1.8rem);font-weight:800}
 .b-rows{border-radius:var(--r-m);overflow:hidden;background:#fff}
 .b-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;align-items:center;gap:1.4rem;padding:.9rem 1.2rem .9rem 1.4rem;font-size:clamp(1.15rem,1.8vw,1.35rem);line-height:1.4;overflow-wrap:anywhere}
-.b-deck{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(400px,100%),1fr));gap:1.1rem}
-.b-card{display:flex;flex-direction:column;gap:.5rem;padding:1.1rem 1.3rem 1.3rem;border-radius:var(--r-l);background:var(--l);border:3px solid var(--m)}
+.b-deck{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(460px,100%),1fr));gap:1.3rem}
+/* karty z wielokrotnego losowania: jak duża karta, tylko mniejsze (pełny kolor, kropki, biały tekst) */
+.b-card{--mask:linear-gradient(160deg,#000,transparent 55%);position:relative;overflow:hidden;display:flex;flex-direction:column;gap:.9rem;min-height:250px;padding:1.2rem 1.4rem 1.6rem;border-radius:var(--r-xl);background:var(--c);color:#fff}
+.b-card::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:var(--dots);background-size:22px 22px;-webkit-mask-image:var(--mask);mask-image:var(--mask)}
+.b-card>*{position:relative}
+.bc-body{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:.7rem;text-align:center}
+.b-card .mk{background:var(--glass);color:rgba(255,255,255,.85)}
+.b-card .mk-star.on{color:var(--gold)}
+.b-card .mk-rev.on{background:#7048e8;color:#fff}
+.b-card .mk-ok.on{background:#12a150;color:#fff}
+.b-card .e-pills{flex:1;min-width:0;justify-content:flex-start}
 .b-card.b-in{animation:deal .6s cubic-bezier(.22,1.55,.45,1) backwards}
 @keyframes deal{0%{opacity:0;transform:translateY(-44px) scale(.5) rotate(-8deg)}45%{opacity:1}}
 .b-card-h{display:flex;align-items:center;gap:.75rem}
-.b-num{flex:none;width:42px;height:42px;border-radius:13px;background:var(--c);color:#fff;display:grid;place-items:center;font-size:1.3rem;font-weight:800}
-.b-card-h small{flex:1;min-width:0;font-size:1rem;font-weight:600;color:var(--d);opacity:.8}
-.bc-main{font-size:clamp(1.3rem,2vw,1.6rem);font-weight:700;line-height:1.3;overflow-wrap:anywhere}
-.bc-ans{font-size:clamp(1.15rem,1.8vw,1.4rem);line-height:1.35;color:var(--d);overflow-wrap:anywhere}
-.b-card .sc{--cover:color-mix(in srgb,var(--c) 24%,#fff);--cover-on:color-mix(in srgb,var(--c) 50%,#fff);--shown:var(--d)}
+.b-num{flex:none;width:46px;height:46px;border-radius:14px;background:#fff;color:var(--c);display:grid;place-items:center;font-size:1.45rem;font-weight:800;transform:rotate(-6deg)}
+.bc-main{font-size:clamp(1.7rem,2.9vw,2.4rem);font-weight:700;line-height:1.15;overflow-wrap:anywhere}
+.bc-ans{font-size:clamp(1.4rem,2.3vw,1.9rem);line-height:1.25;opacity:.95;overflow-wrap:anywhere}
+.b-card .sc{--cover:rgba(255,255,255,.3);--cover-on:rgba(255,255,255,.62);--shown:#fff}
 
+.b-hist-h{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.b-hist-h .sq{background:#fde4ee;color:#a61e4d}
 .b-from{display:block;margin-top:.1rem;font-size:.95rem;font-weight:600;color:var(--muted)}
 .b-row:nth-child(even){background:#f5f8fc}
 .b-row>div:first-child{font-weight:600}
@@ -412,6 +407,7 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
 .e-cnt{display:flex!important;gap:.4rem;width:auto!important;padding:0 .85rem;font-size:1.12rem;font-weight:700}
 .e-marks{background:var(--soft)!important}
 .e-marks button{background:#fff;color:var(--ink)}
+.e-marks .mk-hist{color:#0b7368}.e-marks .mk-hist.on{background:#0d8a7e;color:#fff}
 .e-marks .mk-star{color:#b98a00}.e-marks .mk-rev{color:#5f3dc4}.e-marks .mk-ok{color:#0b7a3b}
 .e-marks .mk-star.on{background:var(--gold);color:var(--ink)}
 .e-marks .mk-rev.on{background:#7048e8;color:#fff}
@@ -629,7 +625,7 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
   .dd-btn>span{flex:1;text-align:left}
   .e-panel.float{max-height:calc(100vh - 100px);overflow:auto}
 }
-@media(max-width:600px){.snd{position:static;margin:0 auto 1rem}.prof{flex-wrap:wrap;max-width:calc(100% - 1.3rem);margin:0 0 1rem 1.3rem}.prof-sel{flex:1 1 100%}.prof select{max-width:none;flex:1}.prof-sep{display:none}}
+@media(max-width:600px){.b-card-h{flex-wrap:wrap}.b-card-h .mk-box{margin-left:auto}.b-card .e-pills{order:3;flex-basis:100%}.snd{position:static;margin:0 auto 1rem}.prof{flex-wrap:wrap;max-width:calc(100% - 1.3rem);margin:0 0 1rem 1.3rem}.prof-sel{flex:1 1 100%}.prof select{max-width:none;flex:1}.prof-sep{display:none}}
 @media(prefers-reduced-motion:reduce){.ov::before,.stop::before,.deco svg{animation:none}}
 </style>
 </head>
@@ -731,6 +727,7 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
             <button class="e-cnt mk-star" id="eOnlyStar" title="Pokaż tylko z gwiazdką" aria-pressed="false"><i data-ico="gwiazdka"></i><span id="eStarCnt">0</span></button>
             <button class="e-cnt mk-rev" id="eOnlyRev" title="Pokaż tylko do powtórki" aria-pressed="false"><i data-ico="powtorz"></i><span id="eRevCnt">0</span></button>
             <button class="e-cnt mk-ok" id="eOnlyOk" title="Pokaż tylko opanowane" aria-pressed="false"><i data-ico="zaznaczone"></i><span id="eOkCnt">0</span></button>
+            <button class="e-cnt mk-hist" id="eOnlyHist" title="Pokaż historię losowania" aria-pressed="false"><i data-ico="historia"></i><span id="eHistCnt">0</span></button>
             <span class="e-sep"></span>
             <button class="e-ic" id="eRestore" title="Przywróć usunięte gwiazdki" aria-label="Przywróć usunięte gwiazdki" disabled><i data-ico="cofnij"></i></button>
             <button class="e-ic" id="eClear" title="Usuń wszystkie gwiazdki" aria-label="Usuń wszystkie gwiazdki"><i data-ico="odznacz"></i></button>
@@ -769,18 +766,6 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
       <p class="e-trans" id="eTrans" hidden></p>
     </div>
     <div class="b-deck d-only" id="eDeck" hidden></div>
-    <section class="e-histbox d-only" id="eHistBox" hidden>
-      <div class="h-head">
-        <button class="h-toggle" id="eHistTog" aria-expanded="false"><span class="b-les">Historia losowania<span class="d-count" id="eHistCnt">0</span></span><i data-ico="strzalka" class="chev"></i></button>
-        <div class="seg3 h-mode" id="eHMode">
-          <button data-c="none" title="Odkryte" aria-label="Odkryte"><i data-ico="oko"></i></button>
-          <button data-c="gap" title="Luka" aria-label="Luka"><i data-ico="luka"></i></button>
-          <button data-c="all" title="Zasłonięte" aria-label="Zasłonięte"><i data-ico="oko_off"></i></button>
-        </div>
-        <button class="sq h-clear" id="eHistClear" title="Wyczyść historię" aria-label="Wyczyść historię"><i data-ico="kosz"></i></button>
-      </div>
-      <div class="b-rows" id="eHistList" hidden></div>
-    </section>
     <div class="e-browse" id="eList"></div>
   </section>
   <section class="mats" id="mats">
@@ -2010,7 +1995,7 @@ function eParse(){
   E.used.clear();E.stars=keysToIdx(prevS);E.hist=keysToIdx(prevH);eMarksUI();
   if(E.cur>=items.length)E.cur=-1;
   $('dCount').textContent=items.length;
-  eLessons();eHistList();
+  eLessons();
 }
 const inLesson=o=>!E.sel.size||E.sel.has(E.lessons[o.les].name);
 const kindOf=o=>o.q?'q':o.s?'sent':'other';
@@ -2096,7 +2081,7 @@ function scSync(){
    Działa na zasłonie klikniętej ostatnio myszką, a bez tego na pierwszej zasłoniętej na ekranie */
 let scAct=null;
 const setAct=sc=>{if(scAct)scAct.classList.remove('act');scAct=sc;if(sc)sc.classList.add('act')};
-const nextSc=sc=>{const box=sc.closest('#eCard,#eDeck,#eHistList,#eList');if(!box)return null;const all=[...box.querySelectorAll('.sc')];return all.slice(all.indexOf(sc)+1).find(x=>!scDone(x))||all.find(x=>!scDone(x))||null};
+const nextSc=sc=>{const box=sc.closest('#eCard,#eDeck,#eList');if(!box)return null;const all=[...box.querySelectorAll('.sc')];return all.slice(all.indexOf(sc)+1).find(x=>!scDone(x))||all.find(x=>!scDone(x))||null};
 document.addEventListener('keydown',e=>{
   if(e.key!=='ArrowRight'||e.ctrlKey||e.metaKey||e.altKey||mode!=='expr'||!ov.hidden||e.target.closest('input,textarea,select'))return;
   let sc=scAct&&document.contains(scAct)&&!scDone(scAct)?scAct:null;
@@ -2121,7 +2106,7 @@ document.addEventListener('dblclick',e=>{const sc=e.target.closest('.sc');if(sc)
 /* ---------- oznaczenia: gwiazdka, do powtórki, opanowane ---------- */
 const starred=i=>E.stars.includes(i);
 const MK=[['star','gwiazdka','Dodaj gwiazdkę','Usuń gwiazdkę'],['rev','powtorz','Do powtórki','Usuń „do powtórki”'],['ok','zaznaczone','Opanowane','Usuń „opanowane”']];
-const isOn=(i,k)=>k==='star'?starred(i):E.items[i].st===k;
+const isOn=(i,k)=>k==='star'?starred(i):k==='hist'?E.hist.includes(i):E.items[i].st===k;
 const marksInner=i=>MK.map(([k,ic,t0,t1])=>{const on=isOn(i,k),t=on?t1:t0;return`<button class="mk mk-${k}${on?' on':''}" data-mk="${k}" title="${esc(t)}" aria-label="${esc(t)}" aria-pressed="${on}">${ico(ic)}</button>`}).join('');
 const marks=i=>`<div class="mk-box">${marksInner(i)}</div>`;
 /* stan zapisuje się w 4. kolumnie danych, więc „Kopiuj” oddaje listę razem z oznaczeniami */
@@ -2147,7 +2132,8 @@ function eMarksUI(){
   $('eRestore').disabled=!(E.last&&E.last.length);
   const vis=ePool();$('eFromAll').textContent=vis.length;$('eFromNoOk').textContent=vis.filter(FROM.noOk).length;$('eFromRev').textContent=vis.filter(FROM.rev).length;$('eFromOk').textContent=vis.filter(FROM.ok).length;$('eFromStar').textContent=vis.filter(FROM.star).length;
   segOn($('eFrom'),'from',E.from);
-  [['eOnlyStar','star'],['eOnlyRev','rev'],['eOnlyOk','ok']].forEach(([id,k])=>{$(id).classList.toggle('on',E.only===k);$(id).setAttribute('aria-pressed',E.only===k)});
+  $('eHistCnt').textContent=E.hist.filter(i=>E.items[i]).length;
+  [['eOnlyStar','star'],['eOnlyRev','rev'],['eOnlyOk','ok'],['eOnlyHist','hist']].forEach(([id,k])=>{$(id).classList.toggle('on',E.only===k);$(id).setAttribute('aria-pressed',E.only===k)});
 }
 /* „Usuń wszystkie gwiazdki” zapamiętuje je, żeby dało się je przywrócić */
 function eClearStars(){
@@ -2173,7 +2159,7 @@ function eRender(pop){
   if(!o){delete card.dataset.i;main.className='e-main';main.textContent=E.items.length?'Kliknij „Losuj”.':'Wklej wyrażenia i losuj.';$('eKind').textContent=$('eLes').textContent='';tr.hidden=$('eMk').hidden=true;scSync();return}
   card.dataset.i=E.cur;$('eMk').hidden=false;$('eMk').innerHTML=marksInner(E.cur);
   const[L,R]=answerHTML(o,E.cover.draw);
-  $('eKind').textContent=o.q?'Pytanie':o.tag?cap(o.tag):(o.s?'Zdanie':'Wyrażenie');
+  $('eKind').textContent=kindOfLabel(o);
   $('eLes').textContent=E.lessons.length>1?E.lessons[o.les].name:'';
   main.className='e-main'+(eTexts(o).main.length>55?' long':'');
   main.innerHTML=L;tr.innerHTML=R;tr.hidden=!R;
@@ -2194,52 +2180,44 @@ async function eDraw(){
   const n=Math.max(1,Math.min(parseInt($('eN').value,10)||1,p.length));$('eN').value=n;
   const take=pickN(p,n);
   E.hist=[...take,...E.hist.filter(i=>!take.includes(i))];E.cur=take[0];saveMarks();
-  if(n>1){E.deck=take;E.deal=Math.floor(Math.random()*PALETA.length);eRender();eDeck(true);eHistAdd(take);take.slice(0,12).forEach((_,k)=>SND.deal(k));return}
+  if(n>1){E.deck=take;E.deal=Math.floor(Math.random()*PALETA.length);eRender();eDeck(true);eMarksUI();take.slice(0,12).forEach((_,k)=>SND.deal(k));return}
   E.deck=null;$('eCard').hidden=false;$('eDeck').hidden=true;
   E.busy=true;$('eDraw').disabled=true;$('eKind').textContent=$('eLes').textContent='';$('eTrans').hidden=$('eMk').hidden=true;$('eReveal').disabled=true;
   const main=$('eMain');
   for(let k=0;k<13;k++){const o=E.items[p[Math.floor(Math.random()*p.length)]];main.className='e-main long';main.textContent=eTexts(o).main;if(k%5===0)eColor();SND.tick(1.2);await sleep(45+k*k*2.6)}
-  eRender(true);eHistAdd(take);SND.ding();burstEl($('eMain'));
+  eRender(true);eMarksUI();SND.ding();burstEl($('eMain'));
   E.busy=false;$('eDraw').disabled=false;scSync();
 }
+const kindOfLabel=o=>o.q?'Pytanie':o.tag?cap(o.tag):(o.s?'Zdanie':'Wyrażenie');
 /* karty losowane naraz: wpadają jedna po drugiej, każda w innym kolorze */
 function bCard(i,k,anim){
   const o=E.items[i],[L,R]=answerHTML(o,E.cover.draw),c=PALETA[(k+E.deal)%PALETA.length];
   const st=`--c:${c};--d:${mix(c,'#000000',.35)};--l:${mix(c,'#ffffff',.9)};--m:${mix(c,'#ffffff',.6)};`+(anim?`animation-delay:${k*110}ms`:'');
-  const les=E.lessons.length>1?esc(E.lessons[o.les].name):'';
-  return`<article class="b-card${anim?' b-in':''}" data-i="${i}" style="${st}"><div class="b-card-h"><span class="b-num">${k+1}</span><small>${les}</small>${marks(i)}</div><p class="bc-main">${L}</p>${R?`<p class="bc-ans">${R}</p>`:''}</article>`;
+  const les=E.lessons.length>1?`<span class="e-kind">${esc(E.lessons[o.les].name)}</span>`:'';
+  return`<article class="b-card${anim?' b-in':''}" data-i="${i}" style="${st}"><div class="b-card-h"><span class="b-num">${k+1}</span><div class="e-pills"><span class="e-kind">${kindOfLabel(o)}</span>${les}</div>${marks(i)}</div><div class="bc-body"><p class="bc-main">${L}</p>${R?`<p class="bc-ans">${R}</p>`:''}</div></article>`;
 }
 function eDeck(anim){
   $('eDeck').innerHTML=E.deck.map((i,k)=>bCard(i,k,anim)).join('');scSync();
 }
-/* historia losowania jako lista; kliknięcie wyrażenia pokazuje je z powrotem na dużej karcie */
-function hRow(i){
-  const o=E.items[i],[L,R]=answerHTML(o,E.cover.hist);
-  return`<div class="b-row" data-i="${i}"><div><button class="h-show" title="Pokaż na karcie">${L}</button></div><div>${R}</div>${marks(i)}</div>`;
-}
-function eHistMeta(){const n=E.hist.filter(i=>E.items[i]).length;$('eHistBox').hidden=!n;$('eHistCnt').textContent=n}
-function eHistList(){$('eHistList').innerHTML=E.hist.filter(i=>E.items[i]).map(hRow).join('');eHistMeta()}
-/* dopisuje nowe losowania na górze; starsze wiersze zostają razem z odsłoniętymi zasłonami */
-function eHistAdd(ids){
-  const list=$('eHistList');
-  ids.forEach(i=>{const r=list.querySelector(`.b-row[data-i="${i}"]`);if(r)r.remove()});
-  list.insertAdjacentHTML('afterbegin',ids.map(hRow).join(''));eHistMeta();
-}
-function eHistOpen(open){E.histOpen=open;$('eHistList').hidden=!open;$('eHistBox').classList.toggle('open',open);$('eHistTog').setAttribute('aria-expanded',open)}
 function eSetData(open){$('data').classList.toggle('open',open);$('dHead').setAttribute('aria-expanded',open)}
 
 /* ---------- przegląd ---------- */
-function bRow(i){
+function bRow(i,from){
   const o=E.items[i],[L,R]=answerHTML(o,E.cover.browse),t=o.tag,c=t&&tagColor(t);
   const st=t?` style="--tl:${mix(c,'#ffffff',.88)};--td:${mix(c,'#000000',.35)}"`:'';
-  return`<div class="b-row${t?' tagged':''}" data-i="${i}"${st}><div>${L}</div><div>${R}</div>${marks(i)}</div>`;
+  return`<div class="b-row${t?' tagged':''}" data-i="${i}"${st}><div>${L}${from&&E.lessons.length>1?`<span class="b-from">${esc(E.lessons[o.les].name)}</span>`:''}</div><div>${R}</div>${marks(i)}</div>`;
 }
 /* przegląd: bieżący wybór, opcjonalnie tylko z gwiazdką, do powtórki albo opanowane */
-const bPool=()=>{const p=ePool();return E.only?p.filter(i=>isOn(i,E.only)):p};
-const ONLY_EMPTY={star:'Nic nie ma gwiazdki.',rev:'Nic nie jest oznaczone do powtórki.',ok:'Nic nie jest oznaczone jako opanowane.'};
+const bPool=()=>{const p=ePool();if(E.only==='hist'){const set=new Set(p);return E.hist.filter(i=>set.has(i))}return E.only?p.filter(i=>isOn(i,E.only)):p};
+const ONLY_EMPTY={star:'Nic nie ma gwiazdki.',rev:'Nic nie jest oznaczone do powtórki.',ok:'Nic nie jest oznaczone jako opanowane.',hist:'Nic jeszcze nie zostało wylosowane.'};
 function eBrowse(){
   const p=bPool(),list=$('eList');
   if(!p.length){list.innerHTML=`<p class="b-empty">${!E.items.length?'Wklej wyrażenia, żeby je przejrzeć.':E.only?ONLY_EMPTY[E.only]:'Brak wyrażeń w tym wyborze.'}</p>`;return}
+  /* historia: płaska lista od najnowszego */
+  if(E.only==='hist'){
+    list.innerHTML=`<div class="b-group"><div class="b-les b-hist-h"><span>Historia losowania<span class="d-count">${p.length}</span></span><button class="sq" id="eHistClear" title="Wyczyść historię" aria-label="Wyczyść historię">${ico('kosz')}</button></div><div class="b-rows">${p.map(i=>bRow(i,true)).join('')}</div></div>`;
+    return;
+  }
   const groups=new Map();p.forEach(i=>{const l=E.items[i].les;if(!groups.has(l))groups.set(l,[]);groups.get(l).push(i)});
   const named=E.lessons.length>1;
   list.innerHTML=[...groups].map(([l,ids])=>`<div class="b-group">${named?`<h3 class="b-les">${esc(E.lessons[l].name)}<span class="d-count">${ids.length}</span></h3>`:''}<div class="b-rows">${ids.map(bRow).join('')}</div></div>`).join('');
@@ -2247,8 +2225,8 @@ function eBrowse(){
 
 /* ---------- widok, tryb odpowiedzi, zębatka ---------- */
 const COVER_TXT={none:'Odkryte',gap:'Luka',all:'Zasłonięte'};
-const ONLY_TXT={star:'tylko z gwiazdką',rev:'tylko do powtórki',ok:'tylko opanowane'};
-function eCoverUI(){segOn($('eCover'),'c',E.cover.browse);segOn($('eDMode'),'c',E.cover.draw);segOn($('eHMode'),'c',E.cover.hist);$('eRecover').hidden=E.cover.browse==='none'}
+const ONLY_TXT={star:'tylko z gwiazdką',rev:'tylko do powtórki',ok:'tylko opanowane',hist:'historia losowania'};
+function eCoverUI(){segOn($('eCover'),'c',E.cover.browse);segOn($('eDMode'),'c',E.cover.draw);$('eRecover').hidden=E.cover.browse==='none'}
 function eMini(){
   const f=$('eFilter').querySelector('.on');
   $('eGear').title='Ustawienia: '+[E.view==='draw'?'Losowanie':'Przegląd',COVER_TXT[E.cover[E.view]],E.lang==='pl'?'PL → EN':'EN → PL',
@@ -2266,7 +2244,7 @@ new IntersectionObserver(([en])=>{
 }).observe($('ePwrap'));
 /* przełącznik segmentowy: zaznacza kliknięty przycisk i zwraca go */
 const segPick=(box,e)=>{const b=e.target.closest('button');if(b)[...box.children].forEach(x=>x.classList.toggle('on',x===b));return b};
-const reRender=()=>{eRender();eHistList();if(E.view==='browse')eBrowse()};
+const reRender=()=>{eRender();if(E.view==='browse')eBrowse()};
 
 /* ---------- start i zdarzenia ---------- */
 profUI();$('dText').value=store.get(PK('ruletka-wyrazenia'))||'';eParse();eSetData(!E.items.length);
@@ -2302,19 +2280,18 @@ $('eLang').addEventListener('click',e=>{const b=segPick($('eLang'),e);if(!b)retu
 const setCover=(view,c)=>{E.cover[view]=c;store.set('ruletka-zaslona3',JSON.stringify(E.cover));eCoverUI();eMini()};
 $('eCover').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;setCover('browse',b.dataset.c);eBrowse()});
 $('eDMode').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;setCover('draw',b.dataset.c);eRender()});
-$('eHMode').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;setCover('hist',b.dataset.c);eHistList()});
 const revealIn=el=>{if(hasCover(el))SND.reveal();el.querySelectorAll('.sc').forEach(sc=>scShow(sc,Infinity,true))};
 $('eRecover').addEventListener('click',eBrowse);
 document.addEventListener('click',e=>{
   const m=e.target.closest('.mk');if(m){const h=m.closest('[data-i]');if(h&&E.items[+h.dataset.i])eMark(+h.dataset.i,m.dataset.mk);return}
-  const s=e.target.closest('.h-show');
-  if(s&&!E.busy){E.deck=null;$('eN').value=1;E.cur=+s.closest('[data-i]').dataset.i;eRender(true);$('eCard').scrollIntoView({behavior:'smooth',block:'center'})}
+  if(e.target.closest('#eHistClear')){E.used.clear();E.hist=[];saveMarks();SND.close();eMarksUI();eBrowse()}
 });
 $('eGear').addEventListener('click',()=>eFloat(!$('ePanel').classList.contains('float')));
 const setOnly=k=>{E.only=E.only===k?null:k;eMarksUI();eMini();eBrowse()};
 $('eOnlyStar').addEventListener('click',()=>setOnly('star'));
 $('eOnlyRev').addEventListener('click',()=>setOnly('rev'));
 $('eOnlyOk').addEventListener('click',()=>setOnly('ok'));
+$('eOnlyHist').addEventListener('click',()=>setOnly('hist'));
 $('eClear').addEventListener('click',eClearStars);
 $('eRestore').addEventListener('click',eRestore);
 document.addEventListener('pointerdown',e=>{
@@ -2325,8 +2302,6 @@ document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!$('lesMen
 $('eDraw').addEventListener('click',eDraw);
 $('eN').addEventListener('keydown',e=>{if(e.key==='Enter')eDraw()});
 $('eReveal').addEventListener('click',()=>revealIn(E.deck?$('eDeck'):$('eCard')));
-$('eHistClear').addEventListener('click',()=>{if(E.busy)return;E.used.clear();E.hist=[];saveMarks();eHistList()});
-$('eHistTog').addEventListener('click',()=>eHistOpen(!E.histOpen));
 $('eFrom').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;E.from=b.dataset.from;store.set('ruletka-losuj-z',E.from);E.used.clear();eMarksUI();eMini()});
 const stepN=d=>{const t=$('eN');t.value=Math.max(1,Math.min(99,(parseInt(t.value,10)||1)+d))};
 $('eNUp').addEventListener('click',()=>stepN(1));
@@ -2339,7 +2314,7 @@ function setProfile(id){
   PROF=id;saveProfs();profUI();
   E.sel=new Set(loadJSON(PK('ruletka-lekcje'),[]));E.last=loadJSON(PK('ruletka-gwiazdki-poprz'),[]);
   E.items=[];E.stars=[];E.hist=[];E.cur=-1;E.deck=null;E.only=null;E.used.clear();
-  $('dText').value=store.get(PK('ruletka-wyrazenia'))||'';eParse();eSetData(!E.items.length);eRender();eHistOpen(false);if(E.view==='browse')eBrowse();
+  $('dText').value=store.get(PK('ruletka-wyrazenia'))||'';eParse();eSetData(!E.items.length);eRender();if(E.view==='browse')eBrowse();
 }
 $('profSel').addEventListener('change',e=>setProfile(e.target.value));
 /* dodawanie i zmiana nazwy w polu tekstowym zamiast okienka przeglądarki */
