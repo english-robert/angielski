@@ -16,8 +16,10 @@
   color-scheme:light}
 *,*::before,*::after{box-sizing:border-box;margin:0}
 [hidden]{display:none!important}
-body{min-height:100vh;color:var(--ink);font-family:'Plus Jakarta Sans',sans-serif;
-  background:radial-gradient(circle at 8% 6%,#ffe0cc 0,transparent 30%),radial-gradient(circle at 94% 88%,#cfe8ff 0,transparent 34%),radial-gradient(circle at 92% 8%,#d9f5e3 0,transparent 24%),var(--bg)}
+body{min-height:100vh;color:var(--ink);font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg)}
+/* kolorowe plamy tła przyklejone do okna: nie rozciągają się, gdy strona robi się dłuższa */
+body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(circle at 8% 6%,#ffe0cc 0,transparent 30%),radial-gradient(circle at 94% 88%,#cfe8ff 0,transparent 34%),radial-gradient(circle at 92% 8%,#d9f5e3 0,transparent 24%)}
 body.lock{overflow:hidden}
 .app{max-width:1240px;margin:0 auto;padding:2rem 1.25rem 3rem}
 
@@ -45,6 +47,10 @@ h1 span{background:linear-gradient(90deg,#f26a1b,#d6336c 50%,#0b86d1);-webkit-ba
 .seg3 button{padding:.5rem 1rem;font-size:1.1rem}
 .switch button.on,.seg3 button.on{background:var(--ink);color:#fff}
 .switch svg{width:24px;height:24px}
+/* zakładki: same ikony, każda w swoim kolorze (nazwa w podpowiedzi po najechaniu) */
+.tabs button{width:64px;height:56px;padding:0;justify-content:center;color:var(--tc)}
+.tabs svg{width:28px;height:28px}
+.tabs button.on{background:var(--tc);color:#fff}
 .seg3 small{font-size:1rem;font-weight:600;opacity:.7}
 
 /* ---------- przyciski ---------- */
@@ -150,6 +156,11 @@ button:disabled{opacity:.6;cursor:default;transform:none}
 .exnote{color:var(--ink);text-align:left;font-size:1.25rem;line-height:1.25}
 .exnote small{display:block;font-size:1rem;font-weight:600;color:var(--muted)}
 .c-expr{margin-bottom:1.2rem}
+.c-expr+.c-star{margin-top:-.6rem}
+.c-star svg{color:#f0b400;fill:currentColor}
+.c-expr>span{line-height:1.9}
+.x-chip{display:inline;padding:.12em .55em;border-radius:9px;background:#fff;font-weight:600;-webkit-box-decoration-break:clone;box-decoration-break:clone;white-space:normal}
+.x-chip+.x-chip{margin-left:.35rem}
 .c-end,.c-why,.steps{margin-top:1.3rem}
 .c-why{background:var(--soft);color:var(--ink)}
 .cx b{display:block}
@@ -158,6 +169,51 @@ button:disabled{opacity:.6;cursor:default;transform:none}
 /* ---------- metody i strony ---------- */
 .methods{display:none;margin-top:2.8rem}
 .m-title{font-size:clamp(1.8rem,3vw,2.4rem);font-weight:800;margin-bottom:1.1rem}
+.m-head{display:flex;flex-wrap:wrap;align-items:center;gap:1rem;margin-bottom:1.1rem}
+.m-head .m-title{margin:0 auto 0 0}
+.m-head .seg3 svg{width:22px;height:22px}
+.mlist{display:grid}
+/* Scaffolding: fundament, duży pasek na górze zakładki Metody */
+.m-found{--mask:linear-gradient(110deg,transparent 40%,#000);position:relative;overflow:hidden;display:flex;align-items:center;gap:1.3rem;width:100%;margin-bottom:1.4rem;padding:1.4rem 1.6rem;border-radius:var(--r-l);background:var(--c);color:#fff;text-align:left}
+.m-found::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:var(--dots);background-size:22px 22px;-webkit-mask-image:var(--mask);mask-image:var(--mask)}
+.m-found>*{position:relative}
+.m-found:hover{transform:none}
+.mf-ico{flex:none;width:72px;height:72px;border-radius:var(--r-m);background:#fff;color:var(--c);display:grid;place-items:center;transform:rotate(-6deg)}
+.mf-ico svg{width:40px;height:40px}
+.mf-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:.15rem}
+.mf-txt small{font-size:1.05rem;font-weight:700;opacity:.85}
+.mf-txt b{font-size:clamp(1.7rem,3vw,2.3rem);font-weight:800;line-height:1.05}
+.mf-txt span{font-size:1.2rem;font-weight:600;opacity:.95}
+.mf-go{flex:none;width:34px;height:34px}
+/* „Co z tym robimy?”: pasek o stałej wysokości, więc nic nie skacze */
+.t-strip{display:flex;align-items:flex-start;gap:.9rem;margin-top:1.4rem}
+.t-main{flex:1;min-width:0;display:flex;align-items:center;gap:1rem;height:72px;padding:0 1.2rem 0 .8rem;border-radius:var(--r-m);background:#fff;border:3px solid var(--frame);color:var(--muted);font-size:1.25rem;font-weight:600;text-align:left}
+.t-main:hover{transform:none}
+.t-main:disabled{opacity:1;cursor:default}
+.t-ico{flex:none;width:50px;height:50px;border-radius:var(--r-s);display:grid;place-items:center;background:var(--soft);color:var(--ink);font-size:1.45rem;font-weight:800}
+.t-ico svg{width:28px;height:28px}
+.t-txt{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.t-txt b{color:var(--ink);font-weight:800}
+.t-go svg{display:block;width:30px;height:30px}
+.t-strip.has .t-main{background:var(--l);border-color:var(--m);color:var(--d)}
+.t-strip.has .t-ico{background:var(--c);color:#fff}
+.t-strip.has .t-txt b{color:var(--d)}
+.t-strip .t-roll{width:72px;height:72px}
+.t-roll:disabled{--sb:#c8d3e0;--sd:#a7b5c7;opacity:1}
+/* przycisk drukowania */
+/* drukarka: dyskretna ikona, wyraźniejsza dopiero po najechaniu */
+.p-btn{width:50px;height:50px;flex:none;display:grid;place-items:center;border-radius:var(--r-s);background:transparent;color:var(--muted);transition:transform .15s,background .15s,color .15s}
+.p-btn:hover{background:#fff;color:var(--ink)}
+.p-btn svg{width:26px;height:26px}
+.sch{position:relative}
+.sch-print{position:absolute;top:0;right:0}
+.b-print{display:none}
+.app.bm .b-print{display:grid}
+.app.bm.bl .b-print{display:grid}
+/* Stop & Recall: mały, przygaszony przycisk w rogu (albo klawisz S) */
+.stop-fab{position:fixed;right:16px;bottom:16px;z-index:45;width:50px;height:50px;border-radius:50%;display:grid;place-items:center;background:#fff;color:var(--red);border:3px solid #f2c4c5;opacity:.55;transition:opacity .2s,transform .15s}
+.stop-fab:hover,.stop-fab:focus-visible{opacity:1}
+.stop-fab svg{width:26px;height:26px}
 .mgrid,.lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.1rem}
 .mtile,.ltile{display:flex;align-items:center;gap:.9rem;min-height:88px;padding:.95rem 1.1rem;border-radius:var(--r-m);text-align:left}
 .mtile{background:var(--l);color:var(--d);border:3px solid color-mix(in srgb,var(--c) 35%,#fff)}
@@ -177,7 +233,6 @@ button:disabled{opacity:.6;cursor:default;transform:none}
 .app.bm .btns{flex:0 1 360px}
 .app.bm .hist{flex-basis:100%}
 .app.bm .exnote{flex:1 1 320px}
-.app.bm .methods{display:block}
 .b-view,.app .blist{display:none}
 .app.bm .b-view{display:flex}
 .b-view svg{width:22px;height:22px}
@@ -194,7 +249,9 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
 .expr{display:none;max-width:1140px;margin:0 auto}
 .app.em .stage{display:none}
 .app.em .expr{display:block}
-.app.mm .stage,.app.sm .stage{display:none}
+.app.mm .stage,.app.sm .stage,.app.mt .stage,.app.wm .stage{display:none}
+.app.mt #methods,.app.wm #links{display:block}
+#methods,#links{max-width:1140px;margin:0 auto}
 .app.sm .sch{display:block}
 .app.mm .mats{display:block}
 .data{border-radius:var(--r-m);overflow:hidden}
@@ -246,6 +303,9 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
 /* „Odsłoń” na karcie: ikona w lewym górnym rogu (naprzeciw oznaczeń), więc jej zniknięcie niczego nie przesuwa */
 /* „Odsłoń” obok „Losuj”: zawsze na miejscu, szary, gdy nie ma nic do odsłonięcia */
 .e-btns .ico{height:66px}
+/* w zakładce Wyrażenia przyciski są płaskie, jak pozostałe elementy panelu */
+.app.em .go,.app.em .ico,.app.em .d-btn{box-shadow:none;margin-bottom:0}
+.app.em .go:active,.app.em .ico:active,.app.em .d-btn:active{transform:scale(.96)}
 #eReveal:disabled{--sb:#c8d3e0;--sd:#a7b5c7;opacity:1}
 .e-btns{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:1rem 1.2rem;max-width:1000px;margin:1.6rem auto 0}
 .e-btns .go{flex:1 1 200px;max-width:290px;padding:.95rem 1.5rem}
@@ -433,6 +493,8 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
 .mat.solo{grid-template-columns:minmax(0,1fr)}
 .mat-side>.mat-g:first-child{margin-top:.3rem}
 .mat-h{display:flex;align-items:center;gap:1rem;margin-bottom:.9rem}
+.mat-n svg{width:32px;height:32px}
+.mat-why{background:var(--soft)!important}
 .mat-n{flex:none;width:58px;height:58px;border-radius:var(--r-m);background:var(--c);color:#fff;display:grid;place-items:center;font-size:1.7rem;font-weight:800}
 .mat h2{font-size:1.75rem;font-weight:800;line-height:1.05;color:var(--d)}
 .mat-sub{margin-top:.2rem;font-size:1.1rem;font-weight:600;color:var(--muted)}
@@ -554,6 +616,8 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
   font-size:clamp(1.1rem,1.7vw,1.3rem);line-height:1.3;transition:transform .18s,background .18s,color .18s,opacity .25s;animation:vin .45s ease backwards}
 .v:hover{transform:scale(1.02)}
 .v b{font-weight:700}
+.v-tag{display:inline-block;margin-left:.3rem;padding:.05rem .6rem;border-radius:99px;background:#fff;color:var(--d);font-size:.9rem;font-weight:700;vertical-align:.1em;white-space:nowrap}
+.v.pick .v-tag{color:var(--c)}
 .v .k{width:46px;height:46px;background:#fff;color:var(--c);font-size:1.35rem}
 .v .k svg{width:26px;height:26px}
 .v>span:last-child{padding-top:.45rem}
@@ -625,7 +689,22 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
   .dd-btn>span{flex:1;text-align:left}
   .e-panel.float{max-height:calc(100vh - 100px);overflow:auto}
 }
-@media(max-width:600px){.b-card-h{flex-wrap:wrap}.b-card-h .mk-box{margin-left:auto}.b-card .e-pills{order:3;flex-basis:100%}.snd{position:static;margin:0 auto 1rem}.prof{flex-wrap:wrap;max-width:calc(100% - 1.3rem);margin:0 0 1rem 1.3rem}.prof-sel{flex:1 1 100%}.prof select{max-width:none;flex:1}.prof-sep{display:none}}
+@media(max-width:600px){.sch-title{padding:0 50px}.tabs{gap:4px;padding:5px}.tabs button{width:44px;height:48px}.stop-fab{width:42px;height:42px}.b-card-h{flex-wrap:wrap}.b-card-h .mk-box{margin-left:auto}.b-card .e-pills{order:3;flex-basis:100%}.snd{position:static;margin:0 auto 1rem}.prof{flex-wrap:wrap;max-width:calc(100% - 1.3rem);margin:0 0 1rem 1.3rem}.prof-sel{flex:1 1 100%}.prof select{max-width:none;flex:1}.prof-sep{display:none}}
+/* druk: widać tylko wybraną część (schemat, z materiałami, lista aktywności albo metod) */
+@media print{
+  html{font-size:13px}
+  body,body.printing{background:#fff}
+  body::before,.stop-fab,.toast,.p-btn,.m-head .seg3{display:none!important}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact;animation:none!important;transition:none!important}
+  body.printing>*:not(.p-path){display:none!important}
+  body.printing .p-path>*:not(.p-path):not(.p-target){display:none!important}
+  body.printing .p-path{display:block!important;max-width:none;margin:0;padding:0}
+  body.printing .mat-grid.p-target{display:grid!important}
+  body.printing .p-target:not(.mat-grid){display:block!important}
+  body.printing .m-head{display:flex!important}
+  .mat,.sch-step,.sch-note,.sch-path{break-inside:avoid}
+  .mat.dis{opacity:1}
+}
 @media(prefers-reduced-motion:reduce){.ov::before,.stop::before,.deco svg{animation:none}}
 </style>
 </head>
@@ -635,12 +714,14 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
     <button class="snd" id="snd" title="Dźwięk (M)" aria-label="Dźwięk (M)" aria-pressed="true"><i data-ico="glosnik" class="s-on"></i><i data-ico="glosnik_off" class="s-off"></i></button>
     <h1>Idea <span>Box</span></h1>
     <p class="hint" id="hint">Kliknij koło albo przycisk, żeby zakręcić.</p>
-    <div class="switch">
-      <button id="mWheel" class="on"><i data-ico="kolo"></i>Koło</button>
-      <button id="mBoard"><i data-ico="plansza"></i>Plansza</button>
-      <button id="mExpr"><i data-ico="abc"></i>Wyrażenia</button>
-      <button id="mMat"><i data-ico="teczka"></i>Z materiałami</button>
-      <button id="mSch"><i data-ico="schemat"></i>Schemat lekcji</button>
+    <div class="switch tabs">
+      <button id="mWheel" class="on" style="--tc:#e5383b" title="Koło" aria-label="Koło"><i data-ico="kolo"></i></button>
+      <button id="mBoard" style="--tc:#f26a1b" title="Plansza" aria-label="Plansza"><i data-ico="plansza"></i></button>
+      <button id="mExpr" style="--tc:#d6336c" title="Wyrażenia" aria-label="Wyrażenia"><i data-ico="abc"></i></button>
+      <button id="mMat" style="--tc:#0f9d8f" title="Z materiałami" aria-label="Z materiałami"><i data-ico="teczka"></i></button>
+      <button id="mMet" style="--tc:#7048e8" title="Metody" aria-label="Metody"><i data-ico="ksiazka"></i></button>
+      <button id="mWeb" style="--tc:#0b86d1" title="Strony" aria-label="Strony"><i data-ico="swiat"></i></button>
+      <button id="mSch" style="--tc:#1d3557" title="Schemat lekcji" aria-label="Schemat lekcji"><i data-ico="schemat"></i></button>
     </div>
   </header>
 
@@ -659,17 +740,10 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
         <button data-v="tiles" class="on"><i data-ico="plansza"></i>Kafelki</button>
         <button data-v="list"><i data-ico="lista"></i>Lista</button>
       </div>
+      <button class="p-btn b-print" data-print="blist" title="Drukuj wszystkie aktywności" aria-label="Drukuj wszystkie aktywności"><i data-ico="drukarka"></i></button>
       <label class="tg"><input type="checkbox" id="nr" checked><span class="bx"><i data-ico="ptaszek"></i></span>Nie powtarzaj wylosowanych</label>
       <div id="hist" class="hist"></div>
     </aside>
-    <section class="methods" id="methods">
-      <h2 class="m-title">Metody</h2>
-      <div class="mgrid" id="mgrid"></div>
-    </section>
-    <section class="methods" id="links">
-      <h2 class="m-title">Strony</h2>
-      <div id="lgrid"></div>
-    </section>
   </div>
 
   <section class="expr" id="expr">
@@ -759,6 +833,10 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
       <button id="eReveal" class="ico" title="Odsłoń wszystko" aria-label="Odsłoń wszystko" disabled><i data-ico="oko"></i></button>
       <label class="tg" id="nrEBox"><input type="checkbox" id="nrE" checked><span class="bx"><i data-ico="ptaszek"></i></span>Nie powtarzaj</label>
     </div>
+    <div class="t-strip d-only" id="tStrip">
+      <button class="t-main" id="tMain"><span class="t-ico" id="tIco"></span><span class="t-txt" id="tTxt"></span><span class="t-go" id="tGo" hidden><i data-ico="dalej"></i></span></button>
+      <button class="ico t-roll" id="tRoll" title="Wylosuj zadanie" aria-label="Wylosuj zadanie" disabled><i data-ico="kostka"></i></button>
+    </div>
     <div class="e-card d-only" id="eCard">
       <div class="mk-box e-mk" id="eMk" hidden></div>
       <div class="e-pills"><span class="e-kind" id="eKind"></span><span class="e-kind e-les" id="eLes"></span></div>
@@ -768,10 +846,32 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
     <div class="b-deck d-only" id="eDeck" hidden></div>
     <div class="e-browse" id="eList"></div>
   </section>
+    <section class="methods" id="methods">
+      <div class="m-head">
+        <h2 class="m-title">Metody</h2>
+        <div class="seg3" id="mView">
+          <button data-v="tiles" class="on"><i data-ico="plansza"></i>Kafelki</button>
+          <button data-v="list"><i data-ico="lista"></i>Lista</button>
+        </div>
+        <button class="p-btn" data-print="mlist" title="Drukuj wszystkie metody" aria-label="Drukuj wszystkie metody"><i data-ico="drukarka"></i></button>
+      </div>
+      <button class="m-found" id="mFound" hidden></button>
+      <div class="mgrid" id="mgrid"></div>
+      <div class="mat-grid mlist" id="mlist" hidden></div>
+    </section>
+    <section class="methods" id="links">
+      <h2 class="m-title">Strony</h2>
+      <div id="lgrid"></div>
+    </section>
   <section class="mats" id="mats">
+    <div class="m-head">
+      <h2 class="m-title">Z materiałami</h2>
+      <button class="p-btn" data-print="matGrid" title="Drukuj zadania z materiałami" aria-label="Drukuj zadania z materiałami"><i data-ico="drukarka"></i></button>
+    </div>
     <div class="mat-grid" id="matGrid"></div>
   </section>
   <section class="sch" id="sch">
+    <button class="p-btn sch-print" data-print="sch" title="Drukuj schemat lekcji" aria-label="Drukuj schemat lekcji"><i data-ico="drukarka"></i></button>
     <h2 class="sch-title">Schemat <span>lekcji</span></h2>
     <p class="sch-intro" id="schIntro"></p>
     <div class="sch-notes">
@@ -800,6 +900,7 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
     <div class="c-body" id="cBody">
       <div>
         <p class="c-expr" id="cExpr" hidden><i data-ico="notatki"></i><span></span></p>
+        <p class="c-expr c-star" id="cStar" hidden><i data-ico="gwiazdka"></i><span></span></p>
         <p class="c-desc" id="cDesc"></p>
         <ol class="steps" id="cSteps"></ol>
         <p class="c-end" id="cEnd" hidden><i data-ico="flaga"></i><span></span></p>
@@ -828,6 +929,7 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
 </div>
 
 <div class="toast" id="toast" role="status" hidden></div>
+<button class="stop-fab" id="stopFab" title="Stop &amp; Recall (S)" aria-label="Stop &amp; Recall (S)"><i data-ico="stop"></i></button>
 
 <div class="stop" id="stopOv" hidden>
   <div class="stop-in" role="dialog" aria-modal="true" aria-labelledby="stopTitle">
@@ -1181,13 +1283,16 @@ const AKTYWNOSCI = [
      ikona      : dymki, dom, zarowka, pytanie, powtorz, lista, pauza, mieszaj, serce, klocki
      losuj      : true = na karcie metody jest przycisk „Losuj wariant”
      wyrazenie  : true = na karcie widać ostatnie wylosowane wyrażenie
+     fundament  : true = duży pasek na górze zakładki Metody (zamiast kafelka)
    Emotka zamiast litery wariantu: wpisz na początku {nazwa}, np. "{radosc} **Z radością:** ..."
+   Etykieta przy wariancie: wpisz na końcu [tekst], np. "... [krótko]"
    Dostępne: szept, radosc, zlosc, zdziwienie, sarkazm, smutek, nuda, ucho, seria
    (działa też w aktywnościach)
    ================================================================ */
 const METODY = [
   {
     nazwa: "Scaffolding",
+    fundament: true,
     podtytul: "Budujemy na tym, co już znasz",
     opis: "Zaczynamy od tego, co już umiesz powiedzieć, i krok po kroku dokładamy nowe słowa, konteksty i struktury. Podpowiadam tylko tam, gdzie sam jeszcze nie dasz rady, a z czasem pomocy jest coraz mniej. Na tym opiera się cały Idea Box.",
     kroki: [
@@ -1236,6 +1341,24 @@ const METODY = [
     ],
     dlaczego: "Nowe słowo łączysz z czymś, co już znasz. Im więcej takich połączeń, tym łatwiej je sobie przypomnieć.",
     ikona: "zarowka"
+  },
+  {
+    nazwa: "Absurdify",
+    podtytul: "Im dziwniej, tym lepiej zostaje w głowie",
+    opis: "Zamieniamy suche słowo, regułę albo pojęcie gramatyczne w coś dziwnego, przesadzonego i zabawnego.",
+    warianty: [
+      "++ Co robimy?",
+      "**Postać z pojęcia:** słowo albo pojęcie gramatyczne staje się postacią z charakterem i dziwactwami, np. Past Simple jako emeryt, który mówi tylko o sprawach, które już się skończyły.",
+      "**Juicy Gossip:** wyjaśniamy słowo albo regułę tak, jakby to była najbardziej soczysta plotka. „Słyszałeś, co Present Perfect wyprawia z teraźniejszością?”",
+      "**Breaking News:** wyjaśniamy słowo albo regułę jak sensacyjny serwis informacyjny. „Pilne! Present Perfect przyłapany na łączeniu przeszłości z teraźniejszością!”",
+      "**Komiczne przykłady:** układamy jak najbardziej absurdalne i zabawne zdania z danym słowem albo strukturą.",
+      "**Historia:** z wymyślonych postaci układamy krótką, dziwaczną historię.",
+      "**Magiczna przygoda:** wyruszamy w podróż przez krainę angielskiego i po drodze spotykamy postacie z pojęć, np. Present Perfect jako strażnika mostu między przeszłością a teraźniejszością. Każde miejsce to jedno wyrażenie, więc działa to też jak pałac pamięci."
+    ],
+    dlaczego: "Rzeczy dziwne, zabawne i pełne emocji wyróżniają się na tle reszty, więc łatwiej je zapamiętać (to tzw. efekt izolacji, opisany przez Hedwig von Restorff). Przy okazji mówisz dużo i swobodnie, bo zadanie jest zabawą.",
+    losuj: true,
+    wyrazenie: true,
+    ikona: "buzka"
   },
   {
     nazwa: "Eliciting",
@@ -1308,6 +1431,20 @@ const METODY = [
     ikona: "mieszaj"
   },
   {
+    nazwa: "Najmniejszy wysiłek",
+    podtytul: "Niech nauka będzie najłatwiejszym wyborem",
+    opis: "Mózg wybiera to, co wymaga najmniej wysiłku. Zamiast z tym walczyć, wykorzystujemy to: nowe rzeczy budujemy na tym, co już znasz, a angielski ustawiamy tak, żeby był pod ręką i był najłatwiejszą opcją.",
+    warianty: [
+      "++ Jak to wykorzystujemy?",
+      "**Od znanego do nowego:** nowe słowo albo strukturę doczepiamy do czegoś, co już umiesz, więc mózg nie zaczyna od zera.",
+      "**Pod ręką:** wyrażenia są tam, gdzie i tak zaglądasz, np. na tapecie telefonu albo w przypiętej notatce.",
+      "**Małe porcje:** kilka minut dziennie zamiast długiej nauki raz w tygodniu, bo łatwiej zacząć.",
+      "**Przy okazji:** angielski wpinasz w to, co i tak robisz, np. serial z napisami albo telefon po angielsku."
+    ],
+    dlaczego: "Z dwóch podobnych możliwości wybieramy tę, która wymaga mniej pracy. Opisał to już George Kingsley Zipf (1949), a James Clear w „Atomowych nawykach” nazywa to prawem najmniejszego wysiłku. To nie kłóci się z „pożądanymi utrudnieniami” (metoda Zmienność ćwiczeń): łatwe ma być sięgnięcie po naukę, a samo ćwiczenie może być wymagające.",
+    ikona: "sciezka"
+  },
+  {
     nazwa: "Stop & Recall",
     podtytul: "Co już wiemy?",
     opis: "Zatrzymujemy się, a Ty własnymi słowami odtwarzasz to, co przerobiliśmy.",
@@ -1320,6 +1457,39 @@ const METODY = [
     stop: true,
     ikona: "pauza"
   }
+];
+
+/* ================================================================
+   CO Z TYM ROBIMY? (zakładka Wyrażenia, pasek pod przyciskiem „Losuj”)
+   Zadania losowane do wylosowanych wyrażeń.
+     co      : nazwa aktywności albo metody (dokładnie jak w polu „nazwa”)
+     wariant : początek nazwy wariantu, który od razu się zaznaczy;
+               lista ["A","B"] = losuje jeden z nich; brak = bez wariantu
+     ile     : "1" = do jednego wyrażenia, "wiele" = do kilku naraz, "oba" = do obu
+   Aktywności wyłączone na planszy (oko) nie są losowane.
+   ================================================================ */
+const ZADANIA = [
+  { co: "Transform It", wariant: ["Czas", "Pytanie albo przeczenie", "Osobę"], ile: "1" },
+  { co: "Finish the Sentence", ile: "1" },
+  { co: "Situation Maker", ile: "1" },
+  { co: "„Why?” Chain", ile: "1" },
+  { co: "Guess What I'm Describing", wariant: "Opis", ile: "1" },
+  { co: "Show and Tell", ile: "1" },
+  { co: "Mind Mapping", wariant: ["Kolokacje", "Synonimy", "Rodzina wyrazów", "Zwrot lub zdanie"], ile: "1" },
+  { co: "Listen & Retell", ile: "1" },
+  { co: "Truths and Lies", wariant: "Jedno", ile: "1" },
+  { co: "Truths and Lies", wariant: "Trzy: 2 prawdy", ile: "wiele" },
+  { co: "Storytelling", wariant: "Słowa albo obrazki do użycia", ile: "wiele" },
+  { co: "Dialog Builder", wariant: "Wyrażenia do użycia", ile: "wiele" },
+  { co: "Practical English", wariant: "Słowa do użycia", ile: "wiele" },
+  { co: "Role Play", ile: "oba" },
+  { co: "Plans & Predictions", ile: "oba" },
+  { co: "Drilling", wariant: ["Szeptem", "Z radością", "Ze złością", "Ze zdziwieniem", "Z sarkazmem", "Ze smutkiem", "Ze znudzeniem"], ile: "oba" },
+  { co: "Podaj przykład", wariant: "Z Twojego życia", ile: "oba" },
+  { co: "Absurdify", wariant: ["Postać z pojęcia", "Juicy Gossip", "Breaking News", "Komiczne przykłady"], ile: "1" },
+  { co: "Absurdify", wariant: ["Historia", "Magiczna przygoda"], ile: "wiele" },
+  { co: "Mnemotechniki", wariant: ["Obrazki", "Rymy", "Fragmenty", "Etymologia"], ile: "1" },
+  { co: "Pałac pamięci", ile: "wiele" }
 ];
 
 /* ================================================================
@@ -1359,6 +1529,24 @@ const MATERIALY = [
       "**Nowe:** zwroty, które dopiero wprowadzamy.",
       "**Do powtórki:** zwroty z poprzednich lekcji.",
       "**Mieszane:** trochę nowych, trochę do powtórki."
+    ]
+  },
+  {
+    nazwa: "Context Story",
+    podtytul: "Historia ze znanych i nowych wyrażeń",
+    opis: "Przygotowuję historyjkę po angielsku z wyrażeń, które już znasz, i dokładam kilka nowych. Znane słowa tworzą kontekst, z którego da się odgadnąć znaczenie nowych.",
+    kroki: [
+      "Czytamy albo słuchamy historyjki.",
+      "Zgadujesz znaczenie nowych wyrażeń z kontekstu.",
+      "Opowiadasz historię własnymi słowami, używając nowych wyrażeń."
+    ],
+    warianty: [
+      "## Jak ją poznajemy?",
+      "**Czytamy:** tekst jest na ekranie.",
+      "**Słuchasz:** czytam na głos, a Ty nie widzisz tekstu.",
+      "## Na koniec",
+      "**Inne zakończenie:** zmieniasz zakończenie historii.",
+      "**Ciąg dalszy:** opowiadasz, co wydarzyło się potem."
     ]
   },
   {
@@ -1631,6 +1819,12 @@ const ICONS={
   pauza:'<circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/>',
   mieszaj:'<path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/>',
   serce:'<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
+  buzka:'<circle cx="12" cy="12" r="9"/><path d="M8 14.5c1 1.5 2.4 2.2 4 2.2s3-.7 4-2.2"/><path d="M8.5 9.5l2 1-2 1M15.5 9.5l-2 1 2 1"/>',
+  sciezka:'<circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 19h7.5a3.5 3.5 0 0 0 0-7h-7a3.5 3.5 0 0 1 0-7H16"/>',
+  drukarka:'<path d="M7 9V3h10v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M7 14h10v7H7z"/>',
+  ksiazka:'<path d="M4 19.5V5a2 2 0 0 1 2-2h14v14H6a2 2 0 0 0-2 2.5 2 2 0 0 0 2 2.5h14v-5"/><path d="M9 7h7"/>',
+  swiat:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+  stop:'<path d="M8.3 2.5h7.4l5.8 5.8v7.4l-5.8 5.8H8.3l-5.8-5.8V8.3z"/><path d="M12 7.5v5.5M12 16.5h.01"/>',
   glosnik:'<path d="M4 9.5h3.5L13 5v14l-5.5-4.5H4z"/><path d="M16.5 9a4.5 4.5 0 0 1 0 6M19.5 6.5a8 8 0 0 1 0 11"/>',
   pobierz:'<path d="M12 4v11M7 10l5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>',
   wczytaj:'<path d="M12 15V4M7 9l5-5 5 5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>',
@@ -1638,9 +1832,11 @@ const ICONS={
   bez_opanowanych:'<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.8 2.8L16.5 9.5"/><path d="M4.5 4.5l15 15"/>',
   glosnik_off:'<path d="M4 9.5h3.5L13 5v14l-5.5-4.5H4z"/><path d="M17 9.5l5 5M22 9.5l-5 5"/>'};
 /* emotki OpenMoji (openmoji.org, licencja CC BY-SA 4.0), używane jako {nazwa} na początku wariantu */
-const EMOJI={szept:'<g><circle cx="36" cy="35.8" r="23" fill="none" stroke="#FCEA2B" stroke-miterlimit="10" stroke-width="1.8"/><path fill="#FCEA2B" d="M46.8,56.3c11.3-6,15.7-20.2,9.7-31.5s-20-15.5-31.3-9.5s-15.5,20-9.5,31.3c2.3,4.2,5.8,7.7,10.1,9.8 c0,1.6,0.7,3.2,1.8,4.4c1.4,1.6,8.5,3.3,12.2-0.2C40.9,59.6,47.1,56.4,46.8,56.3z"/></g><g><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M51.5,52.8c9.4-8.6,10.1-23.1,1.5-32.5s-23.1-10.1-32.5-1.5S10.4,41.9,19,51.3c0.9,0.9,1.8,1.8,2.8,2.6"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21.4,23.6c0.7-1.4,1.9-2.4,3.3-2.9c1.3-0.7,2.9-0.8,4.3-0.4"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M50.7,23.6c-1.5-2.7-4.6-4-7.6-3.3"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M34,41.5c-1.4-0.2-2.8-0.7-4-1.5"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M42.1,40c-1.3,0.7-2.7,1.2-4.2,1.5"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M37.8,38.6c0-1-0.9-1.9-1.9-1.9S34,37.6,34,38.6"/><line x1="34" x2="34" y1="47.4" y2="38.6" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/><line x1="37.8" x2="37.8" y1="38.6" y2="47.5" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/><path fill="none" stroke="#000" stroke-miterlimit="10" stroke-width="2" d="M37.2,47.4c1.7,0,3,1.3,3,3l0,0c0,0.6,0,1.8,0,1.8c0.3,0,3,0,4.1,0c1.3-0.1,2.5,0.7,2.8,2s-0.3,2.6-1.4,3.2 c-0.5,0.3-1.1,0.6-1.6,0.9c-2,1.1-4.1,2.2-6.2,3.3c-1.9,1-4,1.4-6.1,1c-3.6-0.6-6-4-5.4-7.7c0.2-1.5,0.5-3,1-4.4 c0.6-1.8,2.3-3.1,4.2-3.1H37.2z"/><path d="M30,27.8c0,1.7-1.3,3-3,3s-3-1.3-3-3s1.3-3,3-3l0,0c1.6,0,3,1.3,3,2.9C30,27.7,30,27.8,30,27.8"/><path d="M48,27.8c0,1.7-1.3,3-3,3s-3-1.3-3-3s1.3-3,3-3l0,0c1.6,0,3,1.3,3,2.9C48,27.7,48,27.8,48,27.8"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M36.2,51.8c-1.3,0-2,0.7-2.5,1.5c-0.6,0.9,0,2.2,1,2.2H39c0.7,0,1.2-0.6,1.2-1.4v-1.8v-0.1"/></g>',radosc:'<g><circle cx="36.0001" cy="36" r="24" fill="#FCEA2B"/><polygon fill="#F1B31C" points="25.0424,21.2371 33.0285,20.0364 29.1238,27.1056 32.7335,34.3298 24.8037,32.8007 19.0485,38.4662 18.0524,30.452 10.8857,26.7292 18.1999,23.3052 19.5258,15.3389"/><polygon fill="#F1B31C" points="46.8821,21.2371 38.896,20.0364 42.8007,27.1056 39.191,34.3298 47.1208,32.8007 52.876,38.4662 53.8721,30.452 61.0388,26.7292 53.7246,23.3052 52.3987,15.3389"/><path fill="#EA5A47" d="M49.7371,46.356c-1.79,4.27-6.35,7.23-13.7,7.23c-7.41,0-12.03-3.03-13.8-7.36 C24.2671,46.686,37.2171,49.3959,49.7371,46.356z"/><path fill="#FFFFFF" d="M50.6071,41.866c0,1.6-0.29,3.11-0.87,4.49c-12.52,3.04-25.47,0.33-27.5-0.13 c-0.55-1.35-0.83-2.82-0.83-4.36h0.11c0,0,14.81,3.59,28.89,0.07L50.6071,41.866z"/></g><g><path fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M50.6071,41.866c0,1.6-0.29,3.11-0.87,4.49c-12.52,3.04-25.47,0.33-27.5-0.13c-0.55-1.35-0.83-2.82-0.83-4.36h0.11 c0,0,14.81,3.59,28.89,0.07L50.6071,41.866z"/><path fill="none" stroke="#000000" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M49.7371,46.356 c-1.79,4.27-6.35,7.23-13.7,7.23c-7.41,0-12.03-3.03-13.8-7.36C24.2671,46.686,37.2171,49.3959,49.7371,46.356z"/><path fill="none" stroke="#000000" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M50.2271,46.236 c-0.16,0.04-0.33,0.08-0.49,0.12"/><path fill="none" stroke="#000000" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M22.2371,46.226 c-0.19-0.05-0.28-0.07-0.28-0.07"/><path fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M46.5542,15.5591C43.3932,13.9237,39.8045,13,36,13c-3.9546,0-7.676,0.9979-10.9261,2.7556 c-0.0502,0.0271-0.1002,0.0544-0.1501,0.0819"/><path fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M13.1945,32.9954c-0.1283,0.9833-0.1944,1.9862-0.1944,3.0046c0,12.7022,10.2969,23,23,23c12.7022,0,23-10.2978,23-23 c0-1.0073-0.0648-1.9995-0.1903-2.9726"/><polygon fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" points="25.1179,21.2371 33.104,20.0364 29.1993,27.1056 32.809,34.3298 24.8792,32.8007 19.124,38.4662 18.1279,30.452 10.9612,26.7292 18.2754,23.3052 19.6013,15.3389"/><polygon fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" points="46.8821,21.2371 38.896,20.0364 42.8007,27.1056 39.191,34.3298 47.1208,32.8007 52.876,38.4662 53.8721,30.452 61.0388,26.7292 53.7246,23.3052 52.3987,15.3389"/></g>',zlosc:'<g><path fill="#E27022" d="M36,13c-12.6823,0-23,10.3177-23,23c0,12.6822,10.3177,23,23,23c12.6822,0,23-10.3178,23-23 C59,23.3177,48.6822,13,36,13z"/></g><g><circle cx="36" cy="36" r="23" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="2"/><path fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M28,46c1.5805-2.5575,4.9043-4.1349,8.4211-4.0038C39.6499,42.1166,42.5622,43.6595,44,46"/><path d="M30,32.9252c0,1.6567-1.3448,3-3,3c-1.6553,0-3-1.3433-3-3c0-1.6553,1.3447-3,3-3C28.6552,29.9252,30,31.27,30,32.9252"/><path d="M48,32.9252c0,1.6567-1.3447,3-3,3s-3-1.3433-3-3c0-1.6553,1.3447-3,3-3S48,31.27,48,32.9252"/><line x1="23" x2="30" y1="24" y2="28" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2"/><line x1="49" x2="42" y1="24" y2="28" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2"/></g>',zdziwienie:'<g><circle cx="36" cy="36" r="23" fill="#fcea2b"/><path fill-rule="evenodd" d="m35.93 51.58c-2.461 0-4.742-2.368-4.742-4.987s2.444-4.66 4.905-4.66 4.701 2.205 4.701 4.823-2.403 4.823-4.864 4.823z"/><path fill="#fff" d="m31.37 45.29c2.025 1.288 7.318 1.288 9.26 0l-4.63-4.005z"/></g><g><circle cx="36" cy="36" r="23" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="m20.695 27.2c0.7207-1.3857 1.9278-2.4541 3.3907-3 1.4052-0.7002 3.0205-0.8486 4.5302-0.4209"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="m51.305 27.2c-1.582-2.7724-4.8037-4.1699-7.9092-3.4306"/><path d="m30 35c0 1.6568-1.3448 3-3 3-1.6553 0-3-1.3433-3-3 0-1.6552 1.3447-3 3-3 1.6552 0 3 1.3448 3 3"/><path d="m48 35c0 1.6568-1.3447 3-3 3s-3-1.3433-3-3c0-1.6552 1.3447-3 3-3s3 1.3448 3 3"/><circle cx="36" cy="46.6" r="4.759" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></g>',sarkazm:'<g><circle cx="36" cy="36" r="23" fill="#FCEA2B"/><circle cx="46" cy="32" r="6.5" fill="#FFFFFF"/><circle cx="26" cy="32" r="6.5" fill="#FFFFFF"/></g><g><circle cx="46.0556" cy="28" r="2.5556"/><circle cx="26.0556" cy="28" r="2.5556"/><circle cx="36" cy="36" r="23" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2"/><circle cx="46" cy="32" r="6.5" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="2"/><circle cx="26" cy="32" r="6.5" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="2"/><line x1="31" x2="41" y1="49.4967" y2="49.4967" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2"/></g>',smutek:'<g><path fill="#FCEA2B" d="M36.2002,13.3163c-12.5719,0-22.7998,10.2279-22.7998,22.7998c0,12.5718,10.2279,22.7998,22.7998,22.7998 C48.772,58.9159,59,48.6879,59,36.1161C59,23.5442,48.772,13.3163,36.2002,13.3163z"/><path fill="#92D3F5" d="M22.7747,33.8245c-1.0767,1.1019-3.115,3.4878-3.2924,5.9164c-0.1111,1.521,1.1185,2.9431,2.6365,3.0534 c1.5693,0.1143,2.9388-1.0681,3.0546-2.6364l0,0C25.3503,37.7287,23.6798,35.0718,22.7747,33.8245z"/></g><g><circle cx="36" cy="36" r="23" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="2"/><path fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M26.5,48c1.8768-3.8326,5.8239-6.1965,10-6c3.8343,0.1804,7.2926,2.4926,9,6"/><path fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="2" d="M20.3869,41.6299 c-0.5326-0.5326-0.8258-1.2405-0.8256-1.9936c0-2.4789,2.3433-4.8508,2.443-4.9505c0.2074-0.2074,0.5431-0.2072,0.7503,0 c0.0998,0.0998,2.4432,2.4718,2.4437,4.9512l0.0002,0.0002c-0.0007,1.5535-1.2653,2.8177-2.8189,2.8175 C21.6273,42.4556,20.9195,42.1624,20.3869,41.6299z"/><path d="M30,31c0,1.6568-1.3448,3-3,3c-1.6553,0-3-1.3433-3-3c0-1.6552,1.3447-3,3-3C28.6552,28,30,29.3448,30,31"/><path d="M48,31c0,1.6568-1.3447,3-3,3s-3-1.3433-3-3c0-1.6552,1.3447-3,3-3S48,29.3448,48,31"/></g>',nuda:'<g><path d="M35.9772,30.4187A10.9345,10.9345,0,0,0,25.0986,43.074a2.5,2.5,0,0,1,1.3786-.4414,2.5356,2.5356,0,0,1,2.3448,1.4746,39.3435,39.3435,0,0,1,2.6435-5.2178,3.39,3.39,0,0,1,2.6651-1.9629,2.4872,2.4872,0,0,1,1.4521.4073c1.2295-1.5811,2.6338-1.69,3.6338-1.1846a3.3452,3.3452,0,0,1,1.7051,2.76,2.554,2.554,0,0,1,.83.2011,2.3206,2.3206,0,0,1,1.4755,2.2735,5.8368,5.8368,0,0,1-.6005,2.5029,2.6279,2.6279,0,0,1,.6005.77,4.0262,4.0262,0,0,1-.12,3.6875l-.8525,1.6123c-.0711.2164-.1292.4324-.19.6486a11.01,11.01,0,0,0-6.0874-20.1867Z"/></g><g><circle cx="36.0043" cy="35.3184" r="23.9004" fill="#fcea2b"/><path fill="#fcea2b" d="M35.6039,66.3682c-.0225,0-.0459-.001-.0684-.003l-9.6992-.6992a.95.95,0,0,1-.8633-1.1338c.5381-2.6924.9893-4.709,1.23-5.792l.001-.0019c-.1533-.3145-.3066-.6406-.46-.9658-.1963-.418-.3925-.836-.59-1.23-.2061-.4112-.6358-1.2686-1.2969-8.64-.2021-2.0176-.1514-3.48.7246-4.5029a2.4611,2.4611,0,0,1,1.9219-.9326,2.5354,2.5354,0,0,1,2.3447,1.4746,39.3438,39.3438,0,0,1,2.6436-5.2178,3.39,3.39,0,0,1,2.665-1.9629,2.4882,2.4882,0,0,1,1.4522.4072c1.23-1.581,2.6338-1.69,3.6338-1.1845a3.345,3.345,0,0,1,1.705,2.76,2.5531,2.5531,0,0,1,.83.2012,2.32,2.32,0,0,1,1.4756,2.2735,5.8357,5.8357,0,0,1-.6006,2.5029,2.6265,2.6265,0,0,1,.6006.77,4.0262,4.0262,0,0,1-.12,3.6875l-.8526,1.6123c-.2158.6582-.3769,1.3184-.5332,1.959l-.122.498a21.71,21.71,0,0,1-2.39,6.5274,5.8081,5.8081,0,0,1-1.625,1.9775c-.0683.0664-.1338.1279-.1953.1865a1.7238,1.7238,0,0,0-.29.3076l-.0723.4434a36.5458,36.5458,0,0,0-.5019,3.7861.95.95,0,0,1-.9483.8907Z"/><path d="M35.9772,30.4187A10.9345,10.9345,0,0,0,25.0986,43.074a2.5,2.5,0,0,1,1.3786-.4414,2.5356,2.5356,0,0,1,2.3448,1.4746,39.3435,39.3435,0,0,1,2.6435-5.2178,3.39,3.39,0,0,1,2.6651-1.9629,2.4872,2.4872,0,0,1,1.4521.4073c1.2295-1.5811,2.6338-1.69,3.6338-1.1846a3.3452,3.3452,0,0,1,1.7051,2.76,2.554,2.554,0,0,1,.83.2011,2.3206,2.3206,0,0,1,1.4755,2.2735,5.8368,5.8368,0,0,1-.6005,2.5029,2.6279,2.6279,0,0,1,.6005.77,4.0262,4.0262,0,0,1-.12,3.6875l-.8525,1.6123c-.0711.2164-.1292.4324-.19.6486a11.01,11.01,0,0,0-6.0874-20.1867Z"/></g><g><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M42.8042,57.3184a22.9792,22.9792,0,1,0-28.8-15.2,23.7912,23.7912,0,0,0,7.1,10.8"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M23.1042,26.0684c4.4-.1,7.9-1.4,8.8-3.1"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M48.9042,26.0684c-4.4-.1-7.9-1.4-8.8-3.1"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M25.9042,64.7184c.6-3,1.1-5.2,1.3-6.1-.4-.8-.8-1.7-1.2-2.5-.2-.4-.6-1.6-1.2-8.3-.2-2-.1-3.1.5-3.8a1.5628,1.5628,0,0,1,1.2-.6c1.3,0,1.7,1.2,2,2.4l.1.3.2.6a39.4783,39.4783,0,0,1,3.5-7.5c1.8-3,3.5-.6,3.5-.6,2.2-4.1,5-.8,4,1.3a1.9811,1.9811,0,0,1,1.6-.1,1.4158,1.4158,0,0,1,.9,1.4,5.2848,5.2848,0,0,1-.9,2.8,2.1889,2.1889,0,0,1,1,.9,3.0777,3.0777,0,0,1-.1,2.8l-.9,1.7c-.3.9-.5,1.8-.7,2.6a20.7835,20.7835,0,0,1-2.3,6.3,4.7436,4.7436,0,0,1-1.4,1.7c-.4.4-.7.6-.8,1a42.7765,42.7765,0,0,0-.6,4.4"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M26.2418,43.4453a10.001,10.001,0,1,1,15.0545,6.31"/></g>',ucho:'<g><path fill="#d0cfce" d="M46.0938,29.8141a8.0935,8.0935,0,0,0,1.231-5.1156c-.3322-8.5131-6.5889-10.9008-9.5933-13.4778,4.1911,5.4922,5.9607,10.7559,2.6157,20.8539C40.3472,32.0746,43.68,33.5811,46.0938,29.8141Z"/></g><g><path fill="#fcea2b" d="M15.2237,17.3624C19.8487-.1792,51.1166,4.6141,39.8279,33.2791c-14.5919,35.7917-32.7917,24.6771-29.7292,13"/></g><g><path fill="#f1b31c" d="M35.5248,33.6662c3.6637-21.8775-14.5625-17.2394-16.0056-11.6769C23.4935,6.1143,43.6107,12.3969,35.5248,33.6662Z"/><path fill="#f1b31c" d="M24,25.6855c4.4385,7,8.3371,13.9079,2.3371,16.6163-1.3969.5735-2.8765.4132-4.3824,1.1735-1.5343.7223-1.8192,1.3265-3.6385,3.2848-2.5625,2.0625-5.7708-1.5465-3.9583-3.6875,3.0729-3.3958,6.4479-3.9271,4.6667-7.2083-1.2187-2.2047.4957-5.0277,4.402-3.9027Z"/></g><g><g><path fill="none" stroke="#000" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M50.45,18.001a20.3132,20.3132,0,0,1,1.2748,9.7546,13.6741,13.6741,0,0,1-.5124,2.2184"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M54.6652,15.0123a27.8846,27.8846,0,0,1,1.6739,13.0089,18.6581,18.6581,0,0,1-.6573,2.9564"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M58.9094,13.9284a32.3379,32.3379,0,0,1,1.868,14.7126,21.5331,21.5331,0,0,1-.7184,3.3416"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M46.0938,29.8141a8.0935,8.0935,0,0,0,1.231-5.1156c-.3322-8.5131-6.5889-10.9008-9.5933-13.4778,4.1911,5.4922,5.9607,10.7559,2.6157,20.8539C40.3472,32.0746,43.68,33.5811,46.0938,29.8141Z"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5192,21.9893c3.9744-15.875,24.8326-10.2582,15.24,11.1183"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.7123,47.333C7.65,59.01,24.9329,69.8018,39.5248,34.01,50.8373,5.9268,20.5873.1351,15.9623,17.6768c0,0-2.7758,9.8921,5.3911,14.0507"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M24.8373,26.0518c4.4386,7,7.5,13.5417,1.5,16.25-1.3969.5735-2.8765.4132-4.3824,1.1735-1.5343.7223-1.8192,1.3265-3.6385,3.2848-2.5625,2.0625-5.7708-1.5465-3.9583-3.6875"/><circle cx="20.0281" cy="35.5516" r="4.0484" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></g></g><g><circle cx="20.01" cy="35.494" r="3.0542" fill="#d0cfce"/></g>',seria:'<g><path fill="#d22f27" d="m5.8542,50.6944s-.4373,4.3055,1.1458,4.3055,13.5313-.0625,13.5313-.0625h40.083l1.8339-2h3.5872v-9.4375s0-7.5417,0-7.5417l-7.5598-.0331c-.7323-.0466-1.466.0649-2.1514.3269h0c-1.0873.4157-1.8217,1.4401-1.8662,2.6034h0s5.2285,5.0625,5.2285,5.0625l-3.9052.0195s-.9391-1.4902-3.0821-2.584c-6.5703-3.3535-11.167-2.417-11.167-2.417l-.5322,5.8888s-10.9347-.2853-14.3498.1747c-1.9697.2656-6.0826,1.0238-10.3648,2.0189-3.2286.75-6.1623,1.959-9.2854,2.9795l-1.1458.6961Z"/><path fill="#ea5a47" d="m10.2197,53.376s-5.7822,1.084-4.2197-.292c0,0,3.9688-2.6465,13.6123-2.8965l-2.7998,3.3906-4.0195,1.2158-2.5733-1.4179Z"/><path fill="#ea5a47" d="m41.5625,43.6875l.4375-3.836,3.9629.6226c3.2865.5163,6.3508,1.9807,8.8169,4.2135l.3451.3125h-9.5l-4.0625-1.3125Z"/><polygon fill="#ea5a47" points="55.8818 35.7701 55.7168 38 66.2768 38 66.1118 35.6982 55.8818 35.7701"/><circle cx="58.75" cy="52" r="2.8281" fill="#d0cfce"/><circle cx="21.5" cy="52" r="2.8281" fill="#d0cfce"/></g><g><circle cx="22" cy="52" r="3" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/><circle cx="39" cy="42" r="3"/><circle cx="59" cy="52" r="3" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/><polyline fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" points="65.625 52 67 52 67 35 55 35 55 38 58.1875 41.1084"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16,53l-1,1H5v-4s13-6,26-6h20"/><line x1="29" x2="53" y1="54" y2="54" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m41,43v-4s10,0,14,5"/></g>'};
+const EMOJI={szept:'<g><circle cx="36" cy="35.8" r="23" fill="none" stroke="#FCEA2B" stroke-miterlimit="10" stroke-width="1.8"/><path fill="#FCEA2B" d="M46.8,56.3c11.3-6,15.7-20.2,9.7-31.5s-20-15.5-31.3-9.5s-15.5,20-9.5,31.3c2.3,4.2,5.8,7.7,10.1,9.8 c0,1.6,0.7,3.2,1.8,4.4c1.4,1.6,8.5,3.3,12.2-0.2C40.9,59.6,47.1,56.4,46.8,56.3z"/></g><g><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M51.5,52.8c9.4-8.6,10.1-23.1,1.5-32.5s-23.1-10.1-32.5-1.5S10.4,41.9,19,51.3c0.9,0.9,1.8,1.8,2.8,2.6"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21.4,23.6c0.7-1.4,1.9-2.4,3.3-2.9c1.3-0.7,2.9-0.8,4.3-0.4"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M50.7,23.6c-1.5-2.7-4.6-4-7.6-3.3"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M34,41.5c-1.4-0.2-2.8-0.7-4-1.5"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M42.1,40c-1.3,0.7-2.7,1.2-4.2,1.5"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M37.8,38.6c0-1-0.9-1.9-1.9-1.9S34,37.6,34,38.6"/><line x1="34" x2="34" y1="47.4" y2="38.6" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/><line x1="37.8" x2="37.8" y1="38.6" y2="47.5" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/><path fill="none" stroke="#000" stroke-miterlimit="10" stroke-width="2" d="M37.2,47.4c1.7,0,3,1.3,3,3l0,0c0,0.6,0,1.8,0,1.8c0.3,0,3,0,4.1,0c1.3-0.1,2.5,0.7,2.8,2s-0.3,2.6-1.4,3.2 c-0.5,0.3-1.1,0.6-1.6,0.9c-2,1.1-4.1,2.2-6.2,3.3c-1.9,1-4,1.4-6.1,1c-3.6-0.6-6-4-5.4-7.7c0.2-1.5,0.5-3,1-4.4 c0.6-1.8,2.3-3.1,4.2-3.1H37.2z"/><path d="M30,27.8c0,1.7-1.3,3-3,3s-3-1.3-3-3s1.3-3,3-3l0,0c1.6,0,3,1.3,3,2.9C30,27.7,30,27.8,30,27.8"/><path d="M48,27.8c0,1.7-1.3,3-3,3s-3-1.3-3-3s1.3-3,3-3l0,0c1.6,0,3,1.3,3,2.9C48,27.7,48,27.8,48,27.8"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M36.2,51.8c-1.3,0-2,0.7-2.5,1.5c-0.6,0.9,0,2.2,1,2.2H39c0.7,0,1.2-0.6,1.2-1.4v-1.8v-0.1"/></g>',radosc:'<g><circle cx="36.0001" cy="36" r="24" fill="#FCEA2B"/><polygon fill="#F1B31C" points="25.0424,21.2371 33.0285,20.0364 29.1238,27.1056 32.7335,34.3298 24.8037,32.8007 19.0485,38.4662 18.0524,30.452 10.8857,26.7292 18.1999,23.3052 19.5258,15.3389"/><polygon fill="#F1B31C" points="46.8821,21.2371 38.896,20.0364 42.8007,27.1056 39.191,34.3298 47.1208,32.8007 52.876,38.4662 53.8721,30.452 61.0388,26.7292 53.7246,23.3052 52.3987,15.3389"/><path fill="#EA5A47" d="M49.7371,46.356c-1.79,4.27-6.35,7.23-13.7,7.23c-7.41,0-12.03-3.03-13.8-7.36 C24.2671,46.686,37.2171,49.3959,49.7371,46.356z"/><path fill="#FFFFFF" d="M50.6071,41.866c0,1.6-0.29,3.11-0.87,4.49c-12.52,3.04-25.47,0.33-27.5-0.13 c-0.55-1.35-0.83-2.82-0.83-4.36h0.11c0,0,14.81,3.59,28.89,0.07L50.6071,41.866z"/></g><g><path fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M50.6071,41.866c0,1.6-0.29,3.11-0.87,4.49c-12.52,3.04-25.47,0.33-27.5-0.13c-0.55-1.35-0.83-2.82-0.83-4.36h0.11 c0,0,14.81,3.59,28.89,0.07L50.6071,41.866z"/><path fill="none" stroke="#000000" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M49.7371,46.356 c-1.79,4.27-6.35,7.23-13.7,7.23c-7.41,0-12.03-3.03-13.8-7.36C24.2671,46.686,37.2171,49.3959,49.7371,46.356z"/><path fill="none" stroke="#000000" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M50.2271,46.236 c-0.16,0.04-0.33,0.08-0.49,0.12"/><path fill="none" stroke="#000000" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M22.2371,46.226 c-0.19-0.05-0.28-0.07-0.28-0.07"/><path fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M46.5542,15.5591C43.3932,13.9237,39.8045,13,36,13c-3.9546,0-7.676,0.9979-10.9261,2.7556 c-0.0502,0.0271-0.1002,0.0544-0.1501,0.0819"/><path fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M13.1945,32.9954c-0.1283,0.9833-0.1944,1.9862-0.1944,3.0046c0,12.7022,10.2969,23,23,23c12.7022,0,23-10.2978,23-23 c0-1.0073-0.0648-1.9995-0.1903-2.9726"/><polygon fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" points="25.1179,21.2371 33.104,20.0364 29.1993,27.1056 32.809,34.3298 24.8792,32.8007 19.124,38.4662 18.1279,30.452 10.9612,26.7292 18.2754,23.3052 19.6013,15.3389"/><polygon fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" points="46.8821,21.2371 38.896,20.0364 42.8007,27.1056 39.191,34.3298 47.1208,32.8007 52.876,38.4662 53.8721,30.452 61.0388,26.7292 53.7246,23.3052 52.3987,15.3389"/></g>',zlosc:'<g><path fill="#E27022" d="M36,13c-12.6823,0-23,10.3177-23,23c0,12.6822,10.3177,23,23,23c12.6822,0,23-10.3178,23-23 C59,23.3177,48.6822,13,36,13z"/></g><g><circle cx="36" cy="36" r="23" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="2"/><path fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M28,46c1.5805-2.5575,4.9043-4.1349,8.4211-4.0038C39.6499,42.1166,42.5622,43.6595,44,46"/><path d="M30,32.9252c0,1.6567-1.3448,3-3,3c-1.6553,0-3-1.3433-3-3c0-1.6553,1.3447-3,3-3C28.6552,29.9252,30,31.27,30,32.9252"/><path d="M48,32.9252c0,1.6567-1.3447,3-3,3s-3-1.3433-3-3c0-1.6553,1.3447-3,3-3S48,31.27,48,32.9252"/><line x1="23" x2="30" y1="24" y2="28" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2"/><line x1="49" x2="42" y1="24" y2="28" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2"/></g>',zdziwienie:'<g><circle cx="36" cy="36" r="23" fill="#fcea2b"/><path fill-rule="evenodd" d="m35.93 51.58c-2.461 0-4.742-2.368-4.742-4.987s2.444-4.66 4.905-4.66 4.701 2.205 4.701 4.823-2.403 4.823-4.864 4.823z"/><path fill="#fff" d="m31.37 45.29c2.025 1.288 7.318 1.288 9.26 0l-4.63-4.005z"/></g><g><circle cx="36" cy="36" r="23" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="m20.695 27.2c0.7207-1.3857 1.9278-2.4541 3.3907-3 1.4052-0.7002 3.0205-0.8486 4.5302-0.4209"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="m51.305 27.2c-1.582-2.7724-4.8037-4.1699-7.9092-3.4306"/><path d="m30 35c0 1.6568-1.3448 3-3 3-1.6553 0-3-1.3433-3-3 0-1.6552 1.3447-3 3-3 1.6552 0 3 1.3448 3 3"/><path d="m48 35c0 1.6568-1.3447 3-3 3s-3-1.3433-3-3c0-1.6552 1.3447-3 3-3s3 1.3448 3 3"/><circle cx="36" cy="46.6" r="4.759" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></g>',sarkazm:'<g><circle cx="36" cy="36" r="23" fill="#FCEA2B"/><circle cx="46" cy="32" r="6.5" fill="#FFFFFF"/><circle cx="26" cy="32" r="6.5" fill="#FFFFFF"/></g><g><circle cx="46.0556" cy="28" r="2.5556"/><circle cx="26.0556" cy="28" r="2.5556"/><circle cx="36" cy="36" r="23" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2"/><circle cx="46" cy="32" r="6.5" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="2"/><circle cx="26" cy="32" r="6.5" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="2"/><line x1="31" x2="41" y1="49.4967" y2="49.4967" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2"/></g>',smutek:'<g><path fill="#FCEA2B" d="M36.2002,13.3163c-12.5719,0-22.7998,10.2279-22.7998,22.7998c0,12.5718,10.2279,22.7998,22.7998,22.7998 C48.772,58.9159,59,48.6879,59,36.1161C59,23.5442,48.772,13.3163,36.2002,13.3163z"/><path fill="#92D3F5" d="M22.7747,33.8245c-1.0767,1.1019-3.115,3.4878-3.2924,5.9164c-0.1111,1.521,1.1185,2.9431,2.6365,3.0534 c1.5693,0.1143,2.9388-1.0681,3.0546-2.6364l0,0C25.3503,37.7287,23.6798,35.0718,22.7747,33.8245z"/></g><g><circle cx="36" cy="36" r="23" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="2"/><path fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M26.5,48c1.8768-3.8326,5.8239-6.1965,10-6c3.8343,0.1804,7.2926,2.4926,9,6"/><path fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="2" d="M20.3869,41.6299 c-0.5326-0.5326-0.8258-1.2405-0.8256-1.9936c0-2.4789,2.3433-4.8508,2.443-4.9505c0.2074-0.2074,0.5431-0.2072,0.7503,0 c0.0998,0.0998,2.4432,2.4718,2.4437,4.9512l0.0002,0.0002c-0.0007,1.5535-1.2653,2.8177-2.8189,2.8175 C21.6273,42.4556,20.9195,42.1624,20.3869,41.6299z"/><path d="M30,31c0,1.6568-1.3448,3-3,3c-1.6553,0-3-1.3433-3-3c0-1.6552,1.3447-3,3-3C28.6552,28,30,29.3448,30,31"/><path d="M48,31c0,1.6568-1.3447,3-3,3s-3-1.3433-3-3c0-1.6552,1.3447-3,3-3S48,29.3448,48,31"/></g>',nuda:'<g><path d="M35.9772,30.4187A10.9345,10.9345,0,0,0,25.0986,43.074a2.5,2.5,0,0,1,1.3786-.4414,2.5356,2.5356,0,0,1,2.3448,1.4746,39.3435,39.3435,0,0,1,2.6435-5.2178,3.39,3.39,0,0,1,2.6651-1.9629,2.4872,2.4872,0,0,1,1.4521.4073c1.2295-1.5811,2.6338-1.69,3.6338-1.1846a3.3452,3.3452,0,0,1,1.7051,2.76,2.554,2.554,0,0,1,.83.2011,2.3206,2.3206,0,0,1,1.4755,2.2735,5.8368,5.8368,0,0,1-.6005,2.5029,2.6279,2.6279,0,0,1,.6005.77,4.0262,4.0262,0,0,1-.12,3.6875l-.8525,1.6123c-.0711.2164-.1292.4324-.19.6486a11.01,11.01,0,0,0-6.0874-20.1867Z"/></g><g><circle cx="36.0043" cy="35.3184" r="23.9004" fill="#fcea2b"/><path fill="#fcea2b" d="M35.6039,66.3682c-.0225,0-.0459-.001-.0684-.003l-9.6992-.6992a.95.95,0,0,1-.8633-1.1338c.5381-2.6924.9893-4.709,1.23-5.792l.001-.0019c-.1533-.3145-.3066-.6406-.46-.9658-.1963-.418-.3925-.836-.59-1.23-.2061-.4112-.6358-1.2686-1.2969-8.64-.2021-2.0176-.1514-3.48.7246-4.5029a2.4611,2.4611,0,0,1,1.9219-.9326,2.5354,2.5354,0,0,1,2.3447,1.4746,39.3438,39.3438,0,0,1,2.6436-5.2178,3.39,3.39,0,0,1,2.665-1.9629,2.4882,2.4882,0,0,1,1.4522.4072c1.23-1.581,2.6338-1.69,3.6338-1.1845a3.345,3.345,0,0,1,1.705,2.76,2.5531,2.5531,0,0,1,.83.2012,2.32,2.32,0,0,1,1.4756,2.2735,5.8357,5.8357,0,0,1-.6006,2.5029,2.6265,2.6265,0,0,1,.6006.77,4.0262,4.0262,0,0,1-.12,3.6875l-.8526,1.6123c-.2158.6582-.3769,1.3184-.5332,1.959l-.122.498a21.71,21.71,0,0,1-2.39,6.5274,5.8081,5.8081,0,0,1-1.625,1.9775c-.0683.0664-.1338.1279-.1953.1865a1.7238,1.7238,0,0,0-.29.3076l-.0723.4434a36.5458,36.5458,0,0,0-.5019,3.7861.95.95,0,0,1-.9483.8907Z"/><path d="M35.9772,30.4187A10.9345,10.9345,0,0,0,25.0986,43.074a2.5,2.5,0,0,1,1.3786-.4414,2.5356,2.5356,0,0,1,2.3448,1.4746,39.3435,39.3435,0,0,1,2.6435-5.2178,3.39,3.39,0,0,1,2.6651-1.9629,2.4872,2.4872,0,0,1,1.4521.4073c1.2295-1.5811,2.6338-1.69,3.6338-1.1846a3.3452,3.3452,0,0,1,1.7051,2.76,2.554,2.554,0,0,1,.83.2011,2.3206,2.3206,0,0,1,1.4755,2.2735,5.8368,5.8368,0,0,1-.6005,2.5029,2.6279,2.6279,0,0,1,.6005.77,4.0262,4.0262,0,0,1-.12,3.6875l-.8525,1.6123c-.0711.2164-.1292.4324-.19.6486a11.01,11.01,0,0,0-6.0874-20.1867Z"/></g><g><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M42.8042,57.3184a22.9792,22.9792,0,1,0-28.8-15.2,23.7912,23.7912,0,0,0,7.1,10.8"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M23.1042,26.0684c4.4-.1,7.9-1.4,8.8-3.1"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M48.9042,26.0684c-4.4-.1-7.9-1.4-8.8-3.1"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M25.9042,64.7184c.6-3,1.1-5.2,1.3-6.1-.4-.8-.8-1.7-1.2-2.5-.2-.4-.6-1.6-1.2-8.3-.2-2-.1-3.1.5-3.8a1.5628,1.5628,0,0,1,1.2-.6c1.3,0,1.7,1.2,2,2.4l.1.3.2.6a39.4783,39.4783,0,0,1,3.5-7.5c1.8-3,3.5-.6,3.5-.6,2.2-4.1,5-.8,4,1.3a1.9811,1.9811,0,0,1,1.6-.1,1.4158,1.4158,0,0,1,.9,1.4,5.2848,5.2848,0,0,1-.9,2.8,2.1889,2.1889,0,0,1,1,.9,3.0777,3.0777,0,0,1-.1,2.8l-.9,1.7c-.3.9-.5,1.8-.7,2.6a20.7835,20.7835,0,0,1-2.3,6.3,4.7436,4.7436,0,0,1-1.4,1.7c-.4.4-.7.6-.8,1a42.7765,42.7765,0,0,0-.6,4.4"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M26.2418,43.4453a10.001,10.001,0,1,1,15.0545,6.31"/></g>',ucho:'<g><path fill="#d0cfce" d="M46.0938,29.8141a8.0935,8.0935,0,0,0,1.231-5.1156c-.3322-8.5131-6.5889-10.9008-9.5933-13.4778,4.1911,5.4922,5.9607,10.7559,2.6157,20.8539C40.3472,32.0746,43.68,33.5811,46.0938,29.8141Z"/></g><g><path fill="#fcea2b" d="M15.2237,17.3624C19.8487-.1792,51.1166,4.6141,39.8279,33.2791c-14.5919,35.7917-32.7917,24.6771-29.7292,13"/></g><g><path fill="#f1b31c" d="M35.5248,33.6662c3.6637-21.8775-14.5625-17.2394-16.0056-11.6769C23.4935,6.1143,43.6107,12.3969,35.5248,33.6662Z"/><path fill="#f1b31c" d="M24,25.6855c4.4385,7,8.3371,13.9079,2.3371,16.6163-1.3969.5735-2.8765.4132-4.3824,1.1735-1.5343.7223-1.8192,1.3265-3.6385,3.2848-2.5625,2.0625-5.7708-1.5465-3.9583-3.6875,3.0729-3.3958,6.4479-3.9271,4.6667-7.2083-1.2187-2.2047.4957-5.0277,4.402-3.9027Z"/></g><g><g><path fill="none" stroke="#000" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M50.45,18.001a20.3132,20.3132,0,0,1,1.2748,9.7546,13.6741,13.6741,0,0,1-.5124,2.2184"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M54.6652,15.0123a27.8846,27.8846,0,0,1,1.6739,13.0089,18.6581,18.6581,0,0,1-.6573,2.9564"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M58.9094,13.9284a32.3379,32.3379,0,0,1,1.868,14.7126,21.5331,21.5331,0,0,1-.7184,3.3416"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M46.0938,29.8141a8.0935,8.0935,0,0,0,1.231-5.1156c-.3322-8.5131-6.5889-10.9008-9.5933-13.4778,4.1911,5.4922,5.9607,10.7559,2.6157,20.8539C40.3472,32.0746,43.68,33.5811,46.0938,29.8141Z"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5192,21.9893c3.9744-15.875,24.8326-10.2582,15.24,11.1183"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.7123,47.333C7.65,59.01,24.9329,69.8018,39.5248,34.01,50.8373,5.9268,20.5873.1351,15.9623,17.6768c0,0-2.7758,9.8921,5.3911,14.0507"/><path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M24.8373,26.0518c4.4386,7,7.5,13.5417,1.5,16.25-1.3969.5735-2.8765.4132-4.3824,1.1735-1.5343.7223-1.8192,1.3265-3.6385,3.2848-2.5625,2.0625-5.7708-1.5465-3.9583-3.6875"/><circle cx="20.0281" cy="35.5516" r="4.0484" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></g></g><g><circle cx="20.01" cy="35.494" r="3.0542" fill="#d0cfce"/></g>',seria:'<g><path fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M11.5002,45.8108C10.5366,43.6567,10,41.2649,10,38.7462v-1.1077c0-9.4639,7.5752-17.1359,16.9198-17.1359h30.9084"/><path fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M60.4944,25.968C61.4615,28.1337,62,30.5386,62,33.071v1.1137c0,9.5155-7.6025,17.2293-16.9806,17.2293H14"/><line x1="57.8281" x2="49.6427" y1="20.5027" y2="12.2888" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2"/><line x1="49.6427" x2="57.8281" y1="28.7165" y2="20.5027" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2"/><line x1="14" x2="22.1854" y1="51.414" y2="43.2001" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2"/><line x1="22.1854" x2="14" y1="59.6279" y2="51.414" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2"/></g>'};
 const emoSvg=(k,cls)=>`<svg${cls?` class="${cls}"`:''} viewBox="0 0 72 72" aria-hidden="true">${EMOJI[k]}</svg>`;
 /* "{radosc} tekst" → ['radosc','tekst']; bez emotki → ['', tekst] */
+/* "[tekst]" na końcu wariantu = mała etykieta */
+const vTag=t=>t.replace(/\s*\[([^\]]+)\]\s*$/,(_,x)=>` <span class="v-tag">${esc(x)}</span>`);
 const emoSplit=s=>{const m=/^\{(\w+)\}\s*/.exec(s);return m&&EMOJI[m[1]]?[m[1],s.slice(m[0].length)]:['',s]};
 const ICON_W={ptaszek:3.5,zamknij:3};
 const ico=(k,cls)=>`<svg${cls?` class="${cls}"`:''} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${ICON_W[k]||2.4}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[k]||ICONS.zarowka}</svg>`;
@@ -1849,7 +2045,7 @@ function parseGroups(lines){
   return gs.filter(g=>g.items.length);
 }
 let delay=0;
-const vBtn=(g,multi,key,s)=>{const[e,t]=emoSplit(s);return`<button class="v${e?' emo':''}" data-g="${g}"${multi?' data-m="1"':''}${e?` data-emo="${e}"`:''} style="animation-delay:${.45+(delay++)*.06}s"><span class="k">${e?emoSvg(e):key}</span><span>${md(t)}</span></button>`};
+const vBtn=(g,multi,key,s)=>{const[e,t]=emoSplit(s);return`<button class="v${e?' emo':''}" data-g="${g}"${multi?' data-m="1"':''}${e?` data-emo="${e}"`:''} style="animation-delay:${.45+(delay++)*.06}s"><span class="k">${e?emoSvg(e):key}</span><span>${vTag(md(t))}</span></button>`};
 /* wybrana emotka pojawia się też w dużym kwadracie przy tytule */
 let badgeHTML='';
 function emoBadge(){
@@ -1862,12 +2058,15 @@ function emoBadge(){
 const strip=(id,html)=>{const el=$(id);el.hidden=!html;el.querySelector('span').innerHTML=html||''};
 
 function openCard(i){showCard(A[i],i+1,false)}
-function showCard(a,badge,isMethod){
+function showCard(a,badge,isMethod,withEx){
   delay=0;
   setVars(ov,a);
   badgeHTML=badge;$('cNum').innerHTML=badge;$('cNum').dataset.emo='';$('cNum').classList.remove('emo');
-  const ex=(!isMethod||a.wyrazenie)&&E.items[E.cur];
-  strip('cExpr',ex&&`<b>${ex.q?'Pytanie':'Wyrażenie'}:</b> ${esc(eTexts(ex).main)}`);
+  /* na karcie aktywności: tylko wyrażenia z gwiazdką, zawsze po angielsku */
+  const showEx=!isMethod||a.wyrazenie||withEx,stars=showEx?E.stars.filter(i=>E.items[i]):[];
+  const chip=t=>`<span class="x-chip">${esc(t)}</span>`,enText=o=>o.q?(o.a||o.q):o.en;
+  strip('cStar',stars.length?`<b>Z gwiazdką:</b> ${stars.map(i=>chip(enText(E.items[i]))).join('')}`:'');
+  strip('cExpr','');
   $('cAgain').hidden=isMethod;
   $('cTitle').innerHTML=a.nazwa.split(' ').map((w,k)=>`<span class="w" style="animation-delay:${.3+k*.09}s">${w}</span>`).join(' ');
   $('cSub').textContent=a.podtytul||'';
@@ -2175,18 +2374,18 @@ function pickN(p,n){
   take.forEach(i=>E.used.add(i));return take;
 }
 async function eDraw(){
-  if(E.busy)return;const p=drawPool();
-  if(!p.length){E.deck=null;E.cur=-1;eRender();$('eMain').textContent=!E.items.length?'Wklej wyrażenia i losuj.':E.from!=='all'?'Nic nie pasuje do „Losuj z”.':'Brak wyrażeń w tym wyborze.';return}
+  if(E.busy)return;task=null;const p=drawPool();
+  if(!p.length){E.deck=null;E.cur=-1;eRender();tRender();$('eMain').textContent=!E.items.length?'Wklej wyrażenia i losuj.':E.from!=='all'?'Nic nie pasuje do „Losuj z”.':'Brak wyrażeń w tym wyborze.';return}
   const n=Math.max(1,Math.min(parseInt($('eN').value,10)||1,p.length));$('eN').value=n;
   const take=pickN(p,n);
   E.hist=[...take,...E.hist.filter(i=>!take.includes(i))];E.cur=take[0];saveMarks();
-  if(n>1){E.deck=take;E.deal=Math.floor(Math.random()*PALETA.length);eRender();eDeck(true);eMarksUI();take.slice(0,12).forEach((_,k)=>SND.deal(k));return}
+  if(n>1){E.deck=take;E.deal=Math.floor(Math.random()*PALETA.length);eRender();eDeck(true);eMarksUI();tRender();take.slice(0,12).forEach((_,k)=>SND.deal(k));return}
   E.deck=null;$('eCard').hidden=false;$('eDeck').hidden=true;
-  E.busy=true;$('eDraw').disabled=true;$('eKind').textContent=$('eLes').textContent='';$('eTrans').hidden=$('eMk').hidden=true;$('eReveal').disabled=true;
+  E.busy=true;$('eDraw').disabled=true;$('eKind').textContent=$('eLes').textContent='';$('eTrans').hidden=$('eMk').hidden=true;$('eReveal').disabled=true;tRender();
   const main=$('eMain');
   for(let k=0;k<13;k++){const o=E.items[p[Math.floor(Math.random()*p.length)]];main.className='e-main long';main.textContent=eTexts(o).main;if(k%5===0)eColor();SND.tick(1.2);await sleep(45+k*k*2.6)}
   eRender(true);eMarksUI();SND.ding();burstEl($('eMain'));
-  E.busy=false;$('eDraw').disabled=false;scSync();
+  E.busy=false;$('eDraw').disabled=false;scSync();tRender();
 }
 const kindOfLabel=o=>o.q?'Pytanie':o.tag?cap(o.tag):(o.s?'Zdanie':'Wyrażenie');
 /* karty losowane naraz: wpadają jedna po drugiej, każda w innym kolorze */
@@ -2313,7 +2512,7 @@ const saveProfs=()=>{store.set('ruletka-profile',JSON.stringify(PROFS));store.se
 function setProfile(id){
   PROF=id;saveProfs();profUI();
   E.sel=new Set(loadJSON(PK('ruletka-lekcje'),[]));E.last=loadJSON(PK('ruletka-gwiazdki-poprz'),[]);
-  E.items=[];E.stars=[];E.hist=[];E.cur=-1;E.deck=null;E.only=null;E.used.clear();
+  E.items=[];E.stars=[];E.hist=[];E.cur=-1;E.deck=null;E.only=null;E.used.clear();task=null;tRender();
   $('dText').value=store.get(PK('ruletka-wyrazenia'))||'';eParse();eSetData(!E.items.length);eRender();if(E.view==='browse')eBrowse();
 }
 $('profSel').addEventListener('change',e=>setProfile(e.target.value));
@@ -2409,10 +2608,10 @@ $('profImp').addEventListener('click',()=>$('profFile').click());
 $('profFile').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(f)profImport(f)});
 
 /* ---------- tryby ---------- */
-const HINT={wheel:'Kliknij koło albo przycisk, żeby zakręcić.',board:'Kliknij kafelek, żeby wybrać, albo wylosuj. Oko wyłącza zadanie z losowania.',expr:'Wklej wyrażenia, wybierz lekcje, a potem losuj albo przeglądaj. Zasłonę odkrywasz myszką albo strzałką →.',mat:'Zadania, do których trzeba przygotować materiały.',sch:'Szkielet lekcji, który można pokazać uczniowi.'};
-const MODE_BTN={wheel:'mWheel',board:'mBoard',expr:'mExpr',mat:'mMat',sch:'mSch'};
+const HINT={wheel:'Kliknij koło albo przycisk, żeby zakręcić.',board:'Kliknij kafelek, żeby wybrać, albo wylosuj. Oko wyłącza zadanie z losowania.',expr:'Wklej wyrażenia, wybierz lekcje, a potem losuj albo przeglądaj. Zasłonę odkrywasz myszką albo strzałką →.',mat:'Zadania, do których trzeba przygotować materiały.',met:'Metody i podejścia, z których korzystamy na lekcjach.',web:'Strony do ćwiczeń. Otwierają się w nowej karcie.',sch:'Szkielet lekcji, który można pokazać uczniowi.'};
+const MODE_BTN={wheel:'mWheel',board:'mBoard',expr:'mExpr',mat:'mMat',met:'mMet',web:'mWeb',sch:'mSch'};
 function setMode(m){
-  mode=m;app.classList.toggle('bm',m==='board');app.classList.toggle('em',m==='expr');app.classList.toggle('mm',m==='mat');app.classList.toggle('sm',m==='sch');
+  mode=m;app.classList.toggle('bm',m==='board');app.classList.toggle('em',m==='expr');app.classList.toggle('mm',m==='mat');app.classList.toggle('sm',m==='sch');app.classList.toggle('mt',m==='met');app.classList.toggle('wm',m==='web');
   Object.entries(MODE_BTN).forEach(([k,id])=>$(id).classList.toggle('on',k===m));
   $('spinTxt').textContent=m==='wheel'?'Zakręć':'Losuj';
   $('hint').textContent=HINT[m];
@@ -2445,7 +2644,11 @@ stopOv.addEventListener('click',e=>{if(e.target===stopOv)closeStop()});
 document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!stopOv.hidden)closeStop();else if(!ov.hidden)closeCard()});
 $('reset').addEventListener('click',()=>{if(busy)return;SND.close();used.clear();order=[];res.style.removeProperty('--c');res.style.removeProperty('--d');res.classList.remove('has');res.innerHTML='<b>Co dziś robimy?</b>';paint()});
 
-$('mgrid').innerHTML=MT.map((m,j)=>`<button class="mtile" data-m="${j}" style="--c:${m.c};--d:${m.d};--l:${m.l};--m:${m.m}"><span class="mi">${ico(m.ikona)}</span><span><b>${m.nazwa}</b>${m.podtytul?`<small>${m.podtytul}</small>`:''}</span></button>`).join('');
+const FI=MT.findIndex(m=>m.fundament);
+if(FI>=0){const f=MT[FI],b=$('mFound');b.hidden=false;b.style.cssText=`--c:${f.c};--d:${f.d}`;b.title='Otwórz kartę';
+  b.innerHTML=`<span class="mf-ico">${ico(f.ikona)}</span><span class="mf-txt"><small>Fundament Idea Box</small><b>${esc(f.nazwa)}</b>${f.podtytul?`<span>${esc(f.podtytul)}</span>`:''}</span>${ico('dalej','mf-go')}`;
+  b.addEventListener('click',()=>{if(!busy)showCard(f,ico(f.ikona),true)})}
+$('mgrid').innerHTML=MT.map((m,j)=>j===FI?'':`<button class="mtile" data-m="${j}" style="--c:${m.c};--d:${m.d};--l:${m.l};--m:${m.m}"><span class="mi">${ico(m.ikona)}</span><span><b>${m.nazwa}</b>${m.podtytul?`<small>${m.podtytul}</small>`:''}</span></button>`).join('');
 $('mgrid').addEventListener('click',e=>{const t=e.target.closest('.mtile');if(t&&!busy){const m=MT[+t.dataset.m];m.stop?openStop(m):showCard(m,ico(m.ikona),true)}});
 /* strony pogrupowane (pole „grupa”); nagłówki tylko przy więcej niż jednej grupie */
 const linkTile=(l,c)=>`<a class="ltile" href="${esc(l.url)}" target="_blank" rel="noopener" style="--c:${c}"><span class="mi">${ico('link')}</span><span><b>${esc(l.nazwa)}</b>${l.opis?`<small>${esc(l.opis)}</small>`:''}</span></a>`;
@@ -2479,17 +2682,19 @@ $('schSteps').innerHTML=K.map((k,j)=>schStep(k,j+1,'')).join('')+
 /* zakładka „Z materiałami” */
 /* ---------- karta zadania w formie listy (zakładka „Z materiałami” i widok listy na planszy) ---------- */
 const CTX=[['nowy','Nowy kontekst','iskra'],['notatki','Z notatek','notatki']];
-function taskCard(a,n,open){
+function taskCard(a,n,open,mi){
   const k=a.kontekst,gs=parseGroups(a.warianty),end=a.naKoniec?['Na koniec',a.naKoniec]:a.przyklad?['Przykład',a.przyklad]:null;
   if(a.wPraktyce&&a.wPraktyce.length)gs.push({title:'W praktyce',multi:false,items:a.wPraktyce});
   const title=`<span class="mat-n">${n}</span><div><h2>${a.nazwa}</h2>${a.podtytul?`<p class="mat-sub">${a.podtytul}</p>`:''}</div>`;
+  const steps=a.kroki||a.polecenia;
   return`<article class="mat${gs.length?'':' solo'}${open!=null&&off.has(open)?' dis':''}" style="--c:${a.c};--d:${a.d};--l:${a.l};--m:${a.m}"><div class="mat-main">`+
-    (open!=null?`<button class="mat-h" data-open="${open}" title="Otwórz kartę">${title}</button>`:`<header class="mat-h">${title}</header>`)+
+    (open!=null?`<button class="mat-h" data-open="${open}" title="Otwórz kartę">${title}</button>`:mi!=null?`<button class="mat-h" data-m="${mi}" title="Otwórz kartę">${title}</button>`:`<header class="mat-h">${title}</header>`)+
     (a.opis?`<p class="mat-desc">${md(a.opis)}</p>`:'')+
-    (a.kroki&&a.kroki.length?`<ol class="steps">${a.kroki.map(x=>`<li>${md(x)}</li>`).join('')}</ol>`:'')+
+    (steps&&steps.length?`<ol class="steps">${steps.map(x=>`<li>${md(x)}</li>`).join('')}</ol>`:'')+
     (k?`<div class="mat-ctx">${CTX.filter(([key])=>k[key]).map(([key,label,ic])=>`<div class="cx">${ico(ic)}<span><b>${label}</b>${md(k[key])}</span></div>`).join('')}</div>`:'')+
     (end?`<p class="mat-end"><b>${end[0]}:</b> ${md(end[1])}</p>`:'')+
-    `</div>`+(gs.length?`<div class="mat-side">${gs.map(g=>`<div class="mat-g">${g.title?`<h3>${g.title}${g.multi?'<span>można łączyć</span>':''}</h3>`:''}<ul>${g.items.map(x=>{const[e,t]=emoSplit(x);return`<li>${e?emoSvg(e,'li-emo'):''}${md(t)}</li>`}).join('')}</ul></div>`).join('')}</div>`:'')+
+    (a.dlaczego?`<p class="mat-end mat-why"><b>Dlaczego to działa?</b> ${md(a.dlaczego)}</p>`:'')+
+    `</div>`+(gs.length?`<div class="mat-side">${gs.map(g=>`<div class="mat-g">${g.title?`<h3>${g.title}${g.multi?'<span>można łączyć</span>':''}</h3>`:''}<ul>${g.items.map(x=>{const[e,t]=emoSplit(x);return`<li>${e?emoSvg(e,'li-emo'):''}${vTag(md(t))}</li>`}).join('')}</ul></div>`).join('')}</div>`:'')+
     (a.latwiej?`<p class="c-easy" style="margin:1rem 0 0;grid-column:1/-1"><b>Za trudne?</b>&nbsp;${md(a.latwiej)}</p>`:'')+
   `</article>`;
 }
@@ -2507,6 +2712,86 @@ function setBView(v){
 $('bView').addEventListener('click',e=>{const b=e.target.closest('button');if(b&&!busy)setBView(b.dataset.v)});
 blist.addEventListener('click',e=>{const h=e.target.closest('.mat-h');if(h&&!busy)openCard(+h.dataset.open)});
 setBView(store.get('ruletka-plansza-widok')==='list'?'list':'tiles');
+
+/* metody: kafelki albo pełna lista */
+const mlist=$('mlist');
+const renderMList=()=>{mlist.innerHTML=MT.map((m,j)=>taskCard(m,ico(m.ikona),null,j)).join('')};
+function setMView(v){
+  const list=v==='list';$('mgrid').hidden=list;mlist.hidden=!list;$('mFound').hidden=list||FI<0;if(list)renderMList();
+  segOn($('mView'),'v',v);store.set('ruletka-metody-widok',v);
+}
+$('mView').addEventListener('click',e=>{const b=e.target.closest('button');if(b&&!busy)setMView(b.dataset.v)});
+mlist.addEventListener('click',e=>{const h=e.target.closest('.mat-h');if(h&&!busy){const m=MT[+h.dataset.m];m.stop?openStop(m):showCard(m,ico(m.ikona),true)}});
+setMView(store.get('ruletka-metody-widok')==='list'?'list':'tiles');
+
+/* drukowanie jednej części: reszta strony jest ukryta tylko na czas druku */
+const PRINT_TITLE={sch:'Schemat lekcji',matGrid:'Zadania z materiałami',blist:'Aktywności',mlist:'Metody'};
+let printTitle='';
+function printPart(id){
+  if(id==='blist')blist.innerHTML=A.map((a,i)=>taskCard(a,i+1,i)).join('');
+  if(id==='mlist')renderMList();
+  const t=$(id);
+  document.querySelectorAll('.p-path,.p-target').forEach(x=>x.classList.remove('p-path','p-target'));
+  t.classList.add('p-target');
+  for(let e=t.parentElement;e&&e!==document.body;e=e.parentElement)e.classList.add('p-path');
+  /* lista drukuje się razem ze swoim nagłówkiem (np. „Metody”) */
+  const head=t.parentElement.querySelector(':scope>.m-head');if(head)head.classList.add('p-target');
+  document.body.classList.add('printing');
+  printTitle=document.title;document.title='Idea Box, '+PRINT_TITLE[id];
+  window.print();
+}
+addEventListener('afterprint',()=>{
+  if(!document.body.classList.contains('printing'))return;
+  document.body.classList.remove('printing');document.title=printTitle||'Idea Box';
+  document.querySelectorAll('.p-path,.p-target').forEach(x=>x.classList.remove('p-path','p-target'));
+  renderList();
+});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-print]');if(b)printPart(b.dataset.print)});
+
+/* ---------- „Co z tym robimy?”: losuje aktywność albo metodę z wariantem do wylosowanych wyrażeń ---------- */
+const TASKS=ZADANIA.map(t=>{const ai=A.findIndex(a=>a.nazwa===t.co),mi=ai<0?MT.findIndex(m=>m.nazwa===t.co):-1;return ai<0&&mi<0?null:{...t,ai,mi,src:ai>=0?A[ai]:MT[mi]}}).filter(Boolean);
+let task=null,tBusy=false;const tUsed=new Set();
+const taskPool=()=>{
+  const many=!!E.deck,p=TASKS.filter(t=>(t.ai<0||!off.has(t.ai))&&(t.ile==='oba'||(many?t.ile==='wiele':t.ile==='1')));
+  if(!$('nrE').checked)return p;
+  let f=p.filter(t=>!tUsed.has(t.co));if(!f.length){p.forEach(t=>tUsed.delete(t.co));f=p}
+  return f;
+};
+const pickVar=t=>Array.isArray(t.wariant)?t.wariant[Math.floor(Math.random()*t.wariant.length)]:(t.wariant||'');
+function tRender(msg){
+  const st=$('tStrip'),ready=E.cur>=0||!!E.deck;
+  st.classList.toggle('has',!!task);$('tGo').hidden=!task;
+  $('tMain').disabled=!task&&!ready;$('tRoll').disabled=!ready||E.busy||tBusy;
+  if(task){const a=task.src;setVars(st,a);$('tIco').innerHTML=task.ai>=0?task.ai+1:ico(a.ikona);
+    $('tTxt').innerHTML=`<b>${esc(a.nazwa)}</b>${task.v?` · ${esc(task.v)}`:''}`;$('tMain').title='Otwórz kartę'}
+  else{['c','d','l','m'].forEach(k=>st.style.removeProperty('--'+k));$('tIco').innerHTML=ico('kostka');
+    $('tTxt').innerHTML=`<b>Co z tym robimy?</b> ${msg||(ready?'Kliknij, żeby wylosować zadanie.':'Najpierw wylosuj wyrażenie.')}`;$('tMain').title='Wylosuj zadanie'}
+}
+async function tDraw(){
+  if(tBusy||E.busy||!(E.cur>=0||E.deck))return;
+  const pool=taskPool();if(!pool.length){task=null;tRender('Brak pasujących zadań.');return}
+  tBusy=true;
+  for(let k=0;k<12;k++){const t=pool[Math.floor(Math.random()*pool.length)];task={...t,v:pickVar(t)};tRender();SND.tick(1.1);await sleep(40+k*k*1.6)}
+  const t=pool[Math.floor(Math.random()*pool.length)];task={...t,v:pickVar(t)};tUsed.add(t.co);
+  tBusy=false;tRender();SND.ding();
+}
+/* otwiera kartę aktywności z zaznaczonym wariantem i wyrażeniami na górze */
+function tOpen(){
+  if(!task||tBusy)return;const a=task.src;
+  task.ai>=0?showCard(a,task.ai+1,false,true):showCard(a,ico(a.ikona),true,true);
+  if(task.v){const box=$('cVarList'),v=[...box.querySelectorAll('.v')].find(x=>x.lastElementChild.textContent.trim().startsWith(task.v));
+    if(v){v.classList.add('pick');refreshDim(box,v.dataset.g);emoBadge()}}
+}
+$('tMain').addEventListener('click',()=>task?tOpen():tDraw());
+$('tRoll').addEventListener('click',tDraw);
+tRender();
+
+/* Stop & Recall: przycisk w rogu albo klawisz S (poza polami tekstowymi) */
+const STOPM=MT.find(m=>m.stop);
+$('stopFab').hidden=!STOPM;
+const toggleStop=()=>{if(!STOPM)return;stopOv.hidden?openStop(STOPM):closeStop()};
+$('stopFab').addEventListener('click',toggleStop);
+document.addEventListener('keydown',e=>{if((e.key==='s'||e.key==='S')&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&!e.target.closest('input,textarea,select,[contenteditable]')){e.preventDefault();toggleStop()}});
 
 buildWheel();paint();
 const savedMode=store.get('ruletka-tryb');if(savedMode in MODE_BTN&&savedMode!=='wheel')setMode(savedMode);
