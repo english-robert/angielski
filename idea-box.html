@@ -4,30 +4,34 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Idea Box</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 /* ---------- wspólne wartości ---------- */
 :root{
-  --ink:#1d3557;--ink-d:#0d1b2e;--muted:#4a6285;--line:#c9d6e6;--soft:#eaf1fa;--bg:#f2f7fc;
+  --ink:#1d3557;--ink-d:#0d1b2e;--muted:#4a6285;--line:#c9d6e6;--soft:#eaf1fa;--bg:#d5e2f3;
   --red:#e5383b;--red-d:#a4161a;--gold:#ffd23f;--focus:#0b86d1;--glass:rgba(255,255,255,.24);
   --r-xs:12px;--r-s:15px;--r-m:20px;--r-l:26px;--r-xl:32px;
   --lift-xs:4px;--lift-s:6px;--lift-m:8px;--lift-l:12px;--lift-xl:16px;
-  --frame:#bccbdd;--dots:radial-gradient(rgba(255,255,255,.2) 2.4px,transparent 3px);
+  --dots:radial-gradient(rgba(255,255,255,.2) 2.4px,transparent 3px);
   color-scheme:light}
 *,*::before,*::after{box-sizing:border-box;margin:0}
 [hidden]{display:none!important}
-body{min-height:100vh;color:var(--ink);font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg)}
-/* kolorowe plamy tła przyklejone do okna: nie rozciągają się, gdy strona robi się dłuższa */
-body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
-  background:radial-gradient(circle at 8% 6%,#ffe0cc 0,transparent 30%),radial-gradient(circle at 94% 88%,#cfe8ff 0,transparent 34%),radial-gradient(circle at 92% 8%,#d9f5e3 0,transparent 24%)}
+body{min-height:100vh;color:var(--ink);font-family:'Plus Jakarta Sans',sans-serif}
+/* jeden język wyglądu w całym narzędziu (jak na planszy): płaskie tło, białe powierzchnie bez ramek,
+   twardy cień tylko pod tym, co się klika, kolor niesie informację */
+/* krój tytułowy: logo, nagłówki i duże napisy na kartach */
+h1,h2,h3,.tile b,.res b,.e-main,.bc-main,.mf-txt b,.pr-head b{font-family:'Red Hat Display','Plus Jakarta Sans',sans-serif}
+/* nagłówki łamią się na równe wiersze, bez samotnego słowa na końcu */
+h1,h2,h3{text-wrap:balance}
+html{background:var(--bg)}
 body.lock{overflow:hidden}
-.app{max-width:1240px;margin:0 auto;padding:2rem 1.25rem 3rem}
+.app{max-width:1240px;margin:0 auto;padding:1.3rem 1.25rem 3rem}
 
 /* ---------- nagłówek ---------- */
-.top{position:relative;text-align:center;margin-bottom:1.6rem}
-h1{font-size:clamp(2.4rem,6vw,4.2rem);font-weight:800;line-height:1}
+.top{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:1rem;margin-bottom:1.6rem}
+h1{font-size:clamp(1.8rem,3vw,2.4rem);font-weight:800;line-height:1}
 /* przycisk dźwięku */
-.snd{position:absolute;top:0;right:0;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:#fff;color:var(--ink);border:3px solid var(--frame)}
+.snd{justify-self:end;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:#fff;color:var(--ink)}
 .snd svg{width:28px;height:28px}
 .snd .s-off,.snd.mute .s-on{display:none}
 .snd.mute .s-off{display:block}
@@ -36,12 +40,12 @@ h1{font-size:clamp(2.4rem,6vw,4.2rem);font-weight:800;line-height:1}
 .sparks{position:absolute;left:0;top:0;z-index:70;width:100%;overflow:hidden;pointer-events:none}
 .spark{position:absolute;width:var(--s);height:var(--s);margin:calc(var(--s) / -2) 0 0 calc(var(--s) / -2);pointer-events:none;animation:spark .9s cubic-bezier(.15,.7,.3,1) forwards}
 @keyframes spark{0%{transform:translate(0,0) scale(.3) rotate(0)}60%{opacity:1}100%{transform:translate(var(--x),var(--y)) scale(1) rotate(var(--r));opacity:0}}
-h1 span{background:linear-gradient(90deg,#f26a1b,#d6336c 50%,#0b86d1);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.hint{font-size:1.15rem;color:var(--muted);margin:.7rem 0 1.1rem}
+/* logo: „Box” jako niebieski klocek z twardym cieniem, lekko przekrzywiony jak numery kart */
+h1 span{display:inline-block;margin-left:.12em;padding:.06em .3em .1em;border-radius:.28em;background:#0a6fb0;color:#fff;box-shadow:0 .14em 0 #064b78;transform:rotate(-4deg)}
+.hint{margin-top:2.2rem;text-align:center;font-size:1.1rem;color:var(--muted)}
 
 /* ---------- białe powierzchnie ---------- */
-/* białe powierzchnie mają ramkę, kolorowe twardy cień */
-.switch,.seg3,.exnote,.data,.ltile{background:#fff;border:3px solid var(--frame)}
+.switch,.seg3,.exnote,.data,.ltile{background:#fff}
 .switch,.seg3{display:inline-flex;flex-wrap:wrap;justify-content:center;gap:6px;padding:6px;border-radius:var(--r-m)}
 .switch button,.seg3 button{display:flex;align-items:center;gap:.55rem;padding:.6rem 1.3rem;border-radius:var(--r-s);background:transparent;color:var(--ink);font-size:1.2rem;font-weight:700}
 .seg3 button{padding:.5rem 1rem;font-size:1.1rem}
@@ -186,8 +190,8 @@ button:disabled{opacity:.6;cursor:default;transform:none}
 .mf-txt span{font-size:1.2rem;font-weight:600;opacity:.95}
 .mf-go{flex:none;width:34px;height:34px}
 /* „Co z tym robimy?”: pasek o stałej wysokości, więc nic nie skacze */
-.t-strip{display:flex;align-items:flex-start;gap:.9rem;margin-top:1.4rem}
-.t-main{flex:1;min-width:0;display:flex;align-items:center;gap:1rem;height:72px;padding:0 1.2rem 0 .8rem;border-radius:var(--r-m);background:#fff;border:3px solid var(--frame);color:var(--muted);font-size:1.25rem;font-weight:600;text-align:left}
+.t-strip{display:flex;align-items:flex-start;gap:.9rem;margin-top:1rem}
+.t-main{flex:1;min-width:0;display:flex;align-items:center;gap:1rem;height:72px;padding:0 1.2rem 0 .8rem;border-radius:var(--r-m);background:#fff;color:var(--muted);font-size:1.25rem;font-weight:600;text-align:left}
 .t-main:hover{transform:none}
 .t-main:disabled{opacity:1;cursor:default}
 .t-ico{flex:none;width:50px;height:50px;border-radius:var(--r-s);display:grid;place-items:center;background:var(--soft);color:var(--ink);font-size:1.45rem;font-weight:800}
@@ -195,7 +199,7 @@ button:disabled{opacity:.6;cursor:default;transform:none}
 .t-txt{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .t-txt b{color:var(--ink);font-weight:800}
 .t-go svg{display:block;width:30px;height:30px}
-.t-strip.has .t-main{background:var(--l);border-color:var(--m);color:var(--d)}
+.t-strip.has .t-main{background:var(--l);color:var(--d)}
 .t-strip.has .t-ico{background:var(--c);color:#fff}
 .t-strip.has .t-txt b{color:var(--d)}
 .t-strip .t-roll{width:72px;height:72px}
@@ -209,14 +213,15 @@ button:disabled{opacity:.6;cursor:default;transform:none}
 .sch-print{position:absolute;top:0;right:0}
 .b-print{display:none}
 .app.bm .b-print{display:grid}
-.app.bm.bl .b-print{display:grid}
 /* Stop & Recall: mały, przygaszony przycisk w rogu (albo klawisz S) */
-.stop-fab{position:fixed;right:16px;bottom:16px;z-index:45;width:50px;height:50px;border-radius:50%;display:grid;place-items:center;background:#fff;color:var(--red);border:3px solid #f2c4c5;opacity:.55;transition:opacity .2s,transform .15s}
+.stop-fab{position:fixed;right:16px;bottom:16px;z-index:45;width:50px;height:50px;border-radius:50%;display:grid;place-items:center;background:#fff;color:var(--red);opacity:.7;transition:opacity .2s,transform .15s}
 .stop-fab:hover,.stop-fab:focus-visible{opacity:1}
 .stop-fab svg{width:26px;height:26px}
 .mgrid,.lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.1rem}
 .mtile,.ltile{display:flex;align-items:center;gap:.9rem;min-height:88px;padding:.95rem 1.1rem;border-radius:var(--r-m);text-align:left}
-.mtile{background:var(--l);color:var(--d);border:3px solid color-mix(in srgb,var(--c) 35%,#fff)}
+/* kafelki, które się klika, stoją na twardym cieniu, tak jak kafelki planszy */
+.mtile{background:var(--l);color:var(--d);box-shadow:0 var(--lift-xs) 0 var(--m)}
+.ltile{box-shadow:0 var(--lift-xs) 0 var(--line)}
 .ltile{color:var(--ink);text-decoration:none;transition:transform .15s}
 .mi{flex:none;width:48px;height:48px;border-radius:var(--r-s);background:var(--c);color:#fff;display:grid;place-items:center}
 .mi svg{width:26px;height:26px}
@@ -236,7 +241,9 @@ button:disabled{opacity:.6;cursor:default;transform:none}
 .b-view,.app .blist{display:none}
 .app.bm .b-view{display:flex}
 .b-view svg{width:22px;height:22px}
-.app.bm.bl .board,.app.bm.bl .btns,.app.bm.bl .panel>.tg{display:none}
+.app.bm.bl .board{display:none}
+/* w widoku listy losowanie zostaje na miejscu, tylko wygaszone, więc przełącznik nie skacze */
+.app.bm.bl .btns,.app.bm.bl .panel>.tg{opacity:.35;pointer-events:none}
 .app.bm.bl .blist{display:grid;margin-top:.5rem}
 .mat.dis{opacity:.5}
 button.mat-h{width:100%;padding:0;border:0;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer}
@@ -282,39 +289,33 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
 .ask .no-ask{display:none}
 .prof-b.ask{width:auto;display:flex;gap:.4rem;padding:0 .8rem;background:#e5383b;color:#fff;font-weight:700}
 .d-btn.ask{background:#e5383b;color:#fff;--sd:var(--red-d)}
-.data.open .chev{transform:rotate(180deg)}
+.dopen .d-head .chev{transform:rotate(180deg)}
 .d-body{display:none;padding:0 1.3rem 1.3rem}
-.data.open .d-body{display:block}
+.dopen .d-body{display:block}
 .d-body textarea{display:block;width:100%;min-height:220px;border:0;border-radius:var(--r-s);background:var(--soft);padding:1rem 1.1rem;font:inherit;font-size:1.15rem;line-height:1.45;color:var(--ink);resize:vertical;tab-size:6}
 .d-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.8rem 1.2rem;margin-top:.8rem}
 .d-hint{font-size:1.05rem;color:var(--muted);flex:1 1 320px}
 .d-acts{display:flex;flex-wrap:wrap;gap:.7rem}
-.e-card{--mask:linear-gradient(160deg,#000,transparent 50%);position:relative;overflow:hidden;margin-top:1.6rem;min-height:300px;border-radius:var(--r-xl);padding:2.2rem 2.4rem;
+.e-card{--mask:linear-gradient(160deg,#000,transparent 50%);position:relative;overflow:hidden;min-height:min(46vh,420px);border-radius:var(--r-xl);padding:2.2rem 2.4rem;
   background:var(--ec,var(--ink));color:#fff;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:1.1rem;transition:background .7s ease}
 .e-card>*{position:relative}
 .e-kind{padding:.25rem .95rem;background:var(--glass)}
 .e-kind:empty{display:none}
-.e-main{font-size:clamp(2.2rem,5vw,4rem);font-weight:700;line-height:1.12;overflow-wrap:anywhere}
-.e-main.long{font-size:clamp(1.7rem,3.4vw,2.7rem)}
+/* --ts: wielkość tekstu wyrażeń, ustawiana przyciskami A− i A+ */
+.e-main{font-size:calc(clamp(2.2rem,5vw,4rem)*var(--ts,1));font-weight:700;line-height:1.12;overflow-wrap:anywhere}
+.e-main.long{font-size:calc(clamp(1.7rem,3.4vw,2.7rem)*var(--ts,1))}
 .e-main.pop{animation:epop .55s cubic-bezier(.2,1.4,.4,1)}
 @keyframes epop{from{transform:scale(.6);opacity:0}}
-.e-trans{font-size:clamp(1.4rem,2.6vw,2rem);opacity:.95;overflow-wrap:anywhere}
-/* znikające przyciski zostawiają swoje miejsce, więc nic nie skacze */
-/* „Odsłoń” na karcie: ikona w lewym górnym rogu (naprzeciw oznaczeń), więc jej zniknięcie niczego nie przesuwa */
-/* „Odsłoń” obok „Losuj”: zawsze na miejscu, szary, gdy nie ma nic do odsłonięcia */
-.e-btns .ico{height:66px}
+.e-trans{font-size:calc(clamp(1.4rem,2.6vw,2rem)*var(--ts,1));opacity:.95;overflow-wrap:anywhere}
 /* w zakładce Wyrażenia przyciski są płaskie, jak pozostałe elementy panelu */
 .app.em .go,.app.em .ico,.app.em .d-btn{box-shadow:none;margin-bottom:0}
 .app.em .go:active,.app.em .ico:active,.app.em .d-btn:active{transform:scale(.96)}
-#eReveal:disabled{--sb:#c8d3e0;--sd:#a7b5c7;opacity:1}
-.e-btns{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:1rem 1.2rem;max-width:1000px;margin:1.6rem auto 0}
-.e-btns .go{flex:1 1 200px;max-width:290px;padding:.95rem 1.5rem}
-.e-count{display:flex;align-items:center;gap:.5rem;height:66px;padding:0 .55rem 0 1rem;border-radius:var(--r-m);background:#fde4ee;color:#a61e4d;cursor:text}
+.e-count{display:flex;align-items:center;gap:.5rem;height:56px;padding:0 5px 0 .8rem;border-radius:var(--r-s);background:#fde4ee;color:#a61e4d;cursor:text}
 .e-count svg{width:28px;height:28px;flex:none}
-.e-count input{width:76px;height:50px;border:0;border-radius:var(--r-s);background:#fff;color:#8a1c46;font:inherit;font-size:1.35rem;font-weight:700;text-align:center;-moz-appearance:textfield;appearance:textfield}
+.e-count input{width:60px;height:46px;border:0;border-radius:11px;background:#fff;color:#8a1c46;font:inherit;font-size:1.35rem;font-weight:700;text-align:center;-moz-appearance:textfield;appearance:textfield}
 .e-count input::-webkit-inner-spin-button,.e-count input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 .e-count input:focus{outline:3px solid #d6336c;outline-offset:1px}
-.e-card,.b-deck{margin-top:1.6rem}
+.e-card,.b-deck{margin-top:1rem}
 /* oznaczenia: gwiazdka, do powtórki (fiolet), opanowane (zieleń) */
 .mk-box{display:flex;gap:4px;flex:none}
 .mk{width:42px;height:42px;display:grid;place-items:center;border-radius:12px;color:#a9b8cc;transition:transform .15s,background .15s,color .15s}
@@ -330,26 +331,13 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
 .e-card .mk-ok.on{background:#12a150;color:#fff}
 .e-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem}
 .e-pills .e-kind:empty{display:none}
-.e-lab{font-size:1.12rem;font-weight:700;color:var(--muted)}
 #eFrom{--a:var(--ink);--al:#e6ecf4;--ad:var(--ink)}
 #eFrom button{min-width:62px;justify-content:center}
 .e-step{display:flex;flex-direction:column;gap:3px}
-.e-step button{width:34px;height:23px;display:grid;place-items:center;border-radius:7px;background:#fff;color:#a61e4d}
+.e-step button{width:34px;height:21px;display:grid;place-items:center;border-radius:7px;background:#fff;color:#a61e4d}
 .e-step button:hover{transform:none;background:#ffd0e1}
 .e-step svg{width:20px;height:20px}
 
-/* tryb odpowiedzi w losowaniu: wybierany przed losowaniem */
-.e-dmode{gap:6px;padding:6px;border-radius:var(--r-m);background:#e0f3f0;box-shadow:none;border:0}
-.e-dmode button{display:flex;align-items:center;gap:.5rem;height:54px;padding:0 1.2rem;border-radius:var(--r-s);color:#06564f;font-size:1.25rem;font-weight:700}
-.e-dmode button.on{background:#0d8a7e;color:#fff}
-.e-dmode svg{width:26px;height:26px}
-/* gwiazdka „do powtórki” na karcie losowania */
-/* (stara gwiazdka karty, nieużywana) */
-.e-star-old{position:absolute!important;top:1.1rem;right:1.1rem;z-index:1;width:58px;height:58px;border-radius:50%;background:var(--glass);display:grid;place-items:center;color:#fff}
-.e-star svg{width:32px;height:32px}
-.e-star.on{color:var(--gold)}
-.e-star.on svg,.b-star.on svg{fill:currentColor}
-.e-hist{justify-content:center;margin-top:1.2rem}
 
 /* zasłona odsłaniana literami: .sv = odsłonięte, .sh = jeszcze zasłonięte */
 .sc{--cover:rgba(255,255,255,.3);--shown:var(--gold);cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
@@ -358,19 +346,19 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
 .sv:empty{display:none}
 .sh{padding:0 .06em;border-radius:8px;background:var(--cover);color:transparent;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .sh:empty{display:none}
+/* wiersz z zasłoną jest wyższy niż jej tło, więc zasłony w sąsiednich wierszach nie nachodzą na siebie */
+.e-main:has(.sc),.e-trans,.bc-main:has(.sc),.bc-ans{line-height:1.42}
 .sc{--cover-on:rgba(255,255,255,.62)}
 /* zasłona, na którą działa strzałka →: delikatnie pulsuje jaśniejszym kolorem */
 .sc.act .sh{animation:scGlow 1.3s ease-in-out infinite}
 @keyframes scGlow{50%{background:var(--cover-on)}}
 
 /* panel ustawień wyrażeń: każda grupa ma swój kolor (--a = aktywny, --al = tło, --ad = tekst) */
-.e-pwrap{margin-top:1.3rem}
 .e-panel{border-radius:var(--r-m);background:#fff}
 /* w zakładkach Wyrażenia i Z materiałami: ramka zamiast twardego cienia */
-.app.em .data,.e-panel,.b-rows,.dd-menu{box-shadow:none;border:3px solid var(--frame)}
+.dd-menu{box-shadow:0 var(--lift-xs) 0 var(--line),0 0 0 3px var(--line)}
 .e-row{display:flex;flex-wrap:wrap;align-items:center;gap:.8rem 1rem;padding:.9rem 1.1rem}
 .e-row+.e-row{border-top:2px solid var(--soft)}
-.push{margin-left:auto}
 .e-panel .seg3{--a:var(--ink);--al:var(--soft);--ad:var(--ink);flex-wrap:nowrap;padding:5px;border-radius:var(--r-s);background:var(--al);box-shadow:none;border:0}
 .e-panel .seg3 button{display:flex;align-items:center;gap:.45rem;height:46px;padding:0 1.05rem;border-radius:11px;color:var(--ad);font-size:1.15rem}
 .e-panel .seg3 button.on{background:var(--a);color:#fff}
@@ -383,9 +371,10 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
 #eLang svg{width:18px;height:18px;margin:0 -.15rem}
 .dot{width:12px;height:12px;flex:none;border-radius:50%;background:var(--t);box-shadow:0 0 0 2px #fff}
 .dd-btn,.sq{height:52px;border-radius:var(--r-s);background:var(--soft);color:var(--ink)}
-.sq{width:52px;display:grid;place-items:center;background:#e0f3f0;color:#06564f}
+.sq{width:56px;height:56px;flex:none;display:grid;place-items:center;background:#e0f3f0;color:#06564f}
+.sq:disabled{opacity:.4}
 .sq svg{width:26px;height:26px}
-.dd-btn{display:flex;align-items:center;gap:.6rem;max-width:100%;padding:0 1rem;background:#e2f5e8;color:#0b5a2c;font-size:1.1rem;font-weight:700}
+.dd-btn{display:flex;align-items:center;gap:.6rem;width:100%;padding:0 1rem;background:#e2f5e8;color:#0b5a2c;font-size:1.1rem;font-weight:700}
 .dd-btn:hover,.dd-item:hover{transform:none}
 .dd-btn>svg{flex:none;width:24px;height:24px}
 .dd-btn>span{min-width:0;max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -410,21 +399,15 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
 .dd-item.on .bx svg{opacity:1;transform:none}
 .dd-item>svg{flex:none;width:28px;height:28px;padding:2px;color:#12a150}
 
-/* zębatka przy przewijaniu; po kliknięciu panel pojawia się u góry ekranu */
-.e-gear{position:fixed;top:16px;right:16px;z-index:41;width:62px;height:62px;border-radius:50%;background:var(--ink);display:grid;place-items:center}
-.e-gear svg{width:32px;height:32px;transition:transform .35s}
-.e-gear.open svg{transform:rotate(90deg)}
-.e-panel.float{position:fixed;top:92px;left:50%;z-index:40;width:min(1140px,calc(100vw - 2.5rem));transform:translateX(-50%);border-color:var(--line)}
-@media(min-width:1330px){.e-panel.float{top:16px}}
 
 /* przegląd */
-.e-browse{display:none;margin-top:1.6rem}
-.expr.browse .e-browse{display:block}
-.expr.browse .d-only,.expr:not(.browse) .b-only{display:none!important}
+.e-browse{display:none;margin-top:1rem}
+.expr:not(.v-draw) .e-browse{display:block}
+.expr:not(.v-draw) .d-only,.expr:not(.v-browse) .b-only,.expr:not(.v-hist) .h-only,.expr.v-browse .dh{display:none!important}
 .b-group+.b-group{margin-top:1.8rem}
 .b-les{display:flex;align-items:center;gap:.7rem;margin-bottom:.8rem;font-size:clamp(1.4rem,2.4vw,1.8rem);font-weight:800}
 .b-rows{border-radius:var(--r-m);overflow:hidden;background:#fff}
-.b-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;align-items:center;gap:1.4rem;padding:.9rem 1.2rem .9rem 1.4rem;font-size:clamp(1.15rem,1.8vw,1.35rem);line-height:1.4;overflow-wrap:anywhere}
+.b-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;align-items:center;gap:1.4rem;padding:1.05rem 1.2rem 1.05rem 1.5rem;font-size:calc(clamp(1.25rem,1.8vw,1.5rem)*var(--ts,1));line-height:1.4;overflow-wrap:anywhere}
 .b-deck{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(460px,100%),1fr));gap:1.3rem}
 /* karty z wielokrotnego losowania: jak duża karta, tylko mniejsze (pełny kolor, kropki, biały tekst) */
 .b-card{--mask:linear-gradient(160deg,#000,transparent 55%);position:relative;overflow:hidden;display:flex;flex-direction:column;gap:.9rem;min-height:250px;padding:1.2rem 1.4rem 1.6rem;border-radius:var(--r-xl);background:var(--c);color:#fff}
@@ -440,46 +423,19 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
 @keyframes deal{0%{opacity:0;transform:translateY(-44px) scale(.5) rotate(-8deg)}45%{opacity:1}}
 .b-card-h{display:flex;align-items:center;gap:.75rem}
 .b-num{flex:none;width:46px;height:46px;border-radius:14px;background:#fff;color:var(--c);display:grid;place-items:center;font-size:1.45rem;font-weight:800;transform:rotate(-6deg)}
-.bc-main{font-size:clamp(1.7rem,2.9vw,2.4rem);font-weight:700;line-height:1.15;overflow-wrap:anywhere}
-.bc-ans{font-size:clamp(1.4rem,2.3vw,1.9rem);line-height:1.25;opacity:.95;overflow-wrap:anywhere}
+.bc-main{font-size:calc(clamp(1.7rem,2.9vw,2.4rem)*var(--ts,1));font-weight:700;line-height:1.15;overflow-wrap:anywhere}
+.bc-ans{font-size:calc(clamp(1.4rem,2.3vw,1.9rem)*var(--ts,1));line-height:1.25;opacity:.95;overflow-wrap:anywhere}
 .b-card .sc{--cover:rgba(255,255,255,.3);--cover-on:rgba(255,255,255,.62);--shown:#fff}
 
-.b-hist-h{display:flex;align-items:center;justify-content:space-between;gap:1rem}
-.b-hist-h .sq{background:#fde4ee;color:#a61e4d}
-.b-from{display:block;margin-top:.1rem;font-size:.95rem;font-weight:600;color:var(--muted)}
+.b-from{display:block;margin-top:.1rem;font-size:1.05rem;font-weight:600;color:var(--muted)}
+.b-les .d-count{background:#fff}
 .b-row:nth-child(even){background:#f5f8fc}
 .b-row>div:first-child{font-weight:600}
 .b-row.tagged{background:var(--tl)}
 .b-row.tagged>div:first-child{color:var(--td)}
 .b-row .sc{--cover:#cdd9e8;--cover-on:#9fb8d8;--shown:var(--focus)}
 .b-row.tagged .sc{--cover:rgba(29,53,87,.16);--cover-on:rgba(29,53,87,.34)}
-.b-star{width:42px;height:42px;display:grid;place-items:center;color:#a9b8cc}
-.b-star svg{width:30px;height:30px}
-.b-star.on{color:#f0b400}
-.e-rand{display:flex;align-items:center;gap:6px;padding:5px;border-radius:var(--r-s);background:#fde4ee;color:#8a1c46;font-size:1.08rem;font-weight:700}
-.e-rand input{width:72px;height:46px;border:0;border-radius:10px;background:#fff;color:#8a1c46;font:inherit;font-size:1.15rem;text-align:center;-moz-appearance:textfield;appearance:textfield}
-.e-rand input::-webkit-inner-spin-button,.e-rand input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
-.e-rand input:focus{outline:3px solid #d6336c;outline-offset:1px}
-.e-rand button,.e-marks button,.e-drawn button{display:grid;place-items:center;width:46px;height:46px;border-radius:11px;background:#d6336c}
-.e-rand button svg,.e-marks button svg{width:24px;height:24px}
-.e-marks{display:flex;gap:6px;padding:5px;border-radius:var(--r-s);background:#fff1c2}
-.e-marks button{color:#6b4700;background:#fff}
-.e-cnt{display:flex!important;gap:.4rem;width:auto!important;padding:0 .85rem;font-size:1.12rem;font-weight:700}
-.e-marks{background:var(--soft)!important}
-.e-marks button{background:#fff;color:var(--ink)}
-.e-marks .mk-hist{color:#0b7368}.e-marks .mk-hist.on{background:#0d8a7e;color:#fff}
-.e-marks .mk-star{color:#b98a00}.e-marks .mk-rev{color:#5f3dc4}.e-marks .mk-ok{color:#0b7a3b}
-.e-marks .mk-star.on{background:var(--gold);color:var(--ink)}
-.e-marks .mk-rev.on{background:#7048e8;color:#fff}
-.e-marks .mk-ok.on{background:#12a150;color:#fff}
-.e-sep{width:2px;align-self:stretch;margin:6px 4px;background:var(--line)}
-.e-drawn{display:flex;padding:5px;border-radius:var(--r-s);background:var(--soft)}
-.e-drawn button{height:46px;border-radius:10px;background:#fff;color:var(--ink)}
-.e-drawn svg{width:24px;height:24px}
-.e-drawn .e-cnt.on{background:var(--ink);color:#fff}
-.e-marks button:disabled,.e-rand button:disabled{opacity:.45}
-.e-rand .e-all,.e-rand .e-norep{background:#fff;color:#8a1c46}
-.e-rand .e-norep.on{background:#8a1c46;color:#fff}
+.e-sep{width:2px;align-self:stretch;margin:6px 2px 6px auto;background:var(--line)}
 .b-empty{padding:2rem;text-align:center;font-size:1.25rem;color:var(--muted)}
 
 /* ---------- strony: grupy ---------- */
@@ -489,7 +445,7 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
 /* ---------- z materiałami: prosta lista kart ---------- */
 .mats{display:none;max-width:1140px;margin:0 auto}
 .mat-grid{display:grid;gap:1.4rem}
-.mat{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:0 2.2rem;align-items:start;padding:1.6rem 1.8rem 1.8rem;border-radius:var(--r-l);background:#fff;border:3px solid color-mix(in srgb,var(--c) 45%,#fff)}
+.mat{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:0 2.2rem;align-items:start;padding:1.6rem 1.8rem 1.8rem;border-radius:var(--r-l);background:#fff}
 .mat.solo{grid-template-columns:minmax(0,1fr)}
 .mat-side>.mat-g:first-child{margin-top:.3rem}
 .mat-h{display:flex;align-items:center;gap:1rem;margin-bottom:.9rem}
@@ -516,12 +472,12 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
 /* ---------- schemat lekcji ---------- */
 .sch{display:none;max-width:1000px;margin:0 auto}
 .sch-title{text-align:center;font-size:clamp(2.2rem,5vw,3.4rem);font-weight:800;line-height:1.05}
-.sch-title span{background:linear-gradient(90deg,#7048e8,#d6336c 55%,#f26a1b);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.sch-title span{color:#7048e8}
 .sch-intro{max-width:760px;margin:1rem auto 2rem;text-align:center;font-size:clamp(1.15rem,1.9vw,1.35rem);line-height:1.5;color:var(--muted)}
-.sch-notes{padding:1.5rem 1.6rem 1.7rem;border-radius:var(--r-l);background:#fff;border:3px solid var(--frame)}
+.sch-notes{padding:1.5rem 1.6rem 1.7rem;border-radius:var(--r-l);background:#fff}
 .sch-notes-lead{margin-bottom:1rem;font-size:1.2rem;font-weight:700}
 .sch-notes-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
-.sch-note{padding:1.1rem 1.2rem 1.25rem;border-radius:var(--r-m);background:var(--l);border:3px solid var(--m)}
+.sch-note{padding:1.1rem 1.2rem 1.25rem;border-radius:var(--r-m);background:var(--l)}
 .sch-note-h{display:flex;align-items:center;gap:.7rem;margin-bottom:.5rem}
 .sch-note-h span{flex:none;width:46px;height:46px;border-radius:var(--r-s);background:var(--c);color:#fff;display:grid;place-items:center}
 .sch-note-h svg{width:26px;height:26px}
@@ -535,7 +491,7 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
 .sch-step{position:relative;display:grid;grid-template-columns:74px minmax(0,1fr);gap:1.1rem;align-items:start;animation:schIn .55s cubic-bezier(.2,1.2,.4,1) backwards}
 @keyframes schIn{from{opacity:0;transform:translateY(24px) scale(.97)}}
 .sch-num{position:relative;z-index:1;width:74px;height:74px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-size:2.1rem;font-weight:800;border:6px solid var(--bg)}
-.sch-card{padding:1.25rem 1.5rem 1.4rem;border-radius:var(--r-l);background:#fff;border:3px solid var(--m)}
+.sch-card{padding:1.25rem 1.5rem 1.4rem;border-radius:var(--r-l);background:#fff}
 .sch-step.trial .sch-card{border:2px dashed var(--d);background:#fbfcfe}
 .sch-step.trial .sch-num{background:#fff;color:var(--c);box-shadow:inset 0 0 0 3px var(--c)}
 .sch-step.trial .sch-num svg,.sch-end .sch-num svg{width:34px;height:34px}
@@ -667,6 +623,43 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
 .stop-why{max-width:760px;font-size:1.15rem;line-height:1.4;opacity:.95}
 .stop-why b{font-weight:700}
 
+/* pasek akcji nad sceną: z lewej to, co należy do widoku, z prawej zawsze te same trzy przyciski */
+.e-bar{display:flex;flex-wrap:wrap;align-items:center;gap:.7rem;margin-top:1.3rem;padding:.6rem;border-radius:var(--r-m);background:#fff}
+.e-bar .tg{margin-left:.4rem}
+/* kolory przycisków paska: cofanie i zwijanie neutralne, gwiazdki żółte, historia różowa, zasłona morska (jak jej przełącznik) */
+.e-bar .dh,.e-ts,#eFocus{background:var(--soft);color:var(--ink)}
+.e-ts{font-size:1.2rem;font-weight:800}
+#eFocus[aria-pressed=true]{background:var(--ink);color:#fff}
+.e-bar .b-only{background:#fff1c2;color:#6b4700}
+.e-bar .h-only{background:#fde4ee;color:#a61e4d}
+/* licznik luk: w kolorze zasłony, przygaszony poza trybem „Luka” */
+.e-gaps{height:56px;background:#e0f3f0;color:#06564f}
+.e-gaps input{width:48px;color:#06564f}
+.e-gaps .e-step button{color:#06564f}
+.e-gaps .e-step button:hover{background:#bfe6e0}
+.e-gaps input:focus{outline-color:#0d8a7e}
+.e-gaps.dim{opacity:.45}
+.e-panel{margin-top:1.3rem}
+.e-row .dd{min-width:0}
+.e-bar .go{flex:1 1 150px;max-width:300px;height:56px;padding:0 1.4rem;border-radius:var(--r-s);font-size:1.35rem}
+/* zwinięte ustawienia: zostaje pasek losowania i scena */
+.app.em.focus .top,.app.em.focus .e-set,.app.em.focus .hint{display:none}
+.app.em.focus .e-bar{margin-top:0}
+/* podsumowanie lekcji: widać je tylko na wydruku */
+.e-print{display:none}
+.pr-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.4rem 1.5rem;padding:1.3rem 1.6rem;border-radius:var(--r-m);background:var(--ink);color:#fff}
+.pr-head b{font-size:2rem;font-weight:800}
+.pr-head span{font-size:1.15rem;font-weight:600}
+.e-print h3{display:flex;align-items:center;gap:.7rem;margin:1.6rem 0 .7rem;font-size:1.5rem;font-weight:800}
+.pr-rows{border-radius:var(--r-s);overflow:hidden}
+.pr-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 8.5rem;align-items:center;gap:1.2rem;padding:.7rem 1rem;font-size:1.2rem;line-height:1.35;overflow-wrap:anywhere;break-inside:avoid}
+.pr-row:nth-child(odd){background:var(--soft)}
+.pr-row>div:first-child{font-weight:700}
+.pr-st{padding:.15rem .7rem;border-radius:99px;color:#fff;font-size:.95rem;font-weight:700;white-space:nowrap}
+.pr-st.rev{background:#7048e8}
+.pr-st.ok{background:#12a150}
+
+@media(max-width:820px){.top{grid-template-columns:1fr auto}.tabs{grid-column:1/-1;grid-row:2;justify-self:center}}
 @media(max-width:860px){
   .stage{grid-template-columns:1fr}.wheelbox{max-width:560px;margin:0 auto;width:100%}
   .c-head{flex-direction:column;align-items:flex-start;padding:1.6rem 1.4rem;gap:1rem}
@@ -682,19 +675,13 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
   .b-row{grid-template-columns:minmax(0,1fr);gap:.35rem 1rem}
   .b-row .mk-box{justify-content:flex-end}
   .b-row>div:nth-child(2){grid-column:1}
-  .e-panel .seg3,.dd,.dd-btn{width:100%}.push{margin-left:0}
-  .e-panel .seg3{flex-wrap:wrap}
-  .e-panel .seg3 button{flex:1 1 auto;justify-content:center;padding:0 .7rem}
-  #eView button{padding:0 .8rem;font-size:1.1rem}
-  .dd-btn>span{flex:1;text-align:left}
-  .e-panel.float{max-height:calc(100vh - 100px);overflow:auto}
 }
-@media(max-width:600px){.sch-title{padding:0 50px}.tabs{gap:4px;padding:5px}.tabs button{width:44px;height:48px}.stop-fab{width:42px;height:42px}.b-card-h{flex-wrap:wrap}.b-card-h .mk-box{margin-left:auto}.b-card .e-pills{order:3;flex-basis:100%}.snd{position:static;margin:0 auto 1rem}.prof{flex-wrap:wrap;max-width:calc(100% - 1.3rem);margin:0 0 1rem 1.3rem}.prof-sel{flex:1 1 100%}.prof select{max-width:none;flex:1}.prof-sep{display:none}}
+@media(max-width:600px){.sch-title{padding:0 50px}.tabs{gap:4px;padding:5px}.tabs button{width:44px;height:48px}.stop-fab{width:42px;height:42px}.b-card-h{flex-wrap:wrap}.b-card-h .mk-box{margin-left:auto}.b-card .e-pills{order:3;flex-basis:100%}}
 /* druk: widać tylko wybraną część (schemat, z materiałami, lista aktywności albo metod) */
 @media print{
   html{font-size:13px}
-  body,body.printing{background:#fff}
-  body::before,.stop-fab,.toast,.p-btn,.m-head .seg3{display:none!important}
+  html,body,body.printing{background:#fff}
+  .stop-fab,.toast,.p-btn,.m-head .seg3{display:none!important}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact;animation:none!important;transition:none!important}
   body.printing>*:not(.p-path){display:none!important}
   body.printing .p-path>*:not(.p-path):not(.p-target){display:none!important}
@@ -711,9 +698,7 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
 <body>
 <main class="app" id="app">
   <header class="top">
-    <button class="snd" id="snd" title="Dźwięk (M)" aria-label="Dźwięk (M)" aria-pressed="true"><i data-ico="glosnik" class="s-on"></i><i data-ico="glosnik_off" class="s-off"></i></button>
     <h1>Idea <span>Box</span></h1>
-    <p class="hint" id="hint">Kliknij koło albo przycisk, żeby zakręcić.</p>
     <div class="switch tabs">
       <button id="mWheel" class="on" style="--tc:#e5383b" title="Koło" aria-label="Koło"><i data-ico="kolo"></i></button>
       <button id="mBoard" style="--tc:#f26a1b" title="Plansza" aria-label="Plansza"><i data-ico="plansza"></i></button>
@@ -723,6 +708,7 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
       <button id="mWeb" style="--tc:#0b86d1" title="Strony" aria-label="Strony"><i data-ico="swiat"></i></button>
       <button id="mSch" style="--tc:#1d3557" title="Schemat lekcji" aria-label="Schemat lekcji"><i data-ico="schemat"></i></button>
     </div>
+    <button class="snd" id="snd" title="Dźwięk (M)" aria-label="Dźwięk (M)" aria-pressed="true"><i data-ico="glosnik" class="s-on"></i><i data-ico="glosnik_off" class="s-off"></i></button>
   </header>
 
   <div class="stage">
@@ -747,41 +733,42 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
   </div>
 
   <section class="expr" id="expr">
-    <div class="data" id="data">
-      <div class="d-top">
-        <button class="d-head" id="dHead" aria-expanded="false"><i data-ico="notatki"></i>Wyrażenia ucznia <span class="d-count" id="dCount">0</span><i data-ico="strzalka" class="chev"></i></button>
-        <div class="prof" id="prof">
-          <label class="prof-sel"><i data-ico="osoba"></i><select id="profSel" aria-label="Uczeń"></select></label>
-          <button class="prof-b" id="profAdd" title="Nowy uczeń" aria-label="Nowy uczeń"><i data-ico="plus"></i></button>
-          <button class="prof-b" id="profRen" title="Zmień nazwę ucznia" aria-label="Zmień nazwę ucznia"><i data-ico="olowek"></i></button>
-          <button class="prof-b" id="profDel" title="Usuń ucznia" aria-label="Usuń ucznia"><i data-ico="kosz"></i><span class="ask-t">Usunąć?</span></button>
-          <span class="prof-sep"></span>
-          <button class="prof-b" id="profExp" title="Zapisz wszystkich uczniów do arkusza (.xlsx)" aria-label="Zapisz wszystkich uczniów do arkusza"><i data-ico="pobierz"></i></button>
-          <button class="prof-b" id="profImp" title="Wczytaj uczniów z arkusza (.xlsx)" aria-label="Wczytaj uczniów z arkusza"><i data-ico="wczytaj"></i></button>
-          <input type="file" id="profFile" accept=".xlsx,.xls,.ods,.csv,.tsv" hidden>
-          <div class="prof-edit"><input id="profName" maxlength="40" aria-label="Nazwa ucznia"><button class="prof-b" id="profOk" title="Zapisz" aria-label="Zapisz"><i data-ico="ptaszek"></i></button><button class="prof-b" id="profNo" title="Anuluj" aria-label="Anuluj"><i data-ico="zamknij"></i></button></div>
+    <div class="e-set">
+      <div class="data" id="data">
+        <div class="d-top">
+          <button class="d-head" id="dHead" aria-expanded="false"><i data-ico="notatki"></i>Wyrażenia ucznia <span class="d-count" id="dCount">0</span><i data-ico="strzalka" class="chev"></i></button>
+          <div class="prof" id="prof">
+            <label class="prof-sel"><i data-ico="osoba"></i><select id="profSel" aria-label="Uczeń"></select></label>
+            <button class="prof-b" id="profAdd" title="Nowy uczeń" aria-label="Nowy uczeń"><i data-ico="plus"></i></button>
+            <button class="prof-b" id="profRen" title="Zmień nazwę ucznia" aria-label="Zmień nazwę ucznia"><i data-ico="olowek"></i></button>
+            <button class="prof-b" id="profDel" title="Usuń ucznia" aria-label="Usuń ucznia"><i data-ico="kosz"></i><span class="ask-t">Usunąć?</span></button>
+            <span class="prof-sep"></span>
+            <button class="prof-b" id="profExp" title="Zapisz wszystkich uczniów do arkusza (.xlsx)" aria-label="Zapisz wszystkich uczniów do arkusza"><i data-ico="pobierz"></i></button>
+            <button class="prof-b" id="profImp" title="Wczytaj uczniów z arkusza (.xlsx)" aria-label="Wczytaj uczniów z arkusza"><i data-ico="wczytaj"></i></button>
+            <input type="file" id="profFile" accept=".xlsx,.xls,.ods,.csv,.tsv" hidden>
+            <div class="prof-edit"><input id="profName" maxlength="40" aria-label="Nazwa ucznia"><button class="prof-b" id="profOk" title="Zapisz" aria-label="Zapisz"><i data-ico="ptaszek"></i></button><button class="prof-b" id="profNo" title="Anuluj" aria-label="Anuluj"><i data-ico="zamknij"></i></button></div>
+          </div>
+        </div>
+        <div class="d-body">
+          <textarea id="dText" spellcheck="false" placeholder="# Lekcja 1: w podróży&#10;spóźnić się na pociąg&#9;to miss the train&#10;Przepraszam, że się spóźniłem.&#9;Sorry I'm late.&#10;# Lekcja 2: czasy&#10;Czym różni się Past Simple od Present Perfect?&#9;(odpowiedź)&#9;Q"></textarea>
+          <div class="d-row">
+            <p class="d-hint">Wklej z arkusza: kolumna 1 polski, kolumna 2 angielski, kolumna 3 (opcjonalnie) tag. Tag <b>Q</b> oznacza pytanie, a w kolumnie 2 jest wtedy odpowiedź. Wiersz z <b>#</b> na początku to nazwa lekcji. Zdanie to tekst od wielkiej litery do kropki, pytajnika albo wykrzyknika (wymowa w nawiasie kwadratowym na końcu nie przeszkadza), a tag <b>zdanie</b> albo <b>inne</b> wymusza rodzaj. Kolumna 4 wypełnia się sama oznaczeniami „do powtórki” i „opanowane”, a „Kopiuj” przenosi wszystko z powrotem do arkusza.</p>
+            <div class="d-acts"><button class="d-btn" id="dCopy"><i data-ico="kopiuj"></i><span>Kopiuj</span></button><button class="d-btn" id="dSample"><i data-ico="iskra"></i><span class="no-ask">Wstaw przykłady</span><span class="ask-t">Zastąpić obecną listę?</span></button></div>
+          </div>
         </div>
       </div>
-      <div class="d-body">
-        <textarea id="dText" spellcheck="false" placeholder="# Lekcja 1: w podróży&#10;spóźnić się na pociąg&#9;to miss the train&#10;Przepraszam, że się spóźniłem.&#9;Sorry I'm late.&#10;# Lekcja 2: czasy&#10;Czym różni się Past Simple od Present Perfect?&#9;(odpowiedź)&#9;Q"></textarea>
-        <div class="d-row">
-          <p class="d-hint">Wklej z arkusza: kolumna 1 polski, kolumna 2 angielski, kolumna 3 (opcjonalnie) tag. Tag <b>Q</b> oznacza pytanie, a w kolumnie 2 jest wtedy odpowiedź. Wiersz z <b>#</b> na początku to nazwa lekcji. Kolumna 4 wypełnia się sama oznaczeniami „do powtórki” i „opanowane”, a „Kopiuj” przenosi wszystko z powrotem do arkusza.</p>
-          <div class="d-acts"><button class="d-btn" id="dCopy"><i data-ico="kopiuj"></i><span>Kopiuj</span></button><button class="d-btn" id="dSample"><i data-ico="iskra"></i><span class="no-ask">Wstaw przykłady</span><span class="ask-t">Zastąpić obecną listę?</span></button></div>
-        </div>
-      </div>
-    </div>
-    <div class="e-pwrap" id="ePwrap">
       <div class="e-panel" id="ePanel">
         <div class="e-row">
           <div class="seg3" id="eView">
             <button data-v="draw" class="on"><i data-ico="losuj"></i>Losowanie</button>
             <button data-v="browse"><i data-ico="lista"></i>Przegląd</button>
+            <button data-v="hist"><i data-ico="historia"></i>Historia <small id="eHistCnt">0</small></button>
           </div>
           <div class="seg3" id="eLang">
             <button data-l="pl">PL<i data-ico="dalej"></i>EN</button>
             <button data-l="en">EN<i data-ico="dalej"></i>PL</button>
           </div>
-          <div class="dd push" id="lesDD" hidden>
+          <div class="dd" id="lesDD" hidden>
             <button class="dd-btn" id="lesBtn" aria-haspopup="true" aria-expanded="false"><i data-ico="kalendarz"></i><span>Wszystkie lekcje</span><small class="d-count">0</small><i data-ico="strzalka" class="chev"></i></button>
             <div class="dd-menu" id="lesMenu" hidden>
               <input class="dd-search" id="lesSearch" type="search" placeholder="Szukaj lekcji" hidden>
@@ -790,25 +777,7 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
             </div>
           </div>
         </div>
-        <div class="e-row b-only">
-          <div class="seg3" id="eCover">
-            <button data-c="none"><i data-ico="oko"></i>Odkryte</button>
-            <button data-c="gap"><i data-ico="luka"></i>Luka</button>
-            <button data-c="all"><i data-ico="oko_off"></i>Zasłonięte</button>
-          </div>
-          <button class="sq" id="eRecover" title="Zasłoń od nowa" aria-label="Zasłoń od nowa"><i data-ico="reset"></i></button>
-          <div class="e-marks push">
-            <button class="e-cnt mk-star" id="eOnlyStar" title="Pokaż tylko z gwiazdką" aria-pressed="false"><i data-ico="gwiazdka"></i><span id="eStarCnt">0</span></button>
-            <button class="e-cnt mk-rev" id="eOnlyRev" title="Pokaż tylko do powtórki" aria-pressed="false"><i data-ico="powtorz"></i><span id="eRevCnt">0</span></button>
-            <button class="e-cnt mk-ok" id="eOnlyOk" title="Pokaż tylko opanowane" aria-pressed="false"><i data-ico="zaznaczone"></i><span id="eOkCnt">0</span></button>
-            <button class="e-cnt mk-hist" id="eOnlyHist" title="Pokaż historię losowania" aria-pressed="false"><i data-ico="historia"></i><span id="eHistCnt">0</span></button>
-            <span class="e-sep"></span>
-            <button class="e-ic" id="eRestore" title="Przywróć usunięte gwiazdki" aria-label="Przywróć usunięte gwiazdki" disabled><i data-ico="cofnij"></i></button>
-            <button class="e-ic" id="eClear" title="Usuń wszystkie gwiazdki" aria-label="Usuń wszystkie gwiazdki"><i data-ico="odznacz"></i></button>
-          </div>
-        </div>
-        <div class="e-row d-only">
-          <span class="e-lab">Losuj z:</span>
+        <div class="e-row">
           <div class="seg3" id="eFrom">
             <button data-from="all" title="Wszystkie" aria-label="Wszystkie"><i data-ico="warstwy"></i><small id="eFromAll">0</small></button>
             <button data-from="noOk" title="Bez opanowanych" aria-label="Bez opanowanych"><i data-ico="bez_opanowanych"></i><small id="eFromNoOk">0</small></button>
@@ -816,22 +785,33 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
             <button data-from="ok" title="Opanowane" aria-label="Opanowane"><i data-ico="zaznaczone"></i><small id="eFromOk">0</small></button>
             <button data-from="star" title="Z gwiazdką" aria-label="Z gwiazdką"><i data-ico="gwiazdka"></i><small id="eFromStar">0</small></button>
           </div>
+          <div class="seg3" id="eCover">
+            <button data-c="none"><i data-ico="oko"></i>Odkryte</button>
+            <button data-c="gap"><i data-ico="luka"></i>Luka</button>
+            <button data-c="all"><i data-ico="oko_off"></i>Zasłonięte</button>
+          </div>
+          <div class="e-count e-gaps" id="eGaps" title="Ile luk w jednym wyrażeniu"><i data-ico="luka"></i><input type="number" id="eG" min="1" max="9" value="1" inputmode="numeric" aria-label="Ile luk w jednym wyrażeniu"><span class="e-step"><button id="eGUp" title="Więcej luk" aria-label="Więcej luk"><i data-ico="gora"></i></button><button id="eGDown" title="Mniej luk" aria-label="Mniej luk"><i data-ico="dol"></i></button></span></div>
         </div>
         <div class="e-row">
           <div class="seg3" id="eFilter"></div>
         </div>
       </div>
     </div>
-    <button class="e-gear" id="eGear" title="Ustawienia" aria-label="Ustawienia" aria-expanded="false" hidden><i data-ico="zebatka"></i></button>
-    <div class="e-btns d-only">
-      <div class="seg3 e-dmode" id="eDMode">
-        <button data-c="gap"><i data-ico="luka"></i>Luka</button>
-        <button data-c="all"><i data-ico="oko_off"></i>Zasłona</button>
-      </div>
-      <div class="e-count" title="Ile wyrażeń wylosować"><i data-ico="kostka"></i><input type="number" id="eN" min="1" max="99" value="1" inputmode="numeric" aria-label="Ile wyrażeń wylosować"><span class="e-step"><button id="eNUp" title="Więcej" aria-label="Więcej"><i data-ico="gora"></i></button><button id="eNDown" title="Mniej" aria-label="Mniej"><i data-ico="dol"></i></button></span></div>
-      <button id="eDraw" class="go"><i data-ico="losuj"></i>Losuj</button>
-      <button id="eReveal" class="ico" title="Odsłoń wszystko" aria-label="Odsłoń wszystko" disabled><i data-ico="oko"></i></button>
-      <label class="tg" id="nrEBox"><input type="checkbox" id="nrE" checked><span class="bx"><i data-ico="ptaszek"></i></span>Nie powtarzaj</label>
+    <div class="e-bar">
+      <div class="e-count d-only" title="Ile wyrażeń wylosować"><i data-ico="kostka"></i><input type="number" id="eN" min="1" max="99" value="1" inputmode="numeric" aria-label="Ile wyrażeń wylosować"><span class="e-step"><button id="eNUp" title="Więcej" aria-label="Więcej"><i data-ico="gora"></i></button><button id="eNDown" title="Mniej" aria-label="Mniej"><i data-ico="dol"></i></button></span></div>
+      <button id="eDraw" class="go d-only"><i data-ico="losuj"></i>Losuj</button>
+      <button class="sq dh" id="eUndo" title="Cofnij losowanie" aria-label="Cofnij losowanie" disabled><i data-ico="cofnij"></i></button>
+      <label class="tg d-only"><input type="checkbox" id="nrE" checked><span class="bx"><i data-ico="ptaszek"></i></span>Nie powtarzaj</label>
+      <button class="sq b-only" id="eRestore" title="Przywróć usunięte gwiazdki" aria-label="Przywróć usunięte gwiazdki" disabled><i data-ico="cofnij"></i></button>
+      <button class="sq b-only" id="eClear" title="Usuń wszystkie gwiazdki" aria-label="Usuń wszystkie gwiazdki"><i data-ico="odznacz"></i></button>
+      <button class="sq h-only" id="eHistPrint" data-print="ePrint" title="Drukuj podsumowanie lekcji" aria-label="Drukuj podsumowanie lekcji"><i data-ico="drukarka"></i></button>
+      <button class="sq h-only" id="eHistClear" title="Wyczyść historię" aria-label="Wyczyść historię"><i data-ico="kosz"></i></button>
+      <span class="e-sep"></span>
+      <button class="sq" id="eReveal" title="Odsłoń wszystko" aria-label="Odsłoń wszystko" disabled><i data-ico="oko"></i></button>
+      <button class="sq" id="eRecover" title="Zasłoń od nowa" aria-label="Zasłoń od nowa"><i data-ico="reset"></i></button>
+      <button class="sq e-ts" id="eTsDown" title="Mniejszy tekst" aria-label="Mniejszy tekst">A−</button>
+      <button class="sq e-ts" id="eTsUp" title="Większy tekst" aria-label="Większy tekst">A+</button>
+      <button class="sq" id="eFocus" title="Zwiń ustawienia (F)" aria-label="Zwiń ustawienia (F)" aria-pressed="false"><i data-ico="ekran"></i></button>
     </div>
     <div class="t-strip d-only" id="tStrip">
       <button class="t-main" id="tMain"><span class="t-ico" id="tIco"></span><span class="t-txt" id="tTxt"></span><span class="t-go" id="tGo" hidden><i data-ico="dalej"></i></span></button>
@@ -845,6 +825,7 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
     </div>
     <div class="b-deck d-only" id="eDeck" hidden></div>
     <div class="e-browse" id="eList"></div>
+    <div class="e-print" id="ePrint"></div>
   </section>
     <section class="methods" id="methods">
       <div class="m-head">
@@ -883,6 +864,7 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
     <h3 class="sch-sec" id="schMainTitle"></h3>
     <ol class="sch-steps" id="schSteps"></ol>
   </section>
+  <p class="hint" id="hint">Kliknij koło albo przycisk, żeby zakręcić.</p>
 </main>
 
 <div class="ov" id="ov" hidden>
@@ -987,7 +969,6 @@ const AKTYWNOSCI = [
       "**Z internetu:** obrazek wysłany na czacie.",
       "## Jak gramy?",
       "**Opis:** opisujesz przedmiot.",
-      "**Zgadywanka:** opisujesz przedmiot, a ja zgaduję, co to jest (albo odwrotnie). Na koniec go pokazujemy.",
       "**Telezakupy (Sell Me This Pen):** reklamujesz zwykły przedmiot tak, żebym chciał go kupić.",
       "**Gierka:** Describer z Games to Learn English (link na dole planszy).",
       "++ Dodatkowe zasady",
@@ -1507,7 +1488,9 @@ const STRONY = [
   { nazwa: "TierMaker", opis: "Tworzenie tier list", url: "https://tiermaker.com/" },
   { nazwa: "ENG HUB", opis: "Gotowe lekcje i aktywności A1 do C1", url: "https://enghub.pro/" },
   { nazwa: "IPA Chart", opis: "Interaktywna tabela IPA: kliknij symbol, żeby usłyszeć dźwięk", url: "https://www.ipachart.com/", grupa: "Wymowa" },
-  { nazwa: "Seeing Speech", opis: "Tabele IPA z animacjami, nagraniami MRI i USG artykulacji", url: "https://www.seeingspeech.ac.uk/ipa-charts/", grupa: "Wymowa" }
+  { nazwa: "Seeing Speech", opis: "Tabele IPA z animacjami, nagraniami MRI i USG artykulacji", url: "https://www.seeingspeech.ac.uk/ipa-charts/", grupa: "Wymowa" },
+  { nazwa: "Frequency List", opis: "Najczęściej używane słowa w języku angielskim", url: "https://frequencylist.com/", grupa: "Słownictwo i zwroty" },
+  { nazwa: "Essential English Phrases", opis: "25 najbardziej przydatnych zwrotów po angielsku", url: "https://www.lsi.edu/en/essential-en-phrases", grupa: "Słownictwo i zwroty" }
 ];
 
 /* ================================================================
@@ -1802,6 +1785,7 @@ const ICONS={
   zamknij:'<path d="M6 6l12 12M18 6 6 18"/>',
   iskra:'<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 16v4M17 18h4"/>',
   oko:'<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  ekran:'<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',
   oko_off:'<path d="M3 3l18 18"/><path d="M10.6 5.1A10 10 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6C3.9 8.4 2 12 2 12s3.6 7 10 7a9.6 9.6 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/>',
   luka:'<path d="M3 18h4M10 18h4M17 18h4"/>',
   flaga:'<path d="M5 21V4"/><path d="M5 4h12l-2.5 4L17 12H5"/>',
@@ -2024,7 +2008,7 @@ async function spinBoard(){
   wraps[idx].classList.remove('hot');
   busy=false;btn.disabled=false;finish(idx);
 }
-function spin(){if(busy||!ov.hidden||!active.length)return;mode==='board'?spinBoard():spinWheel()}
+function spin(){if(busy||!ov.hidden||!active.length||(mode==='board'&&app.classList.contains('bl')))return;mode==='board'?spinBoard():spinWheel()}
 
 /* ---------- pełnoekranowe okna ---------- */
 function openLayer(el,focus){el.hidden=false;document.body.classList.add('lock');focus.focus({preventScroll:true})}
@@ -2155,15 +2139,18 @@ const PK=k=>KEYFOR(PROF,k);
 const PROF_KEYS=['ruletka-wyrazenia','ruletka-gwiazdki','ruletka-gwiazdki-poprz','ruletka-wylosowane','ruletka-lekcje'];
 const E={items:[],lessons:[],tags:[],sel:new Set(loadJSON(PK('ruletka-lekcje'),[])),filter:'all',
   lang:store.get('ruletka-kierunek')==='en'?'en':'pl',view:'draw',
-  cover:Object.assign({draw:'all',browse:'all',hist:'all'},loadJSON('ruletka-zaslona3',{})),
-  used:new Set(),from:store.get('ruletka-losuj-z')||'all',histOpen:false,deck:null,deal:0,only:null,stars:[],last:loadJSON(PK('ruletka-gwiazdki-poprz'),[]),anim:false,cur:-1,busy:false,hist:[],col:0};
-if(E.cover.draw==='none')E.cover.draw='all';
+  cover:['none','gap','all'].find(c=>c===store.get('ruletka-zaslona4'))||'all',
+  used:new Set(),from:store.get('ruletka-losuj-z')||'all',gaps:Math.max(1,Math.min(9,parseInt(store.get('ruletka-luki'),10)||1)),deck:null,deal:0,undo:[],stars:[],last:loadJSON(PK('ruletka-gwiazdki-poprz'),[]),cur:-1,busy:false,hist:[],col:0};
 const keyOf=o=>o.q?'Q\t'+o.q:o.pl+'\t'+o.en;
 /* gwiazdki i historia są zapisywane po treści, więc przetrwają zamknięcie pliku i zmiany listy */
 const keysOf=a=>a.map(i=>keyOf(E.items[i]));
 const keysToIdx=ks=>{const m=new Map(E.items.map((o,i)=>[keyOf(o),i]));return ks.map(k=>m.get(k)).filter(i=>i!==undefined)};
 const saveMarks=()=>{store.set(PK('ruletka-gwiazdki'),JSON.stringify(keysOf(E.stars)));store.set(PK('ruletka-gwiazdki-poprz'),JSON.stringify(E.last||[]));store.set(PK('ruletka-wylosowane'),JSON.stringify(keysOf(E.hist)))};
-const isSentence=s=>{const t=s.replace(/^[\s"„“'(]+/,'');const c=t.charAt(0);return c!==c.toLowerCase()&&/[.?!…]["”'’)]*$/.test(s.trim())};
+/* zdanie: wielka litera na początku i . ? ! … na końcu; wymowa w [nawiasach] albo /ukośnikach/ na końcu się nie liczy */
+const isSentence=s=>{let t=s.trim(),p;do{p=t;t=t.replace(/\s*(\[[^\]]*\]|\/[^\/\s][^\/]*\/)$/,'').trim()}while(t!==p);
+  const c=t.replace(/^[\s"„“'(]+/,'').charAt(0);return c!==c.toLowerCase()&&/[.?!…]["”'’)]*$/.test(t)};
+/* tag „zdanie” albo „inne” w kolumnie 3 wymusza rodzaj, gdy automat się myli */
+const SENT_TAG=/^(zdanie|zdania|sentence)$/i,OTHER_TAG=/^(inne|wyra[zż]enie|expression|phrase)$/i;
 const HEADER=/^(pl|polski|polish|en|eng|ang|angielski|english|tag|tagi|typ|stan|status|gwiazdka)$/i;
 const QTAG=/^(q|pytanie|pytania|question)$/i;
 const ST_REV=/^(do powt[oó]rki|powt[oó]rka|review)$/i,ST_OK=/^(opanowane|opanowany|opanowana|mastered|ok)$/i;
@@ -2181,15 +2168,15 @@ function eParse(){
     if(!r.length)return;
     if(r[0].startsWith('#')){lessons.push({name:r[0].replace(/^#+\s*/,'')||'Lekcja '+(lessons.length+1),n:0});cur=lessons.length-1;return}
     if(!items.length&&r.every(c=>!c||HEADER.test(c)))return;
-    const tag=r[2]||'',isQ=QTAG.test(tag);
+    const forced=SENT_TAG.test(r[2]||'')?true:OTHER_TAG.test(r[2]||'')?false:null,tag=forced===null?r[2]||'':'',isQ=QTAG.test(tag);
     let o;
     if(isQ){if(!r[0])return;o={q:r[0],a:r[1]||'',tag:'Q'}}
     else{o=r[1]?{pl:r[0],en:r[1]}:{pl:'',en:r[0]||r[1]};if(!o.en)return;o.tag=tag;if(tag&&!tags.includes(tag))tags.push(tag)}
     const st=r[3]||'';o.st=ST_REV.test(st)?'rev':ST_OK.test(st)?'ok':'';
     if(cur<0){lessons.push({name:'Bez lekcji',n:0});cur=0}
-    o.les=cur;o.line=ln;o.s=!o.q&&isSentence(o.en);lessons[cur].n++;items.push(o);
+    o.les=cur;o.line=ln;o.s=!o.q&&(forced??isSentence(o.en));lessons[cur].n++;items.push(o);
   });
-  E.items=items;E.lessons=lessons;E.tags=tags;E.deck=null;
+  E.items=items;E.lessons=lessons;E.tags=tags;E.deck=null;E.undo=[];
   const names=new Set(lessons.map(l=>l.name));[...E.sel].forEach(n=>{if(!names.has(n))E.sel.delete(n)});
   E.used.clear();E.stars=keysToIdx(prevS);E.hist=keysToIdx(prevH);eMarksUI();
   if(E.cur>=items.length)E.cur=-1;
@@ -2226,23 +2213,21 @@ function eLessons(){
   $('lesAll').innerHTML=row(!E.sel.size,'','Wszystkie lekcje',E.items.length)+`<button class="dd-item" data-last="1">${ico('iskra')}<span>Tylko ostatnia lekcja</span></button>`;
   list.innerHTML=L.slice().reverse().map(l=>row(E.sel.has(l.name),l.name,esc(l.name),l.n)).join('');
   list.scrollTop=top;$('lesSearch').hidden=L.length<=8;lesFilter();
-  eFilters();eMarksUI();eMini();if(E.view==='browse')eBrowse();
+  eFilters();eMarksUI();if(E.view!=='draw')eBrowse();
 }
 function lesFilter(){const q=$('lesSearch').value.trim().toLowerCase();[...$('lesList').children].forEach(b=>{b.hidden=!!q&&!b.dataset.n.toLowerCase().includes(q)})}
 function lesOpen(open){$('lesMenu').hidden=!open;$('lesDD').classList.toggle('open',open);$('lesBtn').setAttribute('aria-expanded',open);if(open&&!$('lesSearch').hidden)$('lesSearch').focus()}
 
 /* ---------- zasłona i luka odsłaniane literami ---------- */
 const scratch=t=>`<span class="sc" data-t="${esc(t)}"><span class="sv"></span><span class="sh">${esc(t)}</span></span>`;
-/* losuje słowo na lukę: najlepiej takie, które ma co najmniej 3 litery lub cyfry */
-function pickGap(t){
-  const w=t.split(/(\s+)/);
-  let c=w.map((x,i)=>i).filter(i=>(w[i].match(/[\p{L}\p{N}]/gu)||[]).length>=3);
-  if(!c.length)c=w.map((x,i)=>i).filter(i=>/\S/.test(w[i]));
-  return c.length?c[Math.floor(Math.random()*c.length)]:-1;
+/* losuje n słów na luki: najpierw takie, które mają co najmniej 3 litery lub cyfry */
+function pickGaps(t,n){
+  const w=t.split(/(\s+)/),idx=w.map((x,i)=>i).filter(i=>/\S/.test(w[i])),big=idx.filter(i=>(w[i].match(/[\p{L}\p{N}]/gu)||[]).length>=3);
+  return new Set([...shuffle(big),...shuffle(idx.filter(i=>!big.includes(i)))].slice(0,n));
 }
-/* tekst z jednym słowem zasłoniętym (interpunkcja zostaje widoczna) */
-const gapped=(t,gi)=>t.split(/(\s+)/).map((x,i)=>{
-  if(i!==gi)return esc(x);
+/* tekst z zasłoniętymi słowami (interpunkcja zostaje widoczna) */
+const gapped=(t,gs)=>t.split(/(\s+)/).map((x,i)=>{
+  if(!gs.has(i))return esc(x);
   const m=x.match(/^([^\p{L}\p{N}]*)(.+?)([^\p{L}\p{N}]*)$/u)||['','',x,''];
   return esc(m[1])+scratch(m[2])+esc(m[3]);
 }).join('');
@@ -2254,8 +2239,8 @@ function answerHTML(o,mode){
   if(o.q){if(other)R=scratch(other);return[L,R]}
   const enLeft=main===o.en;
   if(mode==='all'){if(enLeft)L=scratch(o.en);else R=scratch(o.en);return[L,R]}
-  const g=pickGap(o.en);
-  if(g>=0){if(enLeft)L=gapped(o.en,g);else R=gapped(o.en,g)}
+  const g=pickGaps(o.en,E.gaps);
+  if(g.size){if(enLeft)L=gapped(o.en,g);else R=gapped(o.en,g)}
   return[L,R];
 }
 /* przeciąganie po zasłonie odsłania litery, kliknięcie = jedna litera, dwuklik = całość */
@@ -2273,9 +2258,8 @@ function scShow(sc,k,quiet){
 }
 /* przyciski „Odsłoń” znikają, gdy nie ma już nic zasłoniętego */
 const hasCover=el=>[...el.querySelectorAll('.sc')].some(x=>!scDone(x));
-function scSync(){
-  $('eReveal').disabled=E.busy||!hasCover(E.deck?$('eDeck'):$('eCard'));
-}
+const scBox=()=>E.view!=='draw'?$('eList'):E.deck?$('eDeck'):$('eCard');
+function scSync(){$('eReveal').disabled=E.busy||!hasCover(scBox())}
 /* odsłanianie z klawiatury: → jedna litera.
    Działa na zasłonie klikniętej ostatnio myszką, a bez tego na pierwszej zasłoniętej na ekranie */
 let scAct=null;
@@ -2284,7 +2268,7 @@ const nextSc=sc=>{const box=sc.closest('#eCard,#eDeck,#eList');if(!box)return nu
 document.addEventListener('keydown',e=>{
   if(e.key!=='ArrowRight'||e.ctrlKey||e.metaKey||e.altKey||mode!=='expr'||!ov.hidden||e.target.closest('input,textarea,select'))return;
   let sc=scAct&&document.contains(scAct)&&!scDone(scAct)?scAct:null;
-  if(!sc){const box=E.view==='browse'?$('eList'):E.deck?$('eDeck'):$('eCard');sc=[...box.querySelectorAll('.sc')].find(x=>!scDone(x))}
+  if(!sc)sc=[...scBox().querySelectorAll('.sc')].find(x=>!scDone(x));
   if(!sc)return;
   e.preventDefault();setAct(sc);
   scShow(sc,(+sc.dataset.k||0)+1);
@@ -2305,7 +2289,7 @@ document.addEventListener('dblclick',e=>{const sc=e.target.closest('.sc');if(sc)
 /* ---------- oznaczenia: gwiazdka, do powtórki, opanowane ---------- */
 const starred=i=>E.stars.includes(i);
 const MK=[['star','gwiazdka','Dodaj gwiazdkę','Usuń gwiazdkę'],['rev','powtorz','Do powtórki','Usuń „do powtórki”'],['ok','zaznaczone','Opanowane','Usuń „opanowane”']];
-const isOn=(i,k)=>k==='star'?starred(i):k==='hist'?E.hist.includes(i):E.items[i].st===k;
+const isOn=(i,k)=>k==='star'?starred(i):E.items[i].st===k;
 const marksInner=i=>MK.map(([k,ic,t0,t1])=>{const on=isOn(i,k),t=on?t1:t0;return`<button class="mk mk-${k}${on?' on':''}" data-mk="${k}" title="${esc(t)}" aria-label="${esc(t)}" aria-pressed="${on}">${ico(ic)}</button>`}).join('');
 const marks=i=>`<div class="mk-box">${marksInner(i)}</div>`;
 /* stan zapisuje się w 4. kolumnie danych, więc „Kopiuj” oddaje listę razem z oznaczeniami */
@@ -2322,17 +2306,13 @@ function eMark(i,k){
   isOn(i,k)?(k==='star'?SND.ding():k==='ok'?SND.ok():SND.pop()):SND.soft();
   document.querySelectorAll(`[data-i="${i}"] .mk-box`).forEach(b=>{b.innerHTML=marksInner(i)});
   eMarksUI();
-  if(E.view==='browse'&&E.only&&!isOn(i,E.only))eBrowse();
+  if(E.view==='browse'&&!FROM[E.from](i))eBrowse();
 }
 function eMarksUI(){
-  $('eStarCnt').textContent=E.stars.length;$('eClear').disabled=!E.stars.length;
-  $('eRevCnt').textContent=E.items.filter(o=>o.st==='rev').length;
-  $('eOkCnt').textContent=E.items.filter(o=>o.st==='ok').length;
-  $('eRestore').disabled=!(E.last&&E.last.length);
-  const vis=ePool();$('eFromAll').textContent=vis.length;$('eFromNoOk').textContent=vis.filter(FROM.noOk).length;$('eFromRev').textContent=vis.filter(FROM.rev).length;$('eFromOk').textContent=vis.filter(FROM.ok).length;$('eFromStar').textContent=vis.filter(FROM.star).length;
+  $('eClear').disabled=!E.stars.length;$('eRestore').disabled=!(E.last&&E.last.length);
+  const vis=ePool();[['eFromAll','all'],['eFromNoOk','noOk'],['eFromRev','rev'],['eFromOk','ok'],['eFromStar','star']].forEach(([id,k])=>{$(id).textContent=vis.filter(FROM[k]).length});
   segOn($('eFrom'),'from',E.from);
-  $('eHistCnt').textContent=E.hist.filter(i=>E.items[i]).length;
-  [['eOnlyStar','star'],['eOnlyRev','rev'],['eOnlyOk','ok'],['eOnlyHist','hist']].forEach(([id,k])=>{$(id).classList.toggle('on',E.only===k);$(id).setAttribute('aria-pressed',E.only===k)});
+  const h=E.hist.filter(i=>E.items[i]).length;$('eHistCnt').textContent=h;$('eHistClear').disabled=$('eHistPrint').disabled=!h;$('eUndo').disabled=!E.undo.length;
 }
 /* „Usuń wszystkie gwiazdki” zapamiętuje je, żeby dało się je przywrócić */
 function eClearStars(){
@@ -2343,7 +2323,7 @@ function eRestore(){
 }
 function eRefreshMarks(){
   eMarksUI();document.querySelectorAll('[data-i] .mk-box').forEach(b=>{const i=+b.closest('[data-i]').dataset.i;if(E.items[i])b.innerHTML=marksInner(i)});
-  if(E.view==='browse')eBrowse();
+  if(E.view!=='draw')eBrowse();
 }
 
 /* ---------- losowanie: jedno wyrażenie albo kilka naraz ---------- */
@@ -2357,7 +2337,7 @@ function eRender(pop){
   if(E.deck)return eDeck(false);
   if(!o){delete card.dataset.i;main.className='e-main';main.textContent=E.items.length?'Kliknij „Losuj”.':'Wklej wyrażenia i losuj.';$('eKind').textContent=$('eLes').textContent='';tr.hidden=$('eMk').hidden=true;scSync();return}
   card.dataset.i=E.cur;$('eMk').hidden=false;$('eMk').innerHTML=marksInner(E.cur);
-  const[L,R]=answerHTML(o,E.cover.draw);
+  const[L,R]=answerHTML(o,E.cover);
   $('eKind').textContent=kindOfLabel(o);
   $('eLes').textContent=E.lessons.length>1?E.lessons[o.les].name:'';
   main.className='e-main'+(eTexts(o).main.length>55?' long':'');
@@ -2377,20 +2357,21 @@ async function eDraw(){
   if(E.busy)return;task=null;const p=drawPool();
   if(!p.length){E.deck=null;E.cur=-1;eRender();tRender();$('eMain').textContent=!E.items.length?'Wklej wyrażenia i losuj.':E.from!=='all'?'Nic nie pasuje do „Losuj z”.':'Brak wyrażeń w tym wyborze.';return}
   const n=Math.max(1,Math.min(parseInt($('eN').value,10)||1,p.length));$('eN').value=n;
-  const take=pickN(p,n);
+  const before={hist:E.hist.slice(),used:[...E.used],cur:E.cur,deck:E.deck};
+  const take=pickN(p,n);E.undo.push(before);if(E.undo.length>50)E.undo.shift();
   E.hist=[...take,...E.hist.filter(i=>!take.includes(i))];E.cur=take[0];saveMarks();
   if(n>1){E.deck=take;E.deal=Math.floor(Math.random()*PALETA.length);eRender();eDeck(true);eMarksUI();tRender();take.slice(0,12).forEach((_,k)=>SND.deal(k));return}
   E.deck=null;$('eCard').hidden=false;$('eDeck').hidden=true;
   E.busy=true;$('eDraw').disabled=true;$('eKind').textContent=$('eLes').textContent='';$('eTrans').hidden=$('eMk').hidden=true;$('eReveal').disabled=true;tRender();
   const main=$('eMain');
-  for(let k=0;k<13;k++){const o=E.items[p[Math.floor(Math.random()*p.length)]];main.className='e-main long';main.textContent=eTexts(o).main;if(k%5===0)eColor();SND.tick(1.2);await sleep(45+k*k*2.6)}
+  for(let k=0;k<13;k++){const o=E.items[p[Math.floor(Math.random()*p.length)]];const t=eTexts(o).main;main.className='e-main'+(t.length>55?' long':'');main.textContent=t;if(k%5===0)eColor();SND.tick(1.2);await sleep(45+k*k*2.6)}
   eRender(true);eMarksUI();SND.ding();burstEl($('eMain'));
   E.busy=false;$('eDraw').disabled=false;scSync();tRender();
 }
 const kindOfLabel=o=>o.q?'Pytanie':o.tag?cap(o.tag):(o.s?'Zdanie':'Wyrażenie');
 /* karty losowane naraz: wpadają jedna po drugiej, każda w innym kolorze */
 function bCard(i,k,anim){
-  const o=E.items[i],[L,R]=answerHTML(o,E.cover.draw),c=PALETA[(k+E.deal)%PALETA.length];
+  const o=E.items[i],[L,R]=answerHTML(o,E.cover),c=PALETA[(k+E.deal)%PALETA.length];
   const st=`--c:${c};--d:${mix(c,'#000000',.35)};--l:${mix(c,'#ffffff',.9)};--m:${mix(c,'#ffffff',.6)};`+(anim?`animation-delay:${k*110}ms`:'');
   const les=E.lessons.length>1?`<span class="e-kind">${esc(E.lessons[o.les].name)}</span>`:'';
   return`<article class="b-card${anim?' b-in':''}" data-i="${i}" style="${st}"><div class="b-card-h"><span class="b-num">${k+1}</span><div class="e-pills"><span class="e-kind">${kindOfLabel(o)}</span>${les}</div>${marks(i)}</div><div class="bc-body"><p class="bc-main">${L}</p>${R?`<p class="bc-ans">${R}</p>`:''}</div></article>`;
@@ -2398,57 +2379,43 @@ function bCard(i,k,anim){
 function eDeck(anim){
   $('eDeck').innerHTML=E.deck.map((i,k)=>bCard(i,k,anim)).join('');scSync();
 }
-function eSetData(open){$('data').classList.toggle('open',open);$('dHead').setAttribute('aria-expanded',open)}
+function eSetData(open){$('expr').classList.toggle('dopen',open);$('dHead').setAttribute('aria-expanded',open)}
 
 /* ---------- przegląd ---------- */
 function bRow(i,from){
-  const o=E.items[i],[L,R]=answerHTML(o,E.cover.browse),t=o.tag,c=t&&tagColor(t);
+  const o=E.items[i],[L,R]=answerHTML(o,E.cover),t=o.tag,c=t&&tagColor(t);
   const st=t?` style="--tl:${mix(c,'#ffffff',.88)};--td:${mix(c,'#000000',.35)}"`:'';
   return`<div class="b-row${t?' tagged':''}" data-i="${i}"${st}><div>${L}${from&&E.lessons.length>1?`<span class="b-from">${esc(E.lessons[o.les].name)}</span>`:''}</div><div>${R}</div>${marks(i)}</div>`;
 }
-/* przegląd: bieżący wybór, opcjonalnie tylko z gwiazdką, do powtórki albo opanowane */
-const bPool=()=>{const p=ePool();if(E.only==='hist'){const set=new Set(p);return E.hist.filter(i=>set.has(i))}return E.only?p.filter(i=>isOn(i,E.only)):p};
-const ONLY_EMPTY={star:'Nic nie ma gwiazdki.',rev:'Nic nie jest oznaczone do powtórki.',ok:'Nic nie jest oznaczone jako opanowane.',hist:'Nic jeszcze nie zostało wylosowane.'};
+/* przegląd pokazuje dokładnie tę pulę, z której losuje „Losuj”; historia to płaska lista od najnowszego */
+const bPool=()=>{if(E.view!=='hist')return drawPool();const set=new Set(ePool());return E.hist.filter(i=>set.has(i))};
+const FROM_EMPTY={noOk:'Wszystko jest już opanowane.',rev:'Nic nie jest oznaczone do powtórki.',ok:'Nic nie jest oznaczone jako opanowane.',star:'Nic nie ma gwiazdki.'};
 function eBrowse(){
-  const p=bPool(),list=$('eList');
-  if(!p.length){list.innerHTML=`<p class="b-empty">${!E.items.length?'Wklej wyrażenia, żeby je przejrzeć.':E.only?ONLY_EMPTY[E.only]:'Brak wyrażeń w tym wyborze.'}</p>`;return}
-  /* historia: płaska lista od najnowszego */
-  if(E.only==='hist'){
-    list.innerHTML=`<div class="b-group"><div class="b-les b-hist-h"><span>Historia losowania<span class="d-count">${p.length}</span></span><button class="sq" id="eHistClear" title="Wyczyść historię" aria-label="Wyczyść historię">${ico('kosz')}</button></div><div class="b-rows">${p.map(i=>bRow(i,true)).join('')}</div></div>`;
-    return;
+  const p=bPool(),list=$('eList'),hist=E.view==='hist';
+  if(!p.length)list.innerHTML=`<p class="b-empty">${!E.items.length?'Wklej wyrażenia, żeby je przejrzeć.':hist?'Nic jeszcze nie zostało wylosowane.':FROM_EMPTY[E.from]||'Brak wyrażeń w tym wyborze.'}</p>`;
+  else if(hist)list.innerHTML=`<div class="b-rows">${p.map(i=>bRow(i,true)).join('')}</div>`;
+  else{
+    const groups=new Map();p.forEach(i=>{const l=E.items[i].les;if(!groups.has(l))groups.set(l,[]);groups.get(l).push(i)});
+    const named=E.lessons.length>1;
+    list.innerHTML=[...groups].map(([l,ids])=>`<div class="b-group">${named?`<h3 class="b-les">${esc(E.lessons[l].name)}<span class="d-count">${ids.length}</span></h3>`:''}<div class="b-rows">${ids.map(i=>bRow(i)).join('')}</div></div>`).join('');
   }
-  const groups=new Map();p.forEach(i=>{const l=E.items[i].les;if(!groups.has(l))groups.set(l,[]);groups.get(l).push(i)});
-  const named=E.lessons.length>1;
-  list.innerHTML=[...groups].map(([l,ids])=>`<div class="b-group">${named?`<h3 class="b-les">${esc(E.lessons[l].name)}<span class="d-count">${ids.length}</span></h3>`:''}<div class="b-rows">${ids.map(bRow).join('')}</div></div>`).join('');
+  scSync();
 }
 
-/* ---------- widok, tryb odpowiedzi, zębatka ---------- */
-const COVER_TXT={none:'Odkryte',gap:'Luka',all:'Zasłonięte'};
-const ONLY_TXT={star:'tylko z gwiazdką',rev:'tylko do powtórki',ok:'tylko opanowane',hist:'historia losowania'};
-function eCoverUI(){segOn($('eCover'),'c',E.cover.browse);segOn($('eDMode'),'c',E.cover.draw);$('eRecover').hidden=E.cover.browse==='none'}
-function eMini(){
-  const f=$('eFilter').querySelector('.on');
-  $('eGear').title='Ustawienia: '+[E.view==='draw'?'Losowanie':'Przegląd',COVER_TXT[E.cover[E.view]],E.lang==='pl'?'PL → EN':'EN → PL',
-    $('lesDD').hidden?'':$('lesBtn').querySelector('span').textContent,f&&E.filter!=='all'?f.dataset.label:'',E.view==='browse'&&E.only?ONLY_TXT[E.only]:'',E.view==='draw'&&E.from!=='all'?'losuj z: '+$('eFrom').querySelector('.on').title.replace(/\d+/,'').trim().toLowerCase():''].filter(Boolean).join(', ');
+/* ---------- widok i zasłona: jedno ustawienie dla losowania, przeglądu i historii ---------- */
+function eCoverUI(){$('eG').value=E.gaps;$('eGaps').classList.toggle('dim',E.cover!=='gap');segOn($('eCover'),'c',E.cover);$('eRecover').disabled=E.cover==='none'}
+function eSetView(v){
+  E.view=v;segOn($('eView'),'v',v);['draw','browse','hist'].forEach(k=>$('expr').classList.toggle('v-'+k,k===v));
+  store.set('ruletka-widok',v);eCoverUI();v==='draw'?scSync():eBrowse();
 }
-function eSetView(v){E.view=v;segOn($('eView'),'v',v);$('expr').classList.toggle('browse',v==='browse');store.set('ruletka-widok',v);eCoverUI();eMini();if(v==='browse')eBrowse()}
-function eFloat(on){
-  const pw=$('ePwrap'),pn=$('ePanel');
-  if(on)pw.style.height=pw.offsetHeight+'px';else{pw.style.height='';lesOpen(false)}
-  pn.classList.toggle('float',on);$('eGear').classList.toggle('open',on);$('eGear').setAttribute('aria-expanded',on);
-}
-new IntersectionObserver(([en])=>{
-  const off=!en.isIntersecting&&en.boundingClientRect.top<0;
-  $('eGear').hidden=!off;if(!off&&$('ePanel').classList.contains('float'))eFloat(false);
-}).observe($('ePwrap'));
 /* przełącznik segmentowy: zaznacza kliknięty przycisk i zwraca go */
 const segPick=(box,e)=>{const b=e.target.closest('button');if(b)[...box.children].forEach(x=>x.classList.toggle('on',x===b));return b};
-const reRender=()=>{eRender();if(E.view==='browse')eBrowse()};
+const reRender=()=>{eRender();if(E.view!=='draw')eBrowse()};
 
 /* ---------- start i zdarzenia ---------- */
 profUI();$('dText').value=store.get(PK('ruletka-wyrazenia'))||'';eParse();eSetData(!E.items.length);
 segOn($('eLang'),'l',E.lang);eSetView(store.get('ruletka-widok')==='browse'?'browse':'draw');eRender();
-$('dHead').addEventListener('click',()=>eSetData(!$('data').classList.contains('open')));
+$('dHead').addEventListener('click',()=>eSetData(!$('expr').classList.contains('dopen')));
 /* potwierdzenie drugim kliknięciem (bez okienek przeglądarki, które w niektórych miejscach są zablokowane) */
 function askTwice(b,fn){
   if(b.classList.contains('ask')){clearTimeout(b._ask);b.classList.remove('ask');fn();return}
@@ -2474,34 +2441,53 @@ $('lesMenu').addEventListener('click',e=>{
   store.set(PK('ruletka-lekcje'),JSON.stringify([...E.sel]));E.used.clear();eLessons();
 });
 $('eView').addEventListener('click',e=>{const b=e.target.closest('button');if(b)eSetView(b.dataset.v)});
-$('eFilter').addEventListener('click',e=>{const b=segPick($('eFilter'),e);if(!b)return;E.filter=b.dataset.f;eMini();if(E.view==='browse')eBrowse()});
-$('eLang').addEventListener('click',e=>{const b=segPick($('eLang'),e);if(!b)return;E.lang=b.dataset.l;store.set('ruletka-kierunek',E.lang);eMini();reRender()});
-const setCover=(view,c)=>{E.cover[view]=c;store.set('ruletka-zaslona3',JSON.stringify(E.cover));eCoverUI();eMini()};
-$('eCover').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;setCover('browse',b.dataset.c);eBrowse()});
-$('eDMode').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;setCover('draw',b.dataset.c);eRender()});
+$('eFilter').addEventListener('click',e=>{const b=segPick($('eFilter'),e);if(!b)return;E.filter=b.dataset.f;if(E.view!=='draw')eBrowse()});
+$('eLang').addEventListener('click',e=>{const b=segPick($('eLang'),e);if(!b)return;E.lang=b.dataset.l;store.set('ruletka-kierunek',E.lang);reRender()});
+$('eCover').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;E.cover=b.dataset.c;store.set('ruletka-zaslona4',E.cover);eCoverUI();reRender()});
 const revealIn=el=>{if(hasCover(el))SND.reveal();el.querySelectorAll('.sc').forEach(sc=>scShow(sc,Infinity,true))};
-$('eRecover').addEventListener('click',eBrowse);
+$('eRecover').addEventListener('click',reRender);
 document.addEventListener('click',e=>{
   const m=e.target.closest('.mk');if(m){const h=m.closest('[data-i]');if(h&&E.items[+h.dataset.i])eMark(+h.dataset.i,m.dataset.mk);return}
-  if(e.target.closest('#eHistClear')){E.used.clear();E.hist=[];saveMarks();SND.close();eMarksUI();eBrowse()}
 });
-$('eGear').addEventListener('click',()=>eFloat(!$('ePanel').classList.contains('float')));
-const setOnly=k=>{E.only=E.only===k?null:k;eMarksUI();eMini();eBrowse()};
-$('eOnlyStar').addEventListener('click',()=>setOnly('star'));
-$('eOnlyRev').addEventListener('click',()=>setOnly('rev'));
-$('eOnlyOk').addEventListener('click',()=>setOnly('ok'));
-$('eOnlyHist').addEventListener('click',()=>setOnly('hist'));
+$('eHistClear').addEventListener('click',()=>{E.used.clear();E.hist=[];E.undo=[];saveMarks();SND.close();eMarksUI();eBrowse()});
+/* cofa losowania jedno po drugim (do 50 wstecz): znikają z historii i wraca poprzednia karta */
+$('eUndo').addEventListener('click',()=>{
+  if(E.busy||!E.undo.length)return;const u=E.undo.pop();
+  E.hist=u.hist;E.used.clear();u.used.forEach(i=>E.used.add(i));E.cur=u.cur;E.deck=u.deck;task=null;
+  saveMarks();SND.soft();eRender();tRender();eMarksUI();if(E.view==='hist')eBrowse();
+});
+/* zwijanie ustawień: chowa nagłówek i panel, zostaje pasek losowania i scena (przycisk, klawisz F, Esc) */
+const setFocus=on=>{app.classList.toggle('focus',on);$('eFocus').setAttribute('aria-pressed',on)};
+/* wielkość tekstu wyrażeń: 70–160%, krok 10% */
+const setTs=v=>{const t=Math.min(1.6,Math.max(.7,Math.round(v*10)/10));$('expr').style.setProperty('--ts',t);store.set('ruletka-tekst',t);$('eTsDown').disabled=t<=.7;$('eTsUp').disabled=t>=1.6;return t};
+let ts=setTs(parseFloat(store.get('ruletka-tekst'))||1);
+$('eTsDown').addEventListener('click',()=>{ts=setTs(ts-.1)});
+$('eTsUp').addEventListener('click',()=>{ts=setTs(ts+.1)});
+$('eFocus').addEventListener('click',()=>setFocus(!app.classList.contains('focus')));
+document.addEventListener('keydown',e=>{if((e.key==='f'||e.key==='F')&&mode==='expr'&&ov.hidden&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&!e.target.closest('input,textarea,select'))setFocus(!app.classList.contains('focus'))});
+/* podsumowanie lekcji do druku: wylosowane wyrażenia, a pod nimi reszta oznaczonych „do powtórki” */
+function ePrintFill(){
+  const pool=ePool(),set=new Set(pool),h=E.hist.filter(i=>set.has(i)),rev=pool.filter(i=>E.items[i].st==='rev'&&!h.includes(i));
+  const row=i=>{const o=E.items[i],a=o.q?[o.q,o.a]:o.pl?[o.pl,o.en]:[o.en,''];
+    return`<div class="pr-row"><div>${esc(a[0])}</div><div>${esc(a[1])}</div><div>${o.st?`<span class="pr-st ${o.st}">${ST_TXT[o.st]}</span>`:''}</div></div>`};
+  const sec=(t,ids)=>ids.length?`<h3>${t}<span class="d-count">${ids.length}</span></h3><div class="pr-rows">${ids.map(row).join('')}</div>`:'';
+  const who=(PROFS.find(p=>p.id===PROF)||{}).name||'',day=new Date().toLocaleDateString('pl-PL',{day:'numeric',month:'long',year:'numeric'});
+  $('ePrint').innerHTML=`<div class="pr-head"><b>Podsumowanie lekcji</b><span>${esc(who)}, ${day}</span></div>`+sec('Wylosowane',h)+sec('Do powtórki',rev);
+}
 $('eClear').addEventListener('click',eClearStars);
 $('eRestore').addEventListener('click',eRestore);
 document.addEventListener('pointerdown',e=>{
   if(!$('lesMenu').hidden&&!$('lesDD').contains(e.target))lesOpen(false);
-  if($('ePanel').classList.contains('float')&&!$('ePanel').contains(e.target)&&!$('eGear').contains(e.target))eFloat(false);
 });
-document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!$('lesMenu').hidden)lesOpen(false);else if($('ePanel').classList.contains('float'))eFloat(false)});
+document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!$('lesMenu').hidden)lesOpen(false);else setFocus(false)});
 $('eDraw').addEventListener('click',eDraw);
 $('eN').addEventListener('keydown',e=>{if(e.key==='Enter')eDraw()});
-$('eReveal').addEventListener('click',()=>revealIn(E.deck?$('eDeck'):$('eCard')));
-$('eFrom').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;E.from=b.dataset.from;store.set('ruletka-losuj-z',E.from);E.used.clear();eMarksUI();eMini()});
+$('eReveal').addEventListener('click',()=>revealIn(scBox()));
+$('eFrom').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;E.from=b.dataset.from;store.set('ruletka-losuj-z',E.from);E.used.clear();eMarksUI();if(E.view==='browse')eBrowse()});
+const setGaps=n=>{E.gaps=Math.max(1,Math.min(9,n||1));store.set('ruletka-luki',E.gaps);eCoverUI();if(E.cover==='gap')reRender()};
+$('eG').addEventListener('change',()=>setGaps(parseInt($('eG').value,10)));
+$('eGUp').addEventListener('click',()=>setGaps(E.gaps+1));
+$('eGDown').addEventListener('click',()=>setGaps(E.gaps-1));
 const stepN=d=>{const t=$('eN');t.value=Math.max(1,Math.min(99,(parseInt(t.value,10)||1)+d))};
 $('eNUp').addEventListener('click',()=>stepN(1));
 $('eNDown').addEventListener('click',()=>stepN(-1));
@@ -2512,8 +2498,8 @@ const saveProfs=()=>{store.set('ruletka-profile',JSON.stringify(PROFS));store.se
 function setProfile(id){
   PROF=id;saveProfs();profUI();
   E.sel=new Set(loadJSON(PK('ruletka-lekcje'),[]));E.last=loadJSON(PK('ruletka-gwiazdki-poprz'),[]);
-  E.items=[];E.stars=[];E.hist=[];E.cur=-1;E.deck=null;E.only=null;E.used.clear();task=null;tRender();
-  $('dText').value=store.get(PK('ruletka-wyrazenia'))||'';eParse();eSetData(!E.items.length);eRender();if(E.view==='browse')eBrowse();
+  E.items=[];E.stars=[];E.hist=[];E.cur=-1;E.deck=null;E.undo=[];E.used.clear();task=null;tRender();
+  $('dText').value=store.get(PK('ruletka-wyrazenia'))||'';eParse();eSetData(!E.items.length);eRender();if(E.view!=='draw')eBrowse();
 }
 $('profSel').addEventListener('change',e=>setProfile(e.target.value));
 /* dodawanie i zmiana nazwy w polu tekstowym zamiast okienka przeglądarki */
@@ -2608,7 +2594,7 @@ $('profImp').addEventListener('click',()=>$('profFile').click());
 $('profFile').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(f)profImport(f)});
 
 /* ---------- tryby ---------- */
-const HINT={wheel:'Kliknij koło albo przycisk, żeby zakręcić.',board:'Kliknij kafelek, żeby wybrać, albo wylosuj. Oko wyłącza zadanie z losowania.',expr:'Wklej wyrażenia, wybierz lekcje, a potem losuj albo przeglądaj. Zasłonę odkrywasz myszką albo strzałką →.',mat:'Zadania, do których trzeba przygotować materiały.',met:'Metody i podejścia, z których korzystamy na lekcjach.',web:'Strony do ćwiczeń. Otwierają się w nowej karcie.',sch:'Szkielet lekcji, który można pokazać uczniowi.'};
+const HINT={wheel:'Kliknij koło albo przycisk, żeby zakręcić.',board:'Kliknij kafelek, żeby wybrać, albo wylosuj. Oko wyłącza zadanie z losowania.',expr:'Zasłonę odkrywasz myszką albo strzałką →. Klawisz F zwija i rozwija ustawienia.',mat:'Zadania, do których trzeba przygotować materiały.',met:'Metody i podejścia, z których korzystamy na lekcjach.',web:'Strony do ćwiczeń. Otwierają się w nowej karcie.',sch:'Szkielet lekcji, który można pokazać uczniowi.'};
 const MODE_BTN={wheel:'mWheel',board:'mBoard',expr:'mExpr',mat:'mMat',met:'mMet',web:'mWeb',sch:'mSch'};
 function setMode(m){
   mode=m;app.classList.toggle('bm',m==='board');app.classList.toggle('em',m==='expr');app.classList.toggle('mm',m==='mat');app.classList.toggle('sm',m==='sch');app.classList.toggle('mt',m==='met');app.classList.toggle('wm',m==='web');
@@ -2725,11 +2711,12 @@ mlist.addEventListener('click',e=>{const h=e.target.closest('.mat-h');if(h&&!bus
 setMView(store.get('ruletka-metody-widok')==='list'?'list':'tiles');
 
 /* drukowanie jednej części: reszta strony jest ukryta tylko na czas druku */
-const PRINT_TITLE={sch:'Schemat lekcji',matGrid:'Zadania z materiałami',blist:'Aktywności',mlist:'Metody'};
+const PRINT_TITLE={ePrint:'Podsumowanie lekcji',sch:'Schemat lekcji',matGrid:'Zadania z materiałami',blist:'Aktywności',mlist:'Metody'};
 let printTitle='';
 function printPart(id){
   if(id==='blist')blist.innerHTML=A.map((a,i)=>taskCard(a,i+1,i)).join('');
   if(id==='mlist')renderMList();
+  if(id==='ePrint')ePrintFill();
   const t=$(id);
   document.querySelectorAll('.p-path,.p-target').forEach(x=>x.classList.remove('p-path','p-target'));
   t.classList.add('p-target');
@@ -2765,7 +2752,7 @@ function tRender(msg){
   if(task){const a=task.src;setVars(st,a);$('tIco').innerHTML=task.ai>=0?task.ai+1:ico(a.ikona);
     $('tTxt').innerHTML=`<b>${esc(a.nazwa)}</b>${task.v?` · ${esc(task.v)}`:''}`;$('tMain').title='Otwórz kartę'}
   else{['c','d','l','m'].forEach(k=>st.style.removeProperty('--'+k));$('tIco').innerHTML=ico('kostka');
-    $('tTxt').innerHTML=`<b>Co z tym robimy?</b> ${msg||(ready?'Kliknij, żeby wylosować zadanie.':'Najpierw wylosuj wyrażenie.')}`;$('tMain').title='Wylosuj zadanie'}
+    $('tTxt').innerHTML=`<b>Co z tym robimy?</b> ${msg||(ready?'Kliknij, a wylosuję zadanie z planszy albo metodę.':'Najpierw wylosuj wyrażenie.')}`;$('tMain').title='Wylosuj zadanie'}
 }
 async function tDraw(){
   if(tBusy||E.busy||!(E.cur>=0||E.deck))return;
