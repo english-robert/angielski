@@ -37,7 +37,7 @@ h1{font-size:clamp(1.8rem,3vw,2.4rem);font-weight:800;line-height:1}
 .snd.mute .s-off{display:block}
 .snd.mute{background:var(--soft);color:var(--muted)}
 /* iskry przy wylosowaniu */
-.sparks{position:absolute;left:0;top:0;z-index:70;width:100%;overflow:hidden;pointer-events:none}
+.sparks{position:fixed;inset:0;z-index:70;overflow:hidden;pointer-events:none}
 .spark{position:absolute;width:var(--s);height:var(--s);margin:calc(var(--s) / -2) 0 0 calc(var(--s) / -2);pointer-events:none;animation:spark .9s cubic-bezier(.15,.7,.3,1) forwards}
 @keyframes spark{0%{transform:translate(0,0) scale(.3) rotate(0)}60%{opacity:1}100%{transform:translate(var(--x),var(--y)) scale(1) rotate(var(--r));opacity:0}}
 /* logo: „Box” jako niebieski klocek z twardym cieniem, lekko przekrzywiony jak numery kart */
@@ -85,7 +85,7 @@ button:disabled{opacity:.6;cursor:default;transform:none}
 /* pole wyboru */
 .tg{display:flex;align-items:center;gap:.8rem;font-size:1.15rem;font-weight:600;cursor:pointer;user-select:none}
 .tg input{position:absolute;opacity:0;pointer-events:none}
-.bx{width:34px;height:34px;flex:none;border-radius:var(--r-xs);border:3px solid var(--ink);background:#fff;display:grid;place-items:center}
+.bx{width:34px;height:34px;flex:none;border-radius:var(--r-xs);border:2px solid var(--ink);background:#fff;display:grid;place-items:center}
 .bx svg{width:22px;height:22px;opacity:0;transform:scale(.4);transition:.15s}
 .tg input:checked+.bx{background:#12a150;border-color:#0b6b35}
 .tg input:checked+.bx svg{opacity:1;transform:none}
@@ -139,8 +139,6 @@ button:disabled{opacity:.6;cursor:default;transform:none}
 .tile small{position:relative;font-size:1.1rem;font-weight:600;opacity:.95;line-height:1.2}
 .tile.used{opacity:.38}
 .tile:active{transform:translateY(var(--lift-m));box-shadow:0 0 0 var(--d)}
-.tw.hot{transform:scale(1.07)}
-.tw.hot .tile{outline:6px solid var(--gold);outline-offset:3px;opacity:1}
 .off{position:absolute;top:.7rem;right:.7rem;z-index:2;width:44px;height:44px;border-radius:var(--r-s);background:var(--glass);display:grid;place-items:center}
 .off svg{width:26px;height:26px}
 .off .e2,.tw.dis .off .e1{display:none}
@@ -161,9 +159,10 @@ button:disabled{opacity:.6;cursor:default;transform:none}
 .exnote small{display:block;font-size:1rem;font-weight:600;color:var(--muted)}
 .c-expr{margin-bottom:1.2rem}
 .c-expr+.c-star{margin-top:-.6rem}
-.c-star svg{color:#f0b400;fill:currentColor}
+.c-star svg{color:var(--c);fill:currentColor}
 .c-expr>span{line-height:1.9}
-.x-chip{display:inline;padding:.12em .55em;border-radius:9px;background:#fff;font-weight:600;-webkit-box-decoration-break:clone;box-decoration-break:clone;white-space:normal}
+/* wyrażenia na karcie zadania: plakietki i gwiazdka w kolorze zadania */
+.x-chip{display:inline;padding:.12em .55em;border-radius:9px;background:color-mix(in srgb,var(--c) 24%,#fff);color:var(--d);font-weight:600;-webkit-box-decoration-break:clone;box-decoration-break:clone;white-space:normal}
 .x-chip+.x-chip{margin-left:.35rem}
 .c-end,.c-why,.steps{margin-top:1.3rem}
 .c-why{background:var(--soft);color:var(--ink)}
@@ -235,15 +234,13 @@ button:disabled{opacity:.6;cursor:default;transform:none}
 .app.bm .wheelbox,.app.bm .res{display:none}
 .app.bm .board{display:grid}
 .app.bm .panel{order:-1;flex-direction:row;flex-wrap:wrap;align-items:center;gap:1rem 1.6rem}
-.app.bm .btns{flex:0 1 360px}
-.app.bm .hist{flex-basis:100%}
 .app.bm .exnote{flex:1 1 320px}
 .b-view,.app .blist{display:none}
 .app.bm .b-view{display:flex}
 .b-view svg{width:22px;height:22px}
 .app.bm.bl .board{display:none}
-/* w widoku listy losowanie zostaje na miejscu, tylko wygaszone, więc przełącznik nie skacze */
-.app.bm.bl .btns,.app.bm.bl .panel>.tg{opacity:.35;pointer-events:none}
+/* plansza służy do wybierania zadań; losuje koło */
+.app.bm .btns,.app.bm .panel>.tg,.app.bm .hist{display:none}
 .app.bm.bl .blist{display:grid;margin-top:.5rem}
 .mat.dis{opacity:.5}
 button.mat-h{width:100%;padding:0;border:0;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer}
@@ -333,6 +330,20 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
 .e-pills .e-kind:empty{display:none}
 #eFrom{--a:var(--ink);--al:#e6ecf4;--ad:var(--ink)}
 #eFrom button{min-width:62px;justify-content:center}
+/* status: każda opcja w kolorze swojego oznaczenia (do powtórki fiolet, opanowane zieleń, gwiazdka żółć) */
+#eFrom [data-from=rev]{color:#5f3dc4}
+#eFrom [data-from=ok]{color:#0b7a3b}
+#eFrom [data-from=star]{color:#8a6500}
+#eFrom [data-from=noOk].on{background:var(--muted);color:#fff}
+#eFrom [data-from=rev].on{background:#7048e8;color:#fff}
+#eFrom [data-from=ok].on{background:#12a150;color:#fff}
+#eFrom [data-from=star].on{background:var(--gold);color:var(--ink)}
+#eCover button{width:54px;padding:0;justify-content:center}
+#eCover svg{width:26px;height:26px}
+/* rodzaje i tagi: osobne kafelki z odstępem, które zawijają się do nowego rzędu */
+#eFilter{flex-wrap:wrap;justify-content:flex-start;gap:8px;padding:0;background:none}
+#eFilter button{height:50px;background:var(--al)}
+#eFilter button.on{background:var(--a)}
 .e-step{display:flex;flex-direction:column;gap:3px}
 .e-step button{width:34px;height:21px;display:grid;place-items:center;border-radius:7px;background:#fff;color:#a61e4d}
 .e-step button:hover{transform:none;background:#ffd0e1}
@@ -366,9 +377,11 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
 .e-panel .seg3 small{color:inherit}
 #eView button{height:50px;padding:0 1.3rem;font-size:1.2rem}
 #eCover{--a:#0d8a7e;--al:#e0f3f0;--ad:#06564f}
-#eLang{--a:#d9480f;--al:#fdeadf;--ad:#8a2e09}
+/* kierunek: jeden przycisk, kliknięcie zamienia języki miejscami */
+.e-lang{display:flex;align-items:center;gap:.45rem;height:56px;padding:0 9px 0 1.1rem;border-radius:var(--r-s);background:#fdeadf;color:#8a2e09;font-size:1.15rem;font-weight:700}
+.e-lang svg{width:18px;height:18px}
+.e-lang .sw{width:38px;height:38px;margin-left:.45rem;padding:8px;border-radius:10px;background:#d9480f;color:#fff}
 #eFilter{--a:#6741d9;--al:#ece6fd;--ad:#3f2491}
-#eLang svg{width:18px;height:18px;margin:0 -.15rem}
 .dot{width:12px;height:12px;flex:none;border-radius:50%;background:var(--t);box-shadow:0 0 0 2px #fff}
 .dd-btn,.sq{height:52px;border-radius:var(--r-s);background:var(--soft);color:var(--ink)}
 .sq{width:56px;height:56px;flex:none;display:grid;place-items:center;background:#e0f3f0;color:#06564f}
@@ -487,9 +500,8 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
 .sch-sec:empty{display:none}
 .sch-trial .sch-steps::before{display:none}
 .sch-steps{position:relative;list-style:none;padding:0;margin:0;display:grid;gap:1.3rem}
-.sch-steps::before{content:'';position:absolute;left:35px;top:20px;bottom:20px;width:4px;border-radius:4px;background:linear-gradient(#cdd6e4,#cdd6e4) padding-box}
-.sch-step{position:relative;display:grid;grid-template-columns:74px minmax(0,1fr);gap:1.1rem;align-items:start;animation:schIn .55s cubic-bezier(.2,1.2,.4,1) backwards}
-@keyframes schIn{from{opacity:0;transform:translateY(24px) scale(.97)}}
+.sch-steps::before{content:'';position:absolute;left:35px;top:20px;bottom:20px;width:4px;border-radius:4px;background:var(--muted)}
+.sch-step{position:relative;display:grid;grid-template-columns:74px minmax(0,1fr);gap:1.1rem;align-items:start}
 .sch-num{position:relative;z-index:1;width:74px;height:74px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-size:2.1rem;font-weight:800;border:6px solid var(--bg)}
 .sch-card{padding:1.25rem 1.5rem 1.4rem;border-radius:var(--r-l);background:#fff}
 .sch-step.trial .sch-card{border:2px dashed var(--d);background:#fbfcfe}
@@ -629,6 +641,7 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
 /* kolory przycisków paska: cofanie i zwijanie neutralne, gwiazdki żółte, historia różowa, zasłona morska (jak jej przełącznik) */
 .e-bar .dh,.e-ts,#eFocus{background:var(--soft);color:var(--ink)}
 .e-ts{font-size:1.2rem;font-weight:800}
+.e-ts.on{background:var(--ink);color:#fff}
 #eFocus[aria-pressed=true]{background:var(--ink);color:#fff}
 .e-bar .b-only{background:#fff1c2;color:#6b4700}
 .e-bar .h-only{background:#fde4ee;color:#a61e4d}
@@ -719,7 +732,7 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
       <div id="res" class="res"><b>Co dziś robimy?</b></div>
       <button class="exnote" id="exNote" hidden title="Przejdź do wyrażeń"><i data-ico="notatki"></i><span></span></button>
       <div class="btns">
-        <button id="spin" class="go"><i data-ico="losuj"></i><span id="spinTxt">Zakręć</span></button>
+        <button id="spin" class="go"><i data-ico="losuj"></i>Zakręć</button>
         <button id="reset" class="ico" title="Zacznij od nowa" aria-label="Zacznij od nowa"><i data-ico="reset"></i></button>
       </div>
       <div class="seg3 b-view" id="bView">
@@ -764,10 +777,7 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
             <button data-v="browse"><i data-ico="lista"></i>Przegląd</button>
             <button data-v="hist"><i data-ico="historia"></i>Historia <small id="eHistCnt">0</small></button>
           </div>
-          <div class="seg3" id="eLang">
-            <button data-l="pl">PL<i data-ico="dalej"></i>EN</button>
-            <button data-l="en">EN<i data-ico="dalej"></i>PL</button>
-          </div>
+          <button class="e-lang" id="eLang" title="Zamień kierunek" aria-label="Zamień kierunek"><span id="eLangA">PL</span><i data-ico="dalej"></i><span id="eLangB">EN</span><i data-ico="zamiana" class="sw"></i></button>
           <div class="dd" id="lesDD" hidden>
             <button class="dd-btn" id="lesBtn" aria-haspopup="true" aria-expanded="false"><i data-ico="kalendarz"></i><span>Wszystkie lekcje</span><small class="d-count">0</small><i data-ico="strzalka" class="chev"></i></button>
             <div class="dd-menu" id="lesMenu" hidden>
@@ -786,9 +796,9 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
             <button data-from="star" title="Z gwiazdką" aria-label="Z gwiazdką"><i data-ico="gwiazdka"></i><small id="eFromStar">0</small></button>
           </div>
           <div class="seg3" id="eCover">
-            <button data-c="none"><i data-ico="oko"></i>Odkryte</button>
-            <button data-c="gap"><i data-ico="luka"></i>Luka</button>
-            <button data-c="all"><i data-ico="oko_off"></i>Zasłonięte</button>
+            <button data-c="none" title="Odkryte" aria-label="Odkryte"><i data-ico="oko"></i></button>
+            <button data-c="gap" title="Luka" aria-label="Luka"><i data-ico="luka"></i></button>
+            <button data-c="all" title="Zasłonięte" aria-label="Zasłonięte"><i data-ico="oko_off"></i></button>
           </div>
           <div class="e-count e-gaps" id="eGaps" title="Ile luk w jednym wyrażeniu"><i data-ico="luka"></i><input type="number" id="eG" min="1" max="9" value="1" inputmode="numeric" aria-label="Ile luk w jednym wyrażeniu"><span class="e-step"><button id="eGUp" title="Więcej luk" aria-label="Więcej luk"><i data-ico="gora"></i></button><button id="eGDown" title="Mniej luk" aria-label="Mniej luk"><i data-ico="dol"></i></button></span></div>
         </div>
@@ -803,7 +813,7 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
       <button class="sq dh" id="eUndo" title="Cofnij losowanie" aria-label="Cofnij losowanie" disabled><i data-ico="cofnij"></i></button>
       <label class="tg d-only"><input type="checkbox" id="nrE" checked><span class="bx"><i data-ico="ptaszek"></i></span>Nie powtarzaj</label>
       <button class="sq b-only" id="eRestore" title="Przywróć usunięte gwiazdki" aria-label="Przywróć usunięte gwiazdki" disabled><i data-ico="cofnij"></i></button>
-      <button class="sq b-only" id="eClear" title="Usuń wszystkie gwiazdki" aria-label="Usuń wszystkie gwiazdki"><i data-ico="odznacz"></i></button>
+      <button class="sq b-only" id="eClear" title="Usuń wszystkie gwiazdki" aria-label="Usuń wszystkie gwiazdki"><i data-ico="bez_gwiazdek"></i></button>
       <button class="sq h-only" id="eHistPrint" data-print="ePrint" title="Drukuj podsumowanie lekcji" aria-label="Drukuj podsumowanie lekcji"><i data-ico="drukarka"></i></button>
       <button class="sq h-only" id="eHistClear" title="Wyczyść historię" aria-label="Wyczyść historię"><i data-ico="kosz"></i></button>
       <span class="e-sep"></span>
@@ -882,7 +892,7 @@ button.mat-h:hover h2{text-decoration:underline;text-decoration-thickness:3px;te
     <div class="c-body" id="cBody">
       <div>
         <p class="c-expr" id="cExpr" hidden><i data-ico="notatki"></i><span></span></p>
-        <p class="c-expr c-star" id="cStar" hidden><i data-ico="gwiazdka"></i><span></span></p>
+        <p class="c-expr c-star" id="cStar" title="Wyrażenia z gwiazdką" hidden><i data-ico="gwiazdka"></i><span></span></p>
         <p class="c-desc" id="cDesc"></p>
         <ol class="steps" id="cSteps"></ol>
         <p class="c-end" id="cEnd" hidden><i data-ico="flaga"></i><span></span></p>
@@ -1786,8 +1796,10 @@ const ICONS={
   iskra:'<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 16v4M17 18h4"/>',
   oko:'<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
   ekran:'<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',
+  zamiana:'<path d="M7 4 3 8l4 4M3 8h18M17 12l4 4-4 4M21 16H3"/>',
+  bez_gwiazdek:'<path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3L2.9 9.5l6.3-.9z"/><path d="M4 3.5l16 17"/>',
   oko_off:'<path d="M3 3l18 18"/><path d="M10.6 5.1A10 10 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6C3.9 8.4 2 12 2 12s3.6 7 10 7a9.6 9.6 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/>',
-  luka:'<path d="M3 18h4M10 18h4M17 18h4"/>',
+  luka:'<path d="M7 4H3v16h4M17 4h4v16h-4"/>',
   flaga:'<path d="M5 21V4"/><path d="M5 4h12l-2.5 4L17 12H5"/>',
   kolo_ratunkowe:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M5.6 5.6l3.6 3.6M14.8 14.8l3.6 3.6M18.4 5.6l-3.6 3.6M9.2 14.8l-3.6 3.6"/>',
   kostka:'<rect x="3" y="3" width="18" height="18" rx="4.5"/><g fill="currentColor" stroke="none"><circle cx="8" cy="8" r="1.7"/><circle cx="16" cy="8" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="8" cy="16" r="1.7"/><circle cx="16" cy="16" r="1.7"/></g>',
@@ -1893,11 +1905,11 @@ const SPARK_C=['#ffd23f','#ffffff','#ff8fab','#7dd3fc','#a3e635','#ff9f1c'];
 /* warstwa na całą wysokość strony: gwiazdki zostają przy elemencie, także podczas przewijania */
 function sparkLayer(){
   let l=$('sparks');if(!l){l=document.createElement('div');l.id='sparks';l.className='sparks';document.body.appendChild(l)}
-  l.style.height=document.documentElement.scrollHeight+'px';return l;
+  return l;
 }
 function burst(x,y,n=16){
   if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-  const layer=sparkLayer();x+=scrollX;y+=scrollY;
+  const layer=sparkLayer();
   for(let k=0;k<n;k++){
     const el=document.createElement('div'),a=Math.random()*Math.PI*2,d=90+Math.random()*140;
     el.className='spark';
@@ -1993,22 +2005,7 @@ function spinWheel(){
 }
 
 /* ---------- losowanie: plansza ---------- */
-async function spinBoard(){
-  const{idx,pool}=pickIdx();
-  busy=true;btn.disabled=true;
-  const hops=22;let prev=-1;
-  for(let k=0;k<hops;k++){
-    let j=idx;
-    if(k<hops-1){const c=pool.length>1?pool.filter(x=>x!==prev):pool;j=c[Math.floor(Math.random()*c.length)]}
-    wraps.forEach(t=>t.classList.remove('hot'));wraps[j].classList.add('hot');prev=j;SND.tick(1.15);
-    await sleep(60+Math.pow(k/hops,2)*360);
-  }
-  SND.win();burstEl(wraps[idx]);
-  await sleep(650);
-  wraps[idx].classList.remove('hot');
-  busy=false;btn.disabled=false;finish(idx);
-}
-function spin(){if(busy||!ov.hidden||!active.length||(mode==='board'&&app.classList.contains('bl')))return;mode==='board'?spinBoard():spinWheel()}
+function spin(){if(busy||!ov.hidden||!active.length||mode!=='wheel')return;spinWheel()}
 
 /* ---------- pełnoekranowe okna ---------- */
 function openLayer(el,focus){el.hidden=false;document.body.classList.add('lock');focus.focus({preventScroll:true})}
@@ -2049,7 +2046,7 @@ function showCard(a,badge,isMethod,withEx){
   /* na karcie aktywności: tylko wyrażenia z gwiazdką, zawsze po angielsku */
   const showEx=!isMethod||a.wyrazenie||withEx,stars=showEx?E.stars.filter(i=>E.items[i]):[];
   const chip=t=>`<span class="x-chip">${esc(t)}</span>`,enText=o=>o.q?(o.a||o.q):o.en;
-  strip('cStar',stars.length?`<b>Z gwiazdką:</b> ${stars.map(i=>chip(enText(E.items[i]))).join('')}`:'');
+  strip('cStar',stars.length?stars.map(i=>chip(enText(E.items[i]))).join(''):'');
   strip('cExpr','');
   $('cAgain').hidden=isMethod;
   $('cTitle').innerHTML=a.nazwa.split(' ').map((w,k)=>`<span class="w" style="animation-delay:${.3+k*.09}s">${w}</span>`).join(' ');
@@ -2243,7 +2240,8 @@ function answerHTML(o,mode){
   if(g.size){if(enLeft)L=gapped(o.en,g);else R=gapped(o.en,g)}
   return[L,R];
 }
-/* przeciąganie po zasłonie odsłania litery, kliknięcie = jedna litera, dwuklik = całość */
+/* przeciąganie po zasłonie odsłania litery, a przeciąganie z powrotem po odsłoniętych je zasłania;
+   lewy klik = jedna litera więcej, prawy klik = jedna litera mniej, dwuklik = całość */
 const caretAt=(x,y)=>{
   if(document.caretPositionFromPoint){const p=document.caretPositionFromPoint(x,y);return p&&[p.offsetNode,p.offset]}
   const r=document.caretRangeFromPoint&&document.caretRangeFromPoint(x,y);return r&&[r.startContainer,r.startOffset];
@@ -2253,8 +2251,22 @@ const scDone=sc=>(+sc.dataset.k||0)>=sc.dataset.t.length;
 function scShow(sc,k,quiet){
   const t=sc.dataset.t,was=scDone(sc);k=Math.min(Math.max(k,+sc.dataset.k||0),t.length);
   while(k<t.length&&/\s/.test(t[k]))k++;
-  sc.dataset.k=k;sc.firstChild.textContent=t.slice(0,k);sc.lastChild.textContent=t.slice(k);
-  if(!was&&scDone(sc)){sc.classList.remove('act');if(!quiet)SND.reveal();scSync()}
+  scPut(sc,k);if(k)scLast=sc;
+  /* pełny dźwięk odsłonięcia dopiero przy ostatniej luce wyrażenia; wcześniejsze luki dają krótki sygnał */
+  if(!was&&scDone(sc)){sc.classList.remove('act');if(!quiet){const box=sc.closest('[data-i]');box&&hasCover(box)?SND.pop():SND.reveal()}scSync()}
+}
+const scPut=(sc,k)=>{const t=sc.dataset.t;sc.dataset.k=k;sc.firstChild.textContent=t.slice(0,k);sc.lastChild.textContent=t.slice(k)};
+/* ← zasłania z powrotem jedną literę: w ostatnio odsłanianej zasłonie, a gdy jej nie ma, w ostatniej napoczętej */
+let scLast=null;
+function scBack(){
+  const sc=scLast&&document.contains(scLast)&&+scLast.dataset.k>0?scLast:[...scBox().querySelectorAll('.sc')].reverse().find(x=>+x.dataset.k>0);
+  if(sc)scCover(sc,+sc.dataset.k-1);
+}
+/* zasłania z powrotem do k liter (nigdy nie odsłania); wspólne dla strzałki ←, prawego przycisku myszy i przeciągania w lewo */
+function scCover(sc,k){
+  const t=sc.dataset.t;while(k>0&&/\s/.test(t[k-1]))k--;
+  if(k<0||k>=(+sc.dataset.k||0))return;
+  scPut(sc,k);scLast=sc;setAct(sc);SND.scratch();scSync();
 }
 /* przyciski „Odsłoń” znikają, gdy nie ma już nic zasłoniętego */
 const hasCover=el=>[...el.querySelectorAll('.sc')].some(x=>!scDone(x));
@@ -2266,7 +2278,8 @@ let scAct=null;
 const setAct=sc=>{if(scAct)scAct.classList.remove('act');scAct=sc;if(sc)sc.classList.add('act')};
 const nextSc=sc=>{const box=sc.closest('#eCard,#eDeck,#eList');if(!box)return null;const all=[...box.querySelectorAll('.sc')];return all.slice(all.indexOf(sc)+1).find(x=>!scDone(x))||all.find(x=>!scDone(x))||null};
 document.addEventListener('keydown',e=>{
-  if(e.key!=='ArrowRight'||e.ctrlKey||e.metaKey||e.altKey||mode!=='expr'||!ov.hidden||e.target.closest('input,textarea,select'))return;
+  if((e.key!=='ArrowRight'&&e.key!=='ArrowLeft')||e.ctrlKey||e.metaKey||e.altKey||mode!=='expr'||!ov.hidden||e.target.closest('input,textarea,select'))return;
+  if(e.key==='ArrowLeft'){e.preventDefault();scBack();return}
   let sc=scAct&&document.contains(scAct)&&!scDone(scAct)?scAct:null;
   if(!sc)sc=[...scBox().querySelectorAll('.sc')].find(x=>!scDone(x));
   if(!sc)return;
@@ -2275,15 +2288,20 @@ document.addEventListener('keydown',e=>{
   if(scDone(sc))setAct(nextSc(sc));else SND.scratch();
 });
 let scr=null;
-document.addEventListener('pointerdown',e=>{const sc=e.target.closest('.sc');if(!sc)return;e.preventDefault();setAct(scDone(sc)?null:sc);scr={sc,x:e.clientX,y:e.clientY,moved:false}});
+document.addEventListener('pointerdown',e=>{const sc=e.target.closest('.sc');if(!sc||e.button)return;e.preventDefault();setAct(scDone(sc)?null:sc);scr={sc,x:e.clientX,y:e.clientY,moved:false}});
 document.addEventListener('pointermove',e=>{
   if(!scr)return;
   if(Math.abs(e.clientX-scr.x)+Math.abs(e.clientY-scr.y)>4)scr.moved=true;
   const c=caretAt(e.clientX,e.clientY);if(!c||c[0].nodeType!==3)return;
-  const sh=c[0].parentNode;if(!sh.classList.contains('sh'))return;
+  const sh=c[0].parentNode;
+  /* kursor nad odsłoniętą częścią: zasłona wraca do tego miejsca */
+  if(sh.classList.contains('sv')){scCover(sh.parentNode,c[1]);return}
+  if(!sh.classList.contains('sh'))return;
   const before=+sh.parentNode.dataset.k||0;scShow(sh.parentNode,before+c[1]);if((+sh.parentNode.dataset.k||0)>before&&!scDone(sh.parentNode))SND.scratch();
 });
 document.addEventListener('pointerup',()=>{if(!scr)return;if(!scr.moved){scShow(scr.sc,(+scr.sc.dataset.k||0)+1);if(!scDone(scr.sc))SND.scratch()}scr=null});
+/* prawy przycisk myszy na zasłonie: jedna litera z powrotem */
+document.addEventListener('contextmenu',e=>{const sc=e.target.closest('.sc');if(!sc)return;e.preventDefault();scCover(sc,(+sc.dataset.k||0)-1)});
 document.addEventListener('dblclick',e=>{const sc=e.target.closest('.sc');if(sc)scShow(sc,Infinity)});
 
 /* ---------- oznaczenia: gwiazdka, do powtórki, opanowane ---------- */
@@ -2403,6 +2421,7 @@ function eBrowse(){
 }
 
 /* ---------- widok i zasłona: jedno ustawienie dla losowania, przeglądu i historii ---------- */
+const langUI=()=>{const pl=E.lang==='pl';$('eLangA').textContent=pl?'PL':'EN';$('eLangB').textContent=pl?'EN':'PL'};
 function eCoverUI(){$('eG').value=E.gaps;$('eGaps').classList.toggle('dim',E.cover!=='gap');segOn($('eCover'),'c',E.cover);$('eRecover').disabled=E.cover==='none'}
 function eSetView(v){
   E.view=v;segOn($('eView'),'v',v);['draw','browse','hist'].forEach(k=>$('expr').classList.toggle('v-'+k,k===v));
@@ -2414,7 +2433,7 @@ const reRender=()=>{eRender();if(E.view!=='draw')eBrowse()};
 
 /* ---------- start i zdarzenia ---------- */
 profUI();$('dText').value=store.get(PK('ruletka-wyrazenia'))||'';eParse();eSetData(!E.items.length);
-segOn($('eLang'),'l',E.lang);eSetView(store.get('ruletka-widok')==='browse'?'browse':'draw');eRender();
+langUI();eSetView(store.get('ruletka-widok')==='browse'?'browse':'draw');eRender();
 $('dHead').addEventListener('click',()=>eSetData(!$('expr').classList.contains('dopen')));
 /* potwierdzenie drugim kliknięciem (bez okienek przeglądarki, które w niektórych miejscach są zablokowane) */
 function askTwice(b,fn){
@@ -2442,7 +2461,7 @@ $('lesMenu').addEventListener('click',e=>{
 });
 $('eView').addEventListener('click',e=>{const b=e.target.closest('button');if(b)eSetView(b.dataset.v)});
 $('eFilter').addEventListener('click',e=>{const b=segPick($('eFilter'),e);if(!b)return;E.filter=b.dataset.f;if(E.view!=='draw')eBrowse()});
-$('eLang').addEventListener('click',e=>{const b=segPick($('eLang'),e);if(!b)return;E.lang=b.dataset.l;store.set('ruletka-kierunek',E.lang);reRender()});
+$('eLang').addEventListener('click',()=>{E.lang=E.lang==='pl'?'en':'pl';store.set('ruletka-kierunek',E.lang);SND.pop();langUI();reRender()});
 $('eCover').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;E.cover=b.dataset.c;store.set('ruletka-zaslona4',E.cover);eCoverUI();reRender()});
 const revealIn=el=>{if(hasCover(el))SND.reveal();el.querySelectorAll('.sc').forEach(sc=>scShow(sc,Infinity,true))};
 $('eRecover').addEventListener('click',reRender);
@@ -2459,7 +2478,8 @@ $('eUndo').addEventListener('click',()=>{
 /* zwijanie ustawień: chowa nagłówek i panel, zostaje pasek losowania i scena (przycisk, klawisz F, Esc) */
 const setFocus=on=>{app.classList.toggle('focus',on);$('eFocus').setAttribute('aria-pressed',on)};
 /* wielkość tekstu wyrażeń: 70–160%, krok 10% */
-const setTs=v=>{const t=Math.min(1.6,Math.max(.7,Math.round(v*10)/10));$('expr').style.setProperty('--ts',t);store.set('ruletka-tekst',t);$('eTsDown').disabled=t<=.7;$('eTsUp').disabled=t>=1.6;return t};
+const setTs=v=>{const t=Math.min(1.6,Math.max(.7,Math.round(v*10)/10));$('expr').style.setProperty('--ts',t);store.set('ruletka-tekst',t);$('eTsDown').disabled=t<=.7;$('eTsUp').disabled=t>=1.6;
+  $('eTsDown').classList.toggle('on',t<1);$('eTsUp').classList.toggle('on',t>1);$('eTsDown').title=$('eTsUp').title=`Wielkość tekstu: ${Math.round(t*100)}%`+(t===1?' (domyślna)':'');return t};
 let ts=setTs(parseFloat(store.get('ruletka-tekst'))||1);
 $('eTsDown').addEventListener('click',()=>{ts=setTs(ts-.1)});
 $('eTsUp').addEventListener('click',()=>{ts=setTs(ts+.1)});
@@ -2594,12 +2614,11 @@ $('profImp').addEventListener('click',()=>$('profFile').click());
 $('profFile').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(f)profImport(f)});
 
 /* ---------- tryby ---------- */
-const HINT={wheel:'Kliknij koło albo przycisk, żeby zakręcić.',board:'Kliknij kafelek, żeby wybrać, albo wylosuj. Oko wyłącza zadanie z losowania.',expr:'Zasłonę odkrywasz myszką albo strzałką →. Klawisz F zwija i rozwija ustawienia.',mat:'Zadania, do których trzeba przygotować materiały.',met:'Metody i podejścia, z których korzystamy na lekcjach.',web:'Strony do ćwiczeń. Otwierają się w nowej karcie.',sch:'Szkielet lekcji, który można pokazać uczniowi.'};
+const HINT={wheel:'Kliknij koło albo przycisk, żeby zakręcić.',board:'Kliknij kafelek, żeby otworzyć zadanie. Oko wyłącza zadanie z losowania na kole.',expr:'Zasłonę odkrywasz myszką albo strzałką →. Cofasz ją strzałką ←, prawym przyciskiem myszy albo przeciągając w lewo. Klawisz F zwija i rozwija ustawienia.',mat:'Zadania, do których trzeba przygotować materiały.',met:'Metody i podejścia, z których korzystamy na lekcjach.',web:'Strony do ćwiczeń. Otwierają się w nowej karcie.',sch:'Szkielet lekcji, który można pokazać uczniowi.'};
 const MODE_BTN={wheel:'mWheel',board:'mBoard',expr:'mExpr',mat:'mMat',met:'mMet',web:'mWeb',sch:'mSch'};
 function setMode(m){
   mode=m;app.classList.toggle('bm',m==='board');app.classList.toggle('em',m==='expr');app.classList.toggle('mm',m==='mat');app.classList.toggle('sm',m==='sch');app.classList.toggle('mt',m==='met');app.classList.toggle('wm',m==='web');
   Object.entries(MODE_BTN).forEach(([k,id])=>$(id).classList.toggle('on',k===m));
-  $('spinTxt').textContent=m==='wheel'?'Zakręć':'Losuj';
   $('hint').textContent=HINT[m];
   store.set('ruletka-tryb',m);
 }
@@ -2652,7 +2671,7 @@ $('schNotes').innerHTML=(SCHEMAT.notatki||[]).map(n=>{const t=tone(n,n.kolor||'#
   return`<div class="sch-note" style="--c:${t.c};--d:${t.d};--l:${t.l};--m:${t.m}"><div class="sch-note-h"><span>${ico(n.ikona)}</span><b>${esc(n.nazwa)}</b></div><p>${mdl(n.opis)}</p></div>`}).join('');
 /* jeden krok: kółko (numer albo ikona) + karta z nagłówkiem, opisem, punktami albo ścieżkami */
 const schStep=(k,j,cls)=>{const t=tone(k,k.kolor||PALETA[j%PALETA.length]),head=k.nr&&k.nazwa;
-  return`<li class="sch-step${cls}" style="--c:${t.c};--d:${t.d};--l:${t.l};--m:${t.m};animation-delay:${j*90}ms"><span class="sch-num">${k.nr?esc(k.nr):ico(k.ikona)}</span><div class="sch-card">`+
+  return`<li class="sch-step${cls}" style="--c:${t.c};--d:${t.d};--l:${t.l};--m:${t.m}"><span class="sch-num">${k.nr?esc(k.nr):ico(k.ikona)}</span><div class="sch-card">`+
     (head?`<div class="sch-head">${ico(k.ikona)}<h3>${esc(k.nazwa)}</h3>${k.dopisek?`<span class="sch-tag">${esc(k.dopisek)}</span>`:''}</div>`:'')+
     (k.opis?`<p>${mdl(k.opis)}</p>`:'')+
     (k.punkty?`<ul>${k.punkty.map(x=>`<li>${mdl(x)}</li>`).join('')}</ul>`:'')+
@@ -2663,7 +2682,7 @@ $('schTrialTitle').textContent=P?P.nazwa:'';
 $('schTrial').innerHTML=P?`<ul class="sch-steps">${schStep(P,0,' trial')}</ul>`:'';
 $('schMainTitle').textContent=SCHEMAT.zwykla||'';
 $('schSteps').innerHTML=K.map((k,j)=>schStep(k,j+1,'')).join('')+
-  (SCHEMAT.meta?`<li class="sch-step sch-end" style="animation-delay:${(K.length+1)*90}ms"><span class="sch-num">${ico('meta')}</span><b>${esc(SCHEMAT.meta)}</b></li>`:'');
+  (SCHEMAT.meta?`<li class="sch-step sch-end"><span class="sch-num">${ico('meta')}</span><b>${esc(SCHEMAT.meta)}</b></li>`:'');
 
 /* zakładka „Z materiałami” */
 /* ---------- karta zadania w formie listy (zakładka „Z materiałami” i widok listy na planszy) ---------- */
