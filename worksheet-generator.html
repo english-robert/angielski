@@ -208,7 +208,8 @@ Idę.	I {go} to school.	g</pre>
               <li>Tagi: c (zdrapki), m, s, q, u, g, e, t, w, k (kategorie), l (linki). Druga sekcja tego samego typu: <code>m2</code>. Kilka tagów: <code>m, q</code>.</li>
               <li>Enter w notatce: <code>\n</code>. Notatka pokazuje się dopiero po rozwiązaniu, więc nie wpisuj w niej poleceń.</li>
               <li>Emoji na początku <code>pl</code> w zdrapce pokazuje się duże jak obrazek. Samo emoji też działa.</li>
-              <li><strong>Flashcards (f) są niezalecane:</strong> nie da się w nich dać podpowiedzi. Do słówek używaj zdrapek.</li>
+              <li>W Matching i Categorize notatki są pod zadaniem jako zakładki. Zakładka pojawia się po połączeniu pary albo po ułożeniu całej kategorii.</li>
+              <li>Dawny tag <code>f</code> (Flashcards) działa teraz jak <code>c</code> (zdrapki).</li>
             </ul>
           </div>
           <div>
@@ -217,10 +218,12 @@ Idę.	I {go} to school.	g</pre>
 #subtitle	Unit 5
 #section	g	Present Simple	Uzupełnij zdania.
 #section	q		-
+#note	m	Notatka do całego zadania.
 #deco	g	&lt;svg viewBox="0 0 120 80"&gt;…&lt;/svg&gt;
 #order	c, m, q, g</pre>
             <ul>
               <li><code>#section</code>: tag, własny tytuł, własna instrukcja. Puste pole = domyślne, <code>-</code> = bez instrukcji.</li>
+              <li><code>#note</code>: tag i notatka do całego zadania, widoczna po ukończeniu sekcji. Odstępy to tabulator, ale tutaj wystarczy też zwykła spacja: <code>#note m Tekst</code>.</li>
               <li><code>#deco</code>: ilustracja SVG w nagłówku sekcji, cały kod w jednej linii.</li>
               <li><code>#order</code>: kolejność sekcji.</li>
             </ul>
@@ -769,9 +772,22 @@ button:disabled { cursor: default; }
 .note-head { font-weight: 700; color: var(--note-ink); margin-bottom: .1rem; }
 .item .note { display: none; }
 .item.is-done .note, .item .note.is-open { display: flex; }
-.snotes { display: none; gap: .5rem; margin-top: 1.2rem; }
-.sec.is-done .snotes { display: grid; }
-.snotes .note { margin-top: 0; }
+.sec:not(.is-done) .sec-note { display: none; }
+/* Zakladki notatek pod zadaniem: celowo inne niz kafelki slow (.chip). */
+.ntabs { margin-top: 1.2rem; }
+.ntabs-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .45rem; }
+.ntab {
+  padding: .32rem .85rem; border: 0; border-radius: 999px;
+  background: var(--note-bg); color: var(--note-ink);
+  font-size: .95rem; font-weight: 600; line-height: 1.3;
+  transition: background-color .15s, color .15s;
+}
+.ntab:hover { background: var(--note-edge); }
+.ntab.is-on { background: var(--note-ink); color: #fff; }
+.ntab.is-new { animation: pop .4s; }
+.ntab-all, .ntab-all:hover { background: none; color: var(--dim); text-decoration: underline; text-underline-offset: 3px; }
+.ntabs .note { display: none; margin-top: .55rem; }
+.ntabs .note.is-open { display: flex; }
 
 /* Flaga i zakryte polskie zdanie */
 .flag { display: inline-block; width: 1.6rem; height: 1.1rem; border-radius: 3px; overflow: hidden; flex-shrink: 0; box-shadow: 0 0 0 1px rgba(0, 0, 0, .14); }
@@ -800,7 +816,6 @@ button:disabled { cursor: default; }
 .diff[data-sel] .diff-btn:not(.is-sel):hover { opacity: 1; }
 .diff-row { display: flex; justify-content: flex-end; margin-top: .8rem; }
 .diff.is-moved { display: flex; width: 100%; justify-content: flex-end; margin: .7rem 0 0; }
-.diff-row.is-center { justify-content: center; margin: 0; }
 .lv-badge {
   width: 44px; flex-shrink: 0; align-self: stretch; cursor: default; opacity: .55;
   border-radius: 10px; background: var(--white);
@@ -821,33 +836,6 @@ button:disabled { cursor: default; }
 body.diff-hidden .diff, body.diff-hidden .diff-row, body.diff-hidden .diff-overlay,
 body.diff-hidden .lv-badge, body.diff-hidden .legend, body.diff-hidden .diff-only,
 body.diff-hidden .rv-rate, body.diff-hidden .rv-print-level { display: none !important; }
-
-/* ---------- Flashcards ---------- */
-.fc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1.1rem; }
-.fc-cell { display: grid; gap: .5rem; min-width: 0; }
-.fc { aspect-ratio: 4 / 3; perspective: 1200px; cursor: pointer; transition: transform .2s; }
-.fc:hover { transform: scale(1.03); }
-.fc.fc-s2, .fc.fc-s3 { aspect-ratio: 4 / 3.4; }
-.fc-inner { position: relative; width: 100%; height: 100%; transition: transform .6s cubic-bezier(.16, 1, .3, 1); transform-style: preserve-3d; }
-.fc.is-flipped .fc-inner { transform: rotateY(180deg); }
-.fc-face {
-  position: absolute; inset: 0;
-  backface-visibility: hidden; -webkit-backface-visibility: hidden;
-  border-radius: 18px;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 1.1rem 1.3rem; text-align: center;
-  background: var(--white); border: 2px solid var(--line-2);
-  overflow: hidden;
-}
-.fc-back { transform: rotateY(180deg); background: var(--tint-2); }
-.fc-word { font-family: var(--font-display); font-weight: 700; font-size: 1.45rem; line-height: 1.22; overflow-wrap: break-word; hyphens: auto; }
-.fc-back .fc-word { color: var(--ink); }
-.fc-small { color: var(--dim); font-size: .85rem; margin-bottom: .35rem; line-height: 1.3; }
-.fc-s1 .fc-word { font-size: 1.2rem; }
-.fc-s2 .fc-word { font-size: 1rem; line-height: 1.35; }
-.fc-s3 .fc-word { font-size: .88rem; line-height: 1.4; }
-.fc-tts { position: absolute; top: .5rem; right: .5rem; width: 34px; height: 34px; }
-.fc-tts svg { width: 18px; height: 18px; }
 
 /* ---------- Matching ---------- */
 .mt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; }
@@ -1029,8 +1017,6 @@ body.diff-hidden .rv-rate, body.diff-hidden .rv-print-level { display: none !imp
 .cat-head { display: flex; align-items: baseline; justify-content: space-between; gap: .6rem; margin-bottom: .75rem; }
 .cat-name { font-family: var(--font-display); font-weight: 700; font-size: 1.22rem; color: var(--cc); }
 .cat-count { color: var(--dim); font-size: .9rem; white-space: nowrap; }
-.cat-note { display: none; }
-.is-complete .cat-note { display: block; }
 
 /* ---------- Materialy ---------- */
 .link-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: .8rem; }
@@ -1353,14 +1339,9 @@ body.style-notebook {
   .lv-badge, .link-btn, .wr-foot, .review-arrow, .rv-finish { display: none !important; }
   .sec, .review-card, .finale { box-shadow: none !important; border: 1px solid #ddd; }
   .sec { break-inside: auto; }
-  .item, .fc-cell, .mt-row, .rv-item, .cat-box, .link-card, .sec-image { break-inside: avoid; }
+  .item, .mt-row, .rv-item, .cat-box, .link-card, .sec-image { break-inside: avoid; }
   .chips.is-covered > * { display: inline-block; }
   .pl-cover.is-hidden, .wsc-h { color: inherit !important; -webkit-text-fill-color: currentColor !important; background: none !important; padding: 0 !important; }
-  .fc { aspect-ratio: auto; perspective: none; }
-  .fc:hover { transform: none; }
-  .fc-inner { transform: none !important; height: auto; }
-  .fc-front { display: none; }
-  .fc-back { position: static; transform: none; min-height: 90px; backface-visibility: visible; }
   .diff .diff-btn:not(.is-sel) { display: none; }
   .diff-row:not(:has(.is-sel)) { display: none; }
   .diff-btn.is-sel { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -1408,11 +1389,6 @@ const WS_VERSION = '7.0';
    diff:     czy przy wierszach sa przyciski oceny.
    counted:  czy sekcja liczy sie do paska postepu.                       */
 const TYPES = [
-  { key: 'flashcards', tag: 'f', name: 'Flashcards', emoji: '🃏', untagged: true, review: true, diff: true, counted: true,
-    aliases: ['flashcard', 'flashcards', 'fiszki', 'fiszka', 'karty'],
-    desc: 'Fiszki do odwracania (niezalecane: lepiej Zdrapki)',
-    instr: 'Kliknij kartę, żeby odsłonić tłumaczenie. Najpierw spróbuj zgadnąć w głowie.',
-    doneMsg: 'Wszystkie fiszki przejrzane' },
   { key: 'matching', tag: 'm', name: 'Matching', emoji: '🔗', untagged: true, review: true, diff: true, counted: true,
     aliases: ['match', 'matching', 'łączenie', 'laczenie', 'dopasuj', 'dopasowanie', 'pary', 'połącz', 'polacz'],
     desc: 'Łączenie w pary (po 8 na część)',
@@ -1434,7 +1410,7 @@ const TYPES = [
     instr: 'Odsłoń słowa i ułóż je w dobrej kolejności. Możesz klikać albo przeciągać.',
     doneMsg: 'Wszystkie zdania ułożone' },
   { key: 'cornell', tag: 'c', name: 'Zdrapki', emoji: '🪙', untagged: true, review: true, diff: true, counted: true,
-    aliases: ['cornell', 'zdrapki', 'zdrapka', 'scratch', 'scratch cards', 'scratch card', 'scratchcards', 'q&a', 'qa', 'pytania', 'pytania i odpowiedzi', 'questions'],
+    aliases: ['f', 'flashcard', 'flashcards', 'fiszki', 'fiszka', 'karty', 'cornell', 'zdrapki', 'zdrapka', 'scratch', 'scratch cards', 'scratch card', 'scratchcards', 'q&a', 'qa', 'pytania', 'pytania i odpowiedzi', 'questions'],
     desc: 'Pytanie albo słowo, pod spodem odpowiedź do zdrapania',
     instr: 'Najpierw odpowiedz sam: w myślach albo na piśmie. Potem zdrap odpowiedź. Możesz zdrapać tylko kawałek jako podpowiedź.',
     doneMsg: 'Wszystkie zdrapki odkryte' },
@@ -2085,9 +2061,9 @@ function sparkle() {
 /* ---------- Gwiazdki za sekcje ----------
    Liczy sie, przy ilu pozycjach byla pomoc (blad, podpowiedz, podejrzenie):
    3 = przy zadnej, 2 = najwyzej przy polowie, 1 = przy wiecej niz polowie albo
-   odpowiedzi pokazane z pomoca. Typy bez sprawdzania (zdrapki, fiszki, pisanie)
+   odpowiedzi pokazane z pomoca. Typy bez sprawdzania (zdrapki, pisanie)
    daja 3 za samodzielne ukonczenie. */
-const UNGRADED = ['cornell', 'flashcards', 'writing', 'links'];
+const UNGRADED = ['cornell', 'writing', 'links'];
 function graded(u) { return !UNGRADED.includes(u.type); }
 function starsFor(u, how) {
   if (how === 'solve') return 1;
@@ -2289,18 +2265,57 @@ function flashBad(el) {
 /* ---------- Notatki i wzorcowe odpowiedzi ----------
    Jeden wyglad notatki w calej karcie: przy zadaniu, w podsumowaniu sekcji
    i w powtorce. Opcjonalny naglowek mowi, ktorego slowa dotyczy. */
-function noteEl(gi, cls, head) {
-  const n = (ROWS[gi].note || '').trim();
+function noteEl(gi, cls, head) { return noteBox(ROWS[gi].note, cls, head); }
+function noteBox(text, cls, head) {
+  const n = (text || '').trim();
   if (!n) return null;
   return h('div', { class: 'note' + (cls ? ' ' + cls : '') },
     h('span', { class: 'note-ico', html: ICO.note }),
     h('div', { class: 'note-body' }, head ? h('div', { class: 'note-head', text: head }) : null, h('div', { html: noteToHtml(n) })));
 }
-function sectionNotes(rows) {
-  const items = rows.map(gi => noteEl(gi, 'is-open', stripBraces(ROWS[gi].en) + ' · ' + ROWS[gi].pl)).filter(Boolean);
-  return items.length ? h('div', { class: 'snotes' }, items) : null;
+/* Notatki pod zadaniem jako zakladki. entries: [{ gi, label, head, ready() }].
+   Zakladka pojawia sie, gdy ready() zwroci true; klik pokazuje albo chowa notatke. */
+function noteTabs(u, entries) {
+  entries = entries.filter(e => (ROWS[e.gi].note || '').trim());
+  u.notes = null;
+  if (!entries.length) return null;
+  const all = h('button', { type: 'button', class: 'ntab ntab-all' });
+  const bar = h('div', { class: 'ntabs-bar' }, h('span', { class: 'note-ico', html: ICO.note }));
+  const wrap = h('div', { class: 'ntabs' }, bar);
+  const shown = () => entries.filter(e => !e.tab.hidden);
+  const paint = () => {
+    const vis = shown();
+    entries.forEach(e => {
+      e.tab.classList.toggle('is-on', e.open);
+      e.tab.setAttribute('aria-expanded', e.open);
+      e.box.classList.toggle('is-open', e.open && !e.tab.hidden);
+    });
+    all.hidden = vis.length < 2;
+    all.textContent = vis.every(e => e.open) ? 'Zwiń wszystkie' : 'Pokaż wszystkie';
+    wrap.hidden = !vis.length;
+  };
+  entries.forEach(e => {
+    e.open = false;
+    e.tab = h('button', { type: 'button', class: 'ntab', text: e.label, hidden: true, onclick: () => { sound('tap'); e.open = !e.open; paint(); } });
+    e.box = noteEl(e.gi, '', e.head);
+    bar.appendChild(e.tab);
+  });
+  all.addEventListener('click', () => { const on = !shown().every(e => e.open); sound('tap'); shown().forEach(e => { e.open = on; }); paint(); });
+  bar.appendChild(all);
+  entries.forEach(e => wrap.appendChild(e.box));
+  /* fresh: zakladka wlasnie odblokowana przez ucznia, wiec lekko podskakuje. */
+  u.notes = fresh => {
+    entries.forEach(e => {
+      const was = e.tab.hidden;
+      e.tab.hidden = !e.ready();
+      e.tab.classList.toggle('is-new', !!fresh && was && !e.tab.hidden);
+    });
+    paint();
+  };
+  u.notes();
+  return wrap;
 }
-/* Pokazana poprawna odpowiedz (Correct the Mistake). */
+
 function answerBox(label, text) {
   return h('div', { class: 'answer-box' },
     h('span', { class: 'answer-label', html: ICO.check + '<span>' + label + '</span>' }),
@@ -2403,7 +2418,6 @@ const COUNTED = UNITS.filter(u => TYPE[u.type].counted);
 const MOD = {};   // moduly typow zadan: { build(u, st, body), solve(u, st) }
 
 function solveLabel(type) {
-  if (type === 'flashcards') return 'Odwróć wszystkie';
   if (type === 'cornell') return 'Zdrap wszystkie';
   return 'Pokaż odpowiedzi';
 }
@@ -2444,6 +2458,7 @@ function sectionEl(u, num) {
 function draw(u) {
   u.body.innerHTML = '';
   MOD[u.type].build(u, S(u), u.body);
+  append(u.body, noteBox(u.sec.note, 'sec-note'));   // notatka do calego zadania (#note)
   placeRatings(u.body);
   paintDone(u);
 }
@@ -2512,7 +2527,7 @@ function complete(u, how) {
     taskJustDone = true;
     playNow('taskdone');
     setTimeout(() => { taskJustDone = false; }, 300);
-    if (u.type !== 'flashcards') confettiFire();
+    confettiFire();
   }
   if (how !== 'restore') {
     xpFloat(u);
@@ -2755,52 +2770,6 @@ function focusNext(u, from) {
   if (next) next.focus({ preventScroll: false });
 }
 
-/* ---------- Flashcards ---------- */
-function fcSize(pl, en) {
-  const size = t => {
-    const len = t.length;
-    const longest = Math.max.apply(null, t.split(/\s+/).map(w => w.length));
-    let s = len > 80 ? 3 : len > 50 ? 2 : len > 25 ? 1 : 0;
-    if (longest >= 14) s = Math.max(s, 1);
-    if (longest >= 18) s = Math.max(s, 2);
-    return s;
-  };
-  return 'fc-s' + Math.max(size(pl), size(en));
-}
-
-MOD.flashcards = {
-  build(u, st, body) {
-    st.seen = st.seen || [];
-    st.flip = st.flip || [];
-    const grid = h('div', { class: 'fc-grid' });
-    u.rows.forEach(gi => {
-      const r = ROWS[gi];
-      const en = stripBraces(r.en);
-      const card = h('div', { class: 'fc ' + fcSize(r.pl, en) + (st.flip.includes(gi) ? ' is-flipped' : ''), role: 'button', tabindex: '0', 'aria-label': 'Fiszka: ' + r.pl },
-        h('div', { class: 'fc-inner' },
-          h('div', { class: 'fc-face fc-front' }, h('div', { class: 'fc-word', text: r.pl })),
-          h('div', { class: 'fc-face fc-back' },
-            h('div', { class: 'fc-small', text: r.pl }),
-            h('div', { class: 'fc-word', text: en }),
-            ttsBtn(en, 'fc-tts'))));
-      const flip = () => {
-        sound('tap');
-        const on = card.classList.toggle('is-flipped');
-        if (on) addOnce(st.flip, gi); else removeVal(st.flip, gi);
-        addOnce(st.seen, gi);
-        save();
-        checkCount(u, st.seen.length);
-      };
-      card.addEventListener('click', e => { if (!e.target.closest('.ibtn')) flip(); });
-      card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); } });
-      grid.appendChild(h('div', { class: 'fc-cell' }, h('div', { class: 'diff-row is-center' }, diffWidget(gi)), card));
-    });
-    append(body, grid);
-    append(body, sectionNotes(u.rows));
-  },
-  solve(u, st) { st.seen = u.rows.slice(); st.flip = u.rows.slice(); }
-};
-
 /* ---------- Matching ---------- */
 
 MOD.matching = {
@@ -2831,6 +2800,7 @@ MOD.matching = {
       if (st.pairs.includes(gi)) return;
       st.pairs.push(gi);
       paint(gi, st.pairs.length);
+      if (u.notes) u.notes(fromUser);
       selL = selR = null;
       save();
       if (fromUser) setTimeout(() => showOverlay(R[gi].closest('.mt-box')), 450);
@@ -2865,7 +2835,7 @@ MOD.matching = {
       colR.appendChild(h('div', { class: 'mt-row' }, box, levelBadge(it.gi), ttsBtn(it.text, 'ibtn-side')));
     });
     append(body, h('div', { class: 'mt-grid' }, colL, colR));
-    append(body, sectionNotes(u.rows));
+    append(body, noteTabs(u, u.rows.map(gi => ({ gi, label: stripBraces(ROWS[gi].en), head: stripBraces(ROWS[gi].en) + ' · ' + ROWS[gi].pl, ready: () => st.pairs.includes(gi) }))));
 
     st.pairs.forEach((gi, i) => { if (L[gi]) paint(gi, i + 1); });
     if (st.pairs.length === u.rows.length) burst(true);
@@ -3803,15 +3773,15 @@ MOD.categorize = {
         b.box.classList.toggle('is-armed', !!sel);
       });
       const done = placedCount() === items.length;
-      body.classList.toggle('is-complete', done);
       $$('.ibtn-hint', body).forEach(x => { x.disabled = done; });
+      if (u.notes) u.notes(true);
     }
     u.rows.forEach(gi => {
       const list = h('div', { class: 'chips cat-list' });
       const count = h('span', { class: 'cat-count' });
       const box = h('div', { class: 'cat-box', style: '--cc:' + PALETTE[u.rows.indexOf(gi) % PALETTE.length], role: 'button', tabindex: '0', 'aria-label': 'Kategoria: ' + ROWS[gi].pl },
         h('div', { class: 'cat-head' }, h('span', { class: 'cat-name', text: ROWS[gi].pl }), count),
-        list, noteEl(gi, 'cat-note'));
+        list);
       const drop = () => { const it = items.find(x => x.id === sel); if (it) place(it, gi, $$('.chip.is-in', pool)[0]); };
       box.addEventListener('click', () => drop());   // klik w juz odlozone slowo tez celuje w te kategorie
       box.addEventListener('keydown', e => { if (e.key === 'Enter') drop(); });
@@ -3834,7 +3804,10 @@ MOD.categorize = {
       const it = left[Math.floor(Math.random() * left.length)];
       place(it, it.cat, null);
     });
-    append(body, [h('div', { class: 'cat-top' }, pool, h('div', { class: 'btns' }, hint)), grid]);
+    /* Notatka kategorii odblokowuje sie, gdy wszystkie jej slowa sa na miejscu. */
+    const tabs = noteTabs(u, u.rows.map(gi => ({ gi, label: ROWS[gi].pl, head: ROWS[gi].pl,
+      ready: () => items.every(it => it.cat !== gi || st.placed[it.id]) })));
+    append(body, [h('div', { class: 'cat-top' }, pool, h('div', { class: 'btns' }, hint)), grid, tabs]);
     render();
   },
   solve(u, st) {
@@ -4417,7 +4390,7 @@ function keyNum(key) { const i = key.indexOf(':'); return i < 0 ? 1 : (parseInt(
 function makeKey(base, num) { return num > 1 ? base + ':' + num : base; }
 function keyTag(key) { const n = keyNum(key); return TYPE[keyBase(key)].tag + (n > 1 ? n : ''); }
 
-/* Tagi z kolumny "tasks": "f, m2, quiz" -> ['flashcards', 'matching:2', 'quiz'] */
+/* Tagi z kolumny "tasks": "c, m2, quiz" -> ['cornell', 'matching:2', 'quiz'] */
 function parseTags(s) {
   const out = [];
   String(s || '').split(/[,;|]/).forEach(raw => {
@@ -4458,7 +4431,7 @@ function minRows(type) {
      rows: [{ pl, en, opts[], distractors[], note, level, tasks[], extra{} }],
      extraCols: [],           // nieznane kolumny TSV, odsylane przy eksporcie
      order: [keys] | null,    // jawna kolejnosc sekcji
-     sectionMeta: { key: { title, instr, instrOff, image, deco } },
+     sectionMeta: { key: { title, instr, instrOff, image, deco, note } },
      meta: { accent, bgsvg, images[], extra, progress },
      warnings: [], error: ''
    } */
@@ -4530,6 +4503,13 @@ function parseTSV(text) {
       else if (key === 'img' && val && cells[2]) doc.meta.images.push({ key: val.toLowerCase(), url: cells[2], h: cells[3], y: cells[4], fit: cells[5] });
       else if (key === 'progress' && val) { try { doc.meta.progress = JSON.parse(decodeURIComponent(val)); } catch (e) { /* uszkodzony */ } }
       else if (key === 'extra' && val) { try { doc.meta.extra = JSON.parse(decodeURIComponent(val)); } catch (e) { /* uszkodzony */ } }
+      else if (/^note\s/.test(key + ' ')) {
+        /* #note  tag  tekst: notatka do calego zadania. Odstep to tabulator albo zwykla spacja. */
+        const m = t.match(/^#note\s+(\S+)\s+(.+)$/i);
+        const k = m && parseTags(m[1].replace(':', ''))[0];
+        if (!k) { doc.warnings.push('Linia #note: po „#note” podaj tag sekcji i tekst, np. „#note m Tekst notatki”.'); return; }
+        (doc.sectionMeta[k] = doc.sectionMeta[k] || {}).note = cleanNote(m[2]);
+      }
       else if (key === 'section' || key === 'deco') {
         /* #section  tag  tytul  instrukcja ("-" = bez instrukcji)
            #deco     tag  <svg>…</svg> (w jednej linii) */
@@ -4724,12 +4704,13 @@ const AI_PROMPT = [
   '#title⇥Tytuł karty',
   '#subtitle⇥Podtytuł (opcjonalnie)',
   '#section⇥tag⇥Własny tytuł sekcji⇥Własna instrukcja dla ucznia. Puste pole = domyślne, "-" w miejscu instrukcji = bez instrukcji. Tylko tutaj umieszczaj polecenia typu „odpowiedz pełnym zdaniem” czy „użyj Past Simple”.',
+  '#note⇥tag⇥Notatka do całego zadania (opcjonalnie). Uczeń widzi ją po ukończeniu sekcji. Te same zasady co dla notatek w wierszach.',
   '#deco⇥tag⇥<svg …>…</svg> (opcjonalna ilustracja w nagłówku sekcji, cały kod SVG w jednej linii, z viewBox, prosty i czytelny)',
   '#order⇥c, m, q, g (kolejność sekcji: od rozgrzewki i rozpoznawania do przypominania i samodzielnego tworzenia)',
   '',
   'WIERSZE DANYCH',
   'Nagłówek: pl⇥en⇥tasks⇥distractors⇥note. Po lewej (pl) zawsze polski, po prawej (en) angielski.',
-  'Tagi w kolumnie tasks: c = Zdrapki, m = Matching, s = Word Scramble, q = Quiz, u = Sentence Unscramble, g = Gap Fill, e = Correct the Mistake, t = Translate, w = Writing, k = Categorize, l = Linki. Druga sekcja tego samego typu: g2. Wiersz może trafić do kilku sekcji: "m, q". Zawsze podawaj tag. NIE używaj tagu f (Flashcards): do słówek, zwrotów i pytań służą Zdrapki.',
+  'Tagi w kolumnie tasks: c = Zdrapki, m = Matching, s = Word Scramble, q = Quiz, u = Sentence Unscramble, g = Gap Fill, e = Correct the Mistake, t = Translate, w = Writing, k = Categorize, l = Linki. Druga sekcja tego samego typu: g2. Wiersz może trafić do kilku sekcji: "m, q". Zawsze podawaj tag. Do słówek, zwrotów i pytań służą Zdrapki.',
   '',
   'ZAPISY SPECJALNE',
   '- Zdrapki (c): słowo, zwrot albo pytanie po polsku ⇥ odpowiedź po angielsku. Uczeń widzi lewą stronę, a odpowiedź zdrapuje. Przy konkretnych słowach (rzeczy, zwierzęta, jedzenie, pogoda, czynności) daj jedno pasujące emoji na początku pl, np. "🍎 jabłko". Karta pokaże je duże jak obrazek. Przy pojęciach abstrakcyjnych pomiń emoji.',
@@ -4745,9 +4726,10 @@ const AI_PROMPT = [
   '- Tłumaczenia mają być w pełni poprawne i naturalne.',
   '',
   'NOTATKI',
-  '- Uczeń widzi notatkę dopiero PO rozwiązaniu pozycji (w Matching pod sekcją, po ukończeniu całej sekcji; w Zdrapkach po zdrapaniu). Notatka trafia też do szybkiej powtórki.',
+  '- Uczeń widzi notatkę dopiero PO rozwiązaniu pozycji (w Matching po połączeniu pary, w Categorize po ułożeniu całej kategorii, w Zdrapkach po zdrapaniu). Notatka trafia też do szybkiej powtórki.',
   '- Dlatego notatka NIGDY nie zawiera polecenia ani podpowiedzi do zadania. Polecenia idą do instrukcji w #section.',
   '- Notatka nie powtarza tłumaczenia ani odpowiedzi.',
+  '- W Categorize notatka w wierszu dotyczy całej kategorii. Uwagę o całym zadaniu wpisz w linii #note.',
   '- Dozwolone są dwa rodzaje notatek, każda krótka (1-2 zdania):',
   '   a) informacja, która coś wnosi po rozwiązaniu: reguła, wyjątek, kolokacja, różnica znaczeń, fałszywy przyjaciel. Tylko tam, gdzie naprawdę jest potrzebna.',
   '   b) pytanie do rozmowy po angielsku, nawiązujące do pozycji. Zaczynaj je od "💬 ". Najwyżej jedno na sekcję i nie w każdej sekcji.',
@@ -4769,6 +4751,7 @@ const EXAMPLE_TSV = [
   '#section\tc2\tPytania\tOdpowiedz pełnym zdaniem, zanim zdrapiesz.',
   '#section\tg\tPresent Simple\tUzupełnij zdania czasownikami w Present Simple.',
   '#section\tk\tCountable or uncountable?',
+  '#note\tm\tZwierzęta w liczbie mnogiej zwykle dostają **-s**: cats, dogs.',
   '#deco\tc\t<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 80"><ellipse cx="70" cy="68" rx="64" ry="9" fill="#e7ecf5"/><rect x="18" y="36" width="50" height="28" rx="10" fill="#fff" stroke="#2b2d42" stroke-width="2.5"/><rect x="15" y="25" width="56" height="16" rx="8" fill="#ff8a5b" stroke="#2b2d42" stroke-width="2.5"/><path d="M25 29l7 8M38 29l7 8M51 29l7 8" stroke="#ffc9b0" stroke-width="2.5" stroke-linecap="round"/><rect x="37" y="23" width="12" height="41" rx="2" fill="#2f3e46"/><circle cx="100" cy="47" r="18" fill="#2f3e46" stroke="#2b2d42" stroke-width="2.5"/><circle cx="100" cy="47" r="12" fill="#fff"/><circle cx="100" cy="47" r="5.5" fill="#ff8a5b"/><path d="M78 10l56 24M74 17l58 22" stroke="#c08552" stroke-width="3.5" stroke-linecap="round"/></svg>',
   '#order\tc, m, s, q, u, g, e, k, t, c2, w, l',
   'pl\ten\ttasks\tdistractors\tnote',
@@ -4776,7 +4759,7 @@ const EXAMPLE_TSV = [
   '🌙 księżyc\tmoon\tc\t\t**a full moon** = pełnia',
   'Smacznego!\tEnjoy your meal!\tc\t\t',
   '🍎\tapple\tc\t\t',
-  'kot\tcat\tm\t\t',
+  'kot\tcat\tm\t\t**a cat person** = ktoś, kto woli koty.',
   'pies\tdog\tm\t\t',
   'ryba\tfish\tm\tfishing | finish\t**fish** w liczbie mnogiej zwykle też fish.',
   'dziękuję\tthank you\ts\t\t',
@@ -4791,8 +4774,8 @@ const EXAMPLE_TSV = [
   'Ona pije kawę każdego ranka.\tShe {drinks} coffee every morning.\tg\tdrink | drank\t**3. osoba** liczby pojedynczej: końcówka -s.\\n\\n💬 What do you usually drink in the morning?',
   'Ona tego nie lubi.\tShe {don\'t/doesn\'t} like it.\te\t\t',
   'Mam dwa koty.\tI have two {cat/cats}.\te\t\t',
-  'Countable\tapple, chair, idea\tk\t\t',
-  'Uncountable\twater, advice, money\tk\t\t',
+  'Countable\tapple, chair, idea\tk\t\tMożna je policzyć: **an** apple, **two** chairs.',
+  'Uncountable\twater, advice, money\tk\t\tBez a/an i bez liczby mnogiej: **some** advice.',
   'Do zobaczenia jutro.\tSee you tomorrow.\tt\t\t',
   'Co lubisz robić w wolnym czasie?\tI like reading books and listening to music.\tc2\t\t',
   'Opisz swój idealny dzień.\tDescribe your perfect day in 5-8 sentences.\tw\t\t',
@@ -4989,6 +4972,7 @@ function secConf(key) {
     defaultInstr: m.instr || T.instr,
     image: url ? { url, fit: img.fit === 'full' ? 'full' : 'cover', h: img.h || 150, y: img.y == null ? 50 : img.y } : null,
     deco: (o.deco || '').trim() || m.deco || '',
+    note: m.note || '',
     flagPL: o.flagPL !== false,
     flagEN: o.flagEN !== false
   };
@@ -5334,7 +5318,7 @@ function buildWorksheet() {
   const keys = ORDER.filter(k => secConf(k).on);
   const sections = keys.map(k => {
     const c = secConf(k);
-    return { key: k, type: keyBase(k), title: c.title, showEmoji: c.showEmoji, instr: c.instr, image: c.image, deco: cleanSvg(c.deco), flagPL: c.flagPL, flagEN: c.flagEN, rows: AVAIL[k] };
+    return { key: k, type: keyBase(k), title: c.title, showEmoji: c.showEmoji, instr: c.instr, image: c.image, deco: cleanSvg(c.deco), note: c.note, flagPL: c.flagPL, flagEN: c.flagEN, rows: AVAIL[k] };
   });
   const st = STYLES[lookStyle()];
   const th = theme(lookAccent());
@@ -5358,6 +5342,7 @@ function buildWorksheet() {
     const instr = !c.instrOn ? '-' : (c.instrText !== TYPE[keyBase(k)].instr ? one(c.instrText) : '');
     if (!c.showEmoji || instr) meta.push(('#section\t' + keyTag(k) + '\t' + (c.showEmoji ? '' : one(c.title)) + '\t' + instr).replace(/\t+$/, ''));
     if (c.deco) meta.push('#deco\t' + keyTag(k) + '\t' + one(c.deco));
+    if (c.note) meta.push('#note\t' + keyTag(k) + '\t' + one(c.note.replace(/\n/g, '\\n')));
     if (!c.flagPL) extra.flags[k] = false;
     if (!c.flagEN) extra.flagsUK[k] = false;
     if (c.image) meta.push('#img\t' + k + '\t' + c.image.url + '\t' + c.image.h + '\t' + c.image.y + '\t' + c.image.fit);
