@@ -208,7 +208,8 @@ Idę.	I {go} to school.	g</pre>
               <li>Tagi: c (zdrapki), m, s, q, u, g, e, t, w, k (kategorie), l (linki). Druga sekcja tego samego typu: <code>m2</code>. Kilka tagów: <code>m, q</code>.</li>
               <li>Enter w notatce: <code>\n</code>. Notatka pokazuje się dopiero po rozwiązaniu, więc nie wpisuj w niej poleceń.</li>
               <li>Emoji na początku <code>pl</code> w zdrapce pokazuje się duże jak obrazek. Samo emoji też działa.</li>
-              <li>W Matching i Categorize notatki są pod zadaniem jako zakładki. Zakładka pojawia się po połączeniu pary albo po ułożeniu całej kategorii.</li>
+              <li>W Matching i Categorize notatki są pod zadaniem jako zakładki. W Matching zakładka pojawia się po połączeniu pary, w Categorize po ułożeniu wszystkich słów.</li>
+              <li>Typy nie muszą być parą polski-angielski: quiz prawda/fałsz (<code>True | False</code>, dwie odpowiedzi to dwa duże przyciski) albo „znajdź niepasujące”, matching sytuacja i reakcja, gap fill ze słowotwórstwem. Pełna lista wariantów jest w instrukcji dla AI.</li>
               <li>Dawny tag <code>f</code> (Flashcards) działa teraz jak <code>c</code> (zdrapki).</li>
             </ul>
           </div>
@@ -320,9 +321,9 @@ Idę.	I {go} to school.	g</pre>
   </details>
 
   <details class="panel">
-    <summary><span class="num">5</span><h2>Oceny i powtórka</h2><span class="chev">▾</span></summary>
+    <summary><span class="num">5</span><h2>Oznaczenia i powtórka</h2><span class="chev">▾</span></summary>
     <div class="panel-body">
-      <label class="chk"><input type="checkbox" id="diffVisible"><span class="box"></span><span>Oceny widoczne od razu (uczeń może je też włączyć ikoną oka na karcie)</span></label>
+      <label class="chk"><input type="checkbox" id="diffVisible"><span class="box"></span><span>Oznaczenia widoczne od razu (uczeń może je też włączyć ikoną oka na karcie)</span></label>
       <p class="hint">Cztery poziomy: nowe, do powtórki, prawie, opanowane. W TSV kolumna <code>level</code>: 4 = nowe, 1 = do powtórki, 2 = prawie, 3 = opanowane. Stare pliki z kolumną <code>difficulty</code> (0-4) wczytują się same.</p>
       <label class="chk"><input type="checkbox" id="student"><span class="box"></span><span>Karta dla ucznia: pokazanie odpowiedzi (przycisk pod sekcją i kluczyk przy pozycji) zawsze liczy się jako z pomocą, bez przytrzymywania</span></label>
       <label class="chk"><input type="checkbox" id="reviewOnly"><span class="box"></span><span>Karta tylko z szybką powtórką, bez zadań</span></label>
@@ -777,15 +778,15 @@ button:disabled { cursor: default; }
 .ntabs { margin-top: 1.2rem; }
 .ntabs-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .45rem; }
 .ntab {
-  padding: .32rem .85rem; border: 0; border-radius: 999px;
+  padding: .26rem .8rem; border: 1.5px solid var(--note-edge); border-radius: 999px;
   background: var(--note-bg); color: var(--note-ink);
   font-size: .95rem; font-weight: 600; line-height: 1.3;
   transition: background-color .15s, color .15s;
 }
 .ntab:hover { background: var(--note-edge); }
-.ntab.is-on { background: var(--note-ink); color: #fff; }
+.ntab.is-on { background: var(--note-ink); border-color: var(--note-ink); color: #fff; }
 .ntab.is-new { animation: pop .4s; }
-.ntab-all, .ntab-all:hover { background: none; color: var(--dim); text-decoration: underline; text-underline-offset: 3px; }
+.ntab-all, .ntab-all:hover { background: none; border-color: transparent; color: var(--dim); text-decoration: underline; text-underline-offset: 3px; }
 .ntabs .note { display: none; margin-top: .55rem; }
 .ntabs .note.is-open { display: flex; }
 
@@ -798,7 +799,7 @@ button:disabled { cursor: default; }
 .pl-cover.is-hidden { color: transparent; background: var(--cover); user-select: none; }
 .pl-cover.is-hidden:hover { filter: brightness(.96); }
 
-/* ---------- Oceny ---------- */
+/* ---------- Oznaczenia ---------- */
 .diff { display: inline-flex; align-items: center; gap: .35rem; }
 .diff-btn {
   width: 36px; height: 36px; border-radius: 10px;
@@ -900,6 +901,8 @@ body.diff-hidden .rv-rate, body.diff-hidden .rv-print-level { display: none !imp
 .opt.is-elim { opacity: .35; cursor: default; }
 .opt.is-elim .opt-text { text-decoration: line-through; }
 .item.is-done .opt:not(.is-ok):not(.is-wrong) { opacity: .45; cursor: default; }
+.opts[data-n="2"] .opt { justify-content: center; padding: 1.05rem 1rem; text-align: center; font-size: 1.22rem; font-weight: 700; }
+.opts[data-n="2"] .opt-letter { display: none; }
 
 /* ---------- Sentence Unscramble ---------- */
 .un-answer {
@@ -1014,9 +1017,8 @@ body.diff-hidden .rv-rate, body.diff-hidden .rv-print-level { display: none !imp
 .cat-box.is-armed:hover, .cat-box.is-over { background: color-mix(in srgb, var(--cc) 14%, #fff); }
 .cat-box .chip.is-ok { border-color: var(--cc); color: var(--cc); background: var(--white); }
 .cat-box.is-bad { box-shadow: inset 0 0 0 2px var(--bad); background: var(--bad-bg); animation: buzz .45s; }
-.cat-head { display: flex; align-items: baseline; justify-content: space-between; gap: .6rem; margin-bottom: .75rem; }
+.cat-head { margin-bottom: .75rem; }
 .cat-name { font-family: var(--font-display); font-weight: 700; font-size: 1.22rem; color: var(--cc); }
-.cat-count { color: var(--dim); font-size: .9rem; white-space: nowrap; }
 
 /* ---------- Materialy ---------- */
 .link-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: .8rem; }
@@ -1278,13 +1280,13 @@ body.style-notebook {
   .top { gap: 1rem; }
   .logo { height: 68px; }
   .mt-grid { grid-template-columns: 1fr; }
-  .opts, .opts[data-n] { grid-template-columns: 1fr; }
+  .opts:not([data-n="2"]) { grid-template-columns: 1fr; }
   .answer-row { flex-wrap: wrap; }
   .answer-row .field { flex-basis: 100%; }
   .answer-row .btns { margin-left: auto; }
   .gap-line { flex-direction: column; align-items: stretch; gap: .5rem; }
   .gap-line .btns { justify-content: flex-end; }
-  /* Telefon: polskie, odpowiedz, a pod nia ocena z lewej i przyciski z prawej. */
+  /* Telefon: polskie, odpowiedz, a pod nia oznaczenie z lewej i przyciski z prawej. */
   .rv-main { grid-template-columns: 1fr auto; gap: .5rem; align-items: center; }
   .rv-pl { display: contents; }
   .rv-pl > span, .rv-chips, .rv-ans { grid-column: 1 / -1; }
@@ -1311,7 +1313,7 @@ body.style-notebook {
   .ibtn svg { width: 20px; height: 20px; }
   .ibtn-sm { width: 34px; height: 34px; }
   .diff-btn { width: 32px; height: 32px; }
-  /* Polskie zdanie zostaje obok flagi, oceny schodza pod spod. */
+  /* Polskie zdanie zostaje obok flagi, oznaczenia schodza pod spod. */
   .pl-strip > span:not(.flag):not(.grow), .item-head > .item-prompt { flex: 1 1 calc(100% - 3rem); }
   .legend { font-size: .85rem; gap: .3rem .8rem; margin-bottom: 1.2rem; }
   /* Pasek postepu w jednej linii. Kolka sekcji tylko na wiekszym ekranie. */
@@ -1334,7 +1336,7 @@ body.style-notebook {
 @media print {
   html { font-size: 15px; }
   body { background: #fff; }
-  .bg-fx, .progress, .legend, .sec-actions, .sec-fb, .sec-instr, .ibtn, .btns, .cover-btn, .rv-chips-cover,
+  .bg-fx, .progress, .sec-actions, .sec-fb, .sec-instr, .ibtn, .btns, .cover-btn, .rv-chips-cover,
   .review-prompt, .finale, .foot, .toast, .dict, .dict-pick, .rv-levels, .rv-toolbar, .rv-hint, .rv-rate, .diff-overlay,
   .lv-badge, .link-btn, .wr-foot, .review-arrow, .rv-finish { display: none !important; }
   .sec, .review-card, .finale { box-shadow: none !important; border: 1px solid #ddd; }
@@ -1386,12 +1388,12 @@ const WS_VERSION = '7.0';
    Kolejnosc tablicy = domyslna kolejnosc sekcji na karcie.
    untagged: czy wiersz bez tagow trafia do tego typu (zgodnosc ze starym TSV).
    review:   czy wiersze tego typu trafiaja do szybkiej powtorki.
-   diff:     czy przy wierszach sa przyciski oceny.
+   diff:     czy przy wierszach sa przyciski oznaczen.
    counted:  czy sekcja liczy sie do paska postepu.                       */
 const TYPES = [
   { key: 'matching', tag: 'm', name: 'Matching', emoji: '🔗', untagged: true, review: true, diff: true, counted: true,
     aliases: ['match', 'matching', 'łączenie', 'laczenie', 'dopasuj', 'dopasowanie', 'pary', 'połącz', 'polacz'],
-    desc: 'Łączenie w pary (po 8 na część)',
+    desc: 'Łączenie w pary (najwyżej 5 na część)',
     instr: 'Kliknij słowo z lewej kolumny, a potem jego tłumaczenie z prawej.',
     doneMsg: 'Wszystkie pary połączone' },
   { key: 'scramble', tag: 's', name: 'Word Scramble', emoji: '🔤', untagged: true, review: true, diff: true, counted: true,
@@ -1602,7 +1604,7 @@ const $$ = (s, r) => Array.prototype.slice.call((r || document).querySelectorAll
    (pary w Matching, litery w Quizie, kategorie). */
 const PALETTE = ['#7048e8', '#0c8599', '#e8590c', '#2b8a3e', '#c2255c', '#1971c2', '#a35c00', '#5c7cfa'];
 
-/* Poziomy oceny. Rozroznialne po ksztalcie, nie tylko po kolorze.
+/* Poziomy oznaczen. Rozroznialne po ksztalcie, nie tylko po kolorze.
    Klucze to wartosci w danych (kolumna level), LEVEL_ORDER to kolejnosc na karcie. */
 const LEVELS = {
   4: { name: 'nowe', color: '#6b7280', ico: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.5c.7 5 3.9 8.3 9.5 9.5-5.6 1.2-8.8 4.5-9.5 9.5-.7-5-3.9-8.3-9.5-9.5 5.6-1.2 8.8-4.5 9.5-9.5z"/></svg>' },
@@ -1689,25 +1691,35 @@ function dictWord(text) {
 /* Tekst zakryty (zdrapka, zaslona w powtorce) nie trafia do slownika: nie zdradza odpowiedzi. */
 const DICT_SKIP = 'input, textarea, #dict, .dict-pick, .wsc.is-covered, .sc-zone:not(.is-open), .pl-cover.is-hidden';
 let dictPick = null, pickTimer = null;
+const DICT_KEY = 'ws-dict-enabled';
+let dictOn = true;   // ustawienie z pamieci wczytuje start karty (LS jest nizej)
+function setDictIcon() {
+  $$('.js-dict').forEach(b => {
+    b.classList.toggle('is-off', !dictOn);
+    b.setAttribute('aria-pressed', dictOn ? 'true' : 'false');
+    b.title = dictOn ? 'Wyłącz słownik przy zaznaczaniu' : 'Włącz słownik przy zaznaczaniu';
+  });
+}
+function toggleDict() { dictOn = !dictOn; LS.set(DICT_KEY, dictOn ? '1' : '0'); hideDictPick(); setDictIcon(); }
 function hideDictPick() { if (dictPick) { dictPick.remove(); dictPick = null; } }
 function showDictPick() {
   hideDictPick();
   const sel = window.getSelection();
-  if (!sel || sel.isCollapsed || !sel.rangeCount) return;
+  if (!dictOn || !sel || sel.isCollapsed || !sel.rangeCount) return;
   const n = sel.anchorNode, el = n && (n.nodeType === 1 ? n : n.parentElement);
   const w = el && !el.closest(DICT_SKIP) ? dictWord(sel.toString()) : '';
   const r = w && sel.getRangeAt(0).getBoundingClientRect();
   if (!r || !r.width) return;
   dictPick = h('button', { type: 'button', class: 'dict-pick', html: ICO.book + '<span>Słownik</span>',
     style: 'left:' + Math.round(Math.min(innerWidth - 130, Math.max(8, r.left + r.width / 2 - 55))) + 'px;top:' + Math.round(r.bottom + 8) + 'px',
-    onclick: () => { hideDictPick(); openDict(w); } });
+    onclick: () => { hideDictPick(); sel.removeAllRanges(); openDict(w); } });   // haslo widac w okienku, wiec zaznaczenie znika
   document.body.appendChild(dictPick);
 }
 document.addEventListener('selectionchange', () => { clearTimeout(pickTimer); pickTimer = setTimeout(showDictPick, 350); });
 window.addEventListener('scroll', hideDictPick, { passive: true });
 /* Alt + klik: slowo spod kursora, takze na przyciskach i kafelkach, ktorych nie da sie zaznaczyc. */
 document.addEventListener('click', e => {
-  if (!e.altKey) return;
+  if (!e.altKey || !dictOn) return;
   const cp = document.caretPositionFromPoint ? document.caretPositionFromPoint(e.clientX, e.clientY)
     : document.caretRangeFromPoint && document.caretRangeFromPoint(e.clientX, e.clientY);
   const node = cp && (cp.offsetNode || cp.startContainer), at = cp && (cp.offset != null ? cp.offset : cp.startOffset);
@@ -1789,7 +1801,7 @@ const SS = store('sessionStorage');
 
 const KEY = 'ws3-' + hashStr(D.title + '|' + JSON.stringify(ROWS.map(r => [r.pl, r.en, r.tasks])));
 
-/* ---------- Wiersze o tej samej tresci dziela jedna ocene ---------- */
+/* ---------- Wiersze o tej samej tresci dziela jedno oznaczenie ---------- */
 const LINK = {};
 function linkKey(r) {
   const n = s => String(s || '').trim().toLowerCase().replace(/\s+/g, ' ');
@@ -1829,7 +1841,7 @@ function save() {
 function saveNow() {
   if (resetting) return;
   if (RATER) {
-    /* Kopia prowadzacego zapisuje tylko oceny, nigdy odpowiedzi. */
+    /* Kopia prowadzacego zapisuje tylko oznaczenia, nigdy odpowiedzi. */
     let base = null;
     try { base = JSON.parse(LS.get(KEY) || 'null'); } catch (e) { base = null; }
     base = (base && base.v === 3) ? base : freshState();
@@ -2323,10 +2335,10 @@ function answerBox(label, text) {
 }
 
 /* =====================================================================
-   WORKSHEET RUNTIME: SEKCJE, POSTEP, OCENY
+   WORKSHEET RUNTIME: SEKCJE, POSTEP, OZNACZENIA
    ===================================================================== */
 
-/* ---------- Oceny (3 poziomy) ---------- */
+/* ---------- Oznaczenia (3 poziomy) ---------- */
 const DIFF_VIS_KEY = 'ws-diffvis-' + KEY;
 let diffHidden = RATER ? false : (SS.get(DIFF_VIS_KEY) === null ? !!D.diffHidden : SS.get(DIFF_VIS_KEY) !== '1');
 
@@ -2358,7 +2370,7 @@ function paintBadge(b, gi) {
   b.classList.toggle('is-set', !!L);
   b.innerHTML = L ? LEVELS[L].ico : '?';
   b.style.setProperty('--lc', L ? LEVELS[L].color : '');
-  b.title = L ? 'Ocena: ' + LEVELS[L].name + '. Kliknij, żeby zmienić.' : 'Oceń, jak dobrze to umiesz';
+  b.title = L ? 'Oznaczenie: ' + LEVELS[L].name + '. Kliknij, żeby zmienić.' : 'Zaznacz, jak dobrze to umiesz';
 }
 
 function setLevel(gi, L, opts) {
@@ -2371,7 +2383,7 @@ function setLevel(gi, L, opts) {
   broadcastLevels();
 }
 
-/* Matching: po dobrej parze nad slowem na chwile pokazuje sie nakladka z ocena. */
+/* Matching: po dobrej parze nad slowem na chwile pokazuje sie nakladka z oznaczeniem. */
 function showOverlay(box) {
   if (diffHidden || !box) return;
   hideOverlays();
@@ -2399,12 +2411,12 @@ function levelBadge(gi) {
 }
 
 /* ---------- Jednostki (sekcje na karcie) ----------
-   Matching dzielimy na czesci po maksymalnie 8 par, rownomiernie. */
+   Matching dzielimy na czesci po maksymalnie 5 par, rownomiernie. */
 const UNITS = [];
 D.sections.forEach(sec => {
   if (sec.type === 'matching') {
     const rows = sec.rows.slice().sort((a, b) => (ROWS[a].distractors.length ? 1 : 0) - (ROWS[b].distractors.length ? 1 : 0));
-    const parts = Math.max(1, Math.ceil(rows.length / 8));
+    const parts = Math.max(1, Math.ceil(rows.length / 5));
     const size = Math.ceil(rows.length / parts);
     for (let p = 0; p < parts; p++) {
       UNITS.push({ key: sec.key + (parts > 1 ? '#' + (p + 1) : ''), type: 'matching', sec, rows: rows.slice(p * size, (p + 1) * size), part: p + 1, parts });
@@ -2439,7 +2451,7 @@ function sectionEl(u, num) {
   const actions = [];
   if (u.type !== 'links') {
     if (u.type !== 'writing') actions.push(holdable(h('button', { type: 'button', class: 'act act-solve', html: ICO.solve + '<span>' + solveLabel(u.type) + '</span>' }), help => solveUnit(u, help), solveLabel(u.type)));
-    actions.push(h('button', { type: 'button', class: 'act act-clear', title: 'Wyczyść odpowiedzi w tej sekcji (oceny zostają)', 'aria-label': 'Wyczyść sekcję', html: ICO.undo, onclick: () => clearUnit(u) }));
+    actions.push(h('button', { type: 'button', class: 'act act-clear', title: 'Wyczyść odpowiedzi w tej sekcji (oznaczenia zostają)', 'aria-label': 'Wyczyść sekcję', html: ICO.undo, onclick: () => clearUnit(u) }));
   }
   u.body = h('div', { class: 'sec-body' });
   u.fb = h('div', { class: 'sec-fb', role: 'status' });
@@ -2463,7 +2475,7 @@ function draw(u) {
   paintDone(u);
 }
 
-/* Telefon: ocena idzie nad przyciski zadania (ocenia sie po zrobieniu).
+/* Telefon: oznaczenie idzie nad przyciski zadania (oznacza sie po zrobieniu).
    Na szerszym ekranie wraca do naglowka pozycji. */
 const NARROW = window.matchMedia ? window.matchMedia('(max-width: 640px)') : null;
 function placeRatings(root) {
@@ -2935,6 +2947,9 @@ MOD.quiz = {
       if (r.opts.length) opts = [right].concat(r.opts);
       else opts = [right].concat(uniqCI(r.distractors.concat(shuffled(pool, rng)), [right]).slice(0, n - 1));
       opts = shuffled(opts, rng);
+      /* Prawda/falsz: zawsze ta sama kolejnosc i bez wymowy, zeby przyciski nie skakaly miedzy pytaniami. */
+      const tf = opts.length === 2 && opts.every(t => /^(true|false)$/i.test(t));
+      if (tf) opts.sort((a, b) => (/^true$/i.test(a) ? -1 : 1) - (/^true$/i.test(b) ? -1 : 1));
 
       const item = h('div', { class: 'item' });
       const optEls = [];
@@ -2988,7 +3003,7 @@ MOD.quiz = {
         const b = h('button', { type: 'button', class: 'opt', 'data-t': t, onclick: () => { if (!b.classList.contains('is-elim')) choose(t); } },
           h('span', { class: 'opt-letter', text: String.fromCharCode(65 + oi) }), h('span', { class: 'opt-text', text: t }));
         optEls.push(b);
-        grid.appendChild(h('div', { class: 'opt-wrap' }, b, ttsBtn(t, 'ibtn-side')));
+        grid.appendChild(h('div', { class: 'opt-wrap' }, b, tf ? null : ttsBtn(t, 'ibtn-side')));
       });
       append(item, [
         h('div', { class: 'item-head' }, h('span', { class: 'item-num', text: String(qi + 1) }), h('span', { class: 'item-prompt', text: r.pl }), h('span', { class: 'grow' }), diffWidget(gi),
@@ -3769,7 +3784,6 @@ MOD.categorize = {
         b.list.innerHTML = '';
         const mine = items.filter(it => it.cat === gi);
         mine.filter(it => st.placed[it.id]).forEach(it => b.list.appendChild(chipFor(it)));
-        b.count.textContent = mine.filter(it => st.placed[it.id]).length + ' / ' + mine.length;
         b.box.classList.toggle('is-armed', !!sel);
       });
       const done = placedCount() === items.length;
@@ -3778,9 +3792,8 @@ MOD.categorize = {
     }
     u.rows.forEach(gi => {
       const list = h('div', { class: 'chips cat-list' });
-      const count = h('span', { class: 'cat-count' });
       const box = h('div', { class: 'cat-box', style: '--cc:' + PALETTE[u.rows.indexOf(gi) % PALETTE.length], role: 'button', tabindex: '0', 'aria-label': 'Kategoria: ' + ROWS[gi].pl },
-        h('div', { class: 'cat-head' }, h('span', { class: 'cat-name', text: ROWS[gi].pl }), count),
+        h('div', { class: 'cat-head' }, h('span', { class: 'cat-name', text: ROWS[gi].pl })),
         list);
       const drop = () => { const it = items.find(x => x.id === sel); if (it) place(it, gi, $$('.chip.is-in', pool)[0]); };
       box.addEventListener('click', () => drop());   // klik w juz odlozone slowo tez celuje w te kategorie
@@ -3794,7 +3807,7 @@ MOD.categorize = {
         dragId = null;
         if (it) place(it, gi, null);
       });
-      buckets[gi] = { box, list, count };
+      buckets[gi] = { box, list };
       grid.appendChild(box);
     });
     /* Podpowiedz kladzie losowe slowo od razu do dobrej kategorii. */
@@ -3804,9 +3817,8 @@ MOD.categorize = {
       const it = left[Math.floor(Math.random() * left.length)];
       place(it, it.cat, null);
     });
-    /* Notatka kategorii odblokowuje sie, gdy wszystkie jej slowa sa na miejscu. */
-    const tabs = noteTabs(u, u.rows.map(gi => ({ gi, label: ROWS[gi].pl, head: ROWS[gi].pl,
-      ready: () => items.every(it => it.cat !== gi || st.placed[it.id]) })));
+    /* Notatki dopiero po ulozeniu wszystkiego: wczesniejsza zakladka zdradzalaby, ktora kategoria jest pelna. */
+    const tabs = noteTabs(u, u.rows.map(gi => ({ gi, label: ROWS[gi].pl, head: ROWS[gi].pl, ready: () => placedCount() === items.length })));
     append(body, [h('div', { class: 'cat-top' }, pool, h('div', { class: 'btns' }, hint)), grid, tabs]);
     render();
   },
@@ -3871,7 +3883,7 @@ function ratedRows() {
 let reviewSort = 'level';
 
 function reviewFilter() {
-  if (diffHidden) return null;               // bez ocen pokazujemy wszystko
+  if (diffHidden) return null;               // bez oznaczen pokazujemy wszystko
   return $$('.rv-level input:checked').map(c => c.value);
 }
 
@@ -3963,7 +3975,7 @@ function buildReview() {
   box.innerHTML = '';
   syncRevealAll();
   if (!items.length) {
-    box.appendChild(h('p', { class: 'rv-empty', text: D.reviewOnly ? 'Brak słów do powtórki.' : 'Nic tu jeszcze nie ma. Oceń słowa w zadaniach albo zaznacz inne poziomy.' }));
+    box.appendChild(h('p', { class: 'rv-empty', text: D.reviewOnly ? 'Brak słów do powtórki.' : 'Nic tu jeszcze nie ma. Oznacz słowa w zadaniach albo wybierz inne poziomy.' }));
     return;
   }
   box.appendChild(h('div', { class: 'rv-list' }, items.map(reviewItem)));
@@ -3975,7 +3987,7 @@ function reviewCount() {
   if (!el) return;
   const n = D.reviewOnly ? reviewItems().length : ratedRows().length;
   const word = n === 1 ? 'słowo' : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) ? 'słowa' : 'słów';
-  el.textContent = n ? n + ' ' + word + (D.reviewOnly ? '' : ' z oceną') : 'Oceń słowa w zadaniach, a zbiorą się tutaj';
+  el.textContent = n ? n + ' ' + word + (D.reviewOnly ? '' : ' z oznaczeniem') : 'Oznacz słowa w zadaniach, a zbiorą się tutaj';
 }
 function reviewOpen() { const b = $('#rvBody'); return b && !b.hidden; }
 function reviewRefresh() { reviewCount(); if (reviewOpen()) buildReview(); }
@@ -4102,7 +4114,7 @@ document.addEventListener('keydown', e => {
   if (r.top < 0 || r.bottom > window.innerHeight) b.scrollIntoView({ block: 'center' });
 });
 
-/* ---------- Widocznosc ocen i kopia prowadzacego ---------- */
+/* ---------- Widocznosc oznaczen i kopia prowadzacego ---------- */
 let channel = null;
 try { channel = new BroadcastChannel('ws3:' + KEY); } catch (e) { channel = null; }
 
@@ -4143,7 +4155,7 @@ function setDiffVisible(show) {
   document.body.classList.toggle('diff-hidden', diffHidden);
   if (diffHidden) hideOverlays();
   SS.set(DIFF_VIS_KEY, show ? '1' : '0');
-  paintEye($('#eyeBtn'), show, 'Ukryj oceny', 'Pokaż oceny');
+  paintEye($('#eyeBtn'), show, 'Ukryj oznaczenia', 'Pokaż oznaczenia');
   reviewRefresh();
 }
 let remoteVisible = false;
@@ -4152,7 +4164,7 @@ function eyeClick() {
   if (RATER) {
     remoteVisible = !remoteVisible;
     if (channel) { try { channel.postMessage({ t: 'vis', show: remoteVisible }); } catch (e) { /* nic */ } }
-    paintEye($('#eyeBtn'), remoteVisible, 'Ukryj oceny na karcie ucznia', 'Pokaż oceny na karcie ucznia');
+    paintEye($('#eyeBtn'), remoteVisible, 'Ukryj oznaczenia na karcie ucznia', 'Pokaż oznaczenia na karcie ucznia');
     return;
   }
   setDiffVisible(diffHidden);
@@ -4208,7 +4220,7 @@ function downloadTSV() {
 /* ---------- Reset ---------- */
 function resetAll() {
   if (RATER) {
-    if (!confirm('Zdjąć wszystkie oceny? Odpowiedzi ucznia zostaną nietknięte.')) return;
+    if (!confirm('Zdjąć wszystkie oznaczenia? Odpowiedzi ucznia zostaną nietknięte.')) return;
     ST.level = {};
     ROWS.forEach((r, i) => paintLevel(i));
     reviewRefresh();
@@ -4216,7 +4228,7 @@ function resetAll() {
     broadcastLevels();
     return;
   }
-  if (!confirm('Wyczyścić wszystkie odpowiedzi? Oceny wrócą do stanu z danych.')) return;
+  if (!confirm('Wyczyścić wszystkie odpowiedzi? Oznaczenia wrócą do stanu z danych.')) return;
   resetting = true;
   clearTimeout(saveTimer);
   ST = freshState();
@@ -4254,7 +4266,7 @@ function titleNodes(t) {
 
 function legendEl() {
   return h('div', { class: 'legend' },
-    h('span', { class: 'legend-title', text: 'Oceniaj, jak dobrze umiesz:' }),
+    h('span', { class: 'legend-title', text: 'Oznacz, jak dobrze umiesz:' }),
     LEVEL_ORDER.map(L => h('span', { class: 'legend-item' }, h('span', { class: 'lv-chip', style: '--lc:' + LEVELS[L].color, html: LEVELS[L].ico }), LEVELS[L].name)));
 }
 
@@ -4277,11 +4289,11 @@ function reviewEl() {
         h('span', { class: 'review-arrow', html: CHEVRON })),
       h('div', { class: 'review-body', id: 'rvBody', hidden: true },
         h('div', { class: 'rv-levels diff-only' },
-          lvBox('0', 'bez oceny', null, null, D.reviewOnly),
+          lvBox('0', 'bez oznaczenia', null, null, D.reviewOnly),
           LEVEL_ORDER.map(L => lvBox(String(L), LEVELS[L].name, LEVELS[L].ico, LEVELS[L].color, L !== 3))),
         h('div', { class: 'rv-toolbar' },
           h('div', { class: 'rv-sort diff-only' }, h('span', { text: 'Kolejność:' }),
-            h('button', { type: 'button', class: 'is-sel', 'data-sort': 'level', text: 'wg oceny', onclick: () => setReviewSort('level') }),
+            h('button', { type: 'button', class: 'is-sel', 'data-sort': 'level', text: 'wg oznaczenia', onclick: () => setReviewSort('level') }),
             h('button', { type: 'button', 'data-sort': 'hist', text: 'jak w karcie', onclick: () => setReviewSort('hist') })),
           h('div', { class: 'rv-tools' },
             h('button', { type: 'button', class: 'pill-btn', id: 'rvRevealAll', hidden: true, html: ICO.eye + '<span>Pokaż wszystkie</span>', onclick: revealAll }),
@@ -4297,12 +4309,13 @@ function boot() {
   document.body.classList.toggle('diff-hidden', diffHidden);
   document.body.classList.toggle('is-rater', RATER);
   document.body.classList.toggle('review-only', !!D.reviewOnly);
-  if (RATER) document.title = 'Oceny · ' + D.title;
+  if (RATER) document.title = 'Oznaczenia · ' + D.title;
 
   const app = $('#app');
   const tools = h('span', { class: 'tools' },
     h('button', { type: 'button', class: 'ibtn ibtn-sm', id: 'eyeBtn', onclick: eyeClick }),
     RATER ? null : h('button', { type: 'button', class: 'ibtn ibtn-sm', title: 'Otwórz kopię prowadzącego w drugim oknie', 'aria-label': 'Kopia prowadzącego', html: ICO.teacher, onclick: openRaterCopy }),
+    h('button', { type: 'button', class: 'ibtn ibtn-sm js-dict', 'aria-label': 'Słownik', html: ICO.book, onclick: toggleDict }),
     h('button', { type: 'button', class: 'ibtn ibtn-sm js-sound', onclick: toggleSound }));
 
   append(app, [
@@ -4347,19 +4360,21 @@ function boot() {
         h('button', { type: 'button', class: 'celebrate', text: '🎉 Celebrate!', onclick: bigCelebrate }),
         h('button', { type: 'button', class: 'pill-btn', html: ICO.undo + '<span>Zacznij od nowa</span>', onclick: resetAll }))),
     h('footer', { class: 'foot' },
-      h('span', { class: 'foot-note', text: RATER ? 'Kopia prowadzącego: zapisują się tylko oceny' : 'Postęp zapisuje się automatycznie' }),
+      h('span', { class: 'foot-note', text: RATER ? 'Kopia prowadzącego: zapisują się tylko oznaczenia' : 'Postęp zapisuje się automatycznie' }),
       h('span', { class: 'foot-note', text: 'Słownik: zaznacz angielskie słowo (na komputerze także Alt + klik)' }),
       h('div', { class: 'foot-btns' },
         D.reviewOnly || RATER ? null : h('button', { type: 'button', class: 'pill-btn', text: '🎉 Zakończ wcześniej', onclick: finishEarly }),
-        h('button', { type: 'button', class: 'pill-btn', html: ICO.undo + '<span>' + (RATER ? 'Zdejmij oceny' : 'Reset') + '</span>', onclick: resetAll }),
-        h('button', { type: 'button', class: 'pill-btn', title: 'Plik z danymi, ocenami i postępem. Można go wysłać nauczycielowi.', html: ICO.download + '<span>Pobierz TSV</span>', onclick: downloadTSV }),
-        h('button', { type: 'button', class: 'pill-btn', title: 'Skopiuj dane z ocenami i postępem', html: ICO.copy + '<span>Kopiuj TSV</span>', onclick: copyTSV })),
+        h('button', { type: 'button', class: 'pill-btn', html: ICO.undo + '<span>' + (RATER ? 'Zdejmij oznaczenia' : 'Reset') + '</span>', onclick: resetAll }),
+        h('button', { type: 'button', class: 'pill-btn', title: 'Plik z danymi, oznaczeniami i postępem. Można go wysłać nauczycielowi.', html: ICO.download + '<span>Pobierz TSV</span>', onclick: downloadTSV }),
+        h('button', { type: 'button', class: 'pill-btn', title: 'Skopiuj dane z oznaczeniami i postępem', html: ICO.copy + '<span>Kopiuj TSV</span>', onclick: copyTSV })),
       h('span', { class: 'foot-ver', text: 'Worksheet v' + WS_VERSION }))
   ]);
 
-  if (RATER) paintEye($('#eyeBtn'), false, 'Ukryj oceny na karcie ucznia', 'Pokaż oceny na karcie ucznia');
-  else paintEye($('#eyeBtn'), !diffHidden, 'Ukryj oceny', 'Pokaż oceny');
+  if (RATER) paintEye($('#eyeBtn'), false, 'Ukryj oznaczenia na karcie ucznia', 'Pokaż oznaczenia na karcie ucznia');
+  else paintEye($('#eyeBtn'), !diffHidden, 'Ukryj oznaczenia', 'Pokaż oznaczenia');
   setSoundIcon();
+  dictOn = LS.get(DICT_KEY) !== '0';
+  setDictIcon();
   progress();
   paintBadges();
   reviewCount();
@@ -4450,7 +4465,7 @@ function makeRow(pl, en, extra) {
   return r;
 }
 
-/* Stare oceny (kolumna "difficulty": new, 0-4) -> obecne poziomy. */
+/* Stare oznaczenia (kolumna "difficulty": new, 0-4) -> obecne poziomy. */
 function levelFromOld(v) {
   const s = String(v == null ? '' : v).trim();
   if (s === 'new') return 4;
@@ -4557,7 +4572,7 @@ function parseTSV(text) {
     r.note = cleanNote(get('note'));
     r.level = headers.includes('level') ? levelFromNew(get('level')) : levelFromOld(get('difficulty'));
     if (get('difficulty') && !headers.includes('level') && !/^(new|[0-4])$/.test(get('difficulty'))) {
-      doc.warnings.push('Wiersz ' + (i + 1) + ': nieznana ocena „' + get('difficulty') + '” w kolumnie difficulty, pominięta.');
+      doc.warnings.push('Wiersz ' + (i + 1) + ': nieznane oznaczenie „' + get('difficulty') + '” w kolumnie difficulty, pominięta.');
     }
     doc.rows.push(r);
   }
@@ -4709,7 +4724,7 @@ const AI_PROMPT = [
   '#order⇥c, m, q, g (kolejność sekcji: od rozgrzewki i rozpoznawania do przypominania i samodzielnego tworzenia)',
   '',
   'WIERSZE DANYCH',
-  'Nagłówek: pl⇥en⇥tasks⇥distractors⇥note. Po lewej (pl) zawsze polski, po prawej (en) angielski.',
+  'Nagłówek: pl⇥en⇥tasks⇥distractors⇥note. Zwykle po lewej (pl) polski, po prawej (en) angielski. W wariantach (niżej) pl bywa poleceniem, pytaniem albo pierwszą połową pary.',
   'Tagi w kolumnie tasks: c = Zdrapki, m = Matching, s = Word Scramble, q = Quiz, u = Sentence Unscramble, g = Gap Fill, e = Correct the Mistake, t = Translate, w = Writing, k = Categorize, l = Linki. Druga sekcja tego samego typu: g2. Wiersz może trafić do kilku sekcji: "m, q". Zawsze podawaj tag. Do słówek, zwrotów i pytań służą Zdrapki.',
   '',
   'ZAPISY SPECJALNE',
@@ -4725,8 +4740,24 @@ const AI_PROMPT = [
   '- note: notatka, nowa linia jako \\n, wolno użyć **pogrubienia**. Bez tabulatorów w środku komórek.',
   '- Tłumaczenia mają być w pełni poprawne i naturalne.',
   '',
+  'BUDOWA KARTY',
+  '- Karta to ciąg, nie zbiór osobnych zadań. Nowy materiał pojawia się wcześnie w prostym zadaniu (Zdrapki, Matching, Quiz), a późniejsze sekcje wracają do niego w trudniejszej formie (Gap Fill, Correct the Mistake, Translate, Writing). Uczeń ma sobie przypominać, a nie widzieć te same pozycje jeszcze raz w tej samej formie.',
+  '- Nie musisz powtarzać wszystkiego. Wróć do dobrej części pozycji, najpierw do najbardziej przydatnych i najtrudniejszych. Bywa też dobrze, gdy jeden blok (np. zestaw zwrotów) przewija się przez całą kartę.',
+  '- Trudność rośnie: rozgrzewka i rozpoznawanie, potem przypominanie, potem użycie w kontekście, na końcu własna wypowiedź. W sekcji też od łatwiejszych do trudniejszych.',
+  '- Matching: 4 pary (najwyżej 5) i 1 dystraktor na sekcję. Więcej par daje za dużo opcji naraz. Gdy par jest więcej, zrób drugą sekcję (m2) i oddziel ją w #order innym zadaniem, żeby nie było Matching po Matching.',
+  '- Unikaj dwóch sekcji tego samego typu obok siebie.',
+  '',
+  'WARIANTY ZADAŃ',
+  'Typy nie są ograniczone do par polski-angielski. Przynajmniej jedna sekcja na karcie (nie każda) powinna być niestandardowym wariantem, jeśli pasuje do tematu. Wariant zawsze dostaje własną instrukcję w #section, bo domyślna mówi o tłumaczeniu.',
+  '- Quiz (q): prawda/fałsz (pl = zdanie, en = "True | False", karta pokazuje wtedy dwa duże przyciski); znajdź słowo, które nie pasuje (pl = pytanie, en = "nie pasujące | pasujące | pasujące | pasujące"); wybierz poprawną formę albo kolokację; reakcja na sytuację; definicja do słowa. Pierwsza opcja w en jest poprawna, karta sama je miesza.',
+  '- Matching (m): sytuacja i reakcja ("Ktoś kicha." / "Bless you!"); początek i koniec kolokacji (make / a decision); słowo i definicja po angielsku; pytanie i odpowiedź; słowo i przeciwieństwo; phrasal verb i synonim. Prawa kolumna ma przycisk wymowy, więc trzymaj tam angielski.',
+  '- Zdrapki (c): pytanie do rozmowy i przykładowa odpowiedź; definicja i słowo; formy czasownika (go / went, gone); powiedz inaczej (prostsze zdanie i bardziej naturalne).',
+  '- Word Scramble (s) i Sentence Unscramble (u): pl nie musi być tłumaczeniem, może być definicją, pytaniem albo emoji (u: pl = pytanie, en = odpowiedź do ułożenia).',
+  '- Gap Fill (g): kolokacje, przyimki, słowotwórstwo (w pl słowo bazowe, np. HAPPY, w en luka na happiness). W Gap Fill, Correct the Mistake i Translate karta stawia przy pl polską flagę (w Gap Fill i Correct the Mistake jako zakrytą podpowiedź), więc tam pl zostaw po polsku.',
+  '- Categorize (k): nie tylko znaczenie, też gramatyka (+ to / + -ing), wymowa końcówki -ed, make czy do, formalne czy potoczne.',
+  '',
   'NOTATKI',
-  '- Uczeń widzi notatkę dopiero PO rozwiązaniu pozycji (w Matching po połączeniu pary, w Categorize po ułożeniu całej kategorii, w Zdrapkach po zdrapaniu). Notatka trafia też do szybkiej powtórki.',
+  '- Uczeń widzi notatkę dopiero PO rozwiązaniu pozycji (w Matching po połączeniu pary, w Categorize po ułożeniu wszystkich słów, w Zdrapkach po zdrapaniu). Notatka trafia też do szybkiej powtórki.',
   '- Dlatego notatka NIGDY nie zawiera polecenia ani podpowiedzi do zadania. Polecenia idą do instrukcji w #section.',
   '- Notatka nie powtarza tłumaczenia ani odpowiedzi.',
   '- W Categorize notatka w wierszu dotyczy całej kategorii. Uwagę o całym zadaniu wpisz w linii #note.',
